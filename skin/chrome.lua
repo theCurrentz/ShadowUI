@@ -32,6 +32,11 @@ function Addon:SkinBarChrome()
 end
 
 function Addon:ApplySkins()
+  -- Micro and bag buttons are protected; reparenting them in combat taints.
+  if InCombatLockdown() then
+    self.pendingApplyAll = true
+    return
+  end
   self:SkinBarChrome()
   self:SkinChat()
   self:SkinMicroAndBags()

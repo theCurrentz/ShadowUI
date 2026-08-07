@@ -1,7 +1,8 @@
 --[[
   Purpose: Merge shipped defaults with account Base → Class → Variant into effective config.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
-  Public: DeepCopy, SparseMerge, ResolveEffective, GetActiveVariantName, WriteLayerDelta
+  Public: DeepCopy, SparseMerge, ResolveEffective, GetActiveVariantName, WriteLayerDelta,
+          TalentPointsFromTabInfo, GetPrimaryTalentTree
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -50,15 +51,26 @@ function Addon:GetActiveVariantName(classFile)
   return char.activeVariant
 end
 
+-- Classic Era returns (name, texture, pointsSpent, ...) while modernized clients
+-- return (id, name, description, texture, pointsSpent, ...). Taking the largest
+-- numeric candidate of the two slots reads both shapes without guessing a client.
+function Addon:TalentPointsFromTabInfo(a, b, c, d, e)
+  local third = type(c) == "number" and c or 0
+  local fifth = type(e) == "number" and e or 0
+  return third > fifth and third or fifth
+end
+
 function Addon:GetPrimaryTalentTree()
-  local best, bestPts = nil, -1
-  for i = 1, GetNumTalentTabs() do
-    local _, _, _, _, points = GetTalentTabInfo(i)
-    if points and points > bestPts then
+  if type(GetNumTalentTabs) ~= "function" or type(GetTalentTabInfo) ~= "function" then
+    return nil
+  end
+  local best, bestPts = nil, 0
+  for i = 1, GetNumTalentTabs() or 0 do
+    local points = self:TalentPointsFromTabInfo(GetTalentTabInfo(i))
+    if points > bestPts then
       best, bestPts = i, points
     end
   end
-  if bestPts <= 0 then return nil end
   return best
 end
 

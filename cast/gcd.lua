@@ -1,6 +1,6 @@
 --[[
   Purpose: Render the player global cooldown beneath the cast bar.
-  Deps: WoW spell cooldown APIs
+  Deps: WoW spell cooldown APIs, ShadowUI:ApplyStatusBarGradient()
   Public: ShadowUI:CreateGCDBar()
 ]]
 
@@ -34,10 +34,11 @@ function Addon:CreateGCDBar(parent)
   bar:SetSize(parent:GetWidth(), 3)
   bar:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -2)
   bar:SetStatusBarTexture("Interface\\Buttons\\WHITE8X8")
-  bar:GetStatusBarTexture():SetGradientAlpha(
+  self:ApplyStatusBarGradient(
+    bar:GetStatusBarTexture(),
     "HORIZONTAL",
-    0.25, 0.38, 0.46, 1,
-    0.62, 0.86, 0.96, 1
+    { 0.25, 0.38, 0.46, 1 },
+    { 0.62, 0.86, 0.96, 1 }
   )
 
   local background = bar:CreateTexture(nil, "BACKGROUND")

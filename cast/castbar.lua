@@ -1,7 +1,7 @@
 --[[
   Purpose: Render a fixed player cast and channel bar.
   Deps: WoW unit spellcast APIs, ShadowUI:CreateGCDBar()
-  Public: ShadowUI:ApplyCastBar()
+  Public: ShadowUI:ApplyCastBar(), ShadowUI:ApplyStatusBarGradient()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -11,6 +11,26 @@ local BACKDROP = {
   edgeSize = 1,
 }
 local WIDTH, HEIGHT = 432, 20
+
+-- SetGradientAlpha was removed from the client; SetGradient takes ColorMixins.
+function Addon:ApplyStatusBarGradient(texture, orientation, from, to)
+  if not texture then
+    return
+  end
+  if CreateColor and texture.SetGradient then
+    local ok = pcall(
+      texture.SetGradient,
+      texture,
+      orientation,
+      CreateColor(from[1], from[2], from[3], from[4]),
+      CreateColor(to[1], to[2], to[3], to[4])
+    )
+    if ok then
+      return
+    end
+  end
+  texture:SetVertexColor(to[1], to[2], to[3], to[4])
+end
 
 local function hideBlizzardCastBar()
   local frame = CastingBarFrame
@@ -62,10 +82,11 @@ local function createCastBar()
   bar:SetPoint("CENTER", UIParent, "CENTER", 0, -120)
   bar:SetFrameStrata("MEDIUM")
   bar:SetStatusBarTexture("Interface\\Buttons\\WHITE8X8")
-  bar:GetStatusBarTexture():SetGradientAlpha(
+  Addon:ApplyStatusBarGradient(
+    bar:GetStatusBarTexture(),
     "HORIZONTAL",
-    0.12, 0.18, 0.22, 1,
-    0.35, 0.72, 0.88, 1
+    { 0.12, 0.18, 0.22, 1 },
+    { 0.35, 0.72, 0.88, 1 }
   )
   bar:SetBackdrop(BACKDROP)
   bar:SetBackdropColor(0.015, 0.02, 0.025, 0.95)
@@ -107,6 +128,10 @@ local function createCastBar()
 end
 
 function Addon:ApplyCastBar()
+  if InCombatLockdown() then
+    self.pendingApplyAll = true
+    return
+  end
   hideBlizzardCastBar()
   if not self.castBar then
     self.castBar = createCastBar()
