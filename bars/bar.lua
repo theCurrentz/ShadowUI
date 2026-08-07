@@ -36,7 +36,9 @@ function Addon:UpdateBarLayout(bar, cfg)
 
   local editable = self.editMode == true
   bar:SetMovable(editable)
-  bar:EnableMouse(editable)
+  bar.dragOverlay:SetFrameLevel(bar:GetFrameLevel() + 100)
+  bar.dragOverlay:EnableMouse(editable)
+  bar.dragOverlay:SetShown(editable)
 end
 
 function Addon:CreateBar(barId, cfg)
@@ -53,22 +55,26 @@ function Addon:CreateBar(barId, cfg)
   bar:SetBackdrop(BACKDROP)
   bar:SetBackdropColor(0, 0, 0, 1)
   bar:SetClampedToScreen(true)
-  bar:RegisterForDrag("LeftButton")
-  bar:SetScript("OnDragStart", function(frame)
+  bar.buttons = {}
+
+  local dragOverlay = CreateFrame("Frame", nil, bar)
+  dragOverlay:SetAllPoints(bar)
+  dragOverlay:RegisterForDrag("LeftButton")
+  dragOverlay:SetScript("OnDragStart", function()
     if Addon.editMode then
-      frame:StartMoving()
+      bar:StartMoving()
     end
   end)
-  bar:SetScript("OnDragStop", function(frame)
-    frame:StopMovingOrSizing()
+  dragOverlay:SetScript("OnDragStop", function()
+    bar:StopMovingOrSizing()
   end)
+  bar.dragOverlay = dragOverlay
 
   local shadow = bar:CreateTexture(nil, "BACKGROUND", nil, -8)
   shadow:SetColorTexture(0, 0, 0, 0.35)
   shadow:SetPoint("TOPLEFT", bar, "TOPLEFT", 2, -2)
   shadow:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 2, -2)
   bar.shadow = shadow
-  bar.buttons = {}
 
   local firstSlot = (page - 1) * 12
   for i = 1, cfg.buttons or 12 do

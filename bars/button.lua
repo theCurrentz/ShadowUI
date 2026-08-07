@@ -25,6 +25,7 @@ local function strip(texture)
   if texture then
     texture:SetTexture(nil)
     texture:SetAlpha(0)
+    texture:Hide()
   end
 end
 
@@ -37,6 +38,8 @@ function Addon:CreateBarButton(parent, id, actionSlot)
   strip(button.CheckedTexture)
   strip(button.Border)
   strip(button.SlotBackground)
+  strip(button.HighlightTexture)
+  strip(button.Flash)
 
   if button.IconMask then
     button.icon:RemoveMaskTexture(button.IconMask)
