@@ -11,6 +11,7 @@ libs\embeds.xml
 core\init.lua
 core\db.lua
 core\resolve.lua
+core\keybinds.lua
 
 defaults\base.lua
 defaults\classes\WARRIOR.lua
