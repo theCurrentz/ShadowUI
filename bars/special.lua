@@ -74,6 +74,7 @@ end
 function Addon:CreateSpecialBar(barId, cfg)
   local page = assert(PAGES[barId], "unknown special bar id")
   local bar = self:CreateBar("bar" .. page, cfg)
+  bar.barId = barId
   bar.specialId = barId
 
   for i, button in ipairs(bar.buttons) do

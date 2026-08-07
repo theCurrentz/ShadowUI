@@ -67,8 +67,10 @@ function Addon:CreateBar(barId, cfg)
   end)
   dragOverlay:SetScript("OnDragStop", function()
     bar:StopMovingOrSizing()
+    Addon:PersistBarPosition(bar)
   end)
   bar.dragOverlay = dragOverlay
+  bar.barId = barId
 
   local shadow = bar:CreateTexture(nil, "BACKGROUND", nil, -8)
   shadow:SetColorTexture(0, 0, 0, 0.35)
