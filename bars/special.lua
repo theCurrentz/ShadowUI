@@ -5,13 +5,7 @@
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local PAGES = {
-  stance = 11,
-  form = 12,
-  aura = 13,
-  pet = 14,
-  possess = 15,
-}
+local PAGES = { stance = 11, form = 12, aura = 13, pet = 14, possess = 15 }
 
 local function isTrue(value)
   return value == true or value == 1
@@ -104,6 +98,10 @@ function Addon:CreateSpecialBar(barId, cfg)
 end
 
 function Addon:RefreshSpecialBars()
+  if InCombatLockdown() then
+    self.pendingSpecialBarRefresh = true
+    return
+  end
   for id, bar in pairs(self.bars or {}) do
     if bar.specialId and bar.configEnabled then
       if id == "pet" then

@@ -25,12 +25,18 @@ function Addon:StartSpecialBarUpdates()
   local events = {
     "UPDATE_SHAPESHIFT_FORMS", "UPDATE_SHAPESHIFT_FORM",
     "PET_BAR_UPDATE", "UNIT_PET", "UPDATE_POSSESS_BAR",
+    "PLAYER_REGEN_ENABLED",
   }
   for _, event in ipairs(events) do
     frame:RegisterEvent(event)
   end
   frame:SetScript("OnEvent", function(_, event, unit)
-    if event ~= "UNIT_PET" or unit == "player" then
+    if event == "PLAYER_REGEN_ENABLED" then
+      if Addon.pendingSpecialBarRefresh then
+        Addon.pendingSpecialBarRefresh = nil
+        Addon:RefreshSpecialBars()
+      end
+    elseif event ~= "UNIT_PET" or unit == "player" then
       Addon:RefreshSpecialBars()
     end
   end)
@@ -62,6 +68,9 @@ function Addon:HideBlizzardBars()
 end
 
 function Addon:ApplyBars(cfg)
+  if SetActionBarToggles then
+    SetActionBarToggles(1, 1, 1, 1, 1)
+  end
   self:HideBlizzardBars()
   self.bars = self.bars or {}
 
