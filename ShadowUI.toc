@@ -1,0 +1,44 @@
+## Interface: 11509
+## Title: ShadowUI
+## Notes: Opinionated Classic Era/SoD bars, chrome, and cast bar. Class-profiled Base → Class → Variant layouts.
+## Author: Parker Westfall
+## Version: 0.1.0
+## SavedVariables: ShadowUIDB
+## SavedVariablesPerCharacter: ShadowUICharDB
+
+libs\embeds.xml
+
+core\init.lua
+core\db.lua
+core\resolve.lua
+
+defaults\base.lua
+defaults\classes\WARRIOR.lua
+defaults\classes\PALADIN.lua
+defaults\classes\HUNTER.lua
+defaults\classes\ROGUE.lua
+defaults\classes\PRIEST.lua
+defaults\classes\SHAMAN.lua
+defaults\classes\MAGE.lua
+defaults\classes\WARLOCK.lua
+defaults\classes\DRUID.lua
+
+bars\button.lua
+bars\bar.lua
+bars\special.lua
+bars\manager.lua
+
+cast\castbar.lua
+cast\gcd.lua
+
+skin\chrome.lua
+skin\chat.lua
+skin\micro.lua
+skin\minimap.lua
+
+edit\mode.lua
+edit\layer.lua
+
+profile\variants.lua
+
+options\config.lua
