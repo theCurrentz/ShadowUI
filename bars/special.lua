@@ -1,7 +1,8 @@
 --[[
-  Purpose: Create and refresh class, pet, and possess action bars.
-  Deps: ShadowUI:CreateBar(), Classic Era shapeshift and pet APIs
-  Public: ShadowUI:CreateSpecialBar(), ShadowUI:RefreshSpecialBars()
+  Purpose: Create and refresh class shapeshift, pet, and possess action bars.
+  Deps: ShadowUI:CreateBar(), ShadowUI:RefreshPetBar(), Classic Era shapeshift APIs
+  Public: ShadowUI:CreateSpecialBar(), ShadowUI:RefreshSpecialBars(),
+          ShadowUI:FlushPendingSpecialBars()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -49,17 +50,6 @@ local function refreshShapeshift(bar)
   bar:SetShown(available)
 end
 
-local function refreshPet(bar)
-  local available = UnitExists("pet")
-  for i, button in ipairs(bar.buttons) do
-    local name, texture, _, active = GetPetActionInfo(i)
-    setTexture(button, texture)
-    button:SetChecked(isTrue(active))
-    button:SetShown(name ~= nil)
-  end
-  bar:SetShown(available)
-end
-
 local function refreshPossess(bar)
   local available = false
   for i, button in ipairs(bar.buttons) do
@@ -79,9 +69,7 @@ function Addon:CreateSpecialBar(barId, cfg)
 
   for i, button in ipairs(bar.buttons) do
     if barId == "pet" then
-      button:SetState(0, "empty")
-      button:SetAttribute("type", "pet")
-      button:SetAttribute("action", i)
+      self:BindPetButton(button, i)
     elseif barId == "possess" then
       setMacro(button, "/click PossessButton" .. i)
     else
@@ -103,15 +91,22 @@ function Addon:RefreshSpecialBars()
     self.pendingSpecialBarRefresh = true
     return
   end
+  self.pendingSpecialBarRefresh = nil
   for id, bar in pairs(self.bars or {}) do
     if bar.specialId and bar.configEnabled then
       if id == "pet" then
-        refreshPet(bar)
+        self:RefreshPetBar(bar)
       elseif id == "possess" then
         refreshPossess(bar)
       else
         refreshShapeshift(bar)
       end
     end
+  end
+end
+
+function Addon:FlushPendingSpecialBars()
+  if self.pendingSpecialBarRefresh then
+    self:RefreshSpecialBars()
   end
 end

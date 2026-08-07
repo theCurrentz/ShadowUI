@@ -10,7 +10,7 @@ Addon.Defaults.classes.PALADIN = {
   layout = {
     aura = {
       point = "CENTER", relativeTo = "UIParent", relativePoint = "CENTER",
-      x = 0, y = -140, buttons = 6, columns = 6, scale = 1, enabled = true, buttonSize = 36,
+      x = 0, y = -84, buttons = 6, columns = 6, scale = 1, enabled = true, buttonSize = 36,
     },
   },
   keybinds = {},

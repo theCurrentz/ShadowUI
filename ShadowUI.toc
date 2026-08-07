@@ -26,6 +26,7 @@ defaults\classes\DRUID.lua
 
 bars\button.lua
 bars\bar.lua
+bars\pet.lua
 bars\special.lua
 bars\manager.lua
 

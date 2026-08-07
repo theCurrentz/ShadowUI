@@ -38,8 +38,11 @@ function Addon:CreateLayerPicker()
       edgeFile = "Interface\\Buttons\\WHITE8X8",
       edgeSize = 1,
     })
+    -- BackdropTemplate carries no label, so SetText alone would render nothing.
+    local label = button:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    label:SetPoint("CENTER")
+    button:SetFontString(label)
     button:SetText(layer:upper())
-    button:SetNormalFontObject("GameFontNormalSmall")
     button:SetScript("OnClick", function()
       Addon:SetEditLayer(layer)
     end)
