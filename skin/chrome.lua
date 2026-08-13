@@ -10,6 +10,18 @@ local BACKDROP = {
 }
 
 function Addon:ApplyBarChrome(bar)
+  if self:GetTheme() == "glass" then
+    self:ApplyGlassPanel(bar)
+    if bar.shadow then
+      bar.shadow:ClearAllPoints()
+      bar.shadow:SetPoint("TOPLEFT", bar, "TOPLEFT", -4, 4)
+      bar.shadow:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 4, -4)
+      bar.shadow:SetColorTexture(0, 0, 0, 0.28)
+      bar.shadow:Show()
+    end
+    return
+  end
+  self:ClearGlassPanel(bar)
   bar:SetBackdrop(BACKDROP)
   bar:SetBackdropColor(0, 0, 0, 1)
 

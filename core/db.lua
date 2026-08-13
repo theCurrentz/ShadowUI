@@ -21,6 +21,7 @@ local CHAR_DEFAULTS = {
     activeVariant = nil,
     editLayer = "variant",
     variantManual = false,
+    theme = "matte",
   },
 }
 

@@ -93,6 +93,12 @@ local options = {
         },
       },
     },
+    theme = {
+      type = "select", name = "Chrome theme", order = 15,
+      values = { matte = "Matte", glass = "Glass (spike)" },
+      get = function() return Addon:GetTheme() end,
+      set = function(_, value) Addon:SetTheme(value) end,
+    },
     layer = {
       type = "select", name = "Current edit layer", order = 20,
       values = { base = "Base", class = "Class", variant = "Variant" },

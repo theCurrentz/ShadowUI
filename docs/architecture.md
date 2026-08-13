@@ -26,7 +26,8 @@ ShadowUI/
     castbar.lua                 fixed player cast/channel bar
     gcd.lua                     GCD sweep under cast bar
   skin/
-    chrome.lua                  black bar backdrops + soft shadow
+    glass.lua                   opt-in layered glass compositor (spike)
+    chrome.lua                  matte black bar backdrops + soft shadow
     chat.lua                    semi-transparent chat
     micro.lua                   dark micro menu + bag bar, bottom-right
     minimap.lua                 large square blackened minimap
@@ -48,7 +49,7 @@ Defined in `ShadowUI.toc`:
 3. `defaults/` — base, then class files (WARRIOR … DRUID)
 4. `bars/` — button, bar, pet, special, manager
 5. `cast/` — castbar, gcd
-6. `skin/` — chrome, chat, micro, minimap
+6. `skin/` — glass, chrome, chat, micro, minimap
 7. `edit/` — mode, layer
 8. `profile/` — variants
 9. `options/` — config
@@ -92,6 +93,7 @@ Per-character state only.
   activeVariant = "Arms",   -- nil until set or talent auto-bind
   editLayer = "variant",    -- "base" | "class" | "variant"
   variantManual = false,    -- true after manual /shadowui variant; cleared by variant clear
+  theme = "matte",          -- "matte" | "glass" (glass is a spike; default stays matte)
 }
 ```
 
@@ -180,6 +182,8 @@ for special bars are sparse class deltas at `y = -84`, above the cast bar at `y 
 - **Talent tab shape is inferred.** `TalentPointsFromTabInfo` takes the larger numeric
   value of the third and fifth returns of `GetTalentTabInfo` to read both the Classic
   Era and modernized signatures without branching on client build.
+- **Glass theme cannot blur or refract the world.** `/shadowui theme glass` is a layered
+  translucency/sheen fake. See [the liquid-glass spike](superpowers/specs/2026-08-13-liquid-glass-spike.md).
 
 ## Out of scope
 

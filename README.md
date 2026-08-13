@@ -13,6 +13,7 @@ Copy the addon directory to `Interface/AddOns/ShadowUI`, then enable ShadowUI fr
 - `/shadowui layer base|class|variant` sets the layer changed by edit mode.
 - `/shadowui variant <name>` manually activates a variant.
 - `/shadowui variant clear` clears the manual variant override.
+- `/shadowui theme glass|matte` switches chrome. Default is matte; glass is a spike.
 
 ## Layout inheritance
 
@@ -32,6 +33,7 @@ Automated checks (plain Lua, no client needed):
 lua tests/resolve_spec.lua
 lua tests/layout_spec.lua
 lua tests/api_shapes_spec.lua
+lua tests/glass_spec.lua
 ```
 
 `resolve_spec` covers layer merging, layer writes, and talent-tab parsing for both the

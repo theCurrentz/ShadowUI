@@ -19,16 +19,23 @@ local function darkenBackground(background)
 end
 
 function Addon:SkinChat()
+  local glass = self:GetTheme() == "glass"
   for i = 1, NUM_CHAT_WINDOWS or 10 do
     local chat = _G["ChatFrame" .. i]
     if chat then
-      local background = _G["ChatFrame" .. i .. "Background"]
-      if background then
-        darkenBackground(background)
+      local background = _G["ChatFrame" .. i .. "Background"] or chat.shadowUIBackground
+      if glass then
+        if background then
+          background:Hide()
+        end
+        self:ApplyGlassPanel(chat)
       else
-        background = chat:CreateTexture(nil, "BACKGROUND", nil, -8)
-        background:SetAllPoints(chat)
-        chat.shadowUIBackground = background
+        self:ClearGlassPanel(chat)
+        if not background then
+          background = chat:CreateTexture(nil, "BACKGROUND", nil, -8)
+          background:SetAllPoints(chat)
+          chat.shadowUIBackground = background
+        end
         darkenBackground(background)
       end
     end

@@ -31,10 +31,17 @@ function Addon:SkinMinimap()
     backdrop = MinimapCluster:CreateTexture(nil, "BACKGROUND", nil, -8)
     MinimapCluster.shadowUIBackdrop = backdrop
   end
-  backdrop:ClearAllPoints()
-  backdrop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -4, 4)
-  backdrop:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 4, -4)
-  backdrop:SetColorTexture(0, 0, 0, 0.9)
+  if self:GetTheme() == "glass" then
+    backdrop:Hide()
+    self:ApplyGlassPanel(MinimapCluster)
+  else
+    self:ClearGlassPanel(MinimapCluster)
+    backdrop:ClearAllPoints()
+    backdrop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -4, 4)
+    backdrop:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 4, -4)
+    backdrop:SetColorTexture(0, 0, 0, 0.9)
+    backdrop:Show()
+  end
 
   for _, name in ipairs(ART) do
     local region = _G[name]

@@ -33,6 +33,7 @@ bars\manager.lua
 cast\castbar.lua
 cast\gcd.lua
 
+skin\glass.lua
 skin\chrome.lua
 skin\chat.lua
 skin\micro.lua

@@ -76,8 +76,14 @@ function Addon:SlashCommand(input)
     self:SetEditLayer(rest)
   elseif cmd == "variant" then
     self:HandleVariantCommand(rest)
+  elseif cmd == "theme" then
+    if rest == "" then
+      self:Print("Theme: " .. self:GetTheme())
+    else
+      self:SetTheme(rest)
+    end
   else
-    self:Print("Usage: /shadowui [edit|layer|variant]")
+    self:Print("Usage: /shadowui [edit|layer|variant|theme]")
   end
 end
 
