@@ -28,12 +28,27 @@ _G.hooksecurefunc = function(object, method, fn)
   end
 end
 _G.TargetFrame_CheckClassification = function() end
+_G.TargetFrameMixin = {
+  CheckClassification = function(self)
+    if self.borderTexture and self.borderTexture.SetTexture then
+      self.borderTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+    end
+  end,
+}
 _G.NUM_RAID_GROUPS = 1
 
 local function fakeTex(name)
   local tex = { name = name, r = 1, g = 1, b = 1 }
   function tex:SetVertexColor(r, g, b)
     self.r, self.g, self.b = r, g, b
+  end
+  function tex:SetTexture(path)
+    self.path = path
+    self.r, self.g, self.b = 1, 1, 1
+  end
+  function tex:SetAtlas(atlas)
+    self.atlas = atlas
+    self.r, self.g, self.b = 1, 1, 1
   end
   function tex:GetName()
     return self.name
@@ -102,6 +117,20 @@ eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "Blizzard cannot reset the player fr
 _G.TargetFrame.borderTexture:SetVertexColor(1, 1, 1)
 _G.TargetFrame_CheckClassification(_G.TargetFrame)
 eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "target classification keeps the dark chrome")
+
+_G.PlayerFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "SetTexture cannot reset the player frame color")
+_G.TargetFrame.borderTexture:SetAtlas("UI-HUD-UnitFrame-Target-PortraitOn")
+eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "SetAtlas cannot reset the target frame color")
+
+function _G.TargetFrame:GetName() return "TargetFrame" end
+_G.TargetFrameMixin.CheckClassification(_G.TargetFrame)
+eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "1.15 mixin classification keeps the dark chrome")
+
+local modern = fakeTex("ModernPlayerTexture")
+_G.PlayerFrame = { PlayerFrameContainer = { FrameTexture = modern } }
+Addon:SkinUnitFrames()
+eq(modern, 0.05, 0.05, 0.05, "modern player container chrome is Lorti darkest")
 
 Addon:LockVertex(nil, Addon.DARKEN_BLACK)
 Addon:DarkenNamed({ "MissingFrameTexture" }, Addon.DARKEN_BLACK)
