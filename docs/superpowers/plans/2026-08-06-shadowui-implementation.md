@@ -13,7 +13,7 @@
 - Target: Classic Era / SoD only — Interface `11509` (patch 1.15.9)
 - Addon name: `ShadowUI`; SVs: `ShadowUIDB` (account), `ShadowUICharDB` (character)
 - Profiles by **class**, not character; inheritance **Base → Class → Variant**
-- Visual buttons: flush square icons, zero gap; bar backdrop matte black + soft shadow
+- Visual buttons: flush square icons, zero gap; bar backdrop matte black; Blizzard chrome uses Lorti vertex colors
 - Cast/GCD bar fixed by design — no AceConfig options for it
 - File size: prefer ≤120 lines, hard cap ~200; no undeclared globals; public API on `ShadowUI` table
 - Every Lua file starts with header (purpose, deps, public API)
@@ -733,11 +733,11 @@ EOF
 - Consumes: created ShadowUI bars
 - Produces: `ShadowUI:ApplySkins()` orchestrating all four
 
-- [ ] **Step 1: `skin/chrome.lua`** — ensure each ShadowUI bar backdrop is matte black + soft shadow (shared helper `ApplyBarChrome(frame)`).
+- [ ] **Step 1: `skin/chrome.lua`** — ensure each ShadowUI bar backdrop is matte black (shared helper `ApplyBarChrome(frame)`).
 
 - [ ] **Step 2: `skin/chat.lua`** — for ChatFrame1–N and their backgrounds: set backdrop to black at ~0.6 alpha; leave font/default behavior alone.
 
-- [ ] **Step 3: `skin/micro.lua`** — darken CharacterMicroButton…HelpMicroButton and bag buttons (`MainMenuBarBackpackButton`, bag slots); clear points; dock cluster to `UIParent` `BOTTOMRIGHT` with small inset.
+- [ ] **Step 3: `skin/micro.lua`** — dock CharacterMicroButton…HelpMicroButton and the backpack to `UIParent` `BOTTOMRIGHT` with no inset. Keep native Blizzard size and art. Hide Store.
 
 - [ ] **Step 4: `skin/minimap.lua`** — hide minimap mask/border art where possible; square large minimap (~250px); black backdrop; keep zoom/mail if present; position upper-right unless Base later overrides (fixed for v1 is fine).
 

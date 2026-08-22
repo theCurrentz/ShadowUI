@@ -1,5 +1,5 @@
 --[[
-  Purpose: Shared centered Base layout kept inside ±360 of screen centre.
+  Purpose: Shared Base layout: six reversed rows plus 3x4 side bars.
   Deps: ShadowUI addon table
   Public: populates ShadowUI.Defaults.base
 ]]
@@ -7,7 +7,13 @@
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 Addon.Defaults = Addon.Defaults or { base = {}, classes = {} }
 
-local SIZE = 36
+-- 90% of the Classic 36px icon. Row y uses SIZE so bar6 stays on the screen edge.
+local SIZE = 36 * 0.9
+local BOTTOM = 0
+local ROW_WIDTH = 12 * SIZE
+local SIDE_WIDTH = 3 * SIZE
+local SIDE_X = ROW_WIDTH / 2 + SIDE_WIDTH / 2
+
 local function bar(point, x, y, buttons, columns, enabled)
   return {
     point = point or "CENTER",
@@ -22,22 +28,25 @@ local function bar(point, x, y, buttons, columns, enabled)
   }
 end
 
--- Enabled by default: four bottom rows plus one vertical column per side.
--- bar7-bar10 ship parked but disabled so enabling them does not overlap.
+-- bar1 is the top row of the six-wide stack. bar6 is the bottom row.
+local function row(fromTop)
+  return bar("BOTTOM", 0, BOTTOM + (5 - fromTop) * SIZE, 12, 12)
+end
+
 Addon.Defaults.base = {
   layout = {
-    bar1 = bar("CENTER", 0, -210, 12, 12),
-    bar2 = bar("CENTER", 0, -246, 12, 12),
-    bar3 = bar("CENTER", 0, -282, 12, 12),
-    bar6 = bar("CENTER", 0, -318, 12, 12),
-    bar4 = bar("CENTER", -300, -60, 12, 1),
-    bar5 = bar("CENTER", 300, -60, 12, 1),
-    bar7 = bar("CENTER", -336, -60, 12, 1, false),
-    bar8 = bar("CENTER", 336, -60, 12, 1, false),
-    bar9 = bar("CENTER", 0, 246, 12, 12, false),
-    bar10 = bar("CENTER", 0, 282, 12, 12, false),
-    pet = bar("CENTER", 0, -170, 10, 10),
-    possess = bar("CENTER", 0, -46, 2, 2),
+    bar1 = row(0),
+    bar2 = row(1),
+    bar3 = row(2),
+    bar4 = row(3),
+    bar5 = row(4),
+    bar6 = row(5),
+    bar7 = bar("BOTTOM", -SIDE_X, BOTTOM, 12, 3),
+    bar8 = bar("BOTTOM", SIDE_X, BOTTOM, 12, 3),
+    bar9 = bar("BOTTOM", 0, BOTTOM + 8 * SIZE, 12, 12, false),
+    bar10 = bar("BOTTOM", 0, BOTTOM + 9 * SIZE, 12, 12, false),
+    pet = bar("BOTTOM", 0, BOTTOM + 6 * SIZE, 10, 10),
+    possess = bar("BOTTOM", 0, BOTTOM + 7 * SIZE, 2, 2),
   },
   keybinds = {},
 }

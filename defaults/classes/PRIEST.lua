@@ -10,7 +10,7 @@ Addon.Defaults.classes.PRIEST = {
   layout = {
     form = {
       point = "CENTER", relativeTo = "UIParent", relativePoint = "CENTER",
-      x = 0, y = -84, buttons = 1, columns = 1, scale = 1, enabled = true, buttonSize = 36,
+      x = 0, y = -84, buttons = 1, columns = 1, scale = 1, enabled = true, buttonSize = 36 * 0.9,
     },
   },
   keybinds = {},

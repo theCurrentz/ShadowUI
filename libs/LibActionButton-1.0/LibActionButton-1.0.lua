@@ -224,7 +224,10 @@ function lib:CreateButton(id, name, header, config)
 
 	local button = setmetatable(CreateFrame("CheckButton", name, header, "ActionButtonTemplate, SecureActionButtonTemplate"), Generic_MT)
 	button:RegisterForDrag("LeftButton", "RightButton")
-	button:RegisterForClicks("AnyDown", "AnyUp")
+	-- Classic Era accepts AnyUp. AnyDown exists only after key-down clicks shipped.
+	if not pcall(button.RegisterForClicks, button, "AnyDown", "AnyUp") then
+		button:RegisterForClicks("AnyUp")
+	end
 
 	-- Frame Scripts
 	button:SetScript("OnEnter", Generic.OnEnter)
@@ -264,7 +267,10 @@ function lib:CreateButton(id, name, header, config)
 	-- Store the button in the registry, needed for event and OnUpdate handling
 	ButtonRegistry[button] = true
 
-	-- setup button configuration
+	-- UpdateConfig calls UpdateAction; Classic has no SlotBackground.
+	if config and config.masqueSkinned then
+		button.MasqueSkinned = true
+	end
 	button:UpdateConfig(config)
 
 	-- run an initial update
@@ -1213,10 +1219,12 @@ function Generic:UpdateConfig(config)
 		self.outOfRange = nil
 	end
 
-	if self.config.hideElements.macro then
-		self.Name:Hide()
-	else
-		self.Name:Show()
+	if self.Name then
+		if self.config.hideElements.macro then
+			self.Name:Hide()
+		else
+			self.Name:Show()
+		end
 	end
 
 	self:SetAttribute("flyoutDirection", self.config.flyoutDirection)
@@ -1249,59 +1257,60 @@ end
 
 function InitializeEventHandler()
 	lib.eventFrame:SetScript("OnEvent", OnEvent)
-	lib.eventFrame:RegisterEvent("CVAR_UPDATE")
-	lib.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	lib.eventFrame:RegisterEvent("ACTIONBAR_SHOWGRID")
-	lib.eventFrame:RegisterEvent("ACTIONBAR_HIDEGRID")
-	--lib.eventFrame:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
-	--lib.eventFrame:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
-	lib.eventFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
-	lib.eventFrame:RegisterEvent("UPDATE_BINDINGS")
-	lib.eventFrame:RegisterEvent("GAME_PAD_ACTIVE_CHANGED")
-	lib.eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-	lib.eventFrame:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED")
+	local function reg(event)
+		pcall(lib.eventFrame.RegisterEvent, lib.eventFrame, event)
+	end
+	reg("CVAR_UPDATE")
+	reg("PLAYER_ENTERING_WORLD")
+	reg("ACTIONBAR_SHOWGRID")
+	reg("ACTIONBAR_HIDEGRID")
+	reg("ACTIONBAR_SLOT_CHANGED")
+	reg("UPDATE_BINDINGS")
+	reg("GAME_PAD_ACTIVE_CHANGED")
+	reg("UPDATE_SHAPESHIFT_FORM")
+	reg("PLAYER_MOUNT_DISPLAY_CHANGED")
 	if not WoWClassic and not WoWBCC then
-		lib.eventFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
+		reg("UPDATE_VEHICLE_ACTIONBAR")
 	end
 
-	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
-	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
-	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-	lib.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-	lib.eventFrame:RegisterEvent("TRADE_SKILL_SHOW")
-	lib.eventFrame:RegisterEvent("TRADE_SKILL_CLOSE")
+	reg("ACTIONBAR_UPDATE_STATE")
+	reg("ACTIONBAR_UPDATE_USABLE")
+	reg("ACTIONBAR_UPDATE_COOLDOWN")
+	reg("PLAYER_TARGET_CHANGED")
+	reg("TRADE_SKILL_SHOW")
+	reg("TRADE_SKILL_CLOSE")
 
-	lib.eventFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
-	lib.eventFrame:RegisterEvent("PLAYER_LEAVE_COMBAT")
-	lib.eventFrame:RegisterEvent("START_AUTOREPEAT_SPELL")
-	lib.eventFrame:RegisterEvent("STOP_AUTOREPEAT_SPELL")
-	lib.eventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
+	reg("PLAYER_ENTER_COMBAT")
+	reg("PLAYER_LEAVE_COMBAT")
+	reg("START_AUTOREPEAT_SPELL")
+	reg("STOP_AUTOREPEAT_SPELL")
+	reg("UNIT_INVENTORY_CHANGED")
 
-	lib.eventFrame:RegisterEvent("PET_STABLE_UPDATE")
-	lib.eventFrame:RegisterEvent("PET_STABLE_SHOW")
-	lib.eventFrame:RegisterEvent("SPELL_UPDATE_CHARGES")
-	lib.eventFrame:RegisterEvent("SPELL_UPDATE_ICON")
+	reg("PET_STABLE_UPDATE")
+	reg("PET_STABLE_SHOW")
+	reg("SPELL_UPDATE_CHARGES")
+	reg("SPELL_UPDATE_ICON")
 	if not WoWClassic and not WoWBCC then
 		if not WoWWrath then
-			lib.eventFrame:RegisterEvent("ARCHAEOLOGY_CLOSED")
-			lib.eventFrame:RegisterEvent("UPDATE_SUMMONPETS_ACTION")
-			lib.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-			lib.eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+			reg("ARCHAEOLOGY_CLOSED")
+			reg("UPDATE_SUMMONPETS_ACTION")
+			reg("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+			reg("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 		end
-		lib.eventFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-		lib.eventFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-		lib.eventFrame:RegisterEvent("COMPANION_UPDATE")
+		reg("UNIT_ENTERED_VEHICLE")
+		reg("UNIT_EXITED_VEHICLE")
+		reg("COMPANION_UPDATE")
 	end
 
-	lib.eventFrame:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE")
+	reg("LEARNED_SPELL_IN_SKILL_LINE")
+	reg("LEARNED_SPELL_IN_TAB")
 
-	-- With those two, do we still need the ACTIONBAR equivalents of them?
-	lib.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-	lib.eventFrame:RegisterEvent("SPELL_UPDATE_USABLE")
-	lib.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	reg("SPELL_UPDATE_COOLDOWN")
+	reg("SPELL_UPDATE_USABLE")
+	reg("PLAYER_EQUIPMENT_CHANGED")
 
-	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_ADDED")
-	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_UPDATE")
+	reg("LOSS_OF_CONTROL_ADDED")
+	reg("LOSS_OF_CONTROL_UPDATE")
 
 	if WoWRetail then
 		lib.eventFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
@@ -1361,7 +1370,7 @@ function OnEvent(frame, event, arg1, ...)
 		if UseCustomFlyout then
 			UpdateFlyoutSpells()
 		end
-	elseif (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "LEARNED_SPELL_IN_SKILL_LINE" then
+	elseif (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "LEARNED_SPELL_IN_SKILL_LINE" or event == "LEARNED_SPELL_IN_TAB" then
 		local tooltipOwner = GameTooltip_GetOwnerForbidden()
 		if tooltipOwner and ButtonRegistry[tooltipOwner] then
 			tooltipOwner:SetTooltip()
@@ -1832,10 +1841,14 @@ function Update(self)
 		self.icon:Show()
 		self.rangeTimer = - 1
 		if not self.MasqueSkinned then
-			self.SlotBackground:Hide()
+			if self.SlotBackground then
+				self.SlotBackground:Hide()
+			end
 			if self.config.hideElements.border then
 				self.NormalTexture:SetTexture()
-				self.icon:RemoveMaskTexture(self.IconMask)
+				if self.icon and self.IconMask and self.icon.RemoveMaskTexture then
+					self.icon:RemoveMaskTexture(self.IconMask)
+				end
 				self.HighlightTexture:SetSize(52, 51)
 				self.HighlightTexture:SetPoint("TOPLEFT", self, "TOPLEFT", -2.5, 2.5)
 				self.CheckedTexture:SetSize(52, 51)
@@ -1868,7 +1881,9 @@ function Update(self)
 			self.HotKey:SetVertexColor(unpack(self.config.text.hotkey.color))
 		end
 		if not self.MasqueSkinned then
-			self.SlotBackground:Show()
+			if self.SlotBackground then
+				self.SlotBackground:Show()
+			end
 			if self.config.hideElements.borderIfEmpty then
 				self.NormalTexture:SetTexture()
 			else
@@ -2133,7 +2148,10 @@ function UpdateTooltip(self)
 end
 
 function UpdateHotkeys(self)
-	local key = self:GetHotkey()
+	if not self.HotKey then
+		return
+	end
+	local key = self.shadowUIHotkey or self:GetHotkey()
 	if not key or key == "" or self.config.hideElements.hotkey then
 		self.HotKey:SetText(RANGE_INDICATOR)
 		self.HotKey:Hide()
@@ -2162,7 +2180,7 @@ end
 local IsSpellOverlayed = C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed or IsSpellOverlayed
 function UpdateOverlayGlow(self)
 	local spellId = self:GetSpellId()
-	if spellId and IsSpellOverlayed(spellId) then
+	if spellId and type(IsSpellOverlayed) == "function" and IsSpellOverlayed(spellId) then
 		ShowOverlayGlow(self)
 	else
 		HideOverlayGlow(self)
@@ -2398,7 +2416,9 @@ if ActionButton_UpdateFlyout then
 		if self.FlyoutBorder then
 			self.FlyoutBorder:Hide()
 		end
-		self.FlyoutBorderShadow:Hide()
+		if self.FlyoutBorderShadow then
+			self.FlyoutBorderShadow:Hide()
+		end
 		if self._state_type == "action" then
 			-- based on ActionButton_UpdateFlyout in ActionButton.lua
 			local actionType = GetActionInfo(self._state_action)
@@ -2459,7 +2479,9 @@ elseif FlyoutButtonMixin and UseCustomFlyout then
 	end
 else
 	function UpdateFlyout(self, isButtonDownOverride)
-		self.FlyoutBorderShadow:Hide()
+		if self.FlyoutBorderShadow then
+			self.FlyoutBorderShadow:Hide()
+		end
 		if self._state_type == "action" then
 			-- based on ActionButton_UpdateFlyout in ActionButton.lua
 			local actionType = GetActionInfo(self._state_action)

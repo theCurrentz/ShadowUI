@@ -10,7 +10,7 @@ Addon.Defaults.classes.WARRIOR = {
   layout = {
     stance = {
       point = "CENTER", relativeTo = "UIParent", relativePoint = "CENTER",
-      x = 0, y = -84, buttons = 4, columns = 4, scale = 1, enabled = true, buttonSize = 36,
+      x = 0, y = -84, buttons = 4, columns = 4, scale = 1, enabled = true, buttonSize = 36 * 0.9,
     },
   },
   keybinds = {},

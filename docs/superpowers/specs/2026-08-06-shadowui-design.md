@@ -11,14 +11,14 @@ ShadowUI is a Classic Era/SoD addon that replaces Bartender-style action bar man
 
 ## Non-goals (v1)
 
-- Unit frames, nameplates, tooltips, bag interiors, objective tracker, or general frame restyling beyond the listed chrome
+- Unit-frame replacement, nameplates, objective tracker, or restyle beyond Lorti vertex-color chrome
 - Configurable cast bar (position, size, colors are fixed by design)
 - Full Bartender feature parity (fades, complex state conditions beyond stance/aura/form/paging, per-button drag)
 - Multi-flavor support (Cata/MoP) in v1
 
 ## Approach
 
-**Custom bars bound to action slots** (Bartender-style), using LibActionButton for button behavior. Blizzard main-menu art and default bar frames are hidden/disabled where they conflict. Chrome skinning is limited to: our bars, minimap, chat, micro menu, bag bar, and a custom cast/GCD bar.
+**Custom bars bound to action slots** (Bartender-style), using LibActionButton for button behavior. Blizzard main-menu art and default bar frames are hidden/disabled where they conflict. Chrome skinning covers: our bars, minimap, chat, micro menu, bag bar, a custom cast/GCD bar, and Lorti vertex-color darkening of Blizzard unit-frame and window art.
 
 ## Architecture
 
@@ -32,19 +32,35 @@ ShadowUI/
     resolve.lua                 -- merge Base → Class → Variant into effective config
   bars/
     bar.lua                     -- bar frame: grid, drag, scale, columns
-    button.lua                  -- flush square LAB buttons (no border/padding/margin)
+    button.lua                  -- LAB buttons with 2px Lorti-dark icon chrome
+    cooldown.lua                -- remaining cooldown seconds on ShadowUI action buttons
     manager.lua                 -- create/enable all bars; apply resolved layout
     special.lua                 -- stance / aura / form / possess / pet bars
   cast/
     castbar.lua                 -- Quartz-like cast/channel bar (fixed layout)
     gcd.lua                     -- GCD underlay bar
+    manaregen.lua               -- regen tick vs FSR spend
+    manaticker.lua              -- 5SR + mana ticks with remaining seconds under PlayerFrameManaBar
+    swing.lua                   -- player melee and ranged swing timers under the GCD Sweep
+    range.lua                   -- target Range Display from Whitemane Currentz
+    shields.lua                 -- Classic Era absorb catalogue and remaining absorb
+    shieldrow.lua               -- colour-coded Shield Row locked to the Player Frame
   skin/
-    chrome.lua                  -- black + soft shadow on ShadowUI bar backdrops
+    chrome.lua                  -- matte fill on ShadowUI bar backdrops
+    darken.lua                  -- Lorti SetVertexColor lock helper
+    frames.lua                  -- unit, raid, party, pet, tooltip chrome; Rare-Elite dragon
+    statustext.lua              -- Target Frame health and mana Status Text
+    threat.lua                  -- Target Frame Threat Number above the nameplate
+    windows.lua                 -- bags, character, vendor, XP art
+    auras.lua                   -- buff and debuff icon chrome
+    auratime.lua                -- Target Frame Aura Duration swipe and seconds
     chat.lua                    -- semi-transparent black chat
-    micro.lua                   -- darken micro + bag bar; dock bottom-right
+    micro.lua                   -- micro + backpack on ShadowUIMicroCluster, native art, flush bottom-right
     minimap.lua                 -- large square blackened minimap
   edit/
-    mode.lua                    -- edit mode, grid snap, bar drag
+    mode.lua                    -- Layout Edit Mode, grid snap, bar and unit-frame drag
+    frames.lua                  -- Player Frame and Target Frame HUD hosts
+    keybinds.lua                -- Keybind Edit Mode (hover and press)
     layer.lua                   -- Base | Class | Variant save-target picker
   profile/
     variants.lua                -- named variants, talent-tree bind, manual override
@@ -102,6 +118,8 @@ Minimal per-character state only:
   activeVariant = "Arms",   -- nil → talent auto-bind or shipped "Default"
   editLayer = "variant",    -- "base" | "class" | "variant"
   variantManual = true,     -- true after manual `/shadowui variant`; cleared by `variant clear`
+  hardLockActionSlots = false, -- true blocks Shift-drag between Action Slots
+  useShadowUIMenu = true,      -- false restores the default Blizzard micro menu and bags
 }
 ```
 
@@ -125,42 +143,74 @@ Minimal per-character state only:
 
 ### Visual button rules
 
-- Full-size square ability icons
-- No borders, padding, or margin between buttons (icons abut)
-- Bar backdrop: matte black with soft drop shadow for depth (shadow on bar chrome, not per-icon)
+- Action Slot Lock: click uses the action. Shift-drag moves a spell or item and does not use the action. `/shadowui` hard lock blocks that move.
+- Square ability icons with a 2px Lorti-dark inset (chrome 0.05, 0.05, 0.05) and a 4px black outer edge
+- No margin between buttons (button frames abut; icons do not)
+- Bar backdrop: matte black fill
 
 ### Defaults
 
-- **Base:** all standard bars enabled; evenly centered in the lower middle of the screen on a grid
+- **Base:** six reversed rows on the bottom edge; bar7 left and bar8 right as 3×4 grids
 - **Class defaults:** only account for special bars (warrior stances, paladin auras, druid forms, pet, etc.) as sparse position/paging deltas — not a second full layout
-- Auto-enable all UI bars on apply; hide conflicting Blizzard bar art
+- Auto-enable the centered rows on apply; hide conflicting Blizzard and Bartender bar art
 
 ### Edit mode
 
-- Toggle via `/shadowui edit` and a bindable key
-- Show snap grid; drag whole bars (v1: no per-button repositioning)
-- Layer picker always visible: Base / Class / Variant
-- On exit: persist active layer deltas and re-apply resolved layout
+- Two sessions; they cannot run together
+- Layout Edit Mode: `/shadowui edit` — snap grid (hold Shift to skip); HUD overlay on whole bars, the Player Frame, and the Target Frame (v1: no per-button repositioning). Blizzard Edit Mode cannot keep a different Player Frame or Target Frame place.
+- Keybind Edit Mode: `/shadowui binds` — hover a button, press a key; Escape clears; no SavedBindings write
+- Layer picker always visible in either session: Base / Class / Variant
+- On exit: persist active layer deltas and re-apply resolved layout / keybinds
 
 ## Chrome (in scope)
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | Black backdrop + soft shadow |
-| Minimap | Large, square, blackened |
+| Action bars (ours) | Matte black bar fill; 0.05 chrome around each icon; 4px black outer edge; Cooldown Count for cooldowns of 2s or more |
+| Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame Status Text follows Blizzard Status Text; rare-elite uses the Rare-Elite dragon; Threat Number above the nameplate |
+| Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
+| XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
+| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
+| Tooltips | Dark backdrop border |
+| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Blizzard Time on the map, Outer Edge; cluster icons on the square path and draggable |
 | Chat | Black, semi-transparent |
-| Micro menu + bag bar | Darkened; moved snug to bottom-right |
-| Cast bar | Custom (see below); Blizzard cast bar hidden |
+| Micro menu + bag bar | Native Blizzard size and art (no Shop); one row, flush bottom-right, 0px gap between items, 0px gap from screen bottom |
+| Cast bar | Custom player Cast Bar (see below); Blizzard player cast bar hidden; target/focus spell bars stay Blizzard |
 
 Everything else is left alone.
 
 ## Cast bar
 
-- Custom Quartz-like cast/channel bar — **not configurable**
-- Centered horizontally, positioned above the action-bar cluster, sized proportionally to bar width
-- Thicker main cast/channel fill with gradient coloring and depth
-- GCD loop/sweep bar directly underneath
-- No AceConfig options for cast/GCD appearance or position
+- Custom Quartz-like cast/channel bar
+- Centered at Currentz Quartz (`CENTER` `-6`, `-132`), 288 wide (narrower than a 12-slot Action Bar). A spell icon overlays the left at the same height so the fill shows through. Channel spells show interior ticks. GCD Sweep and Swing Timer lock under the Cast Bar as one group with no gap and share that width. The GCD Sweep starts on any player cast or channel. Layout Edit Mode can drag and resize the Cast Bar; the stack shares width. Layout Edit Mode previews the Cast Bar, GCD Sweep, and all Swing Timer lanes.
+- Lorti-dark chrome, Outer Edge on the meter, gold cast fill, green channel fill, spark, and a latency window
+- Interrupt and failed casts flash red, then hide
+- Skinny glossy GCD Sweep directly underneath, only while a GCD is active; more transparent than the Cast Bar
+
+## Swing timer
+
+- Player main-hand, off-hand, and ranged swing bars under the GCD Sweep — **not configurable**
+- Main-hand for melee classes; off-hand for dual-wield classes; ranged for Hunter and wand classes
+- Hidden until that swing is active; Layout Edit Mode previews all three lanes; Outer Edge on each lane; more transparent than the Cast Bar
+- Combat-log swings, Slam reset, extra-attack skip, and incoming parry haste
+- Ranged bar tracks Auto Shot, wand Shoot, Shoot Bow/Gun/Crossbow, and Throw
+- No target timer
+
+## Range Display
+
+- Target min–max yards
+- Ships `CENTER` offset `(-6, -170)` from Whitemane Currentz RangeDisplay; Layout Edit Mode can drag it
+- Colour bands: close 5, short 20, medium 30, default, out of range 40
+- No mouseover, pet, focus, arena, or warning sounds
+
+## Shield Row
+
+- Colour-coded circular absorb icons, left-aligned 4px above the player name — **not configurable**
+- Oval portrait crop via `SetPortraitToTexture` so Classic does not stripe the spell art
+- Fire Ward, Frost Ward, Shadow Ward, Ice Barrier, Power Word: Shield, Mana Shield
+- Fill is remaining absorb; percent text sits under the icon
+- Classic Era coefficients: 10% school bonus (5% Mana Shield), then listed talents
+- Not a Bar and not in Layout
 
 ## First-run / new character
 
@@ -168,15 +218,16 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 
 1. Detect class
 2. Resolve effective config
-3. Apply bars, keybinds (deferred if combat), skin, micro/bags, minimap, cast bar
+3. Apply bars, keybinds (deferred if combat), skin, micro/bags, minimap, cast bar, Shield Row
 4. No wizard, dialogs, or required user input
 
 ## Player-facing interface
 
 ### Slash commands
 
-- `/shadowui` — open options
-- `/shadowui edit` — toggle edit mode
+- `/shadowui` or `/sui` — open options
+- `/shadowui edit` — toggle Layout Edit Mode
+- `/shadowui binds` — toggle Keybind Edit Mode
 - `/shadowui layer base|class|variant` — set edit save target
 - `/shadowui variant <name>` — manual variant switch
 - `/shadowui variant clear` — clear manual override
@@ -186,6 +237,7 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 - Active variant list/create/rename/delete
 - Talent-tree binding per variant
 - Current edit layer indicator
+- Edit layout / Edit keybinds
 - Reset selected layer / reset to shipped defaults
 - No cast-bar settings
 - Prefer “all bars on”; avoid exposing a large toggle matrix unless needed for support
@@ -219,9 +271,9 @@ Vendored (or packager-managed) under `libs/`:
 2. Dragging a bar while edit layer = Variant updates only that variant; other classes unchanged; same-class alts see it
 3. Editing Base updates all classes/characters that inherit it
 4. Talent-tree change auto-selects bound variant when not manually overridden
-5. Buttons are flush full-size squares; minimap is large/square/black; chat is semi-transparent black; micro+bags sit bottom-right
+5. Buttons use 0.05 icon chrome; minimap is square in a 0.05 frame; chat is semi-transparent black; micro+bags sit bottom-right
 6. Cast bar shows thick gradient cast + GCD underlay above bars; Blizzard cast bar does not appear
-7. Unrelated Blizzard UI (unit frames, etc.) is unmodified
+7. Blizzard unit frames, window chrome, buffs, and debuffs use Lorti dark chrome; nameplates stay default
 
 ## Open implementation notes (non-blocking)
 

@@ -101,28 +101,33 @@ function Addon:WriteLayerDelta(layer, section, key, patch)
   local db = self:GetDB()
   layer = layer or self:GetCharDB().editLayer or "variant"
 
+  local store
   if layer == "base" then
     db.base[section] = db.base[section] or {}
-    db.base[section][key] = db.base[section][key] or {}
-    self:SparseMerge(db.base[section][key], patch)
-    return
+    store = db.base[section]
+  else
+    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
+    local classAcc = db.classes[classFile]
+    if layer == "class" then
+      classAcc[section] = classAcc[section] or {}
+      store = classAcc[section]
+    else
+      local name = self:GetActiveVariantName(classFile) or "Default"
+      classAcc.variants = classAcc.variants or {}
+      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
+      local variant = classAcc.variants[name]
+      variant[section] = variant[section] or {}
+      store = variant[section]
+    end
   end
 
-  db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
-  local classAcc = db.classes[classFile]
-
-  if layer == "class" then
-    classAcc[section] = classAcc[section] or {}
-    classAcc[section][key] = classAcc[section][key] or {}
-    self:SparseMerge(classAcc[section][key], patch)
+  -- Layout patches are tables. Keybinds are strings, or false to unbind.
+  if type(patch) ~= "table" then
+    store[key] = patch
     return
   end
-
-  local name = self:GetActiveVariantName(classFile) or "Default"
-  classAcc.variants = classAcc.variants or {}
-  classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
-  local variant = classAcc.variants[name]
-  variant[section] = variant[section] or {}
-  variant[section][key] = variant[section][key] or {}
-  self:SparseMerge(variant[section][key], patch)
+  if type(store[key]) ~= "table" then
+    store[key] = {}
+  end
+  self:SparseMerge(store[key], patch)
 end

@@ -25,6 +25,7 @@ defaults\classes\WARLOCK.lua
 defaults\classes\DRUID.lua
 
 bars\button.lua
+bars\cooldown.lua
 bars\bar.lua
 bars\pet.lua
 bars\special.lua
@@ -32,13 +33,31 @@ bars\manager.lua
 
 cast\castbar.lua
 cast\gcd.lua
+cast\manaregen.lua
+cast\manaticker.lua
+cast\swing.lua
+cast\range.lua
+cast\shields.lua
+cast\shieldrow.lua
 
 skin\chrome.lua
+skin\darken.lua
+skin\frames.lua
+skin\statustext.lua
+skin\threat.lua
+skin\windows.lua
+skin\auras.lua
+skin\auratime.lua
 skin\chat.lua
 skin\micro.lua
+skin\tracking.lua
 skin\minimap.lua
+skin\details.lua
+skin\itemrack.lua
 
 edit\mode.lua
+edit\frames.lua
+edit\keybinds.lua
 edit\layer.lua
 
 profile\variants.lua

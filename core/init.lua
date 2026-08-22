@@ -2,7 +2,7 @@
   Purpose: AceAddon bootstrap, combat-safe apply lifecycle, and regen flush.
   Deps: AceAddon-3.0, AceEvent-3.0, AceConsole-3.0; modules loaded later by TOC
   Public: ShadowUI addon table, ShadowUI:GetPlayerClass(), ShadowUI:ApplyAll(),
-          ShadowUI:OnRegenEnabled()
+          ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
@@ -12,6 +12,7 @@ local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceC
 local EVENTS = {
   { "PLAYER_ENTERING_WORLD", "OnPlayerReady" },
   { "PLAYER_REGEN_ENABLED", "OnRegenEnabled" },
+  { "PLAYER_REGEN_DISABLED", "OnRegenDisabled" },
   { "PLAYER_TALENT_UPDATE", "OnTalentUpdate" },
   { "CHARACTER_POINTS_CHANGED", "OnTalentUpdate" },
 }
@@ -19,6 +20,7 @@ local EVENTS = {
 function Addon:OnInitialize()
   self:SetupDB()
   self:RegisterChatCommand("shadowui", "SlashCommand")
+  self:RegisterChatCommand("sui", "SlashCommand")
 end
 
 function Addon:OnEnable()
@@ -47,10 +49,21 @@ function Addon:ApplyAll()
   end
   self.pendingApplyAll = nil
   local cfg = self:ResolveEffective()
-  self:ApplyBars(cfg)
-  self:ApplyKeybinds(cfg)
-  self:ApplySkins()
-  self:ApplyCastBar()
+  local function step(label, method)
+    local ok, err = pcall(method, self, cfg)
+    if not ok then
+      self:Print(label .. " failed: " .. tostring(err))
+    end
+  end
+  step("bars", self.ApplyBars)
+  step("keybinds", self.ApplyKeybinds)
+  step("auto loot", self.ApplyAutoLoot)
+  step("skins", self.ApplySkins)
+  step("cast bar", self.ApplyCastBar)
+  step("mana ticker", self.ApplyManaTicker)
+  step("swing timer", self.ApplySwingTimer)
+  step("range display", self.ApplyRangeDisplay)
+  step("shields", self.ApplyShields)
 end
 
 function Addon:OnRegenEnabled()
@@ -72,24 +85,45 @@ function Addon:SlashCommand(input)
   cmd = cmd and cmd:lower() or ""
   if cmd == "edit" then
     self:ToggleEditMode()
+  elseif cmd == "binds" or cmd == "bind" or cmd == "keybind" then
+    self:ToggleKeybindMode()
   elseif cmd == "layer" then
     self:SetEditLayer(rest)
   elseif cmd == "variant" then
     self:HandleVariantCommand(rest)
   else
-    self:Print("Usage: /shadowui [edit|layer|variant]")
+    self:Print("Usage: /shadowui [edit|binds|layer|variant]")
   end
 end
 
 function Addon:ResolveEffective() end
 function Addon:ApplyBars(cfg) end
+function Addon:ApplyAutoLoot()
+  if SetCVar then
+    pcall(SetCVar, "autoLootDefault", "1")
+  end
+end
+function Addon:ApplyActionSlotLock() end
+function Addon:LockBarButton(button) end
+function Addon:SetActionSlotHardLock(locked) end
 function Addon:ApplyKeybinds(cfg) end
+function Addon:ApplyBarChrome(bar) end
+function Addon:ApplyOuterChrome(host) end
 function Addon:ApplySkins() end
 function Addon:ApplyCastBar() end
+function Addon:ApplyManaTicker() end
+function Addon:ApplySwingTimer() end
+function Addon:ApplyRangeDisplay() end
+function Addon:ApplyShields() end
+function Addon:SkinTrackingBars() end
 function Addon:FlushPendingKeybinds() end
 function Addon:FlushPendingSpecialBars() end
 function Addon:OnTalentUpdate() end
 function Addon:OpenOptions() end
 function Addon:ToggleEditMode() end
+function Addon:ToggleKeybindMode() end
+function Addon:SetEditSession(session) end
+function Addon:HookButtonForKeybinds(button) end
+function Addon:OnRegenDisabled() end
 function Addon:SetEditLayer(layer) end
 function Addon:HandleVariantCommand(rest) end

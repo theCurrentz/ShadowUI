@@ -1,5 +1,6 @@
 --[[
-  Purpose: AceConfig panel for variants, talent binding, edit layers, and resets.
+  Purpose: AceConfig panel for variants, talent binding, Action Slot hard lock,
+  ShadowUI vs Blizzard menu, edit layers, and resets.
   Deps: AceConfig-3.0, AceConfigDialog-3.0, profile and edit-layer helpers
   Public: ShadowUI:OpenOptions()
 ]]
@@ -93,11 +94,42 @@ local options = {
         },
       },
     },
+    hardLockActionSlots = {
+      type = "toggle", name = "Hard lock action slots", order = 15,
+      desc = "Block Shift-drag between Action Slots. A click still uses the action. Without this, bars stay locked: a click uses the action, and Shift-drag moves a spell or item.",
+      get = function() return Addon:GetCharDB().hardLockActionSlots == true end,
+      set = function(_, value) Addon:SetActionSlotHardLock(value) end,
+    },
+    useShadowUIMenu = {
+      type = "toggle", name = "Use ShadowUI menu", order = 16,
+      desc = "On: dock the micro menu and backpack in the ShadowUI Micro Cluster. Off: use the default Blizzard menu and bags.",
+      get = function() return Addon:GetCharDB().useShadowUIMenu ~= false end,
+      set = function(_, value)
+        Addon:GetCharDB().useShadowUIMenu = value and true or false
+        Addon:ApplyAll()
+      end,
+    },
     layer = {
       type = "select", name = "Current edit layer", order = 20,
       values = { base = "Base", class = "Class", variant = "Variant" },
       get = function() return Addon:GetCharDB().editLayer or "variant" end,
       set = function(_, value) Addon:SetEditLayer(value) end,
+    },
+    editLayout = {
+      type = "execute", name = "Edit layout", order = 21,
+      desc = "Move Bars on the snap grid. Hold Shift to skip snap. Writes go to the selected Layer.",
+      func = function()
+        AceConfigDialog:Close("ShadowUI")
+        Addon:ToggleEditMode()
+      end,
+    },
+    editKeybinds = {
+      type = "execute", name = "Edit keybinds", order = 22,
+      desc = "Hover a button and press a key. Writes go to the selected Layer. Does not write SavedBindings.",
+      func = function()
+        AceConfigDialog:Close("ShadowUI")
+        Addon:ToggleKeybindMode()
+      end,
     },
     resetLayer = {
       type = "execute", name = "Reset selected layer deltas", order = 30,

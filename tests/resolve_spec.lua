@@ -91,4 +91,10 @@ Addon:WriteLayerDelta("variant", "layout", "bar1", { y = 9 })
 assert(account.classes.DRUID.variants.Feral.layout.bar1.y == 9, "variant patch merges")
 assert(account.classes.DRUID.variants.Feral.layout.bar1.scale == 1.2, "variant keeps siblings")
 
+-- Scalar Keybind writes replace the binding name; false is a tombstone.
+Addon:WriteLayerDelta("base", "keybinds", "CLICK ShadowUIActionButton1:Keybind", "Q")
+assert(account.base.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q", "base keybind is a string")
+Addon:WriteLayerDelta("base", "keybinds", "CLICK ShadowUIActionButton1:Keybind", false)
+assert(account.base.keybinds["CLICK ShadowUIActionButton1:Keybind"] == false, "false unbinds on the layer")
+
 print("resolve_spec OK")

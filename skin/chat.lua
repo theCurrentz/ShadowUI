@@ -1,19 +1,21 @@
 --[[
-  Purpose: Add restrained black backdrops to chat windows.
-  Deps: Blizzard chat frames
+  Purpose: Park and fill the General chat window.
+  Deps: Blizzard chat frames; ShadowUI:ParkFrame()
   Public: ShadowUI:SkinChat()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
+local FILL = 202 / 255
+local FONT_SIZE = 16
 
 local function darkenBackground(background)
   if background.SetColorTexture then
-    background:SetColorTexture(0, 0, 0, 0.6)
+    background:SetColorTexture(0, 0, 0, FILL)
   elseif background.SetBackdrop then
     background:SetBackdrop({
       bgFile = "Interface\\Buttons\\WHITE8X8",
     })
-    background:SetBackdropColor(0, 0, 0, 0.6)
+    background:SetBackdropColor(0, 0, 0, FILL)
   end
   background:Show()
 end
@@ -32,5 +34,26 @@ function Addon:SkinChat()
         darkenBackground(background)
       end
     end
+  end
+
+  local chat = _G.ChatFrame1
+  if not chat then
+    return
+  end
+  self:ParkFrame(chat, "BOTTOMLEFT", 36, 32, 608, 294)
+  if chat.GetFont and chat.SetFont then
+    local file, _, flags = chat:GetFont()
+    if file then
+      chat:SetFont(file, FONT_SIZE, flags)
+    end
+  end
+  if FCF_SetWindowColor then
+    FCF_SetWindowColor(chat, 0, 0, 0)
+  end
+  if FCF_SetWindowAlpha then
+    FCF_SetWindowAlpha(chat, FILL)
+  end
+  if FCF_SetLocked then
+    FCF_SetLocked(chat, true)
   end
 end

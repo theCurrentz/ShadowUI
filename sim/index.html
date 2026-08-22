@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ShadowUI Mage layout</title>
+</head>
+<body>
+  <header id="toolbar">
+    <label>Class
+      <select id="classSelect"></select>
+    </label>
+    <label>Layout
+      <select id="layoutSelect"></select>
+    </label>
+    <button type="button" id="resetBtn">Reset</button>
+    <button type="button" id="saveBtn">Save</button>
+    <span id="status"></span>
+  </header>
+  <pre id="luaOut" hidden></pre>
+  <dialog id="saveDialog">
+    <h2>Save</h2>
+    <p id="saveHint"></p>
+    <div class="save-actions">
+      <button type="button" id="replaceDefaultBtn">Replace default</button>
+      <button type="button" id="saveAsToggleBtn">Save as...</button>
+      <button type="button" id="exportJsonBtn">Download patch.json</button>
+      <button type="button" id="copyLuaBtn">Copy Lua</button>
+      <button type="button" id="deleteSaveBtn" hidden>Delete this save</button>
+    </div>
+    <div id="saveAsRow" hidden>
+      <label>Name
+        <input id="saveAsName" type="text" maxlength="40" autocomplete="off">
+      </label>
+      <button type="button" id="saveAsConfirmBtn">Save</button>
+    </div>
+    <button type="button" id="saveCancelBtn">Cancel</button>
+  </dialog>
+  <div id="viewport">
+    <div id="stageWrap">
+      <div id="stage"></div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

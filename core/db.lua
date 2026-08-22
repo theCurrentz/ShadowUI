@@ -21,6 +21,9 @@ local CHAR_DEFAULTS = {
     activeVariant = nil,
     editLayer = "variant",
     variantManual = false,
+    hardLockActionSlots = false,
+    useShadowUIMenu = true,
+    minimapIcons = {},
   },
 }
 
