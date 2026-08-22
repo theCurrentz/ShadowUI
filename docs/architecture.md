@@ -19,6 +19,7 @@ ShadowUI/
   bars/
     button.lua                  LAB buttons, Action Slot Lock, 2px Lorti-dark icon chrome and a 4px outer edge
     bar.lua                     standard bar frames, HUD overlay drag in Layout Edit Mode
+    learn.lua                   LEARNED_SPELL_IN_TAB writes a shipped Learn Slot
     cooldown.lua                remaining cooldown seconds on ShadowUI action buttons
     pet.lua                     pet action binding and token texture resolve
     special.lua                 stance, aura, form, possess, pet bars
@@ -75,7 +76,7 @@ Defined in `ShadowUI.toc`:
 1. `libs/embeds.xml` — vendored libraries
 2. `core/` — init, db, resolve, keybinds
 3. `defaults/` — base, then class files (WARRIOR … DRUID)
-4. `bars/` — button, cooldown, bar, pet, special, manager
+4. `bars/` — button, cooldown, bar, pet, special, manager, learn
 5. `cast/` — castbar, gcd, manaticker, swing, range, shields, shieldrow
 6. `skin/` — chrome, darken, frames, statustext, threat, windows, auras, auratime, chat, micro, tracking, minimap, details, itemrack
 7. `edit/` — mode, frames, keybinds, layer
@@ -166,7 +167,8 @@ Merge order (each step sparse-merges into the result; later wins per field):
 | `OnEnable` | register `PLAYER_ENTERING_WORLD`, `PLAYER_REGEN_ENABLED`, `PLAYER_REGEN_DISABLED`, `PLAYER_TALENT_UPDATE`, `CHARACTER_POINTS_CHANGED` |
 | First `PLAYER_ENTERING_WORLD` | `ApplyAll` once per session |
 | `PLAYER_TALENT_UPDATE` / `CHARACTER_POINTS_CHANGED` | re-apply unless `variantManual` |
-| `PLAYER_REGEN_ENABLED` | flush deferred `ApplyAll`, keybinds, special-bar refresh |
+| `LEARNED_SPELL_IN_TAB` / `LEARNED_SPELL_IN_SKILL_LINE` | if the spell has a Learn Slot, `PlaceAction` that Action Slot (new rank replaces the old rank) |
+| `PLAYER_REGEN_ENABLED` | flush deferred `ApplyAll`, keybinds, special-bar refresh, pending Learn Slot writes |
 | `PLAYER_REGEN_DISABLED` | close Layout Edit Mode or Keybind Edit Mode |
 
 Event names vary by client flavour, so each registration is wrapped in `pcall`; an
@@ -179,7 +181,7 @@ frames, so it is deferred wholesale when `InCombatLockdown()` returns true. It s
 `pendingApplyAll` and `OnRegenEnabled` replays it. `ApplyBars`, `ApplySkins`, and
 `ApplyCastBar` repeat the same guard so a direct call cannot mutate protected state
 mid-combat. `ApplyManaTicker`, `ApplySwingTimer`, `ApplyRangeDisplay`, and `ApplyShields` only create unprotected frames and may run in combat. Keybinds queue in `_pendingKeybinds`; special-bar refreshes queue in
-`pendingSpecialBarRefresh`. Both flush from `OnRegenEnabled`.
+`pendingSpecialBarRefresh`. Learn Slot writes queue in `_pendingLearn` (last spell per slot). All three flush from `OnRegenEnabled`. A Learn Slot flush still runs after a deferred `ApplyAll`.
 
 ## Bar IDs
 

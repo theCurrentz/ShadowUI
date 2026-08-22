@@ -2,7 +2,7 @@
   Purpose: AceAddon bootstrap, combat-safe apply lifecycle, and regen flush.
   Deps: AceAddon-3.0, AceEvent-3.0, AceConsole-3.0; modules loaded later by TOC
   Public: ShadowUI addon table, ShadowUI:GetPlayerClass(), ShadowUI:ApplyAll(),
-          ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled()
+          ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled(), ShadowUI:OnLearnedSpell()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
@@ -15,6 +15,8 @@ local EVENTS = {
   { "PLAYER_REGEN_DISABLED", "OnRegenDisabled" },
   { "PLAYER_TALENT_UPDATE", "OnTalentUpdate" },
   { "CHARACTER_POINTS_CHANGED", "OnTalentUpdate" },
+  { "LEARNED_SPELL_IN_TAB", "OnLearnedSpell" },
+  { "LEARNED_SPELL_IN_SKILL_LINE", "OnLearnedSpell" },
 }
 
 function Addon:OnInitialize()
@@ -69,10 +71,11 @@ end
 function Addon:OnRegenEnabled()
   if self.pendingApplyAll then
     self:ApplyAll()
-    return
+  else
+    self:FlushPendingKeybinds()
+    self:FlushPendingSpecialBars()
   end
-  self:FlushPendingKeybinds()
-  self:FlushPendingSpecialBars()
+  self:FlushPendingLearn()
 end
 
 function Addon:SlashCommand(input)
@@ -118,6 +121,8 @@ function Addon:ApplyShields() end
 function Addon:SkinTrackingBars() end
 function Addon:FlushPendingKeybinds() end
 function Addon:FlushPendingSpecialBars() end
+function Addon:OnLearnedSpell() end
+function Addon:FlushPendingLearn() end
 function Addon:OnTalentUpdate() end
 function Addon:OpenOptions() end
 function Addon:ToggleEditMode() end
