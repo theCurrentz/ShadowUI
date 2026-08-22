@@ -67,6 +67,7 @@ lua tests/swing_spec.lua
 lua tests/range_spec.lua
 lua tests/shields_spec.lua
 lua tests/cast_spec.lua
+lua tests/learn_slot_spec.lua
 lua tests/sim_layout_spec.lua
 ```
 
@@ -101,6 +102,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `range_spec` covers the target Range Display lock and colour bands.
 `shields_spec` covers Shield Row absorb math, fill percent, Player Frame lock, oval portrait crop, and icon spring.
 `cast_spec` covers Cast Bar fill, latency window, and GCD Sweep timing.
+`learn_slot_spec` covers Druid Wrath and Healing Touch Learn Slots and rank replace.
 `sim_layout_spec` asserts the HTML harness dump uses the same bar and cast rects as `layout_spec`.
 
 Layout preview (no client):
@@ -136,6 +138,7 @@ Manual in-game verification (Classic Era or SoD):
 - [ ] **Shield Row** — Fire Ward, Ice Barrier, Power Word: Shield, or Mana Shield show a colour-coded icon above the player frame; fill and percent match remaining absorb
 - [ ] **Possess** — mind-control a target and confirm the possess bar drives the vehicle actions
 - [ ] **Mage Currentz hotkeys** — with Bartender off, Q/E/R/F/G/C/V/T fire slots 61–72 on bar2; mouse4/5 fire the same slots as before
+- [ ] **Druid Learn Slot** — learn Wrath or Healing Touch (or a new rank); it writes Action Slot 1 or 2
 - [ ] **Unchanged UI** — nameplates and the objective tracker stay default
 
 ## Known limitations

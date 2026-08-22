@@ -55,6 +55,9 @@ _Avoid_: calling the Cast Bar, GCD Sweep, Mana Ticker, Swing Timer, Range Displa
 **Action Slot**:
 A numbered slot on the default 1–120 action grid. A standard Bar maps each button to a fixed slot. Stance paging does not swap those slots.
 
+**Learn Slot**:
+A shipped class map from a spell family to one Action Slot. Learning that spell, or a later rank, writes the slot. It is not Layout. Downranks and macros are out of scope.
+
 **Action Slot Lock**:
 Buttons stay locked. A click uses the action. Shift-drag (the default pickup modifier) moves a spell or item to another Action Slot and does not use the action. Hard lock in `/shadowui` blocks that move too.
 

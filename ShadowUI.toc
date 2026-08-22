@@ -30,6 +30,7 @@ bars\bar.lua
 bars\pet.lua
 bars\special.lua
 bars\manager.lua
+bars\learn.lua
 
 cast\castbar.lua
 cast\gcd.lua

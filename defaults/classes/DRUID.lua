@@ -14,4 +14,9 @@ Addon.Defaults.classes.DRUID = {
     },
   },
   keybinds = {},
+  -- Rank 1 ids. Later ranks match by spell name and replace the same Action Slot.
+  learnSlots = {
+    [5176] = 1, -- Wrath
+    [5185] = 2, -- Healing Touch
+  },
 }
