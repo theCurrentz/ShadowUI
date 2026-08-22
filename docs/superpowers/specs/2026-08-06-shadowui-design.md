@@ -50,7 +50,7 @@ ShadowUI/
     darken.lua                  -- Lorti SetVertexColor lock helper
     frames.lua                  -- unit, raid, party, pet, tooltip chrome; Rare-Elite dragon
     statustext.lua              -- Target Frame health and mana Status Text
-    threat.lua                  -- Target Frame Threat Number above the nameplate
+    threat.lua                  -- Target Frame Threat Bar flush on the nameplate
     windows.lua                 -- bags, character, vendor, XP art
     auras.lua                   -- buff and debuff icon chrome
     auratime.lua                -- Target Frame Aura Duration swipe and seconds
@@ -167,7 +167,7 @@ Minimal per-character state only:
 | Element | Treatment |
 |---------|-----------|
 | Action bars (ours) | Matte black bar fill; 0.05 chrome around each icon; 4px black outer edge; Cooldown Count for cooldowns of 2s or more |
-| Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame Status Text follows Blizzard Status Text; rare-elite uses the Rare-Elite dragon; Threat Number above the nameplate |
+| Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame Status Text follows Blizzard Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar flush on the nameplate |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
 | XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
 | Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |

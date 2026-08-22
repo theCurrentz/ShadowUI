@@ -37,7 +37,7 @@ ShadowUI/
     darken.lua                  Lorti SetVertexColor lock helper
     frames.lua                  unit, raid, party, pet, tooltip chrome; parked player/target; Rare-Elite dragon
     statustext.lua              Target Frame health and mana Status Text
-    threat.lua                  Target Frame Threat Number above the nameplate
+    threat.lua                  Target Frame Threat Bar flush on the nameplate
     windows.lua                 bags, character, vendor, XP art
     auras.lua                   buff and debuff icon chrome and Outer Edge (BuffButton and BuffFrame.auraFrames)
     auratime.lua                Target Frame and Focus Frame Aura Duration swipe and seconds
@@ -156,7 +156,7 @@ Merge order (each step sparse-merges into the result; later wins per field):
 
 `/shadowui edit` toggles Layout Edit Mode (grid + HUD overlay drag on Bars, the Player Frame, the Target Frame, the Cast Bar, and the Range Display). Hold Shift while dragging to skip snap. `/shadowui binds` toggles Keybind Edit Mode (hover a button, press a key). The two sessions cannot run together. Keybind Edit Mode does not call `SaveBindings`. Combat closes either edit session.
 
-`ApplyAll()` resolves config then calls `ApplyBars`, `ApplyKeybinds`, `ApplyAutoLoot`, `ApplySkins`, `ApplyCastBar`, `ApplyManaTicker`, `ApplySwingTimer`, `ApplyRangeDisplay`, and `ApplyShields`. `ApplyAutoLoot` sets the client CVar `autoLootDefault` on. `ApplySkins` also paints Target Frame Status Text and Threat Number.
+`ApplyAll()` resolves config then calls `ApplyBars`, `ApplyKeybinds`, `ApplyAutoLoot`, `ApplySkins`, `ApplyCastBar`, `ApplyManaTicker`, `ApplySwingTimer`, `ApplyRangeDisplay`, and `ApplyShields`. `ApplyAutoLoot` sets the client CVar `autoLootDefault` on. `ApplySkins` also paints Target Frame Status Text and the Threat Bar.
 
 ## Lifecycle
 
@@ -309,7 +309,7 @@ shield fills the lower half of the icon and reads `50%`.
   `SetVertexColor` so Blizzard cannot reset the player or target chrome. Portraits
   stay native. Elite and rare target borders darken in place; ShadowUI does not
   ship Lorti's replacement elite textures. A rare-elite target uses the Blizzard
-  Rare-Elite dragon, then Darken. The Target Frame paints Threat Number above the nameplate.
+  Rare-Elite dragon, then Darken. The Target Frame paints a full-width Threat Bar flush on the nameplate.
   Action buttons, buffs, and debuffs use
   a 0.05 fill with a 2px icon inset and a 4px black outer edge (`media/outer_shadow.tga`).
   ItemRack worn-item buttons (`ItemRackButton0`–`20`) and menu buttons (`ItemRackMenuN`)
@@ -320,7 +320,7 @@ shield fills the lower half of the icon and reads `50%`.
   has no number. Unused buff and debuff slots stay empty. Player buffs sit 2px left of the square minimap.
   Target Frame and Focus Frame auras show Aura Duration from UnitAura. Player BuffFrame keeps Blizzard duration text.
   The Target Frame paints one centre Status Text caption on health and mana using the Blizzard Status Text option. Native LeftText, RightText, and TextString stay hidden.
-  Threat Number stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host.
+  The Threat Bar stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host. Fill follows UnitDetailedThreatSituation. Colour goes from desaturated grey, to orange, to blood red.
   The minimap parks flush at `TOPRIGHT` (0, 0). It uses SexyMap's square mask (`WHITE8X8`) and square icon path, inside a 16px 0.05 Darken buffer at 0.6 alpha. Zone Text sits 4px below the top of the screen and 3px above the map. Blizzard Time (`TimeManagerClockButton`) sits on the bottom-right of the map. A click opens the Stopwatch. Darken does not paint Time. Nova World Buffs `MinimapLayerFrame` (World Layer) sits on the bottom of the holder so the map mask does not clip it. An Outer Edge wraps the holder. The circular `MinimapCluster` does not stay behind it. Cluster icons, including late `LFGMinimapFrame`, ItemRack, and LibDBIcon buttons, sit on the square path. The player can drag those icons. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park on the square map.
 - **Classic LAB create is patched in-tree.** Vendored LibActionButton-1.0 `CreateButton` pcalls `RegisterForClicks("AnyDown", "AnyUp")` (fallback `AnyUp`), sets `MasqueSkinned` from config **before** `UpdateConfig` (which runs `UpdateAction`), and nil-guards retail-only regions. Unknown events are `pcall`ed. Bar frames use `SecureHandlerStateTemplate` only; black chrome is a color texture. `ApplyBars` hides Blizzard bars only after ShadowUI bars exist. `ApplyAll` pcalls each step and prints the label if one fails, so skins can still run.
 - **Hotkeys are painted from binds, not GetBindingKey.** Override clicks do not show in LAB's hotkey lookup. `FlushPendingKeybinds` merges the live client ACTIONBUTTON / MULTIACTIONBAR / BT4 names with the profile (profile wins), then writes `shadowUIHotkey` onto each LAB button. Priest/class files with empty `keybinds` still pick up Bartender keys from the client.
@@ -331,4 +331,4 @@ shield fills the lower half of the icon and reads `50%`.
 
 ## Out of scope
 
-Nameplates, objective tracker, bag-slot icons, and unit-frame replacement are not in scope. ShadowUI parks and darkens Blizzard Player and Target frames. It does not replace them. The player Cast Bar stays the ShadowUI combat meter. Target and focus cast bars stay the Blizzard spell bars (Classic Era 1.15 Show Enemy Cast Bar). Party and nameplate cast bars are not shipped. The Target Frame does not add a full-frame threat flash; Threat Number is the percent above the nameplate. Details! still parks the threat chart.
+Nameplates, objective tracker, bag-slot icons, and unit-frame replacement are not in scope. ShadowUI parks and darkens Blizzard Player and Target frames. It does not replace them. The player Cast Bar stays the ShadowUI combat meter. Target and focus cast bars stay the Blizzard spell bars (Classic Era 1.15 Show Enemy Cast Bar). Party and nameplate cast bars are not shipped. The Target Frame does not add a full-frame threat flash; the Threat Bar is the full-width meter flush on the nameplate. Details! still parks the threat chart.

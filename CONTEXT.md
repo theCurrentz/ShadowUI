@@ -85,7 +85,7 @@ _Avoid_: absorb bar, shield bar, WeakAura
 ## Chrome
 
 **Chrome**:
-The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. Threat Number sits above the Target Frame nameplate.
+The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. The Threat Bar sits flush on the Target Frame nameplate.
 _Avoid_: theme, skin pack, user-selectable skin
 
 **Darken**:
@@ -127,14 +127,17 @@ A Details! damage chart or threat chart. ShadowUI parks those two charts when De
 The Blizzard player unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. ShadowUI does not replace it.
 
 **Target Frame**:
-The Blizzard target unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. ShadowUI does not replace it. Status Text on health and mana follows the Blizzard Status Text option. A rare-elite target uses the Blizzard Rare-Elite dragon. Threat Number sits above the nameplate. Target auras show remaining time from UnitAura.
+The Blizzard target unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. ShadowUI does not replace it. Status Text on health and mana follows the Blizzard Status Text option. A rare-elite target uses the Blizzard Rare-Elite dragon. The Threat Bar sits flush on the nameplate. Target auras show remaining time from UnitAura.
 
 **Status Text**:
 Health and mana numbers on a unit frame. Format comes from Blizzard Status Text (numeric, percent, both, or none). ShadowUI paints one centre caption on the Target Frame. Native LeftText, RightText, and TextString stay hidden.
 
+**Threat Bar**:
+The full-width threat meter flush on the Target Frame nameplate, with zero gap. Fill is the player threat percent from UnitDetailedThreatSituation (scaled percent, or raw if scaled is missing). Colour goes from desaturated grey at low threat, to orange at mid-high threat, to blood red at full threat. It shows in solo, party, and raid. 0% stays hidden. Native NumericalThreat stays hidden. Details! still parks the threat chart.
+_Avoid_: threat pip, LibThreatClassic2, full-frame threat flash
+
 **Threat Number**:
-Remaining threat percent above the Target Frame nameplate, from UnitDetailedThreatSituation. It shows in solo, party, and raid. 0% stays hidden. The number is a ShadowUI pip. Native NumericalThreat stays hidden. Details! still parks the threat chart.
-_Avoid_: threat pip, LibThreatClassic2
+Remaining threat percent on the Threat Bar. Same hide rules as the Threat Bar.
 
 **Aura Duration**:
 Remaining time on a Target Frame or Focus Frame buff or debuff. ShadowUI paints a cooldown swipe and remaining seconds from UnitAura. Player BuffFrame keeps Blizzard duration text.
