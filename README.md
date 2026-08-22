@@ -93,7 +93,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `auras_spec` asserts buff chrome is darkest, unused slots stay empty, player buffs sit 2px left of the square minimap, and debuff type colour stays native.
 `aura_duration_spec` asserts Target Frame auras show remaining time from UnitAura.
 `status_text_spec` asserts Target Frame health text follows Blizzard Status Text and does not stack native LeftText and RightText.
-`threat_spec` asserts Threat Number paints on the ShadowUI pip above the nameplate, including solo.
+`threat_spec` asserts the Threat Bar is full width and flush on the nameplate, including solo.
 `cooldown_count_spec` asserts action-button cooldown seconds hide for the GCD.
 `chat_spec`, `unit_park_spec`, and `details_spec` assert Chat, Player/Target, and Details charts stay on the Currentz chrome lock. `unit_park_spec` also asserts Blizzard Edit Mode cannot keep a different Player Frame or Target Frame place.
 `itemrack_spec` asserts ItemRack worn-item and menu buttons get icon chrome and Outer Edge, and the minimap ItemRack icon does not get a second edge.
@@ -126,7 +126,7 @@ Manual in-game verification (Classic Era or SoD):
 - [ ] **Combat deferral** — enter combat, run `/shadowui variant <name>`; no taint error, layout applies when combat drops
 - [ ] **Chrome** — 0.05 icon chrome and Outer Edge on action buttons; square minimap flush to top-right in a 16px Darken buffer at 0.6 alpha with Zone Text on top, World Layer on the bottom, Blizzard Time on the map, and an Outer Edge; parked Currentz chat; micro menu + one bag button, bottom-right, one row
 - [ ] **Cooldown Count** — a 30s cooldown shows remaining seconds; a GCD swipe has no number
-- [ ] **Lorti darken** — player and target sit in the centre cluster and are near-black; party and pet frames are near-black; buffs and debuffs have the same chrome; character/bag windows are grey; portraits stay native colour; target health numbers follow Status Text; a rare-elite uses the winged silver dragon; Threat Number sits above the Target Frame nameplate; target debuffs show remaining seconds
+- [ ] **Lorti darken** — player and target sit in the centre cluster and are near-black; party and pet frames are near-black; buffs and debuffs have the same chrome; character/bag windows are grey; portraits stay native colour; target health numbers follow Status Text; a rare-elite uses the winged silver dragon; the Threat Bar sits flush on the Target Frame nameplate; target debuffs show remaining seconds
 - [ ] **Details** — with Details! loaded, the damage chart is flush right and the threat chart sits above the micro row
 - [ ] **ItemRack** — with ItemRack loaded, worn-item and menu buttons have 0.05 icon chrome and Outer Edge; the minimap ItemRack icon stays on the square path with no second edge
 - [ ] **Cast + GCD** — Quartz-like Cast Bar with overlay spell icon, channel ticks, spark, and latency window; skinny glossy GCD Sweep flush under it while a GCD is active; Blizzard player cast bar hidden; target cast bar stays Blizzard; Layout Edit Mode can drag and resize the Cast Bar and previews Cast + GCD + all Swing Timer lanes
