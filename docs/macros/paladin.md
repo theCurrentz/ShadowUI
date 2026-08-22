@@ -57,26 +57,13 @@ This recasts the seal every press if you are not careful. Prefer separate keys i
 /cast Hammer of Justice
 ```
 
-Mouseover stun:
+## Consecration
+
+Shift Rank 1 (grind / low threat):
 
 ```
-#showtooltip Hammer of Justice
-/stopcasting
-/cast [target=mouseover,harm,nodead] Hammer of Justice; Hammer of Justice
-```
-
-## Consecration downrank
-
-```
-#showtooltip Consecration(Rank 1)
-/cast Consecration(Rank 1)
-```
-
-Full rank:
-
-```
-#showtooltip Consecration
-/cast Consecration
+#showtooltip
+/cast [mod:shift] Consecration(Rank 1); Consecration
 ```
 
 ## Holy Shield (prot)
@@ -126,32 +113,20 @@ Cancel when you must drop threat:
 /cast Repentance
 ```
 
-## Flash of Light / Holy Light ranks
+## Flash of Light / Holy Light
+
+Alt self. Shift Flash Rank 4. Ctrl Flash Rank 1.
 
 ```
-#showtooltip Flash of Light
-/cast [mod:alt,target=player] Flash of Light; [target=mouseover,help,nodead] Flash of Light; Flash of Light
+#showtooltip
+/cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light
 ```
 
-Downrank Flash (mana / tank spam):
+Holy Light. Shift Rank 1 (cheap top / 5SR):
 
 ```
-#showtooltip Flash of Light(Rank 4)
-/cast [target=mouseover,help,nodead] Flash of Light(Rank 4); Flash of Light(Rank 4)
-```
-
-Holy Light big heal:
-
-```
-#showtooltip Holy Light
-/cast [mod:alt,target=player] Holy Light; [target=mouseover,help,nodead] Holy Light; Holy Light
-```
-
-Holy Light rank 1 (beacon-style cheap heal in Era — still useful for the 5-second rule and for topping):
-
-```
-#showtooltip Holy Light(Rank 1)
-/cast [target=mouseover,help,nodead] Holy Light(Rank 1); Holy Light(Rank 1)
+#showtooltip
+/cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light
 ```
 
 ## Divine Favor (holy)
@@ -159,21 +134,21 @@ Holy Light rank 1 (beacon-style cheap heal in Era — still useful for the 5-sec
 ```
 #showtooltip Flash of Light
 /cast Divine Favor
-/cast [target=mouseover,help,nodead] Flash of Light; Flash of Light
+/cast Flash of Light
 ```
 
 ## Holy Shock (holy talent)
 
 ```
 #showtooltip Holy Shock
-/cast [target=mouseover,exists,nodead] Holy Shock; Holy Shock
+/cast Holy Shock
 ```
 
 ## Lay on Hands
 
 ```
 #showtooltip Lay on Hands
-/cast [target=mouseover,help,nodead] Lay on Hands; Lay on Hands
+/cast Lay on Hands
 ```
 
 ```
@@ -181,11 +156,11 @@ Holy Light rank 1 (beacon-style cheap heal in Era — still useful for the 5-sec
 /cast Lay on Hands
 ```
 
-## Blessing of Protection (mouseover)
+## Blessing of Protection
 
 ```
 #showtooltip Blessing of Protection
-/cast [target=mouseover,help,nodead] Blessing of Protection; Blessing of Protection
+/cast Blessing of Protection
 ```
 
 Cancel BoP (so the tank can hit again, or you can swing):
@@ -219,7 +194,7 @@ Bubble-hearth:
 
 ```
 #showtooltip Divine Intervention
-/cast [target=mouseover,help,nodead] Divine Intervention; Divine Intervention
+/cast Divine Intervention
 ```
 
 ```
@@ -227,18 +202,18 @@ Bubble-hearth:
 /cast Divine Intervention
 ```
 
-## Cleanse (mouseover)
+## Cleanse
 
 ```
 #showtooltip Cleanse
-/cast [mod:alt,target=player] Cleanse; [target=mouseover,help,nodead] Cleanse; Cleanse
+/cast [mod:alt,target=player] Cleanse; Cleanse
 ```
 
 Purify (lower ranks / no magic dispel):
 
 ```
 #showtooltip Purify
-/cast [target=mouseover,help,nodead] Purify; Purify
+/cast [mod:alt,target=player] Purify; Purify
 ```
 
 ## Blessings (single)
@@ -250,11 +225,9 @@ Purify (lower ranks / no magic dispel):
 
 Kings / Light / Sanctuary as their own keys if you have the talent or raid role.
 
-Mouseover Might:
-
 ```
 #showtooltip Blessing of Might
-/cast [target=mouseover,help,nodead] Blessing of Might; Blessing of Might
+/cast Blessing of Might
 ```
 
 Greater Blessing of Might (class click):

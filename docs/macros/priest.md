@@ -1,74 +1,47 @@
 # Priest
 
-## Mouseover Flash Heal
+## Flash Heal
+
+Alt self. Shift Rank 4 (tank spam). Ctrl Rank 1.
 
 ```
-#showtooltip Flash Heal
-/cast [mod:alt,target=player] Flash Heal; [target=mouseover,help,nodead] Flash Heal; Flash Heal
-```
-
-Downrank Flash (common tank spam ranks — pick the rank you actually use):
-
-```
-#showtooltip Flash Heal(Rank 4)
-/cast [target=mouseover,help,nodead] Flash Heal(Rank 4); Flash Heal(Rank 4)
-```
-
-```
-#showtooltip Flash Heal(Rank 1)
-/cast [target=mouseover,help,nodead] Flash Heal(Rank 1); Flash Heal(Rank 1)
+#showtooltip
+/cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal
 ```
 
 ## Greater Heal
 
 ```
-#showtooltip Greater Heal
+#showtooltip
 /stopcasting
-/cast [mod:alt,target=player] Greater Heal; [target=mouseover,help,nodead] Greater Heal; Greater Heal
+/cast [mod:alt,target=player] Greater Heal; [mod:shift] Greater Heal(Rank 1); Greater Heal
 ```
 
 Drop `/stopcasting` if you do not want this key to clip a heal that is about to land.
-
-Downrank Greater Heal (mana / overheal control):
-
-```
-#showtooltip Greater Heal(Rank 1)
-/cast [target=mouseover,help,nodead] Greater Heal(Rank 1); Greater Heal(Rank 1)
-```
 
 ## Heal / Lesser Heal (early ranks)
 
 ```
 #showtooltip Heal
-/cast [target=mouseover,help,nodead] Heal; Heal
+/cast [mod:alt,target=player] Heal; Heal
 ```
 
 ## Renew
 
-```
-#showtooltip Renew
-/cast [mod:alt,target=player] Renew; [target=mouseover,help,nodead] Renew; Renew
-```
-
-Downrank Renew (5SR / small HoT):
+Shift Rank 3 (5SR / small HoT).
 
 ```
-#showtooltip Renew(Rank 3)
-/cast [target=mouseover,help,nodead] Renew(Rank 3); Renew(Rank 3)
+#showtooltip
+/cast [mod:alt,target=player] Renew; [mod:shift] Renew(Rank 3); Renew
 ```
 
 ## Power Word: Shield
 
-```
-#showtooltip Power Word: Shield
-/cast [mod:alt,target=player] Power Word: Shield; [target=mouseover,help,nodead] Power Word: Shield; Power Word: Shield
-```
-
-Downrank shield (less absorbed, less threat, weaker Weakened Soul still applies):
+Shift Rank 1 (less absorb, less threat; Weakened Soul still applies).
 
 ```
-#showtooltip Power Word: Shield(Rank 1)
-/cast [target=mouseover,help,nodead] Power Word: Shield(Rank 1); Power Word: Shield(Rank 1)
+#showtooltip
+/cast [mod:alt,target=player] Power Word: Shield; [mod:shift] Power Word: Shield(Rank 1); Power Word: Shield
 ```
 
 ## Inner Focus + big heal
@@ -76,7 +49,7 @@ Downrank shield (less absorbed, less threat, weaker Weakened Soul still applies)
 ```
 #showtooltip Greater Heal
 /cast Inner Focus
-/cast [target=mouseover,help,nodead] Greater Heal; Greater Heal
+/cast Greater Heal
 ```
 
 Inner Focus + Prayer of Healing:
@@ -94,16 +67,11 @@ Inner Focus + Prayer of Healing:
 /cast Prayer of Healing
 ```
 
-Rank 1 Holy Nova (low threat AoE / tag):
+Shift Rank 1 (low threat AoE / tag):
 
 ```
-#showtooltip Holy Nova(Rank 1)
-/cast Holy Nova(Rank 1)
-```
-
-```
-#showtooltip Holy Nova
-/cast Holy Nova
+#showtooltip
+/cast [mod:shift] Holy Nova(Rank 1); Holy Nova
 ```
 
 ## Circle of Healing
@@ -114,24 +82,24 @@ Not in Classic Era. Skip it.
 
 ```
 #showtooltip Dispel Magic
-/cast [mod:alt,target=player] Dispel Magic; [target=mouseover,exists,nodead] Dispel Magic; Dispel Magic
+/cast [mod:alt,target=player] Dispel Magic; Dispel Magic
 ```
 
 Offensive dispel wants `harm`. Split if you mis-dispel:
 
 ```
 #showtooltip Dispel Magic
-/cast [target=mouseover,harm,nodead] Dispel Magic; [target=mouseover,help,nodead] Dispel Magic; Dispel Magic
+/cast [harm] Dispel Magic; [help] Dispel Magic
 ```
 
 ```
 #showtooltip Abolish Disease
-/cast [target=mouseover,help,nodead] Abolish Disease; Abolish Disease
+/cast [mod:alt,target=player] Abolish Disease; Abolish Disease
 ```
 
 ```
 #showtooltip Cure Disease
-/cast [target=mouseover,help,nodead] Cure Disease; Cure Disease
+/cast [mod:alt,target=player] Cure Disease; Cure Disease
 ```
 
 ## Fade / Psychic Scream
@@ -151,7 +119,7 @@ Offensive dispel wants `harm`. Split if you mis-dispel:
 ```
 #showtooltip Shackle Undead
 /stopcasting
-/cast [target=mouseover,harm,nodead] Shackle Undead; Shackle Undead
+/cast Shackle Undead
 ```
 
 ## Silence (shadow talent)
@@ -171,16 +139,11 @@ Offensive dispel wants `harm`. Split if you mis-dispel:
 
 ## Shadow Word: Pain / Mind Flay / Mind Blast
 
-```
-#showtooltip Shadow Word: Pain
-/cast Shadow Word: Pain
-```
-
-Rank 1 SW:P (tag / contest):
+Shift Rank 1 (tag / contest):
 
 ```
-#showtooltip Shadow Word: Pain(Rank 1)
-/cast Shadow Word: Pain(Rank 1)
+#showtooltip
+/cast [mod:shift] Shadow Word: Pain(Rank 1); Shadow Word: Pain
 ```
 
 ```
@@ -216,14 +179,14 @@ Heal that cancels form first:
 ```
 #showtooltip Flash Heal
 /cancelaura Shadowform
-/cast [target=mouseover,help,nodead] Flash Heal; Flash Heal
+/cast [mod:alt,target=player] Flash Heal; Flash Heal
 ```
 
 ## Power Infusion (disc talent)
 
 ```
 #showtooltip Power Infusion
-/cast [target=mouseover,help,nodead] Power Infusion; Power Infusion
+/cast [mod:alt,target=player] Power Infusion; Power Infusion
 ```
 
 ```
@@ -242,7 +205,7 @@ Heal that cancels form first:
 
 ```
 #showtooltip Fear Ward
-/cast [target=mouseover,help,nodead] Fear Ward; Fear Ward
+/cast [mod:alt,target=player] Fear Ward; Fear Ward
 ```
 
 ```
@@ -254,12 +217,12 @@ Heal that cancels form first:
 
 ```
 #showtooltip Resurrection
-/cast [target=mouseover,help,dead] Resurrection; Resurrection
+/cast Resurrection
 ```
 
 ```
 #showtooltip Power Word: Fortitude
-/cast [target=mouseover,help,nodead] Power Word: Fortitude; Power Word: Fortitude
+/cast [mod:alt,target=player] Power Word: Fortitude; Power Word: Fortitude
 ```
 
 ```
@@ -269,7 +232,7 @@ Heal that cancels form first:
 
 ```
 #showtooltip Divine Spirit
-/cast [target=mouseover,help,nodead] Divine Spirit; Divine Spirit
+/cast [mod:alt,target=player] Divine Spirit; Divine Spirit
 ```
 
 ```
@@ -279,7 +242,7 @@ Heal that cancels form first:
 
 ```
 #showtooltip Shadow Protection
-/cast [target=mouseover,help,nodead] Shadow Protection; Shadow Protection
+/cast [mod:alt,target=player] Shadow Protection; Shadow Protection
 ```
 
 ```
@@ -362,4 +325,4 @@ Troll mana hymn is not Classic Era. Troll racial:
 
 ## SoD note
 
-SoD Shadow and Holy runes add spells. Mouseover + Alt-self pattern stays the same. Downrank still uses `Spell(Rank N)`.
+SoD Shadow and Holy runes add spells. Alt-self and Shift/Ctrl downrank stay the same. Downrank still uses `Spell(Rank N)`.

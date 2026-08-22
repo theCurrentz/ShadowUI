@@ -21,13 +21,6 @@
 /targetlasttarget
 ```
 
-Mouseover assist (click a friendly to attack their target):
-
-```
-/assist [target=mouseover,help,exists]
-/startattack
-```
-
 ## Start and stop attack
 
 ```
@@ -43,20 +36,27 @@ Mouseover assist (click a friendly to attack their target):
 /startattack
 ```
 
-## Mouseover generic (template)
+## Target and Alt-self (template)
 
-Replace the spell:
-
-```
-#showtooltip
-/cast [target=mouseover,exists,nodead] SPELL; SPELL
-```
-
-Alt-self, else mouseover, else target:
+Cast on the current target. Hold Alt to cast on you:
 
 ```
 #showtooltip
-/cast [mod:alt,target=player] SPELL; [target=mouseover,help,nodead] SPELL; SPELL
+/cast [mod:alt,target=player] SPELL; SPELL
+```
+
+Downrank on the same key (Shift cheap rank, no modifier max rank):
+
+```
+#showtooltip
+/cast [mod:shift] SPELL(Rank 1); SPELL
+```
+
+Heal with Alt-self plus downranks:
+
+```
+#showtooltip
+/cast [mod:alt,target=player] SPELL; [mod:shift] SPELL(Rank 4); [mod:ctrl] SPELL(Rank 1); SPELL
 ```
 
 ## Trinkets

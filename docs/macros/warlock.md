@@ -1,20 +1,8 @@
 # Warlock
 
-## Life Tap ranks
+## Life Tap
 
-```
-#showtooltip Life Tap
-/cast Life Tap
-```
-
-Cheap tap:
-
-```
-#showtooltip Life Tap(Rank 1)
-/cast Life Tap(Rank 1)
-```
-
-Shift for Rank 1:
+Shift Rank 1 (cheap tap):
 
 ```
 #showtooltip
@@ -30,14 +18,11 @@ Shift for Rank 1:
 
 ## Shadow Bolt ranks
 
-```
-#showtooltip Shadow Bolt
-/cast Shadow Bolt
-```
+Shift Rank 1:
 
 ```
-#showtooltip Shadow Bolt(Rank 1)
-/cast Shadow Bolt(Rank 1)
+#showtooltip
+/cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt
 ```
 
 Nightfall proc is still `/cast Shadow Bolt`. No aura test for the proc in Era macros.
@@ -66,16 +51,11 @@ Nightfall proc is still `/cast Shadow Bolt`. No aura test for the proc in Era ma
 
 ## Corruption / Siphon Life / Drain Life
 
-```
-#showtooltip Corruption
-/cast Corruption
-```
-
-Rank 1 Corruption (tag / contest):
+Shift Rank 1 (tag / contest):
 
 ```
-#showtooltip Corruption(Rank 1)
-/cast Corruption(Rank 1)
+#showtooltip
+/cast [mod:shift] Corruption(Rank 1); Corruption
 ```
 
 ```
@@ -90,16 +70,11 @@ Rank 1 Corruption (tag / contest):
 
 ## Drain Soul / Drain Mana
 
-```
-#showtooltip Drain Soul
-/cast Drain Soul
-```
-
-Rank 1 Drain Soul (shard farming, less overkill):
+Shift Rank 1 (shard farming, less overkill):
 
 ```
-#showtooltip Drain Soul(Rank 1)
-/cast Drain Soul(Rank 1)
+#showtooltip
+/cast [mod:shift] Drain Soul(Rank 1); Drain Soul
 ```
 
 ```
@@ -181,17 +156,12 @@ Shift Agony, else Elements (solo vs raid):
 
 ## Fear / Howl of Terror / Death Coil / Banish
 
+Shift Rank 1 (pvp, shorter):
+
 ```
-#showtooltip Fear
+#showtooltip
 /stopcasting
-/cast Fear
-```
-
-Rank 1 Fear (pvp, shorter):
-
-```
-#showtooltip Fear(Rank 1)
-/cast Fear(Rank 1)
+/cast [mod:shift] Fear(Rank 1); Fear
 ```
 
 ```
@@ -207,7 +177,7 @@ Rank 1 Fear (pvp, shorter):
 ```
 #showtooltip Banish
 /stopcasting
-/cast [target=mouseover,harm,nodead] Banish; Banish
+/cast Banish
 ```
 
 ## Enslave Demon / Inferno / Ritual
@@ -243,7 +213,7 @@ Use the created item (name follows rank, e.g. Major Soulstone):
 
 ```
 #showtooltip Major Soulstone
-/use [target=mouseover,help,nodead] Major Soulstone; Major Soulstone
+/use Major Soulstone
 ```
 
 ```
@@ -320,7 +290,7 @@ If the pet bar is the one that has Spell Lock, you can also `/cast Spell Lock` f
 
 ```
 #showtooltip Devour Magic
-/cast [target=mouseover,exists,nodead] Devour Magic; Devour Magic
+/cast Devour Magic
 ```
 
 ```
@@ -357,12 +327,12 @@ If the pet bar is the one that has Spell Lock, you can also `/cast Spell Lock` f
 
 ```
 #showtooltip Detect Invisibility
-/cast [target=mouseover,help,nodead] Detect Invisibility; Detect Invisibility
+/cast [mod:alt,target=player] Detect Invisibility; Detect Invisibility
 ```
 
 ```
 #showtooltip Unending Breath
-/cast [target=mouseover,help,nodead] Unending Breath; Unending Breath
+/cast [mod:alt,target=player] Unending Breath; Unending Breath
 ```
 
 ```

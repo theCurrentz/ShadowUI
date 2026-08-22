@@ -7,13 +7,6 @@
 /cast Hunter's Mark
 ```
 
-Mouseover mark:
-
-```
-#showtooltip Hunter's Mark
-/cast [target=mouseover,harm,nodead] Hunter's Mark; Hunter's Mark
-```
-
 ## Aspects
 
 Hawk vs Monkey (melee pressure):
@@ -71,16 +64,13 @@ Viper is TBC. Era mana regen is drinks, trinkets, and viper... wait, Aspect of t
 /cast Multi-Shot
 ```
 
-## Arcane Shot downrank (mana / tag)
+## Arcane Shot
+
+Shift Rank 1 (mana / tag):
 
 ```
-#showtooltip Arcane Shot(Rank 1)
-/cast Arcane Shot(Rank 1)
-```
-
-```
-#showtooltip Arcane Shot
-/cast Arcane Shot
+#showtooltip
+/cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot
 ```
 
 ## Serpent Sting / Scorpid / Viper
@@ -107,16 +97,11 @@ Viper is TBC. Era mana regen is drinks, trinkets, and viper... wait, Aspect of t
 /cast Concussive Shot
 ```
 
-```
-#showtooltip Wing Clip
-/cast Wing Clip
-```
-
-Rank 1 Wing Clip still snares. Use it if you want less damage on a cc target:
+Shift Rank 1 still snares with less damage:
 
 ```
-#showtooltip Wing Clip(Rank 1)
-/cast Wing Clip(Rank 1)
+#showtooltip
+/cast [mod:shift] Wing Clip(Rank 1); Wing Clip
 ```
 
 ## Scatter Shot (surv talent)
@@ -230,12 +215,6 @@ Attack pet's target or yours:
 ```
 /petattack [@target,harm,exists]
 /startattack
-```
-
-Mouseover pet attack:
-
-```
-/petattack [target=mouseover,harm,nodead]
 ```
 
 ## Mend Pet / Feed Pet / Dismiss / Call

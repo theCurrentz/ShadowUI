@@ -71,14 +71,6 @@ Modifier: shift sap, else pick pocket:
 /cast Kick
 ```
 
-Mouseover kick:
-
-```
-#showtooltip Kick
-/stopcasting
-/cast [target=mouseover,harm,nodead] Kick; Kick
-```
-
 ## Gouge
 
 ```

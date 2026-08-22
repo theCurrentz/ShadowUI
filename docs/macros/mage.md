@@ -46,14 +46,6 @@ One city per macro. You cannot fit every city under 255 characters with full nam
 /cast Counterspell
 ```
 
-Mouseover:
-
-```
-#showtooltip Counterspell
-/stopcasting
-/cast [target=mouseover,harm,nodead] Counterspell; Counterspell
-```
-
 Focus kick (set `/focus` first):
 
 ```
@@ -67,40 +59,25 @@ Focus kick (set `/focus` first):
 ```
 #showtooltip Polymorph
 /stopcasting
-/cast [target=mouseover,harm,nodead] Polymorph; Polymorph
+/cast [mod:shift] Polymorph(Rank 1); Polymorph
 ```
 
-Pig / turtle are items or later ranks — Era base sheep is **Polymorph**. Rank 1 sheep for low damage:
+Pig / turtle are items or later ranks — Era base sheep is **Polymorph**. Shift Rank 1 for low damage.
+
+## Frostbolt
+
+Shift Rank 1 (kite / tag / wand setup):
 
 ```
-#showtooltip Polymorph(Rank 1)
-/cast Polymorph(Rank 1)
-```
-
-## Frostbolt ranks
-
-```
-#showtooltip Frostbolt
-/cast Frostbolt
-```
-
-Kiting / tag / wand setup:
-
-```
-#showtooltip Frostbolt(Rank 1)
-/cast Frostbolt(Rank 1)
+#showtooltip
+/cast [mod:shift] Frostbolt(Rank 1); Frostbolt
 ```
 
 ## Fireball / Scorch / Pyroblast
 
 ```
-#showtooltip Fireball
-/cast Fireball
-```
-
-```
-#showtooltip Fireball(Rank 1)
-/cast Fireball(Rank 1)
+#showtooltip
+/cast [mod:shift] Fireball(Rank 1); Fireball
 ```
 
 ```
@@ -140,30 +117,20 @@ Presence of Mind + Pyroblast:
 /cast Cone of Cold
 ```
 
-```
-#showtooltip Blizzard
-/cast Blizzard
-```
-
-Rank 1 Blizzard (mana, still slows):
+Shift Rank 1 (mana, still slows):
 
 ```
-#showtooltip Blizzard(Rank 1)
-/cast Blizzard(Rank 1)
+#showtooltip
+/cast [mod:shift] Blizzard(Rank 1); Blizzard
 ```
 
 ## Arcane Explosion / Arcane Missiles / Arcane Power
 
-```
-#showtooltip Arcane Explosion
-/cast Arcane Explosion
-```
-
-Rank 1 farm:
+Shift Rank 1 farm:
 
 ```
-#showtooltip Arcane Explosion(Rank 1)
-/cast Arcane Explosion(Rank 1)
+#showtooltip
+/cast [mod:shift] Arcane Explosion(Rank 1); Arcane Explosion
 ```
 
 ```
@@ -246,14 +213,14 @@ Shift Fire Ward, else Frost Ward:
 
 ```
 #showtooltip Remove Lesser Curse
-/cast [mod:alt,target=player] Remove Lesser Curse; [target=mouseover,help,nodead] Remove Lesser Curse; Remove Lesser Curse
+/cast [mod:alt,target=player] Remove Lesser Curse; Remove Lesser Curse
 ```
 
 ## Slow Fall
 
 ```
 #showtooltip Slow Fall
-/cast [target=mouseover,help,nodead] Slow Fall; Slow Fall
+/cast [mod:alt,target=player] Slow Fall; Slow Fall
 ```
 
 ## Dampen Magic / Amplify Magic
@@ -263,11 +230,9 @@ Shift Fire Ward, else Frost Ward:
 /cast [mod:shift] Amplify Magic; Dampen Magic
 ```
 
-Mouseover Dampen:
-
 ```
 #showtooltip Dampen Magic
-/cast [target=mouseover,help,nodead] Dampen Magic; Dampen Magic
+/cast [mod:alt,target=player] Dampen Magic; Dampen Magic
 ```
 
 ## Mana gem

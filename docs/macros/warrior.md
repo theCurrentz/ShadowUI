@@ -32,18 +32,12 @@ That block is near the character cap. Drop `#showtooltip` if it will not save.
 
 ## Heroic Strike queue
 
-```
-#showtooltip Heroic Strike
-/startattack
-/cast Heroic Strike
-```
-
-Downrank rage control:
+Shift Rank 3 (rage control):
 
 ```
-#showtooltip Heroic Strike(Rank 3)
+#showtooltip
 /startattack
-/cast Heroic Strike(Rank 3)
+/cast [mod:shift] Heroic Strike(Rank 3); Heroic Strike
 ```
 
 ## Cleave queue
@@ -166,14 +160,6 @@ Stance swap costs a GCD. Many players keep Pummel on a Berserker bar and Shield 
 #showtooltip Taunt
 /cast [nostance:2] Defensive Stance
 /cast Taunt
-```
-
-Mouseover taunt:
-
-```
-#showtooltip Taunt
-/cast [nostance:2] Defensive Stance
-/cast [target=mouseover,harm,nodead] Taunt; Taunt
 ```
 
 ```
