@@ -317,7 +317,7 @@ shield fills the lower half of the icon and reads `50%`.
   Minimap Icon on the square path and does not get a second Outer Edge. If ItemRack is
   not loaded, `SkinItemRack` does nothing.
   ShadowUI action buttons show Cooldown Count for cooldowns of 2s or more. The GCD swipe
-  has no number. Unused buff and debuff slots stay empty. Player buffs sit 2px left of the square minimap, with a 4px gap from the top of the screen.
+  has no number. Unused buff and debuff slots stay empty. Player buffs sit 2px left of the square minimap.
   Target Frame and Focus Frame auras show Aura Duration from UnitAura. Player BuffFrame keeps Blizzard duration text.
   The Target Frame paints one centre Status Text caption on health and mana using the Blizzard Status Text option. Native LeftText, RightText, and TextString stay hidden.
   The Threat Bar stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host. Fill follows UnitDetailedThreatSituation. Colour goes from desaturated grey, to orange, to blood red.
