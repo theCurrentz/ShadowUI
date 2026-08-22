@@ -238,9 +238,9 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 - Talent-tree binding per variant
 - Current edit layer indicator
 - Edit layout / Edit keybinds
+- On/off toggle for each Bar; writes `enabled` to the selected Layer
 - Reset selected layer / reset to shipped defaults
 - No cast-bar settings
-- Prefer “all bars on”; avoid exposing a large toggle matrix unless needed for support
 
 ## Libraries
 

@@ -55,7 +55,7 @@ ShadowUI/
   profile/
     variants.lua                named variants, talent bind, manual override
   options/
-    config.lua                  AceConfig panel
+    config.lua                  AceConfig panel; Bar on/off toggles write Layout `enabled`
   sim/
     dump_layout.lua             emit layout.json from shipped Base+Class
     chrome.lua                  geometric chrome placeholders
@@ -324,7 +324,7 @@ shield fills the lower half of the icon and reads `50%`.
   The minimap parks flush at `TOPRIGHT` (0, 0). It uses SexyMap's square mask (`WHITE8X8`) and square icon path, inside a 16px 0.05 Darken buffer at 0.6 alpha. Zone Text sits 4px below the top of the screen and 3px above the map. Blizzard Time (`GameTimeFrame`) sits on the bottom-right of the map. Hover shows realm time and local time. A click opens the Time Manager Stopwatch menu. Darken does not paint Time. Nova World Buffs `MinimapLayerFrame` (World Layer) sits on the bottom of the holder so the map mask does not clip it. An Outer Edge wraps the holder. The circular `MinimapCluster` does not stay behind it. Cluster icons, including late `LFGMinimapFrame`, ItemRack, and LibDBIcon buttons, sit on the square path. The player can drag those icons. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park on the square map.
 - **Classic LAB create is patched in-tree.** Vendored LibActionButton-1.0 `CreateButton` pcalls `RegisterForClicks("AnyDown", "AnyUp")` (fallback `AnyUp`), sets `MasqueSkinned` from config **before** `UpdateConfig` (which runs `UpdateAction`), and nil-guards retail-only regions. Unknown events are `pcall`ed. Bar frames use `SecureHandlerStateTemplate` only; black chrome is a color texture. `ApplyBars` hides Blizzard bars only after ShadowUI bars exist. `ApplyAll` pcalls each step and prints the label if one fails, so skins can still run.
 - **Hotkeys are painted from binds, not GetBindingKey.** Override clicks do not show in LAB's hotkey lookup. `FlushPendingKeybinds` merges the live client ACTIONBUTTON / MULTIACTIONBAR / BT4 names with the profile (profile wins), then writes `shadowUIHotkey` onto each LAB button. Priest/class files with empty `keybinds` still pick up Bartender keys from the client.
-- **Options are variant/layer and edit-session entry.** `/shadowui` does not contain bar-layout sliders. It has **Edit layout** and **Edit keybinds**.
+- **Options are variant/layer, Bar on/off, and edit-session entry.** `/shadowui` does not contain bar-layout sliders. It has an on/off toggle for each Bar, **Edit layout**, and **Edit keybinds**.
 - **Talent tab shape is inferred.** `TalentPointsFromTabInfo` takes the larger numeric
   value of the third and fifth returns of `GetTalentTabInfo` to read both the Classic
   Era and modernized signatures without branching on client build.

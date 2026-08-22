@@ -1,6 +1,6 @@
 --[[
   Purpose: AceConfig panel for variants, talent binding, Action Slot hard lock,
-  ShadowUI vs Blizzard menu, edit layers, and resets.
+  ShadowUI vs Blizzard menu, Bar on/off toggles, edit layers, and resets.
   Deps: AceConfig-3.0, AceConfigDialog-3.0, profile and edit-layer helpers
   Public: ShadowUI:OpenOptions()
 ]]
@@ -29,6 +29,42 @@ local function variantValues()
     values[name] = name
   end
   return values
+end
+local HOST_LAYOUT = { player = true, target = true, cast = true, range = true }
+local BAR_TOGGLE_IDS = {
+  "bar1", "bar2", "bar3", "bar4", "bar5", "bar6", "bar7", "bar8", "bar9", "bar10",
+  "pet", "possess", "stance", "aura", "form",
+}
+local function barToggleName(id)
+  local index = id:match("^bar(%d+)$")
+  if index then
+    return "Bar " .. index
+  end
+  return (id:sub(1, 1):upper() .. id:sub(2))
+end
+local function barToggleArgs()
+  local args = {}
+  for order, id in ipairs(BAR_TOGGLE_IDS) do
+    args[id] = {
+      type = "toggle", name = barToggleName(id), order = order,
+      desc = "On shows the Bar. Off hides it. Writes go to the selected Layer.",
+      hidden = function()
+        local layout = Addon:ResolveEffective().layout or {}
+        return layout[id] == nil or HOST_LAYOUT[id] == true
+      end,
+      get = function()
+        local bar = (Addon:ResolveEffective().layout or {})[id]
+        return not bar or bar.enabled ~= false
+      end,
+      set = function(_, value)
+        Addon:WriteLayerDelta(Addon:GetCharDB().editLayer, "layout", id, {
+          enabled = value and true or false,
+        })
+        Addon:ApplyAll()
+      end,
+    }
+  end
+  return args
 end
 local function resetLayer()
   local layer = Addon:GetCharDB().editLayer or "variant"
@@ -108,6 +144,10 @@ local options = {
         Addon:GetCharDB().useShadowUIMenu = value and true or false
         Addon:ApplyAll()
       end,
+    },
+    bars = {
+      type = "group", name = "Action bars", order = 17, inline = true,
+      args = barToggleArgs(),
     },
     layer = {
       type = "select", name = "Current edit layer", order = 20,
