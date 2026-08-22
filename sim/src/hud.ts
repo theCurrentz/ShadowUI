@@ -196,6 +196,7 @@ export function startHud(): void {
       el.appendChild(zone);
       const time = document.createElement("div");
       time.className = "minimap-time";
+      time.textContent = "7:40";
       el.appendChild(time);
       const layer = document.createElement("div");
       layer.className = "minimap-layer";

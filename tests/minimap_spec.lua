@@ -1,10 +1,10 @@
 -- Square minimap chrome is a 16px Darken buffer around the map, with Zone Text
 -- on top and an Outer Edge. The map uses SexyMap's square mask and icon path.
 -- Cluster icons, including late LFG and LibDBIcon buttons, sit on that square.
--- World Layer from Nova World Buffs sits on the bottom. Blizzard Time
--- (GameTimeFrame) sits on the map. Hover shows realm time and local time. A
--- click opens the Time Manager Stopwatch menu. The player can drag every
--- minimap icon, including LFG.
+-- World Layer from Nova World Buffs sits on the bottom. Time is a clock square
+-- on the map. Hover shows realm time and local time. A click opens the
+-- Stopwatch. GameTimeFrame stays hidden. The player can drag every minimap
+-- icon, including LFG.
 -- Run: lua tests/minimap_spec.lua
 local unpack = unpack or table.unpack
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -112,6 +112,8 @@ local function fakeFrame(name)
     self["hook_" .. event] = fn
   end
   function frame:RegisterForDrag() self.drag = true end
+  function frame:RegisterForClicks() self.clicks = true end
+  function frame:IsShown() return not self.hidden end
   function frame:GetCenter()
     return self.cx or ((self.width or 0) / 2), self.cy or ((self.height or 0) / 2)
   end
@@ -123,6 +125,7 @@ local function fakeFrame(name)
     end
     function fs:SetFont() end
     function fs:SetJustifyH() end
+    function fs:SetTextColor() end
     function fs:SetText(text) fs.text = text end
     function fs:GetText() return fs.text end
     frame.font = fs
@@ -172,6 +175,7 @@ _G.MinimapZoneTextButton = fakeFrame("MinimapZoneTextButton")
 _G.MinimapZoneText = fakeFrame("MinimapZoneText")
 _G.GameTimeFrame = fakeFrame("GameTimeFrame")
 _G.GameTimeFrame:SetParent(_G.MinimapCluster)
+_G.TimeManagerClockButton = fakeFrame("TimeManagerClockButton")
 _G.MinimapLayerFrame = fakeFrame("MinimapLayerFrame")
 _G.MinimapLayerFrame:SetParent(_G.Minimap)
 _G.MinimapLayerFrame:SetPoint("BOTTOM", _G.Minimap, "BOTTOM", 2, 4)
@@ -188,14 +192,21 @@ _G.GetCursorPosition = function()
   return 180, 100
 end
 
-local timeManagerToggles = 0
-_G.TimeManager_Toggle = function()
-  timeManagerToggles = timeManagerToggles + 1
+_G.GetGameTime = function()
+  return 19, 40
+end
+_G.GetTime = function()
+  return 10
 end
 local tooltipLines = {}
 _G.GameTooltip = {
   SetOwner = function() end,
   ClearLines = function() tooltipLines = {} end,
+  AddLine = function(_, text) tooltipLines[#tooltipLines + 1] = text end,
+  AddDoubleLine = function(_, left, right)
+    tooltipLines[#tooltipLines + 1] = left
+    tooltipLines[#tooltipLines + 1] = right
+  end,
   Show = function() end,
   Hide = function() end,
 }
@@ -203,19 +214,11 @@ _G.GameTime_UpdateTooltip = function()
   tooltipLines[#tooltipLines + 1] = "realm"
   tooltipLines[#tooltipLines + 1] = "local"
 end
-_G.LoadAddOn = function(name)
-  if name ~= "Blizzard_TimeManager" then
-    return
-  end
-  if not _G.TimeManagerClockButton then
-    _G.TimeManagerClockButton = fakeFrame("TimeManagerClockButton")
-  end
-  return true
-end
 
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/darken.lua"))()
 assert(loadfile(root .. "skin/minimap.lua"))()
+assert(loadfile(root .. "skin/time.lua"))()
 Addon:SkinMinimap()
 
 local box = _G.ShadowUIMinimapHolder
@@ -263,9 +266,14 @@ assert(mail[4] > 0 and mail[5] < 0, "mail sits on the south-east square corner, 
 local track = _G.MiniMapTrackingFrame.points[1]
 assert(track[4] < 0 and track[5] > 0, "tracking sits on the north-west square corner, not the circle")
 
-local timeFrame = _G.GameTimeFrame
+assert(_G.GameTimeFrame.hidden, "sun/moon Time art stays hidden")
+assert(_G.TimeManagerClockButton.hidden, "digital Time Manager clock stays hidden")
+local timeFrame = _G.ShadowUIMinimapClock
+assert(timeFrame, "Time is a clock square")
 assert(not timeFrame.hidden, "Time stays visible")
-assert(timeFrame.parent == map, "Time leaves the hidden cluster")
+assert(timeFrame.parent == map, "Time sits on the map")
+assert(timeFrame.width == 36 and timeFrame.height == 36, "Time is a little square")
+assert(timeFrame.text and timeFrame.text.text == "7:40", "Time shows realm time")
 local timePark = timeFrame.points[#timeFrame.points]
 assert(timePark and timePark[1] == "BOTTOMRIGHT" and timePark[2] == map,
   "Time sits on the map, not the square icon path")
@@ -276,9 +284,15 @@ timeFrame:OnEnter()
 assert(tooltipLines[1] == "realm" and tooltipLines[2] == "local",
   "Time hover shows realm time and local time")
 assert(timeFrame.OnClick, "Time click is wired")
+local stopwatch = _G.ShadowUIStopwatch
+assert(stopwatch, "Stopwatch exists")
+assert(stopwatch.hidden, "Stopwatch starts hidden")
 timeFrame:OnClick()
-assert(timeManagerToggles == 1, "Time click opens the Stopwatch menu")
-assert(_G.TimeManagerClockButton.hidden, "digital Time Manager clock stays hidden")
+assert(not stopwatch.hidden, "Time click opens the Stopwatch")
+timeFrame:OnClick()
+assert(stopwatch.hidden, "Time click hides the Stopwatch")
+Addon:SkinMinimap()
+assert(_G.ShadowUIMinimapClock == timeFrame, "Time does not create a second clock")
 
 _G.MinimapZoomOut:Show()
 assert(_G.MinimapZoomOut.hidden, "zoom buttons cannot come back")
@@ -322,8 +336,6 @@ assert(layerPark and layerPark[1] == "BOTTOM" and layerPark[2] == map,
   "World Layer sits on the bottom of the map")
 assert(layerPark[3] == "BOTTOM" and layerPark[5] == 4,
   "World Layer keeps a 4px inset from the map bottom")
-
-assert(not _G.ShadowUIMinimapClock, "ShadowUI does not paint a second clock")
 
 -- A button that parents to Minimap after the first skin still parks.
 local lateBtn = _G.CreateFrame("Button", "TestMinimapButton", map)

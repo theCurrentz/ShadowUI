@@ -108,6 +108,7 @@ end
 
 function Addon:SkinDetails() end
 function Addon:SkinItemRack() end
+function Addon:SkinTime() end
 
 function Addon:ApplyBarChrome(bar)
   local fill = bar.fill

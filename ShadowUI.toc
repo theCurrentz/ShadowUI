@@ -52,6 +52,7 @@ skin\chat.lua
 skin\micro.lua
 skin\tracking.lua
 skin\minimap.lua
+skin\time.lua
 skin\details.lua
 skin\itemrack.lua
 
