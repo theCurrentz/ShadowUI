@@ -1,6 +1,7 @@
 -- Buff and debuff icons get the same 0.05 chrome as the player frame, plus
 -- a 4px Lorti outer edge. Unused slots stay empty. Player buffs sit 2px left
--- of the square minimap. Debuff type colour on the Blizzard border stays native.
+-- of the square minimap, with a 4px gap from the top of the screen.
+-- Debuff type colour on the Blizzard border stays native.
 -- Run: lua tests/auras_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local unpack = unpack or table.unpack
@@ -153,8 +154,8 @@ assert(_G.BuffFrame.points[1][1] == "TOPRIGHT"
     and _G.BuffFrame.points[1][2] == _G.ShadowUIMinimapHolder
     and _G.BuffFrame.points[1][3] == "TOPLEFT"
     and _G.BuffFrame.points[1][4] == -2
-    and _G.BuffFrame.points[1][5] == -2,
-  "player buffs sit 2px left of the square minimap")
+    and _G.BuffFrame.points[1][5] == -4,
+  "player buffs sit 2px left of the square minimap and 4px from the top")
 assert(_G.DebuffFrame.points[1][1] == "TOPRIGHT"
     and _G.DebuffFrame.points[1][2] == _G.BuffFrame
     and _G.DebuffFrame.points[1][3] == "BOTTOMRIGHT"

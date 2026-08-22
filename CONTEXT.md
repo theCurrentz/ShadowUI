@@ -85,7 +85,7 @@ _Avoid_: absorb bar, shield bar, WeakAura
 ## Chrome
 
 **Chrome**:
-The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. The Threat Bar sits flush on the Target Frame nameplate.
+The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Player buffs sit 2px left of the square minimap, with a 4px gap from the top of the screen. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. The Threat Bar sits flush on the Target Frame nameplate.
 _Avoid_: theme, skin pack, user-selectable skin
 
 **Darken**:

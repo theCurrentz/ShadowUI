@@ -1,6 +1,7 @@
 --[[
   Purpose: Darken buff and debuff icon chrome the Lorti way, including the outer edge.
-  Unused slots stay empty. Player buffs sit 2px left of the square minimap.
+  Unused slots stay empty. Player buffs sit 2px left of the square minimap,
+  with a 4px gap from the top of the screen.
   Deps: ShadowUI:LockVertex(), ShadowUI:ApplyOuterChrome(), ShadowUI:ParkFrame()
   Public: ShadowUI:SkinAuraButton(), ShadowUI:SkinAuras()
 ]]
@@ -11,6 +12,7 @@ function Addon:SkinAuraDuration(button) end
 local INSET = 2
 local OUTER_PAD = 4
 local SCREEN_GAP = 2
+local TOP_GAP = 4
 local GROUPS = {
   { "BuffButton", 32 },
   { "DebuffButton", 16 },
@@ -152,7 +154,7 @@ function Addon:SkinAuras()
     local relative = holder or _G.UIParent
     local relativePoint = holder and "TOPLEFT" or "TOPRIGHT"
     if _G.BuffFrame then
-      self:ParkFrame(_G.BuffFrame, "TOPRIGHT", -SCREEN_GAP, -SCREEN_GAP, nil, nil,
+      self:ParkFrame(_G.BuffFrame, "TOPRIGHT", -SCREEN_GAP, -TOP_GAP, nil, nil,
         relative, relativePoint)
     end
     if _G.DebuffFrame then

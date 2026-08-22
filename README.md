@@ -90,7 +90,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `darken_spec` asserts Lorti vertex colors on unit-frame and window chrome, and that Blizzard cannot reset them.
 `button_skin_spec` asserts a 0.05 chrome fill, a 2px icon inset, and a 4px outer edge on action buttons.
 `minimap_spec` asserts the square map uses the SexyMap mask, sits in a 16px Darken buffer with Zone Text on top and an Outer Edge, shows World Layer on the bottom of the holder and Blizzard Time on the map, and keeps cluster icons (including late LFG, ItemRack, and LibDBIcon buttons) on the square path so the player can drag them.
-`auras_spec` asserts buff chrome is darkest, unused slots stay empty, player buffs sit 2px left of the square minimap, and debuff type colour stays native.
+`auras_spec` asserts buff chrome is darkest, unused slots stay empty, player buffs sit 2px left of the square minimap and 4px from the top of the screen, and debuff type colour stays native.
 `aura_duration_spec` asserts Target Frame auras show remaining time from UnitAura.
 `status_text_spec` asserts Target Frame health text follows Blizzard Status Text and does not stack native LeftText and RightText.
 `threat_spec` asserts the Threat Bar is full width and flush on the nameplate, including solo.

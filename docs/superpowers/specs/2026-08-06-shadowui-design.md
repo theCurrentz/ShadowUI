@@ -170,7 +170,7 @@ Minimal per-character state only:
 | Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame Status Text follows Blizzard Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar flush on the nameplate |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
 | XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
-| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
+| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap and 4px from the top of the screen; debuff type colour stays native; Target Frame auras show remaining time |
 | Tooltips | Dark backdrop border |
 | Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Blizzard Time on the map, Outer Edge; cluster icons on the square path and draggable |
 | Chat | Black, semi-transparent |
