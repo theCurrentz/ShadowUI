@@ -53,6 +53,7 @@ lua tests/park_main_menu_spec.lua
 lua tests/tracking_spec.lua
 lua tests/darken_spec.lua
 lua tests/minimap_spec.lua
+lua tests/time_spec.lua
 lua tests/auras_spec.lua
 lua tests/aura_duration_spec.lua
 lua tests/status_text_spec.lua
@@ -91,7 +92,8 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `tracking_spec` asserts XP and reputation dock to the top of the screen.
 `darken_spec` asserts Lorti vertex colors on unit-frame and window chrome, and that Blizzard cannot reset them with SetVertexColor, SetTexture, SetAtlas, or TargetFrameMixin.CheckClassification.
 `button_skin_spec` asserts a 0.05 chrome fill, a 2px icon inset, and a 4px outer edge on action buttons.
-`minimap_spec` asserts the square map uses the SexyMap mask, sits in a 16px Darken buffer with Zone Text on top and an Outer Edge, shows World Layer on the bottom of the holder and Blizzard Time on the map, and keeps cluster icons (including late LFG, ItemRack, and LibDBIcon buttons) on the square path so the player can drag them.
+`minimap_spec` asserts the square map uses the SexyMap mask, sits in a 16px Darken buffer with Zone Text on top and an Outer Edge, shows World Layer on the bottom of the holder and a Time clock square on the map, and keeps cluster icons (including late LFG, ItemRack, and LibDBIcon buttons) on the square path so the player can drag them.
+`time_spec` asserts Time is a clock square that shows realm time, hover shows realm and local time, a click opens the Stopwatch, and GameTimeFrame stays hidden.
 `auras_spec` asserts buff chrome is darkest, unused slots stay empty, player buffs sit 2px left of the square minimap, and debuff type colour stays native.
 `aura_duration_spec` asserts Target Frame auras show remaining time from UnitAura.
 `status_text_spec` asserts Target Frame health text follows Blizzard Status Text and does not stack native LeftText and RightText.
@@ -126,7 +128,7 @@ Manual in-game verification (Classic Era or SoD):
 - [ ] **Stance / form bar** — active stance, form, aura, or Stealth shows a lit checked overlay (Warrior, Druid, Paladin, Rogue, Priest, Shaman)
 - [ ] **Pet bar** — token actions (Attack, Follow, stances) show icons rather than blanks
 - [ ] **Combat deferral** — enter combat, run `/shadowui variant <name>`; no taint error, layout applies when combat drops
-- [ ] **Chrome** — 0.05 icon chrome and Outer Edge on action buttons; square minimap flush to top-right in a 16px Darken buffer at 0.6 alpha with Zone Text on top, World Layer on the bottom, Blizzard Time on the map, and an Outer Edge; parked Currentz chat; micro menu + one bag button, bottom-right, one row
+- [ ] **Chrome** — 0.05 icon chrome and Outer Edge on action buttons; square minimap flush to top-right in a 16px Darken buffer at 0.6 alpha with Zone Text on top, World Layer on the bottom, a Time clock square on the map, and an Outer Edge; parked Currentz chat; micro menu + one bag button, bottom-right, one row
 - [ ] **Cooldown Count** — a 30s cooldown shows remaining seconds; a GCD swipe has no number
 - [ ] **Lorti darken** — player and target sit in the centre cluster and are near-black; party and pet frames are near-black; buffs and debuffs have the same chrome; character/bag windows are grey; portraits stay native colour; target health numbers follow Status Text; a rare-elite uses the winged silver dragon; the Threat Bar sits flush on the Target Frame nameplate; target debuffs show remaining seconds
 - [ ] **Details** — with Details! loaded, the damage chart is flush right and the threat chart sits above the micro row

@@ -85,7 +85,7 @@ _Avoid_: absorb bar, shield bar, WeakAura
 ## Chrome
 
 **Chrome**:
-The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. The Threat Bar sits flush on the Target Frame nameplate.
+The visual treatment of the UI: matte fill on ShadowUI Bars, Darken of Blizzard art, action-icon chrome, buffs, Chat, minimap, World Layer, Time, Stopwatch, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras show remaining time. The Target Frame shows Status Text on health and mana. A rare-elite target uses the Rare-Elite dragon. The Threat Bar sits flush on the Target Frame nameplate.
 _Avoid_: theme, skin pack, user-selectable skin
 
 **Darken**:
@@ -105,8 +105,11 @@ The Classic realm shard shown by Nova World Buffs. ShadowUI parks NWB's `Minimap
 _Avoid_: Layer (that is Base / Class / Variant)
 
 **Time**:
-The Blizzard clock on the square minimap (`GameTimeFrame`). Hover shows realm time and local time. A click opens the Time Manager Stopwatch menu. Darken does not paint it.
-_Avoid_: TimeManagerClockButton, ShadowUIMinimapClock
+The clock square on the square minimap (`ShadowUIMinimapClock`). It shows realm time. Hover shows realm time and local time. A click opens the Stopwatch. GameTimeFrame (day/night) stays hidden.
+_Avoid_: GameTimeFrame, TimeManagerClockButton
+
+**Stopwatch**:
+The timer that Time opens (`ShadowUIStopwatch`). Left click starts or pauses. Right click resets. A second click on Time hides it.
 
 **Minimap Icon**:
 A button on the square minimap edge. The player can drag it. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park here, including dungeon finder, ItemRack, and LibDBIcon. The ItemRack minimap button does not get a second Outer Edge.

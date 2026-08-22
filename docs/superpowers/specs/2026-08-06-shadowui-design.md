@@ -172,7 +172,7 @@ Minimal per-character state only:
 | XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
 | Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
 | Tooltips | Dark backdrop border |
-| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Blizzard Time on the map, Outer Edge; cluster icons on the square path and draggable |
+| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Time clock square on the map (hover Time Info, click Stopwatch), Outer Edge; cluster icons on the square path and draggable |
 | Chat | Black, semi-transparent |
 | Micro menu + bag bar | Native Blizzard size and art (no Shop); one row, flush bottom-right, 0px gap between items, 0px gap from screen bottom |
 | Cast bar | Custom player Cast Bar (see below); Blizzard player cast bar hidden; target/focus spell bars stay Blizzard |

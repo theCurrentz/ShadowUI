@@ -44,7 +44,8 @@ ShadowUI/
     chat.lua                    parked General chat with Currentz fill
     micro.lua                   micro + backpack on ShadowUIMicroCluster, native art, flush bottom-right
     tracking.lua                XP + reputation bars at screen top
-    minimap.lua                 SexyMap-style square mask and icon path; 16px Darken buffer; Zone Text; Time; World Layer; draggable icons
+    minimap.lua                 SexyMap-style square mask and icon path; 16px Darken buffer; Zone Text; World Layer; draggable icons
+    time.lua                    clock square on the minimap; hover Time Info; Stopwatch
     details.lua                 parked Details! damage and threat charts
     itemrack.lua                ItemRack worn-item and menu button icon chrome and Outer Edge
   edit/
@@ -77,7 +78,7 @@ Defined in `ShadowUI.toc`:
 3. `defaults/` — base, then class files (WARRIOR … DRUID)
 4. `bars/` — button, cooldown, bar, pet, special, manager
 5. `cast/` — castbar, gcd, manaticker, swing, range, shields, shieldrow
-6. `skin/` — chrome, darken, frames, statustext, threat, windows, auras, auratime, chat, micro, tracking, minimap, details, itemrack
+6. `skin/` — chrome, darken, frames, statustext, threat, windows, auras, auratime, chat, micro, tracking, minimap, time, details, itemrack
 7. `edit/` — mode, frames, keybinds, layer
 8. `profile/` — variants
 9. `options/` — config
@@ -322,7 +323,7 @@ shield fills the lower half of the icon and reads `50%`.
   Target Frame and Focus Frame auras show Aura Duration from UnitAura. Player BuffFrame keeps Blizzard duration text.
   The Target Frame paints one centre Status Text caption on health and mana using the Blizzard Status Text option. Native LeftText, RightText, and TextString stay hidden.
   The Threat Bar stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host. Fill follows UnitDetailedThreatSituation. Colour goes from desaturated grey, to orange, to blood red.
-  The minimap parks flush at `TOPRIGHT` (0, 0). It uses SexyMap's square mask (`WHITE8X8`) and square icon path, inside a 16px 0.05 Darken buffer at 0.6 alpha. Zone Text sits 4px below the top of the screen and 3px above the map. Blizzard Time (`GameTimeFrame`) sits on the bottom-right of the map. Hover shows realm time and local time. A click opens the Time Manager Stopwatch menu. Darken does not paint Time. Nova World Buffs `MinimapLayerFrame` (World Layer) sits on the bottom of the holder so the map mask does not clip it. An Outer Edge wraps the holder. The circular `MinimapCluster` does not stay behind it. Cluster icons, including late `LFGMinimapFrame`, ItemRack, and LibDBIcon buttons, sit on the square path. The player can drag those icons. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park on the square map.
+  The minimap parks flush at `TOPRIGHT` (0, 0). It uses SexyMap's square mask (`WHITE8X8`) and square icon path, inside a 16px 0.05 Darken buffer at 0.6 alpha. Zone Text sits 4px below the top of the screen and 3px above the map. Time (`ShadowUIMinimapClock`) is a clock square on the bottom-right of the map. Hover shows realm time and local time. A click opens the Stopwatch. `GameTimeFrame` stays hidden. Nova World Buffs `MinimapLayerFrame` (World Layer) sits on the bottom of the holder so the map mask does not clip it. An Outer Edge wraps the holder. The circular `MinimapCluster` does not stay behind it. Cluster icons, including late `LFGMinimapFrame`, ItemRack, and LibDBIcon buttons, sit on the square path. The player can drag those icons. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park on the square map.
 - **Classic LAB create is patched in-tree.** Vendored LibActionButton-1.0 `CreateButton` pcalls `RegisterForClicks("AnyDown", "AnyUp")` (fallback `AnyUp`), sets `MasqueSkinned` from config **before** `UpdateConfig` (which runs `UpdateAction`), and nil-guards retail-only regions. Unknown events are `pcall`ed. Bar frames use `SecureHandlerStateTemplate` only; black chrome is a color texture. `ApplyBars` hides Blizzard bars only after ShadowUI bars exist. `ApplyAll` pcalls each step and prints the label if one fails, so skins can still run.
 - **Hotkeys are painted from binds, not GetBindingKey.** Override clicks do not show in LAB's hotkey lookup. `FlushPendingKeybinds` merges the live client ACTIONBUTTON / MULTIACTIONBAR / BT4 names with the profile (profile wins), then writes `shadowUIHotkey` onto each LAB button. Priest/class files with empty `keybinds` still pick up Bartender keys from the client.
 - **Options are variant/layer, Bar on/off, and edit-session entry.** `/shadowui` does not contain bar-layout sliders. It has an on/off toggle for each Bar, **Edit layout**, and **Edit keybinds**.

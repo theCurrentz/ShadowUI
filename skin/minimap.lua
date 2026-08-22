@@ -2,11 +2,12 @@
   Purpose: Square the Blizzard minimap the SexyMap way, inside a Darken buffer
            with Zone Text on top and an Outer Edge. Cluster icons sit on the
            square path, including late LFG, ItemRack, and LibDBIcon buttons. World Layer
-           from Nova World Buffs sits on the bottom of the holder. Blizzard Time
-           (GameTimeFrame) sits on the map. Hover shows realm time and local time.
-           A click opens the Time Manager Stopwatch menu. The player can drag every
+           from Nova World Buffs sits on the bottom of the holder. Time is a clock
+           square on the map. Hover shows realm time and local time. A click opens
+           the Stopwatch. GameTimeFrame stays hidden. The player can drag every
            minimap icon.
-  Deps: ShadowUI:LockVertex(), ShadowUI:DarkenFrameRegions(), ShadowUI:ApplyOuterChrome()
+  Deps: ShadowUI:LockVertex(), ShadowUI:DarkenFrameRegions(), ShadowUI:ApplyOuterChrome(),
+        ShadowUI:SkinTime()
   Public: ShadowUI:SkinMinimap()
 ]]
 
@@ -38,6 +39,7 @@ local HIDE = {
   "MinimapCompassTexture",
   "MiniMapWorldMapButton",
   "MinimapToggleButton",
+  "GameTimeFrame",
   "TimeManagerClockButton",
   "MinimapZoomIn",
   "MinimapZoomOut",
@@ -75,6 +77,8 @@ local IGNORE = {
   MinimapLayerFrameFS = true,
   NWBVersionDragTooltip = true,
   ShadowUIMinimapIconDrag = true,
+  ShadowUIMinimapClock = true,
+  ShadowUIStopwatch = true,
   GameTimeFrame = true,
   GameTimeTexture = true,
   TimeManagerClockButton = true,
@@ -102,8 +106,6 @@ local KEEP = {
   MinimapZoneText = true,
   MinimapZoneTextButton = true,
   MinimapLayerFrame = true,
-  GameTimeFrame = true,
-  GameTimeTexture = true,
 }
 for name in pairs(KEEP) do
   IGNORE[name] = true
@@ -502,98 +504,6 @@ local function parkWorldLayer()
   end)
 end
 
-local function loadTimeManager()
-  if _G.TimeManagerClockButton then
-    return
-  end
-  pcall(function()
-    if C_AddOns and C_AddOns.LoadAddOn then
-      C_AddOns.LoadAddOn("Blizzard_TimeManager")
-    elseif LoadAddOn then
-      LoadAddOn("Blizzard_TimeManager")
-    end
-  end)
-end
-
-local function parkTime()
-  local timeFrame = _G.GameTimeFrame
-  if not timeFrame or not timeFrame.SetPoint or not Minimap then
-    return
-  end
-  snapping = true
-  if timeFrame.SetParent then
-    timeFrame:SetParent(Minimap)
-  end
-  if timeFrame.ClearAllPoints then
-    timeFrame:ClearAllPoints()
-  end
-  timeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -2, 2)
-  if timeFrame.SetFrameStrata then
-    timeFrame:SetFrameStrata("MEDIUM")
-  end
-  if timeFrame.SetFrameLevel then
-    timeFrame:SetFrameLevel(8)
-  end
-  if timeFrame.EnableMouse then
-    timeFrame:EnableMouse(true)
-  end
-  if timeFrame.Show then
-    timeFrame:Show()
-  end
-  snapping = false
-  hideStay(_G.TimeManagerClockButton)
-  if timeFrame._shadowUITime then
-    return
-  end
-  timeFrame._shadowUITime = true
-  if timeFrame.SetScript then
-    timeFrame:SetScript("OnEnter", function(self)
-      if GameTooltip then
-        if GameTooltip.SetOwner then
-          GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-        end
-        if GameTooltip.ClearLines then
-          GameTooltip:ClearLines()
-        end
-      end
-      if GameTime_UpdateTooltip then
-        GameTime_UpdateTooltip()
-      end
-      if GameTooltip and GameTooltip.Show then
-        GameTooltip:Show()
-      end
-    end)
-    timeFrame:SetScript("OnLeave", function()
-      if GameTooltip and GameTooltip.Hide then
-        GameTooltip:Hide()
-      end
-    end)
-    timeFrame:SetScript("OnClick", function()
-      loadTimeManager()
-      hideStay(_G.TimeManagerClockButton)
-      if TimeManager_Toggle then
-        TimeManager_Toggle()
-      end
-    end)
-  end
-  if timeFrame._shadowUITimeWatch or not hooksecurefunc then
-    return
-  end
-  timeFrame._shadowUITimeWatch = true
-  hooksecurefunc(timeFrame, "SetPoint", function()
-    if snapping or dragging then
-      return
-    end
-    parkTime()
-  end)
-  hooksecurefunc(timeFrame, "SetParent", function()
-    if snapping or dragging then
-      return
-    end
-    parkTime()
-  end)
-end
-
 local function watchLateIcons()
   if watchingAddons or not CreateFrame then
     return
@@ -644,10 +554,9 @@ local function watchLateIcons()
     if type(name) == "string" and IGNORE[name] then
       if name == "MinimapLayerFrame" then
         parkWorldLayer()
-      elseif name == "GameTimeFrame" then
-        parkTime()
-      elseif name == "TimeManagerClockButton" then
-        hideStay(_G.TimeManagerClockButton)
+      elseif name == "GameTimeFrame" or name == "TimeManagerClockButton" then
+        hideStay(_G[name])
+        Addon:SkinTime()
       end
       return
     end
@@ -755,7 +664,7 @@ function Addon:SkinMinimap()
   watchLateIcons()
   parkAllIcons()
   parkWorldLayer()
-  parkTime()
+  self:SkinTime()
 
   if MinimapCluster.EnableMouse then
     MinimapCluster:EnableMouse(false)
