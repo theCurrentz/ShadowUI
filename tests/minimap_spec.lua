@@ -1,8 +1,10 @@
 -- Square minimap chrome is a 16px Darken buffer around the map, with Zone Text
 -- on top and an Outer Edge. The map uses SexyMap's square mask and icon path.
 -- Cluster icons, including late LFG and LibDBIcon buttons, sit on that square.
--- World Layer from Nova World Buffs sits on the bottom. Blizzard Time opens
--- the Stopwatch. The player can drag every minimap icon, including LFG.
+-- World Layer from Nova World Buffs sits on the bottom. Blizzard Time
+-- (GameTimeFrame) sits on the map. Hover shows realm time and local time. A
+-- click opens the Time Manager Stopwatch menu. The player can drag every
+-- minimap icon, including LFG.
 -- Run: lua tests/minimap_spec.lua
 local unpack = unpack or table.unpack
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -186,9 +188,20 @@ _G.GetCursorPosition = function()
   return 180, 100
 end
 
-local stopwatchClicks = 0
-_G.Stopwatch_Toggle = function()
-  stopwatchClicks = stopwatchClicks + 1
+local timeManagerToggles = 0
+_G.TimeManager_Toggle = function()
+  timeManagerToggles = timeManagerToggles + 1
+end
+local tooltipLines = {}
+_G.GameTooltip = {
+  SetOwner = function() end,
+  ClearLines = function() tooltipLines = {} end,
+  Show = function() end,
+  Hide = function() end,
+}
+_G.GameTime_UpdateTooltip = function()
+  tooltipLines[#tooltipLines + 1] = "realm"
+  tooltipLines[#tooltipLines + 1] = "local"
 end
 _G.LoadAddOn = function(name)
   if name ~= "Blizzard_TimeManager" then
@@ -250,9 +263,7 @@ assert(mail[4] > 0 and mail[5] < 0, "mail sits on the south-east square corner, 
 local track = _G.MiniMapTrackingFrame.points[1]
 assert(track[4] < 0 and track[5] > 0, "tracking sits on the north-west square corner, not the circle")
 
-assert(_G.GameTimeFrame.hidden, "sun/moon Time art stays hidden")
-local timeFrame = _G.TimeManagerClockButton
-assert(timeFrame, "Blizzard Time loads with Time Manager")
+local timeFrame = _G.GameTimeFrame
 assert(not timeFrame.hidden, "Time stays visible")
 assert(timeFrame.parent == map, "Time leaves the hidden cluster")
 local timePark = timeFrame.points[#timeFrame.points]
@@ -260,9 +271,14 @@ assert(timePark and timePark[1] == "BOTTOMRIGHT" and timePark[2] == map,
   "Time sits on the map, not the square icon path")
 assert(timePark[3] == "BOTTOMRIGHT" and timePark[4] == -2 and timePark[5] == 2,
   "Time keeps a 2px inset from the map corner")
+assert(timeFrame.OnEnter, "Time hover is wired")
+timeFrame:OnEnter()
+assert(tooltipLines[1] == "realm" and tooltipLines[2] == "local",
+  "Time hover shows realm time and local time")
 assert(timeFrame.OnClick, "Time click is wired")
 timeFrame:OnClick()
-assert(stopwatchClicks == 1, "Time click opens the Stopwatch")
+assert(timeManagerToggles == 1, "Time click opens the Stopwatch menu")
+assert(_G.TimeManagerClockButton.hidden, "digital Time Manager clock stays hidden")
 
 _G.MinimapZoomOut:Show()
 assert(_G.MinimapZoomOut.hidden, "zoom buttons cannot come back")

@@ -105,8 +105,8 @@ The Classic realm shard shown by Nova World Buffs. ShadowUI parks NWB's `Minimap
 _Avoid_: Layer (that is Base / Class / Variant)
 
 **Time**:
-The Blizzard clock on the square minimap (`TimeManagerClockButton`). A click opens the Stopwatch. Darken does not paint it.
-_Avoid_: GameTimeFrame, ShadowUIMinimapClock
+The Blizzard clock on the square minimap (`GameTimeFrame`). Hover shows realm time and local time. A click opens the Time Manager Stopwatch menu. Darken does not paint it.
+_Avoid_: TimeManagerClockButton, ShadowUIMinimapClock
 
 **Minimap Icon**:
 A button on the square minimap edge. The player can drag it. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park here, including dungeon finder, ItemRack, and LibDBIcon. The ItemRack minimap button does not get a second Outer Edge.
