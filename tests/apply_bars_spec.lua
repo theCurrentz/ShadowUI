@@ -19,7 +19,7 @@ function Addon:CreateBar(barId, cfg)
     buttons = {},
     configEnabled = nil,
     Show = function(self) events[#events + 1] = { "show", barId } end,
-    Hide = function() end,
+    Hide = function() events[#events + 1] = { "hide", barId } end,
   }
 end
 function Addon:CreateSpecialBar(barId)
@@ -61,4 +61,19 @@ assert(not hiddenBeforeCreate, "HideBlizzardBars ran before any ShadowUI bar exi
 assert(Addon.bars.bar1, "bar1 must be created")
 assert(Addon.bars.bar2, "bar2 must be created")
 assert(Addon.bars.pet == nil, "mage must not create a pet bar")
+
+Addon:ApplyBars({
+  layout = {
+    bar1 = { enabled = true, buttons = 12 },
+    bar2 = { enabled = false, buttons = 12 },
+  },
+})
+assert(Addon.bars.bar2.configEnabled == false, "disabled Bar stays created but off")
+local hidBar2 = false
+for _, event in ipairs(events) do
+  if event[1] == "hide" and event[2] == "bar2" then
+    hidBar2 = true
+  end
+end
+assert(hidBar2, "disabled Bar hides")
 print("apply_bars_spec OK")

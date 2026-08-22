@@ -23,7 +23,7 @@ Terms: [CONTEXT.md](CONTEXT.md). Module layout and resolve rules: [docs/architec
 
 ## Options
 
-Open with `/shadowui` or `/sui`. The panel covers variants, talent-tree binding, Action Slot hard lock, edit-layer selection, Layout Edit Mode, Keybind Edit Mode, and resets. It does not contain bar-layout sliders.
+Open with `/shadowui` or `/sui`. The panel covers variants, talent-tree binding, Action Slot hard lock, an on/off toggle for each Bar, edit-layer selection, Layout Edit Mode, Keybind Edit Mode, and resets. It does not contain bar-layout sliders. A Bar toggle writes `enabled` to the selected Layer.
 
 Action buttons stay locked: a click uses the action. Shift-drag moves a spell or item to another Action Slot and does not use the action. Enable **Hard lock action slots** to block Shift-drag too.
 
@@ -45,6 +45,7 @@ lua tests/edit_meters_spec.lua
 lua tests/apply_bars_spec.lua
 lua tests/button_create_spec.lua
 lua tests/button_lock_spec.lua
+lua tests/options_bars_spec.lua
 lua tests/button_skin_spec.lua
 lua tests/micro_bags_spec.lua
 lua tests/micro_menu_spec.lua
@@ -84,6 +85,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `apply_bars_spec` asserts ShadowUI bars are created before Blizzard bars are hidden.
 `button_create_spec` asserts Classic LAB create sets `MasqueSkinned` and pcalls click registration.
 `button_lock_spec` asserts Action Slot Lock: click uses the action, Shift-drag moves, hard lock blocks the move.
+`options_bars_spec` asserts `/shadowui` has an on/off toggle for each Bar and writes `enabled` to the selected Layer.
 `micro_bags_spec` asserts the micro row and backpack leave the hidden art frame, keep native Blizzard size and art, keep no gap between items, and dock with no gap from the bottom of the screen.
 `micro_menu_spec` asserts `MicroMenu` parents to the Micro Cluster, hosts stay on `MicroMenu`, and Blizzard Edit Mode `Layout` can compare button centres.
 `tracking_spec` asserts XP and reputation dock to the top of the screen.
@@ -116,7 +118,7 @@ Manual in-game verification (Classic Era or SoD):
 
 - [ ] **Fresh character** — centered bars, skins applied, cast bar visible, no setup prompts
 - [ ] **On-screen layout** — six reversed rows on the bottom; bar7 left and bar8 right as 3x4; nothing clipped
-- [ ] **Edit layer Variant** — `/shadowui edit`, drag the blue HUD overlay on a bar; only that class variant changes; same-class alt sees it
+- [ ] **Bar toggles** — `/shadowui` shows an on/off toggle for each Bar; off hides that Bar; on shows it; writes go to the selected Layer
 - [ ] **Keybind Edit Mode** — `/shadowui binds`, hover a button, press a key; hotkey paints; `/shadowui layer` still selects the write target; combat closes the session
 - [ ] **Edit layer Base** — drag a bar; all classes inherit the change
 - [ ] **Layer picker** — Layout Edit Mode panel shows BASE / CLASS / VARIANT; Done closes the session; magenta centre guides show
