@@ -5,24 +5,10 @@
 ```
 #showtooltip Earth Shock
 /stopcasting
-/cast Earth Shock
+/cast [mod:shift] Earth Shock(Rank 1); Earth Shock
 ```
 
-Mouseover interrupt:
-
-```
-#showtooltip Earth Shock
-/stopcasting
-/cast [target=mouseover,harm,nodead] Earth Shock; Earth Shock
-```
-
-Rank 1 Earth Shock (purge-style shock, less damage, still interrupts):
-
-```
-#showtooltip Earth Shock(Rank 1)
-/stopcasting
-/cast Earth Shock(Rank 1)
-```
+Shift Rank 1 still interrupts and costs less mana.
 
 ## Flame Shock / Frost Shock
 
@@ -46,13 +32,8 @@ Shift Frost, else Flame:
 ## Lightning Bolt / Chain Lightning ranks
 
 ```
-#showtooltip Lightning Bolt
-/cast Lightning Bolt
-```
-
-```
-#showtooltip Lightning Bolt(Rank 1)
-/cast Lightning Bolt(Rank 1)
+#showtooltip
+/cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt
 ```
 
 ```
@@ -112,48 +93,42 @@ Two-hand vs off-hand: Classic imbue applies to the weapon you have in the enchan
 
 ```
 #showtooltip Purge
-/cast [target=mouseover,harm,nodead] Purge; Purge
+/cast Purge
 ```
 
 ## Cure Poison / Cure Disease
 
 ```
 #showtooltip Cure Poison
-/cast [mod:alt,target=player] Cure Poison; [target=mouseover,help,nodead] Cure Poison; Cure Poison
+/cast [mod:alt,target=player] Cure Poison; Cure Poison
 ```
 
 ```
 #showtooltip Cure Disease
-/cast [mod:alt,target=player] Cure Disease; [target=mouseover,help,nodead] Cure Disease; Cure Disease
+/cast [mod:alt,target=player] Cure Disease; Cure Disease
 ```
 
 ## Healing Wave / Lesser Healing Wave ranks
 
-```
-#showtooltip Lesser Healing Wave
-/cast [mod:alt,target=player] Lesser Healing Wave; [target=mouseover,help,nodead] Lesser Healing Wave; Lesser Healing Wave
-```
+Alt self. Shift LHW Rank 4. Ctrl LHW Rank 1.
 
 ```
-#showtooltip Lesser Healing Wave(Rank 4)
-/cast [target=mouseover,help,nodead] Lesser Healing Wave(Rank 4); Lesser Healing Wave(Rank 4)
+#showtooltip
+/cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave
 ```
 
-```
-#showtooltip Healing Wave
-/cast [mod:alt,target=player] Healing Wave; [target=mouseover,help,nodead] Healing Wave; Healing Wave
-```
+Healing Wave. Shift Rank 1:
 
 ```
-#showtooltip Healing Wave(Rank 1)
-/cast [target=mouseover,help,nodead] Healing Wave(Rank 1); Healing Wave(Rank 1)
+#showtooltip
+/cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave
 ```
 
 ## Chain Heal
 
 ```
 #showtooltip Chain Heal
-/cast [target=mouseover,help,nodead] Chain Heal; Chain Heal
+/cast [mod:alt,target=player] Chain Heal; Chain Heal
 ```
 
 ## Nature's Swiftness + heal (resto talent)
@@ -161,7 +136,7 @@ Two-hand vs off-hand: Classic imbue applies to the weapon you have in the enchan
 ```
 #showtooltip Healing Wave
 /cast Nature's Swiftness
-/cast [target=mouseover,help,nodead] Healing Wave; Healing Wave
+/cast Healing Wave
 ```
 
 ## Totems — earth
@@ -323,12 +298,12 @@ Reincarnation is an auto-rez talent, not a `/cast` you fire on a corpse. Do not 
 
 ```
 #showtooltip Water Breathing
-/cast [target=mouseover,help,nodead] Water Breathing; Water Breathing
+/cast [mod:alt,target=player] Water Breathing; Water Breathing
 ```
 
 ```
 #showtooltip Water Walking
-/cast [target=mouseover,help,nodead] Water Walking; Water Walking
+/cast [mod:alt,target=player] Water Walking; Water Walking
 ```
 
 ## SoD note

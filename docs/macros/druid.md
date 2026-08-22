@@ -4,26 +4,14 @@
 
 `/cancelform` leaves any shapeshift so you can heal or innervate.
 
-## Cancel form + heal
+## Cancel form + Healing Touch
+
+Alt self. Shift Rank 4. Ctrl Rank 1.
 
 ```
-#showtooltip Healing Touch
+#showtooltip
 /cancelform
-/cast [mod:alt,target=player] Healing Touch; [target=mouseover,help,nodead] Healing Touch; Healing Touch
-```
-
-## Healing Touch ranks
-
-```
-#showtooltip Healing Touch(Rank 4)
-/cancelform
-/cast [target=mouseover,help,nodead] Healing Touch(Rank 4); Healing Touch(Rank 4)
-```
-
-```
-#showtooltip Healing Touch(Rank 1)
-/cancelform
-/cast [target=mouseover,help,nodead] Healing Touch(Rank 1); Healing Touch(Rank 1)
+/cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch
 ```
 
 ## Regrowth / Rejuvenation
@@ -31,21 +19,15 @@
 ```
 #showtooltip Regrowth
 /cancelform
-/cast [mod:alt,target=player] Regrowth; [target=mouseover,help,nodead] Regrowth; Regrowth
+/cast [mod:alt,target=player] Regrowth; Regrowth
 ```
 
+Shift Rejuvenation Rank 3:
+
 ```
-#showtooltip Rejuvenation
+#showtooltip
 /cancelform
-/cast [mod:alt,target=player] Rejuvenation; [target=mouseover,help,nodead] Rejuvenation; Rejuvenation
-```
-
-Downrank Rejuvenation:
-
-```
-#showtooltip Rejuvenation(Rank 3)
-/cancelform
-/cast [target=mouseover,help,nodead] Rejuvenation(Rank 3); Rejuvenation(Rank 3)
+/cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation
 ```
 
 ## Swiftmend (resto talent)
@@ -53,7 +35,7 @@ Downrank Rejuvenation:
 ```
 #showtooltip Swiftmend
 /cancelform
-/cast [target=mouseover,help,nodead] Swiftmend; Swiftmend
+/cast Swiftmend
 ```
 
 ## Nature's Swiftness + Healing Touch
@@ -62,7 +44,7 @@ Downrank Rejuvenation:
 #showtooltip Healing Touch
 /cancelform
 /cast Nature's Swiftness
-/cast [target=mouseover,help,nodead] Healing Touch; Healing Touch
+/cast Healing Touch
 ```
 
 ## Tranquility
@@ -78,7 +60,7 @@ Downrank Rejuvenation:
 ```
 #showtooltip Innervate
 /cancelform
-/cast [mod:alt,target=player] Innervate; [target=mouseover,help,nodead] Innervate; Innervate
+/cast [mod:alt,target=player] Innervate; Innervate
 ```
 
 ```
@@ -90,7 +72,7 @@ Downrank Rejuvenation:
 ```
 #showtooltip Rebirth
 /cancelform
-/cast [target=mouseover,help,dead] Rebirth; Rebirth
+/cast Rebirth
 ```
 
 ```
@@ -103,19 +85,19 @@ Downrank Rejuvenation:
 ```
 #showtooltip Remove Curse
 /cancelform
-/cast [mod:alt,target=player] Remove Curse; [target=mouseover,help,nodead] Remove Curse; Remove Curse
+/cast [mod:alt,target=player] Remove Curse; Remove Curse
 ```
 
 ```
 #showtooltip Abolish Poison
 /cancelform
-/cast [mod:alt,target=player] Abolish Poison; [target=mouseover,help,nodead] Abolish Poison; Abolish Poison
+/cast [mod:alt,target=player] Abolish Poison; Abolish Poison
 ```
 
 ```
 #showtooltip Cure Poison
 /cancelform
-/cast [target=mouseover,help,nodead] Cure Poison; Cure Poison
+/cast [mod:alt,target=player] Cure Poison; Cure Poison
 ```
 
 ## Mark of the Wild / Thorns / Gift
@@ -123,7 +105,7 @@ Downrank Rejuvenation:
 ```
 #showtooltip Mark of the Wild
 /cancelform
-/cast [target=mouseover,help,nodead] Mark of the Wild; Mark of the Wild
+/cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
 ```
 
 ```
@@ -135,7 +117,7 @@ Downrank Rejuvenation:
 ```
 #showtooltip Thorns
 /cancelform
-/cast [target=mouseover,help,nodead] Thorns; Thorns
+/cast [mod:alt,target=player] Thorns; Thorns
 ```
 
 ## Hibernate / Entangling Roots / Nature's Grasp / Cyclone
@@ -145,21 +127,15 @@ Cyclone is TBC. Era:
 ```
 #showtooltip Hibernate
 /cancelform
-/cast [target=mouseover,harm,nodead] Hibernate; Hibernate
+/cast Hibernate
 ```
 
+Shift Rank 1 (pvp / kite):
+
 ```
-#showtooltip Entangling Roots
+#showtooltip
 /cancelform
-/cast Entangling Roots
-```
-
-Rank 1 roots (pvp / kite):
-
-```
-#showtooltip Entangling Roots(Rank 1)
-/cancelform
-/cast Entangling Roots(Rank 1)
+/cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots
 ```
 
 ```
@@ -169,16 +145,11 @@ Rank 1 roots (pvp / kite):
 
 ## Moonfire / Wrath / Starfire / Insect Swarm / Hurricane
 
-```
-#showtooltip Moonfire
-/cast Moonfire
-```
-
-Rank 1 Moonfire (tag):
+Shift Rank 1 (tag):
 
 ```
-#showtooltip Moonfire(Rank 1)
-/cast Moonfire(Rank 1)
+#showtooltip
+/cast [mod:shift] Moonfire(Rank 1); Moonfire
 ```
 
 ```
@@ -240,13 +211,6 @@ Omen is a talent proc, not a spam button.
 ```
 
 Use `Bear Form` until you train Dire Bear.
-
-Mouseover Growl:
-
-```
-#showtooltip Growl
-/cast [target=mouseover,harm,nodead] Growl; Growl
-```
 
 ```
 #showtooltip Maul
@@ -325,13 +289,8 @@ Bash is the bear interrupt/stun.
 ```
 
 ```
-#showtooltip Ferocious Bite
-/cast Ferocious Bite
-```
-
-```
-#showtooltip Ferocious Bite(Rank 1)
-/cast Ferocious Bite(Rank 1)
+#showtooltip
+/cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite
 ```
 
 ```

@@ -24,13 +24,13 @@ Put tests in square brackets. Separate options with `;` (first match wins).
 | `mounted` / `indoors` / `swimming` | Position |
 | `channeling` / `nochanneling` | You are channeling |
 | `equipped:Shields` | Item type on |
-| `target=mouseover` | Cast on unit under the cursor |
 | `target=player` | Cast on you |
 | `target=focus` | Cast on focus (Classic Era has `/focus`) |
 | `target=pet` | Cast on your pet |
 | `target=targettarget` | Cast on their target |
+| `target=mouseover` | Cast on the unit under the cursor (optional; these notes do not use it) |
 
-Classic-safe unit syntax is `target=mouseover`. Some later Classic builds also accept `@mouseover`. These notes use `target=`.
+Classic-safe unit syntax is `target=`. Some later Classic builds also accept `@unit`. These notes use `target=`.
 
 Stance numbers are class-specific. See each class file.
 
@@ -43,6 +43,25 @@ Append the rank in parentheses. No space before `(`:
 /cast Flash Heal(Rank 4)
 /cast Heroic Strike(Rank 3)
 ```
+
+Put every rank of one spell in **one** macro. First match wins:
+
+```
+#showtooltip
+/cast [mod:shift] Frostbolt(Rank 1); Frostbolt
+```
+
+When a mid rank is the usual cheap cast (heal spam), Shift is that rank and Ctrl is Rank 1:
+
+```
+#showtooltip
+/cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal
+```
+
+- No modifier — max rank on the current target.
+- **Shift** — cheap rank on the current target.
+- **Ctrl** — Rank 1 when Shift already holds a mid rank.
+- **Alt** — max rank on you (`target=player`). Do not mix Alt with Shift/Ctrl in these notes.
 
 Use a downrank when you need:
 
