@@ -3,6 +3,7 @@
   Deps: ShadowUI bars, media/outer_shadow.tga
   Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:ApplyBarChrome(),
           ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
+  Notes: ParkFrame uses SetPointBase when 1.15.9 Edit Mode has replaced SetPoint.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -25,8 +26,27 @@ local OUTER_BACKDROP = {
   },
 }
 
+local function hookEditModePark()
+  if Addon._editModeParkHook or not hooksecurefunc then
+    return
+  end
+  local mixin = _G.EditModeSystemMixin
+  if not mixin or not mixin.ApplySystemAnchor then
+    return
+  end
+  Addon._editModeParkHook = true
+  hooksecurefunc(mixin, "ApplySystemAnchor", function(frame)
+    if snapping[frame] or not frame or not frame._shadowUIPark then
+      return
+    end
+    local spec = frame._shadowUIPark
+    Addon:ParkFrame(frame, spec.point, spec.x, spec.y, spec.width, spec.height,
+      spec.relativeTo, spec.relativePoint)
+  end)
+end
+
 function Addon:ParkFrame(frame, point, x, y, width, height, relativeTo, relativePoint)
-  if not frame or not frame.SetPoint then
+  if not frame or not (frame.SetPointBase or frame.SetPoint) then
     return
   end
   frame._shadowUIPark = {
@@ -38,24 +58,31 @@ function Addon:ParkFrame(frame, point, x, y, width, height, relativeTo, relative
     relativeTo = relativeTo,
     relativePoint = relativePoint,
   }
+  hookEditModePark()
   if hooksecurefunc and not frame._shadowUIWatch then
     frame._shadowUIWatch = true
-    hooksecurefunc(frame, "SetPoint", function(self)
-      if snapping[self] or self._shadowUIDragging then
-        return
-      end
-      local spec = self._shadowUIPark
-      if spec then
-        Addon:ParkFrame(self, spec.point, spec.x, spec.y, spec.width, spec.height,
-          spec.relativeTo, spec.relativePoint)
-      end
-    end)
+    if frame.SetPoint then
+      hooksecurefunc(frame, "SetPoint", function(self)
+        if snapping[self] or self._shadowUIDragging then
+          return
+        end
+        local spec = self._shadowUIPark
+        if spec then
+          Addon:ParkFrame(self, spec.point, spec.x, spec.y, spec.width, spec.height,
+            spec.relativeTo, spec.relativePoint)
+        end
+      end)
+    end
   end
   snapping[frame] = true
-  if frame.ClearAllPoints then
-    frame:ClearAllPoints()
+  -- 1.15.9 Edit Mode replaces SetPoint. The override notifies Edit Mode, which
+  -- re-applies its layout while snapping is on. SetPointBase skips that fight.
+  local clear = frame.ClearAllPointsBase or frame.ClearAllPoints
+  local setPoint = frame.SetPointBase or frame.SetPoint
+  if clear then
+    clear(frame)
   end
-  frame:SetPoint(point, relativeTo or UIParent, relativePoint or point, x, y)
+  setPoint(frame, point, relativeTo or UIParent, relativePoint or point, x, y)
   if width and frame.SetWidth then
     frame:SetWidth(width)
   end

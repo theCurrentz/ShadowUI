@@ -124,10 +124,10 @@ The General chat window. ShadowUI parks it and fills it black. It is not a Bar a
 A Details! damage chart or threat chart. ShadowUI parks those two charts when Details! is loaded. They are not Bars and are not in Layout.
 
 **Player Frame**:
-The Blizzard player unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. ShadowUI does not replace it.
+The Blizzard player unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. On 1.15.9 it uses SetPointBase because Edit Mode replaces SetPoint. ShadowUI does not replace it.
 
 **Target Frame**:
-The Blizzard target unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. ShadowUI does not replace it. Status Text on health and mana follows the Blizzard Status Text option. A rare-elite target uses the Blizzard Rare-Elite dragon. The Threat Bar sits flush on the nameplate. Target auras show remaining time from UnitAura.
+The Blizzard target unit frame. ShadowUI parks it and applies Darken. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. On 1.15.9 it uses SetPointBase because Edit Mode replaces SetPoint. ShadowUI does not replace it. Status Text on health and mana follows the Blizzard Status Text option. A rare-elite target uses the Blizzard Rare-Elite dragon. The Threat Bar sits flush on the nameplate. Target auras show remaining time from UnitAura.
 
 **Status Text**:
 Health and mana numbers on a unit frame. Format comes from Blizzard Status Text (numeric, percent, both, or none). ShadowUI paints one centre caption on the Target Frame. Native LeftText, RightText, and TextString stay hidden.

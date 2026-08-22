@@ -300,13 +300,14 @@ shield fills the lower half of the icon and reads `50%`.
   at `CENTER` (202, -179) until Layout supplies a new place. `SkinDetails` docks
   the Details! damage chart flush `RIGHT` (0, -194) at 153×164 and the Tiny
   Threat chart at `BOTTOMRIGHT` (0, 150) at 153×106. Numbers come from Whitemane
-  Currentz. `ParkFrame` hooks `SetPoint` so Blizzard Edit Mode, Leatrix Plus, and
+  Currentz. `ParkFrame` uses `SetPointBase` when 1.15.9 Edit Mode has replaced
+  `SetPoint`, then hooks `ApplySystemAnchor` so Blizzard Edit Mode, Leatrix Plus, and
   Details cannot keep a different place. Layout Edit Mode drags Bars, the Player
   Frame, and the Target Frame. If Details! is not loaded, `SkinDetails` does
   nothing.
 - **Blizzard chrome uses Lorti vertex colors.** `SkinDarken` sets 0.05 on unit-frame
   art, 0.35 on window art, and 0.2 on leftover bar/XP art, then hooks
-  `SetVertexColor` so Blizzard cannot reset the player or target chrome. Portraits
+  `SetVertexColor`, `SetTexture`, and `SetAtlas` so Blizzard cannot reset the player or target chrome. Portraits
   stay native. Elite and rare target borders darken in place; ShadowUI does not
   ship Lorti's replacement elite textures. A rare-elite target uses the Blizzard
   Rare-Elite dragon, then Darken. The Target Frame paints a full-width Threat Bar flush on the nameplate.

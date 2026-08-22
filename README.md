@@ -87,7 +87,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `micro_bags_spec` asserts the micro row and backpack leave the hidden art frame, keep native Blizzard size and art, keep no gap between items, and dock with no gap from the bottom of the screen.
 `micro_menu_spec` asserts `MicroMenu` parents to the Micro Cluster, hosts stay on `MicroMenu`, and Blizzard Edit Mode `Layout` can compare button centres.
 `tracking_spec` asserts XP and reputation dock to the top of the screen.
-`darken_spec` asserts Lorti vertex colors on unit-frame and window chrome, and that Blizzard cannot reset them.
+`darken_spec` asserts Lorti vertex colors on unit-frame and window chrome, and that Blizzard cannot reset them with SetVertexColor, SetTexture, SetAtlas, or TargetFrameMixin.CheckClassification.
 `button_skin_spec` asserts a 0.05 chrome fill, a 2px icon inset, and a 4px outer edge on action buttons.
 `minimap_spec` asserts the square map uses the SexyMap mask, sits in a 16px Darken buffer with Zone Text on top and an Outer Edge, shows World Layer on the bottom of the holder and Blizzard Time on the map, and keeps cluster icons (including late LFG, ItemRack, and LibDBIcon buttons) on the square path so the player can drag them.
 `auras_spec` asserts buff chrome is darkest, unused slots stay empty, player buffs sit 2px left of the square minimap, and debuff type colour stays native.
@@ -95,7 +95,7 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `status_text_spec` asserts Target Frame health text follows Blizzard Status Text and does not stack native LeftText and RightText.
 `threat_spec` asserts the Threat Bar is full width and flush on the nameplate, including solo.
 `cooldown_count_spec` asserts action-button cooldown seconds hide for the GCD.
-`chat_spec`, `unit_park_spec`, and `details_spec` assert Chat, Player/Target, and Details charts stay on the Currentz chrome lock. `unit_park_spec` also asserts Blizzard Edit Mode cannot keep a different Player Frame or Target Frame place.
+`chat_spec`, `unit_park_spec`, and `details_spec` assert Chat, Player/Target, and Details charts stay on the Currentz chrome lock. `unit_park_spec` also asserts Blizzard Edit Mode cannot keep a different Player Frame or Target Frame place, including the 1.15.9 `SetPoint` override and `ApplySystemAnchor`.
 `itemrack_spec` asserts ItemRack worn-item and menu buttons get icon chrome and Outer Edge, and the minimap ItemRack icon does not get a second edge.
 `mana_ticker_spec` and `swing_spec` cover those meters. Swing lanes are class-gated, hidden until active, and sit flush in the combat meter group. Layout Edit Mode previews every swing lane.
 `range_spec` covers the target Range Display lock and colour bands.

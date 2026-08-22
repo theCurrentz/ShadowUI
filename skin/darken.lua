@@ -3,6 +3,7 @@
   Deps: named FrameXML textures
   Public: ShadowUI:LockVertex(), ShadowUI:LockBackdropBorder(), ShadowUI:DarkenNamed(),
           ShadowUI:DarkenFrameRegions(), ShadowUI:SkinDarken()
+  Notes: LockVertex also hooks SetTexture and SetAtlas. Those APIs reset vertex color.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -29,14 +30,27 @@ function Addon:LockVertex(region, color)
   if not hooksecurefunc then
     return
   end
-  hooksecurefunc(region, "SetVertexColor", function(self, nr, ng, nb)
-    if self._shadowUIPainting or sameColor(nr, ng, nb, color) then
+  local function relock(self)
+    if self._shadowUIPainting then
       return
     end
     self._shadowUIPainting = true
     self:SetVertexColor(color[1], color[2], color[3])
     self._shadowUIPainting = nil
+  end
+  hooksecurefunc(region, "SetVertexColor", function(self, nr, ng, nb)
+    if self._shadowUIPainting or sameColor(nr, ng, nb, color) then
+      return
+    end
+    relock(self)
   end)
+  -- SetTexture / SetAtlas reset vertex color without calling SetVertexColor.
+  if region.SetTexture then
+    hooksecurefunc(region, "SetTexture", relock)
+  end
+  if region.SetAtlas then
+    hooksecurefunc(region, "SetAtlas", relock)
+  end
 end
 
 function Addon:DarkenNamed(names, color)

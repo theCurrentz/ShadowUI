@@ -1,6 +1,7 @@
 --[[
   Purpose: Darken unit-frame chrome the Lorti way and park player/target from Layout.
   Classic maps rare-elite to elite art. SkinRareElite uses the Rare-Elite dragon.
+  1.15.9 CheckClassification lives on TargetFrameMixin, not a global.
   Deps: ShadowUI:LockVertex(), ShadowUI:DarkenNamed(), ShadowUI:DarkenFrameRegions()
   Public: ShadowUI:RareEliteTexture(), ShadowUI:SkinRareElite(),
           ShadowUI:SkinUnitFrames(), ShadowUI:SkinRaidFrames(),
@@ -11,6 +12,7 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
 local BLACK_NAMES = {
   "PlayerFrameTexture",
+  "PlayerFrameVehicleTexture",
   "PlayerFrameAlternateManaBarBorder",
   "PlayerFrameAlternateManaBarLeftBorder",
   "PlayerFrameAlternateManaBarRightBorder",
@@ -68,6 +70,18 @@ function Addon:SkinRareElite(frame)
   end
 end
 
+local function darkenContainer(frame)
+  if not frame then
+    return
+  end
+  local container = frame.PlayerFrameContainer or frame.TargetFrameContainer
+  if not container then
+    return
+  end
+  Addon:LockVertex(container.FrameTexture, Addon.DARKEN_BLACK)
+  Addon:LockVertex(container.VehicleFrameTexture, Addon.DARKEN_BLACK)
+end
+
 local function paintTarget(frame)
   frame = type(frame) == "table" and frame or _G.TargetFrame
   if not frame then
@@ -80,6 +94,18 @@ local function paintTarget(frame)
     Addon:LockVertex(_G[name .. "TextureFrameTexture"], Addon.DARKEN_BLACK)
     Addon:LockVertex(_G[name .. "Texture"], Addon.DARKEN_BLACK)
   end
+  darkenContainer(frame)
+end
+
+local function watchClassification(frame)
+  if not frame or frame._shadowUIClassHook or not hooksecurefunc then
+    return
+  end
+  if not frame.CheckClassification then
+    return
+  end
+  frame._shadowUIClassHook = true
+  hooksecurefunc(frame, "CheckClassification", paintTarget)
 end
 
 local function dim(region, alpha)
@@ -214,8 +240,11 @@ function Addon:SkinUnitFrames()
   self:DarkenChild(_G.CastingBarFrame, "Border", black)
   self:DarkenChild(_G.TargetFrameSpellBar, "Border", black)
   self:DarkenChild(_G.FocusFrameSpellBar, "Border", black)
+  darkenContainer(_G.PlayerFrame)
   paintTarget(_G.TargetFrame)
   paintTarget(_G.FocusFrame)
+  watchClassification(_G.TargetFrame)
+  watchClassification(_G.FocusFrame)
   dim(_G.PlayerPVPIcon, 0.35)
   dim(_G.TargetFrameTextureFramePVPIcon, 0.35)
   dim(_G.PlayerFrameGroupIndicator, 0)
@@ -235,6 +264,9 @@ end
 if hooksecurefunc then
   if TargetFrame_CheckClassification then
     hooksecurefunc("TargetFrame_CheckClassification", paintTarget)
+  end
+  if TargetFrameMixin and TargetFrameMixin.CheckClassification then
+    hooksecurefunc(TargetFrameMixin, "CheckClassification", paintTarget)
   end
   if GameTooltip_ShowCompareItem then
     hooksecurefunc("GameTooltip_ShowCompareItem", function(tooltip)
