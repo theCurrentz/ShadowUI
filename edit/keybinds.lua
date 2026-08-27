@@ -146,4 +146,11 @@ function Addon:ApplyKeybindSession()
   else
     self:SetKeybindTarget(nil)
   end
+  if self.PaintEmptySlotVisibility then
+    for _, bar in pairs(self.bars or {}) do
+      for _, button in ipairs(bar.buttons or {}) do
+        self:PaintEmptySlotVisibility(button)
+      end
+    end
+  end
 end

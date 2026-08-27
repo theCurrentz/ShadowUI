@@ -1,304 +1,428 @@
 # Mage
 
-## Teleport vs portal (hold Shift for portal)
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
 
-Alliance:
+Existing Currentz style: `/cqs`, `[nomod]` max rank, `[mod:shift]` Rank 1, `@cursor` ground spells, Ice Block toggle.
+
+## Mage burst — class-specific
+
+Existing SpellQueueWindow + trinket + PoM set. Do not shorten.
+
+### ap + PoM — `m-appom`
+
+```
+# class-specific MAGE arcane
+/run local _,_,lagHome = GetNetStats() s = lagHome * 2
+/console SpellQueueWindow s
+/cast !Presence of Mind
+/use [mod:shift]Zandalarian Hero Charm
+/use [mod:shift]Talisman of Ephemeral Power
+/cast !Arcane Power
+/cast Frostbolt
+```
+
+### PoM + fb — `m-pomfb`
+
+```
+# class-specific MAGE frost
+/run local _,_,lagHome = GetNetStats() s = lagHome * 2
+/console SpellQueueWindow s
+/cast !Presence of Mind
+/use [mod:shift]Zandalarian Hero Charm
+/use [mod:shift]Talisman of Ephemeral Power
+/cast Frostbolt
+```
+
+### mqg — `m-mqg`
+
+```
+# class-specific MAGE frost
+/run local _,_,lagHome = GetNetStats() s = lagHome * 2
+/console SpellQueueWindow s
+/use Mind Quickening Gem
+/cast Frostbolt
+```
+
+### toep +fb — `m-toep`
+
+```
+# class-specific MAGE frost
+/run local _,_,lagHome = GetNetStats() s = lagHome * 2
+/console SpellQueueWindow s
+/use Talisman of Ephemeral Power
+/cast Frostbolt;[mod:shift]
+```
+
+### zhc — `m-zhc`
+
+```
+# class-specific MAGE frost
+/run local _,_,lagHome = GetNetStats() s = lagHome * 2
+/console SpellQueueWindow s
+/use item:19950
+/cast Frostbolt;[mod:shift]
+```
+
+### ap — `m-ap`
+
+```
+#showtooltip Arcane Power
+# class-specific MAGE arcane
+/cast Arcane Power
+```
+
+### comb — `m-comb`
+
+```
+#showtooltip Combustion
+# class-specific MAGE fire
+/cast Combustion
+```
+
+## Mage control — class-specific
+
+Kicks, sheep, block, decurse. Existing bodies win.
+
+### CS — `m-cs`
+
+Mouseover stays commented, as on disk.
 
 ```
 #showtooltip
-/cast [mod:shift] Portal: Stormwind; Teleport: Stormwind
-```
-
-```
-#showtooltip
-/cast [mod:shift] Portal: Ironforge; Teleport: Ironforge
-```
-
-```
-#showtooltip
-/cast [mod:shift] Portal: Darnassus; Teleport: Darnassus
-```
-
-Horde:
-
-```
-#showtooltip
-/cast [mod:shift] Portal: Orgrimmar; Teleport: Orgrimmar
-```
-
-```
-#showtooltip
-/cast [mod:shift] Portal: Undercity; Teleport: Undercity
-```
-
-```
-#showtooltip
-/cast [mod:shift] Portal: Thunder Bluff; Teleport: Thunder Bluff
-```
-
-One city per macro. You cannot fit every city under 255 characters with full names.
-
-## Counterspell
-
-```
-#showtooltip Counterspell
+# class-specific MAGE all
 /stopcasting
+#/cast [target=mouseover,exists] Counterspell
 /cast Counterspell
 ```
 
-Focus kick (set `/focus` first):
+### CSf — `m-cs-focus`
 
 ```
 #showtooltip Counterspell
+# class-specific MAGE all
 /stopcasting
 /cast [target=focus,harm,nodead] Counterspell; Counterspell
 ```
 
-## Polymorph
+### sheep — `m-sheep`
 
 ```
-#showtooltip Polymorph
+#showtooltip
+# class-specific MAGE all
+/ra SHEEPING %t
+/y SHEEPING %t
+/cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)
+```
+
+### decurse — `m-decurse`
+
+```
+#showtooltip Remove Lesser Curse
+# class-specific MAGE all
+/cast [target=mouseover,exists] Remove Lesser Curse
+/cast Remove Lesser Curse
+```
+
+### ib — `m-ib`
+
+```
+#showtooltip Ice block
+# class-specific MAGE frost
 /stopcasting
-/cast [mod:shift] Polymorph(Rank 1); Polymorph
+/cast Ice block
+/cancelaura Ice block
 ```
 
-Pig / turtle are items or later ranks — Era base sheep is **Polymorph**. Shift Rank 1 for low damage.
-
-## Frostbolt
-
-Shift Rank 1 (kite / tag / wand setup):
+### MS — `m-ms`
 
 ```
 #showtooltip
-/cast [mod:shift] Frostbolt(Rank 1); Frostbolt
+# class-specific MAGE all
+/stopcasting
+/cast mana shield
 ```
 
-## Fireball / Scorch / Pyroblast
+### fn — `m-nova`
+
+```
+#showtooltip Frost Nova
+# class-specific MAGE frost
+/cast Frost Nova
+```
+
+### blink — `m-blink`
+
+```
+#showtooltip Blink
+# class-specific MAGE all
+/cast Blink
+```
+
+### evo — `m-evo`
+
+```
+#showtooltip Evocation
+# class-specific MAGE all
+/cast Evocation
+```
+
+### iba — `m-barrier`
+
+```
+#showtooltip Ice Barrier
+# class-specific MAGE frost
+/cast Ice Barrier
+```
+
+### ward — `m-ward`
 
 ```
 #showtooltip
-/cast [mod:shift] Fireball(Rank 1); Fireball
+# class-specific MAGE all
+/cast [mod:shift] Fire Ward; Frost Ward
 ```
+
+### slowfall — `m-slowfall`
+
+```
+#showtooltip Slow Fall
+# class-specific MAGE all
+/cast [mod:alt,target=player] Slow Fall; Slow Fall
+```
+
+### dm — `m-dampen`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [mod:shift] Amplify Magic; Dampen Magic
+```
+
+### snap — `m-csnap`
+
+```
+#showtooltip Cold Snap
+# class-specific MAGE frost
+/cast Cold Snap
+```
+
+### nef — `m-nef`
+
+```
+# class-specific MAGE fire
+/use [@cursor] Stratholme Holy Water
+/cast Blast Wave
+```
+
+## Mage filler — class-specific
+
+Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
+
+### f — `m-fb`
+
+```
+#showtooltip
+# class-specific MAGE frost
+/cqs
+/cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)
+```
+
+### fb — `m-fireball`
+
+```
+#showtooltip Fireball
+# class-specific MAGE fire
+/cqs
+/cast [mod:shift] Combustion
+/use [mod:shift] Mind Quickening Gem
+/use [mod:shift] Talisman of Ephemeral Power
+/use [mod:shift] Zandalarian Hero Charm
+/cast Fireball;
+```
+
+### ' — `m-blast`
+
+```
+#showtooltip
+# class-specific MAGE fire
+/cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)
+```
+
+### ae — `m-ae`
+
+```
+#showtooltip
+# class-specific MAGE arcane
+/cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)
+```
+
+### am — `m-am`
+
+```
+#showtooltip Arcane Missiles
+# class-specific MAGE arcane
+/cast [nochanneling:Arcane Missiles] Arcane Missiles
+```
+
+### Blizz — `m-blizz`
+
+```
+#showtooltip
+# class-specific MAGE frost
+/cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)
+```
+
+### cone — `m-cone`
+
+```
+#showtooltip
+# class-specific MAGE frost
+/cast [nomod]Cone of Cold; [mod:shift] Cone of Cold(rank 1)
+```
+
+### fs — `m-fs`
+
+```
+#showtooltip
+# class-specific MAGE fire
+/use [mod:alt] Talisman of Ephemeral Power
+/use [mod:alt] Zandalarian Hero Charm
+/cast [mod:alt] Arcane Power
+/cast [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike
+```
+
+### sc — `m-scorch`
 
 ```
 #showtooltip Scorch
+# class-specific MAGE fire
+/cqs
 /cast Scorch
 ```
 
-```
-#showtooltip Pyroblast
-/cast Pyroblast
-```
-
-Presence of Mind + Pyroblast:
+### py — `m-pyro`
 
 ```
 #showtooltip Pyroblast
+# class-specific MAGE fire
 /cast Presence of Mind
 /cast Pyroblast
 ```
 
-## Fire Blast (instant filler)
-
-```
-#showtooltip Fire Blast
-/cast Fire Blast
-```
-
-## Frost Nova / Cone of Cold / Blizzard
-
-```
-#showtooltip Frost Nova
-/cast Frost Nova
-```
-
-```
-#showtooltip Cone of Cold
-/cast Cone of Cold
-```
-
-Shift Rank 1 (mana, still slows):
-
-```
-#showtooltip
-/cast [mod:shift] Blizzard(Rank 1); Blizzard
-```
-
-## Arcane Explosion / Arcane Missiles / Arcane Power
-
-Shift Rank 1 farm:
-
-```
-#showtooltip
-/cast [mod:shift] Arcane Explosion(Rank 1); Arcane Explosion
-```
-
-```
-#showtooltip Arcane Missiles
-/cast Arcane Missiles
-```
-
-```
-#showtooltip Arcane Power
-/cast Arcane Power
-```
-
-Combustion (fire talent):
-
-```
-#showtooltip Combustion
-/cast Combustion
-```
-
-Cold Snap:
-
-```
-#showtooltip Cold Snap
-/cast Cold Snap
-```
-
-## Ice Block / Ice Barrier / Mana Shield / Fire Ward / Frost Ward
-
-```
-#showtooltip Ice Block
-/cast Ice Block
-```
-
-Cancel Ice Block:
-
-```
-/cancelaura Ice Block
-```
-
-```
-#showtooltip Ice Barrier
-/cast Ice Barrier
-```
-
-```
-#showtooltip Mana Shield
-/cast Mana Shield
-```
-
-```
-#showtooltip Fire Ward
-/cast Fire Ward
-```
-
-```
-#showtooltip Frost Ward
-/cast Frost Ward
-```
-
-Shift Fire Ward, else Frost Ward:
-
-```
-#showtooltip
-/cast [mod:shift] Fire Ward; Frost Ward
-```
-
-## Blink / Evocation
-
-```
-#showtooltip Blink
-/cast Blink
-```
-
-```
-#showtooltip Evocation
-/cast Evocation
-```
-
-## Remove Lesser Curse
-
-```
-#showtooltip Remove Lesser Curse
-/cast [mod:alt,target=player] Remove Lesser Curse; Remove Lesser Curse
-```
-
-## Slow Fall
-
-```
-#showtooltip Slow Fall
-/cast [mod:alt,target=player] Slow Fall; Slow Fall
-```
-
-## Dampen Magic / Amplify Magic
-
-```
-#showtooltip
-/cast [mod:shift] Amplify Magic; Dampen Magic
-```
-
-```
-#showtooltip Dampen Magic
-/cast [mod:alt,target=player] Dampen Magic; Dampen Magic
-```
-
-## Mana gem
-
-Use the highest gem you have. Names:
-
-```
-#showtooltip Mana Ruby
-/use Mana Ruby
-```
-
-```
-#showtooltip Mana Citrine
-/use Mana Citrine
-```
-
-Conjure:
-
-```
-#showtooltip Conjure Mana Ruby
-/cast Conjure Mana Ruby
-```
-
-## Conjure food / water
-
-```
-#showtooltip Conjure Water
-/cast Conjure Water
-```
-
-```
-#showtooltip Conjure Food
-/cast Conjure Food
-```
-
-Trade water (target a player, then):
-
-```
-/cast Conjure Water
-```
-
-There is no safe one-button trade-all in 255 characters without `/script`. Trade by hand or use a small helper addon.
-
-## Wand
+### shoot — `m-shoot`
 
 ```
 #showtooltip Shoot
+# class-specific MAGE all
 /cast Shoot
 ```
 
-## Mage Armor / Ice Armor / Molten Armor
+## Mage ports Alliance — class-specific
 
-Molten Armor is TBC. Era:
+Existing Currentz IF/SW plus Darnassus from the plan. Shift = portal.
+
+### portsw — `m-sw`
 
 ```
 #showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind;
+```
+
+### if — `m-if`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge;
+```
+
+### dar — `m-dar`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus;
+```
+
+### water — `m-water`
+
+```
+#showtooltip Conjure Water
+# class-specific MAGE all
+/cast Conjure Water
+```
+
+### food — `m-food`
+
+```
+#showtooltip Conjure Food
+# class-specific MAGE all
+/cast Conjure Food
+```
+
+### gem — `m-gem`
+
+```
+#showtooltip Mana Ruby
+# class-specific MAGE all
+/use Mana Ruby
+```
+
+### arm — `m-armor`
+
+```
+#showtooltip
+# class-specific MAGE all
 /cast [mod:shift] Mage Armor; Ice Armor
 ```
 
+## Mage ports Horde — class-specific
+
+Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
+
+### org — `m-org`
+
 ```
-#showtooltip Frost Armor
-/cast Frost Armor
+# class-specific MAGE all
+/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar;
 ```
 
-Low-level Frost Armor vs Ice Armor: use the spell you trained.
+### uc — `m-uc`
 
-## SoD note
+```
+# class-specific MAGE all
+/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity;
+```
 
-SoD adds Regeneration, extra runes, and sometimes extra teleports by phase. Keep Shift = portal, no modifier = teleport. Counterspell still starts with `/stopcasting`.
+### tb — `m-tb`
+
+```
+# class-specific MAGE all
+/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff;
+```
+
+## Currentz kit — character-specific Currentz
+
+Character-specific Currentz. Touch of Chaos wand and named Naxx shells. Generic Shoot stays in mage-filler.
+
+### shadow — `m-wand`
+
+```
+#showtooltip
+# character-specific MAGE all Currentz
+/equip Touch of Chaos
+/cast shoot
+```
+
+### prot — `m-prot`
+
+Named items. Edit names if another toon uses different shells.
+
+```
+#showtooltip
+# character-specific MAGE all Currentz
+/use The Burrower's Shell
+/use Loatheb's Reflection
+```

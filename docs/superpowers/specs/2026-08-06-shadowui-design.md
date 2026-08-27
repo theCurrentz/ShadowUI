@@ -2,12 +2,12 @@
 
 **Date:** 2026-08-06  
 **Status:** Approved for implementation planning  
-**Target client:** World of Warcraft Classic Era / Season of Discovery (Interface `115xx`)  
+**Target client:** World of Warcraft Classic Era (Interface `115xx`)  
 **Addon name:** ShadowUI  
 
 ## Goal
 
-ShadowUI is a Classic Era/SoD addon that replaces Bartender-style action bar management and selective Lorti-style chrome with one opinionated, auto-configuring system. Layouts and keybinds are profiled by **class** (not character), with an inheritance stack of **Base → Class → Variant**. New characters apply a complete layout with no setup wizard.
+ShadowUI is a Classic Era addon that replaces Bartender-style action bar management and selective Lorti-style chrome with one opinionated, auto-configuring system. Layouts and keybinds are profiled by **class** (not character), with an inheritance stack of **Base → Class → Variant**. New characters apply a complete layout with no setup wizard.
 
 ## Non-goals (v1)
 
@@ -31,11 +31,14 @@ ShadowUI/
     db.lua                      -- AceDB schema, defaults registration
     resolve.lua                 -- merge Base → Class → Variant into effective config
   bars/
-    bar.lua                     -- bar frame: grid, drag, scale, columns
     button.lua                  -- LAB buttons with 2px Lorti-dark icon chrome
     cooldown.lua                -- remaining cooldown seconds on ShadowUI action buttons
+    grid.lua                    -- snap a Bar size to columns and rows
+    bar.lua                     -- bar frame: grid, scale, columns
+    overlay.lua                 -- HUD overlay drag and column/row resize
+    pet.lua                     -- pet action binding and token texture resolve
+    special.lua                 -- pet and possess bars
     manager.lua                 -- create/enable all bars; apply resolved layout
-    special.lua                 -- stance / aura / form / possess / pet bars
   cast/
     castbar.lua                 -- Quartz-like cast/channel bar (fixed layout)
     gcd.lua                     -- GCD underlay bar
@@ -46,17 +49,19 @@ ShadowUI/
     shields.lua                 -- Classic Era absorb catalogue and remaining absorb
     shieldrow.lua               -- colour-coded Shield Row locked to the Player Frame
   skin/
-    chrome.lua                  -- matte fill on ShadowUI bar backdrops
+    chrome.lua                  -- Lorti outer edge; no matte bar fill
     darken.lua                  -- Lorti SetVertexColor lock helper
     frames.lua                  -- unit, raid, party, pet, tooltip chrome; Rare-Elite dragon
-    statustext.lua              -- Target Frame health and mana Status Text
-    threat.lua                  -- Target Frame Threat Bar flush on the nameplate
+    statustext.lua              -- hide leftover ShadowUI Target Frame Status Text
+    threat.lua                  -- Target Frame Threat Bar bubble tab on the portrait
     windows.lua                 -- bags, character, vendor, XP art
     auras.lua                   -- buff and debuff icon chrome
     auratime.lua                -- Target Frame Aura Duration swipe and seconds
     chat.lua                    -- semi-transparent black chat
     micro.lua                   -- micro + backpack on ShadowUIMicroCluster, native art, flush bottom-right
     minimap.lua                 -- large square blackened minimap
+    rainbow.lua                 -- Rainbow Organizer category order, layout, and glow
+    bagnon.lua                  -- Bagnon inventory and bank Darken, Outer Edge, Rainbow Organizer
   edit/
     mode.lua                    -- Layout Edit Mode, grid snap, bar and unit-frame drag
     frames.lua                  -- Player Frame and Target Frame HUD hosts
@@ -68,7 +73,7 @@ ShadowUI/
     config.lua                  -- AceConfig panel + slash commands
   defaults/
     base.lua                    -- shared centered layout; all bars enabled
-    classes/                    -- sparse class deltas (stance/aura/form placement)
+    classes/                    -- sparse class deltas (mage firstSlot, pet)
       WARRIOR.lua
       PALADIN.lua
       ...
@@ -146,18 +151,18 @@ Minimal per-character state only:
 - Action Slot Lock: click uses the action. Shift-drag moves a spell or item and does not use the action. `/shadowui` hard lock blocks that move.
 - Square ability icons with a 2px Lorti-dark inset (chrome 0.05, 0.05, 0.05) and a 4px black outer edge
 - No margin between buttons (button frames abut; icons do not)
-- Bar backdrop: matte black fill
+- Bar backdrop: none. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label.
 
 ### Defaults
 
 - **Base:** six reversed rows on the bottom edge; bar7 left and bar8 right as 3×4 grids
-- **Class defaults:** only account for special bars (warrior stances, paladin auras, druid forms, pet, etc.) as sparse position/paging deltas — not a second full layout
+- **Class defaults:** sparse position/paging deltas only (mage `firstSlot`, Warrior stance pages, pet) — not a second full layout. Warrior `bar1` uses slots 73–84 in Battle, 85–96 in Defensive, and 97–108 in Berserker while its physical keys stay fixed. Warrior stances, Paladin auras, Druid forms, Rogue Stealth, Priest Shadowform, and Shaman Ghost Wolf still use the Blizzard Stance Bar as the native selector.
 - Auto-enable the centered rows on apply; hide conflicting Blizzard and Bartender bar art
 
 ### Edit mode
 
 - Two sessions; they cannot run together
-- Layout Edit Mode: `/shadowui edit` — snap grid (hold Shift to skip); HUD overlay on whole bars, the Player Frame, and the Target Frame (v1: no per-button repositioning). Blizzard Edit Mode cannot keep a different Player Frame or Target Frame place.
+- Layout Edit Mode: `/shadowui edit` — snap grid (hold Shift to skip); HUD overlay on whole bars, the Player Frame, the Target Frame, and the Stance Bar (v1: no per-button repositioning). A Bar resize grip changes columns and rows and does not change scale. Blizzard Edit Mode cannot keep a different Player Frame, Target Frame, or Stance Bar place.
 - Keybind Edit Mode: `/shadowui binds` — hover a button, press a key; Escape clears; no SavedBindings write
 - Layer picker always visible in either session: Base / Class / Variant
 - On exit: persist active layer deltas and re-apply resolved layout / keybinds
@@ -166,13 +171,14 @@ Minimal per-character state only:
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | Matte black bar fill; 0.05 chrome around each icon; 4px black outer edge; Cooldown Count for cooldowns of 2s or more |
-| Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame Status Text follows Blizzard Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar flush on the nameplate |
+| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels; 4px black outer edge on bound slots; Cooldown Count for cooldowns of 2s or more |
+| Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame keeps native Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar bubble tab on the portrait |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
+| Bagnon inventory and bank | Darken fill, Outer Edge, search, sort; Rainbow Organizer groups by category with a coloured glow in addition to quality chrome; bag breaks stay off |
 | XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
-| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 2px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
+| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 4px below the top of the screen and 4px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
 | Tooltips | Dark backdrop border |
-| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Time clock square on the map (hover Time Info, click Stopwatch), Outer Edge; cluster icons on the square path and draggable |
+| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Time is Blizzard TimeManagerClockButton under the map (hover Time Info, click Stopwatch), mouse-wheel zoom and 5s auto zoom-out, Outer Edge; cluster icons on the square path 10px outside the map and draggable |
 | Chat | Black, semi-transparent |
 | Micro menu + bag bar | Native Blizzard size and art (no Shop); one row, flush bottom-right, 0px gap between items, 0px gap from screen bottom |
 | Cast bar | Custom player Cast Bar (see below); Blizzard player cast bar hidden; target/focus spell bars stay Blizzard |
@@ -199,7 +205,7 @@ Everything else is left alone.
 ## Range Display
 
 - Target min–max yards
-- Ships `CENTER` offset `(-6, -170)` from Whitemane Currentz RangeDisplay; Layout Edit Mode can drag it
+- Ships `BOTTOM`/`TOP` on the combat meter group so it sits flush on the top of the Cast Bar and shares its centre; Layout Edit Mode can drag it
 - Colour bands: close 5, short 20, medium 30, default, out of range 40
 - No mouseover, pet, focus, arena, or warning sounds
 
@@ -228,6 +234,7 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 - `/shadowui` or `/sui` — open options
 - `/shadowui edit` — toggle Layout Edit Mode
 - `/shadowui binds` — toggle Keybind Edit Mode
+- `/shadowui deck` — replace the Warrior Action Deck outside combat
 - `/shadowui layer base|class|variant` — set edit save target
 - `/shadowui variant <name>` — manual variant switch
 - `/shadowui variant clear` — clear manual override
@@ -238,7 +245,7 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 - Talent-tree binding per variant
 - Current edit layer indicator
 - Edit layout / Edit keybinds
-- On/off toggle for each Bar; writes `enabled` to the selected Layer
+- On/off toggle for every Bar, including Special Bars; reads and writes `enabled` through the selected Layer
 - Reset selected layer / reset to shipped defaults
 - No cast-bar settings
 
@@ -253,7 +260,7 @@ Vendored (or packager-managed) under `libs/`:
 
 ## TOC / packaging
 
-- `ShadowUI.toc` with Classic Era/SoD interface version(s) appropriate for 1.15.x
+- `ShadowUI.toc` with Classic Era interface version(s) appropriate for 1.15.x
 - `## SavedVariables: ShadowUIDB`
 - `## SavedVariablesPerCharacter: ShadowUICharDB`
 - Load order: libs → core → defaults → bars/cast/skin/edit/profile → options
@@ -277,7 +284,7 @@ Vendored (or packager-managed) under `libs/`:
 
 ## Open implementation notes (non-blocking)
 
-- Exact Interface version number(s) to set in TOC against current Era/SoD build at implement time
+- Exact Interface version number(s) to set in TOC against current Era build at implement time
 - Grid cell size chosen to match full icon size (e.g. 36px) with zero gap
 - Keybind apply must respect combat lockdown; queue and flush on `PLAYER_REGEN_ENABLED`
 - LibActionButton Classic Era compatibility verified when vendoring the library version

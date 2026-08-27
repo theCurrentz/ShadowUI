@@ -7,7 +7,7 @@
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
 
--- Event names differ across Classic Era, SoD, and modernized clients; registration
+-- Event names differ across Classic Era and modernized clients; registration
 -- of an unknown event raises an error, so each one is registered defensively.
 local EVENTS = {
   { "PLAYER_ENTERING_WORLD", "OnPlayerReady" },
@@ -87,12 +87,14 @@ function Addon:SlashCommand(input)
     self:ToggleEditMode()
   elseif cmd == "binds" or cmd == "bind" or cmd == "keybind" then
     self:ToggleKeybindMode()
+  elseif cmd == "deck" or cmd == "place" then
+    self:PlaceDeck()
   elseif cmd == "layer" then
     self:SetEditLayer(rest)
   elseif cmd == "variant" then
     self:HandleVariantCommand(rest)
   else
-    self:Print("Usage: /shadowui [edit|binds|layer|variant]")
+    self:Print("Usage: /shadowui [edit|binds|deck|layer|variant]")
   end
 end
 
@@ -107,8 +109,11 @@ function Addon:ApplyActionSlotLock() end
 function Addon:LockBarButton(button) end
 function Addon:SetActionSlotHardLock(locked) end
 function Addon:ApplyKeybinds(cfg) end
+function Addon:PlaceDeck() end
+function Addon:RefreshActionDeckButtons() end
 function Addon:ApplyBarChrome(bar) end
 function Addon:ApplyOuterChrome(host) end
+function Addon:PaintOuterChrome(outer) end
 function Addon:ApplySkins() end
 function Addon:ApplyCastBar() end
 function Addon:ApplyManaTicker() end

@@ -148,6 +148,7 @@ end
 
 _G.PlayerFrame = fakeUnit("PlayerFrame", 232, 100)
 _G.TargetFrame = fakeUnit("TargetFrame", 232, 100)
+_G.StanceBarFrame = fakeUnit("StanceBarFrame", 108, 36)
 
 local account = {
   base = { layout = {}, keybinds = {} },
@@ -193,6 +194,10 @@ assert(playerOverlay.mouse == true, "player overlay receives the drag")
 assert(playerOverlay.strata == "DIALOG", "player overlay sits on the HUD dialog strata")
 assert(playerOverlay.fontString and playerOverlay.fontString.text == "Player", "overlay names the Player Frame")
 assert(targetOverlay.fontString and targetOverlay.fontString.text == "Target", "overlay names the Target Frame")
+local stanceOverlay = _G.ShadowUIStanceDrag
+assert(stanceOverlay, "Layout Edit Mode paints a Stance HUD overlay")
+assert(stanceOverlay.shown == true, "stance overlay shows when the Blizzard bar is up")
+assert(stanceOverlay.fontString and stanceOverlay.fontString.text == "Stance", "overlay names the Stance Bar")
 assert(playerOverlay.fill and playerOverlay.fill.g > 0.4, "player overlay fill is HUD blue")
 
 playerOverlay.script_OnMouseDown(playerOverlay, "LeftButton")
@@ -213,9 +218,17 @@ local parked = _G.PlayerFrame.points[#_G.PlayerFrame.points]
 assert(parked[1] == "BOTTOMLEFT" and math.abs(parked[4] - 97.2) < 0.01,
   "Blizzard Edit Mode snaps back to the ShadowUI Player Frame")
 
+_G.StanceBarFrame.shown = false
+Addon:RefreshUnitDragOverlays()
+assert(stanceOverlay.shown == false, "a hidden Blizzard Stance Bar has no edit overlay")
+_G.StanceBarFrame.shown = true
+Addon:RefreshUnitDragOverlays()
+assert(stanceOverlay.shown == true, "a shown Blizzard Stance Bar keeps the edit overlay")
+
 Addon:SetEditSession(nil)
 Addon:ApplyEditSession(false)
 assert(playerOverlay.shown == false, "play mode hides the player overlay")
 assert(_G.PlayerFrame.movable == false, "play mode locks the Player Frame")
+assert(stanceOverlay.shown == false, "play mode hides the stance overlay")
 
 print("edit_unit_spec OK")

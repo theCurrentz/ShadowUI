@@ -1,5 +1,7 @@
--- Options panel exposes an on/off toggle for each Bar.
--- The toggle writes enabled on the selected Layer and applies Layout.
+-- Options panel exposes an on/off toggle for every Bar, including Special Bars.
+-- Missing Layout entries still show and read as on. The toggle reads enabled
+-- through the selected Layer and writes enabled on that Layer. Stance is not a
+-- Bar toggle.
 -- Run: lua tests/options_bars_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -26,14 +28,24 @@ local layout = {
   bar9 = { enabled = false },
   pet = { enabled = true },
   possess = { enabled = true },
-  stance = { enabled = true },
+  player = { x = 0 },
+}
+local baseLayout = {
+  bar1 = { enabled = true },
+  bar2 = { enabled = true },
+  bar9 = { enabled = true },
+  pet = { enabled = true },
+  possess = { enabled = true },
   player = { x = 0 },
 }
 local char = { editLayer = "class" }
 local writes = {}
 local applied = 0
 
-function Addon:ResolveEffective()
+function Addon:ResolveEffective(_, _, through)
+  if through == "base" then
+    return { layout = baseLayout }
+  end
   return { layout = layout }
 end
 function Addon:GetCharDB()
@@ -71,9 +83,21 @@ assert(bars.args.bar1.name == "Bar 1", "standard Bar uses Bar N name")
 assert(bars.args.pet.name == "Pet", "special Bar uses a title name")
 assert(bars.args.bar1.get() == true, "enabled Bar toggle is on")
 assert(bars.args.bar2.get() == false, "disabled Bar toggle is off")
-assert(bars.args.stance.hidden() == false, "class Bar in Layout stays shown")
-assert(bars.args.form.hidden() == true, "class Bar missing from Layout stays hidden")
+assert(bars.args.bar3.get() == true, "standard Bar missing from Layout still reads as on")
+assert(bars.args.bar9.get() == false, "Class Layer reads Class enabled")
+char.editLayer = "base"
+assert(bars.args.bar9.get() == true, "Base Layer reads Base enabled")
+assert(bars.args.bar2.get() == true, "Base Layer does not use Class enabled")
+char.editLayer = "class"
+assert(bars.args.bar9.get() == false, "Class Layer again reads Class enabled")
+assert(bars.args.bar10, "highest standard Bar has a toggle")
+assert(bars.args.pet, "Pet Bar has a toggle")
+assert(bars.args.possess, "Possess Bar has a toggle")
+assert(bars.args.stance == nil, "Stance Bar is not a Bar toggle")
+assert(bars.args.aura == nil, "Aura Bar is not a Bar toggle")
+assert(bars.args.form == nil, "Form Bar is not a Bar toggle")
 assert(bars.args.player == nil, "Player Frame is not a Bar toggle")
+assert(registered.args.placeDeck, "Place Action Deck is in options")
 
 bars.args.bar9.set(nil, true)
 assert(#writes == 1, "toggle writes one Layer delta")
@@ -85,5 +109,49 @@ assert(applied == 1, "toggle applies Layout")
 
 bars.args.bar1.set(nil, false)
 assert(writes[2].patch.enabled == false, "off writes enabled false")
+
+bars.args.pet.set(nil, true)
+assert(writes[3].key == "pet", "toggle writes the Special Bar id")
+assert(writes[3].patch.enabled == true, "on writes Special Bar enabled true")
+
+function Addon:GetPlayerClass()
+  return "WARRIOR"
+end
+local warriorDB = {
+  classes = {
+    WARRIOR = {
+      layout = {},
+      keybinds = {},
+      variants = { Custom = { layout = {}, keybinds = {} } },
+    },
+  },
+}
+function Addon:GetDB()
+  return warriorDB
+end
+Addon.Defaults = {
+  classes = {
+    WARRIOR = {
+      variants = {
+        Arms = { talentTree = 1 },
+        Fury = { talentTree = 2 },
+        Protection = { talentTree = 3 },
+      },
+    },
+  },
+}
+local values = registered.args.variants.args.active.values()
+assert(values.Fury == "Fury", "options list shipped Fury")
+assert(values.Arms == "Arms", "options list shipped Arms")
+assert(values.Protection == "Protection", "options list shipped Protection")
+assert(values.Custom == "Custom", "options list account Variant overlay")
+
+assert(loadfile(root .. "profile/variants.lua"))()
+assert(Addon:DeleteVariant("Custom", "WARRIOR") == true, "delete removes account overlay")
+assert(warriorDB.classes.WARRIOR.variants.Custom == nil, "account overlay is gone")
+assert(Addon:DeleteVariant("Fury", "WARRIOR") == false, "delete does not remove a shipped-only name")
+values = registered.args.variants.args.active.values()
+assert(values.Fury == "Fury", "shipped Fury remains after delete")
+assert(values.Custom == nil, "deleted account overlay leaves the list")
 
 print("options_bars_spec OK")

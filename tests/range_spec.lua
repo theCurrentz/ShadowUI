@@ -1,4 +1,4 @@
--- Target Range Display uses Whitemane Currentz lock: CENTER -6,-170.
+-- Target Range Display sits BOTTOM/TOP on the combat meter group.
 -- Run: lua tests/range_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -69,18 +69,23 @@ _G.CreateFrame = function(_, name)
   return frame
 end
 
+local castGroup = { name = "ShadowUICastGroup" }
+function Addon:CombatMeterGroup()
+  return castGroup
+end
+
 assert(loadfile(root .. "cast/range.lua"))()
 
 Addon:ApplyRangeDisplay()
 local frame = Addon.rangeDisplay
 assert(frame, "creates the Range Display")
-assert(frame.points[1].point == "CENTER", "anchors from centre")
-assert(frame.points[1].relativeTo == UIParent, "anchors to UIParent")
-assert(frame.points[1].x == -6, "Currentz x")
-assert(frame.points[1].y == -170, "Currentz y")
+assert(frame.points[1].point == "BOTTOM", "tethers from the bottom")
+assert(frame.points[1].relativeTo == castGroup, "anchors to the combat meter group")
+assert(frame.points[1].relativePoint == "TOP", "sits on the top of the stack")
+assert(frame.points[1].x == 0 and frame.points[1].y == 0, "centred on the Cast Bar with no gap")
 assert(frame.width == 112 and frame.height == 36, "RangeDisplay default size")
 assert(frame.text.fontFile == "Fonts\\ARIALN.TTF", "Range Display uses Arial Narrow")
-assert(frame.text.fontSize == 20, "Range Display uses size 20")
+assert(frame.text.fontSize == 18, "Range Display uses size 18")
 assert(frame.text.fontFlags == "THICKOUTLINE", "Range Display uses a strong outline")
 assert(frame.event == "PLAYER_TARGET_CHANGED", "listens for target changes")
 
@@ -92,7 +97,9 @@ assert(frame.points[1].point == "BOTTOMLEFT", "Layout park wins over the shipped
 assert(frame.points[1].x == 40 and frame.points[1].y == 80, "Range Display follows Layout")
 function Addon:ResolveEffective() return { layout = {} } end
 Addon:ApplyRangeDisplay()
-assert(frame.points[1].x == -6 and frame.points[1].y == -170, "empty Layout restores the shipped lock")
+assert(frame.points[1].point == "BOTTOM", "empty Layout restores the tether")
+assert(frame.points[1].relativeTo == castGroup, "empty Layout restores the combat meter group")
+assert(frame.points[1].x == 0 and frame.points[1].y == 0, "empty Layout restores the centre lock")
 
 local melee = Addon:RangeState(0, 5)
 assert(melee.text == "0 - 5", "close range text")

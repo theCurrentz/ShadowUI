@@ -23,10 +23,13 @@ local function fakeChat(name)
   end
   function chat:SetWidth(width) self.width = width end
   function chat:SetHeight(height) self.height = height end
+  function chat:GetWidth() return self.width end
+  function chat:GetHeight() return self.height end
   function chat:SetSize(width, height)
     self.width, self.height = width, height
   end
   function chat:SetUserPlaced(placed) self.userPlaced = placed end
+  function chat:IsUserPlaced() return self.userPlaced == true end
   function chat:IsMovable() return true end
   function chat:GetFont() return "Fonts\\FRIZQT__.TTF", self.fontSize, "" end
   function chat:SetFont(file, size, flags)
@@ -75,12 +78,22 @@ assert(math.abs(fill.a - 202 / 255) < 0.001, "chat fill matches Currentz alpha")
 assert(fill.r == 0 and fill.g == 0 and fill.b == 0, "chat fill is black")
 assert(chat.points[1][1] == "BOTTOMLEFT", "chat docks to bottom-left")
 assert(chat.points[1][4] == 36 and chat.points[1][5] == 32, "chat offset matches Currentz")
-assert(chat.width == 608 and chat.height == 294, "chat size matches Currentz")
+assert(chat.width == nil and chat.height == nil, "SkinChat must not set chat size")
 assert(chat.fontSize == 16, "chat font size matches Currentz")
 assert(chat.locked == true, "chat stays locked")
 assert(chat.userPlaced == true, "chat keeps the parked place")
 
+chat:SetWidth(400)
+chat:SetHeight(200)
 chat:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 0, 0)
 assert(chat.points[#chat.points][4] == 36, "Blizzard chat anchors must be undone")
+assert(chat.width == 400 and chat.height == 200, "Blizzard Edit Mode chat size must stay")
+
+Addon:SkinChat()
+assert(chat.width == 400 and chat.height == 200, "later SkinChat must keep the Edit Mode size")
+
+chat.userPlaced = false
+Addon:SkinChat()
+assert(chat.width == 400 and chat.height == 200, "reload SkinChat must keep Blizzard Chat size")
 
 print("chat_spec OK")

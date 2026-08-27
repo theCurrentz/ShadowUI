@@ -28,7 +28,7 @@ Put tests in square brackets. Separate options with `;` (first match wins).
 | `target=focus` | Cast on focus (Classic Era has `/focus`) |
 | `target=pet` | Cast on your pet |
 | `target=targettarget` | Cast on their target |
-| `target=mouseover` | Cast on the unit under the cursor (optional; these notes do not use it) |
+| `target=mouseover` | Cast on the unit under the cursor. Existing decurse / dispel macros use it. |
 
 Classic-safe unit syntax is `target=`. Some later Classic builds also accept `@unit`. These notes use `target=`.
 
@@ -41,7 +41,6 @@ Append the rank in parentheses. No space before `(`:
 ```
 /cast Frostbolt(Rank 1)
 /cast Flash Heal(Rank 4)
-/cast Heroic Strike(Rank 3)
 ```
 
 Put every rank of one spell in **one** macro. First match wins:
@@ -82,7 +81,7 @@ Casters and healers interrupt their own cast before a kick, panic heal, or panic
 
 Melee `/stopcasting` still helps if you queued a targeted spell (Bandage, Engineering, Slam).
 
-`/stopattack` stops auto-shot or melee swing (Hunter Feign Death, Rogue vanish setup).
+`/stopattack` stops auto-shot or a melee swing (Hunter Feign Death, Rogue vanish setup, Warrior Intimidating Shout).
 
 ## Attack queue (melee)
 
@@ -114,9 +113,43 @@ Heroic Strike, Cleave, and Maul **replace** the next swing. Keep auto-attack on:
 
 Slot 13 is the top trinket. Slot 14 is the bottom trinket. Gloves / boots / belt engineering are `/use 10`, `/use 8`, `/use 6`.
 
+## Existing conventions (win over generic plan text)
+
+These come from the WARKEYS cache. New macros follow them.
+
+- **Melee:** `/cast` then `/startattack`. Do not require `[nostance]` if the existing set just `/cast`s the stance.
+- **Downrank:** `[nomod]` max rank, then `[mod:shift]` Rank 1 (or a mid rank). That matches Currentz, not `[mod:shift]` alone. Potion and pet follow are separate Shift binds (`G` / `SHIFT-G`, backtick / Shift-backtick), not modifiers on the same key.
+- **`/cqs`:** Cancel queued spell. Keep it on Mage fillers.
+- **Mouseover:** Keep it on decurse / dispel. `[target=mouseover,exists]` then the target.
+- **Ground:** `[@cursor]` for Flamestrike, Crystal Charge, Holy Water.
+- **Ice Block:** `/cast` then `/cancelaura` on the same key (toggle).
+- **Charge:** Charge and Intercept on one key. Do not add Rend to that key.
+- **`/run` SpellQueueWindow:** Keep the existing Mage burst macros. Do not add new `/run` bodies.
+
+## Comments
+
+A line that starts with `#` is a comment, except `#showtooltip`. Put the label on line 2 when `#showtooltip` is line 1:
+
+```
+#showtooltip Charge
+# class-specific WARRIOR all
+/cast Charge
+```
+
+```
+# character-specific WARRIOR all Tazzy
+/equipslot 16 Quel'Serrar
+/equipslot 17 Mirah's Song
+```
+
+`#showtooltip` must stay line 1. The label counts toward 255.
+
 ## What not to do
 
-- Do not put a long `/script` in the body. Classic blocks most of it in combat.
+- Do not wrap a single `/use` of a potion, hearthstone, or healthstone. Drag the item to the bar.
+- Do not wrap a racial with no conditions (Cannibalize). Put the spell on the bar.
+- Do not put a long `/script` in a **new** body. Classic blocks most of it in combat. Existing Mage SpellQueueWindow macros stay.
 - Do not rely on `[btn:2]` for a keybind. Right-click tests are for mouse clicks on the button.
 - Do not stack five spells with no conditions. The client casts the first one that is usable, which is easy to misread.
-- Do not ship these as ShadowUI defaults. They stay in `docs/macros/`.
+- Do not ship these as ShadowUI defaults. They stay in `docs/macros/` and in WoW Macro Cursor.
+- Do not write `macros-cache.txt` while the client is open. Macro Cursor heals empty or damaged caches only when the client is closed.

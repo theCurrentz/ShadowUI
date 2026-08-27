@@ -1,282 +1,166 @@
 # Hunter
 
-## Hunter's Mark
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
+
+## Hunter core — class-specific
+
+Mark, shots, Feign Death, pet. 18 or fewer.
+
+### hmark — `h-mark`
 
 ```
 #showtooltip Hunter's Mark
+# class-specific HUNTER all
 /cast Hunter's Mark
 ```
 
-## Aspects
-
-Hawk vs Monkey (melee pressure):
+### asp — `h-aspect`
 
 ```
 #showtooltip
+# class-specific HUNTER all
 /cast [mod:shift] Aspect of the Monkey; Aspect of the Hawk
 ```
 
-Cheetah (out of combat run). Pack is the group version.
-
-```
-#showtooltip Aspect of the Cheetah
-/cast Aspect of the Cheetah
-```
-
-```
-#showtooltip Aspect of the Pack
-/cast Aspect of the Pack
-```
-
-```
-#showtooltip Aspect of the Wild
-/cast Aspect of the Wild
-```
-
-```
-#showtooltip Aspect of the Beast
-/cast Aspect of the Beast
-```
-
-Viper is TBC. Era mana regen is drinks, trinkets, and viper... wait, Aspect of the Viper is TBC. Classic Era has no Viper.
-
-## Auto Shot / stop
-
-```
-/startattack
-```
-
-```
-/stopattack
-```
-
-## Aimed Shot (marksmanship)
+### as — `h-aimed`
 
 ```
 #showtooltip Aimed Shot
+# class-specific HUNTER marksmanship
 /cast Aimed Shot
 ```
 
-## Multi-Shot
+### multi — `h-multi`
 
 ```
 #showtooltip Multi-Shot
+# class-specific HUNTER marksmanship
 /cast Multi-Shot
 ```
 
-## Arcane Shot
-
-Shift Rank 1 (mana / tag):
+### arc — `h-arcane`
 
 ```
 #showtooltip
+# class-specific HUNTER all
 /cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot
 ```
 
-## Serpent Sting / Scorpid / Viper
+### sting — `h-sting`
 
 ```
 #showtooltip Serpent Sting
+# class-specific HUNTER all
 /cast Serpent Sting
 ```
 
-```
-#showtooltip Scorpid Sting
-/cast Scorpid Sting
-```
-
-```
-#showtooltip Viper Sting
-/cast Viper Sting
-```
-
-## Concussive Shot / Wing Clip
+### conc — `h-conc`
 
 ```
 #showtooltip Concussive Shot
+# class-specific HUNTER all
 /cast Concussive Shot
 ```
 
-Shift Rank 1 still snares with less damage:
+### wc — `h-clip`
 
 ```
 #showtooltip
+# class-specific HUNTER all
 /cast [mod:shift] Wing Clip(Rank 1); Wing Clip
 ```
 
-## Scatter Shot (surv talent)
-
-```
-#showtooltip Scatter Shot
-/stopattack
-/cast Scatter Shot
-```
-
-## Wyvern Sting (surv talent)
-
-```
-#showtooltip Wyvern Sting
-/cast Wyvern Sting
-```
-
-## Tranquilizing Shot
-
-```
-#showtooltip Tranquilizing Shot
-/cast Tranquilizing Shot
-```
-
-## Rapid Fire / Bestial Wrath / Intimidation
-
-```
-#showtooltip Rapid Fire
-/cast Rapid Fire
-```
-
-```
-#showtooltip Bestial Wrath
-/cast Bestial Wrath
-```
-
-```
-#showtooltip Intimidation
-/cast Intimidation
-```
-
-Trinket + Rapid Fire:
-
-```
-#showtooltip Rapid Fire
-/use 13
-/cast Rapid Fire
-```
-
-## Feign Death
+### fd — `h-fd`
 
 ```
 #showtooltip Feign Death
+# class-specific HUNTER all
 /stopattack
 /stopcasting
 /cast Feign Death
 ```
 
-## Freezing Trap (after FD — two presses is more reliable)
-
-Trap only:
+### ft — `h-trap`
 
 ```
 #showtooltip Freezing Trap
+# class-specific HUNTER all
 /cast Freezing Trap
 ```
 
-Frost Trap / Explosive Trap / Immolation Trap as their own keys.
-
-FD then trap on one key is racey. Prefer:
-
-1. Feign Death macro
-2. Trap key after the feign applies
-
-## Flare / Volley
+### rapid — `h-rapid`
 
 ```
-#showtooltip Flare
-/cast Flare
+#showtooltip Rapid Fire
+# class-specific HUNTER marksmanship
+/use 13
+/cast Rapid Fire
 ```
 
-```
-#showtooltip Volley
-/cast Volley
-```
-
-## Disengage
-
-Not in Classic Era. Do not add it.
-
-## Pet: attack, follow, passive, wait
+### tq — `h-tranq`
 
 ```
+#showtooltip Tranquilizing Shot
+# class-specific HUNTER all
+/cast Tranquilizing Shot
+```
+
+### hpa — `h-pa`
+
+```
+# class-specific HUNTER beast-mastery
 /petattack
 ```
 
+### hpf — `h-pf`
+
 ```
+# class-specific HUNTER beast-mastery
 /petfollow
 ```
 
-```
-/petpassive
-```
-
-```
-/petwait
-```
-
-Attack pet's target or yours:
-
-```
-/petattack [@target,harm,exists]
-/startattack
-```
-
-## Mend Pet / Feed Pet / Dismiss / Call
+### mp — `h-mend`
 
 ```
 #showtooltip Mend Pet
+# class-specific HUNTER beast-mastery
 /cast Mend Pet
 ```
 
-```
-#showtooltip Feed Pet
-/cast Feed Pet
-```
-
-```
-#showtooltip Dismiss Pet
-/cast Dismiss Pet
-```
+### pet — `h-call`
 
 ```
 #showtooltip Call Pet
+# class-specific HUNTER beast-mastery
 /cast Call Pet
 ```
 
-Revive:
+### bw — `h-bw`
 
 ```
-#showtooltip Revive Pet
-/cast Revive Pet
+#showtooltip Bestial Wrath
+# class-specific HUNTER beast-mastery
+/cast Bestial Wrath
 ```
 
-## Eyes of the Beast / Eagle Eye
+### cheetah — `h-cheetah`
 
 ```
-#showtooltip Eyes of the Beast
-/cast Eyes of the Beast
+#showtooltip Aspect of the Cheetah
+# class-specific HUNTER all
+/cast Aspect of the Cheetah
 ```
 
-## Track
+## Auden pet kit — character-specific Auden
 
-```
-#showtooltip Track Humanoids
-/cast Track Humanoids
-```
+Character-specific Auden. Worg Carrier from the 372399535 account.
 
-```
-#showtooltip Track Hidden
-/cast Track Hidden
-```
-
-```
-#showtooltip Track Beasts
-/cast Track Beasts
-```
-
-Shift humanoids / else hidden (stealth detect):
+### worg — `h-worg`
 
 ```
 #showtooltip
-/cast [mod:shift] Track Humanoids; Track Hidden
+# character-specific HUNTER beast-mastery Auden
+/cast Call Pet
+/use Worg Carrier
 ```
-
-## SoD note
-
-SoD adds melee hunter runes and new shots. Keep Feign Death on `/stopattack` + `/stopcasting`. Pet slash commands do not change.

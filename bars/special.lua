@@ -1,12 +1,13 @@
 --[[
-  Purpose: Create and refresh class shapeshift, pet, and possess action bars.
-  Deps: ShadowUI:CreateBar(), ShadowUI:RefreshPetBar(), Classic Era shapeshift APIs
+  Purpose: Create and refresh pet and possess action bars.
+           Layout Edit Mode keeps empty Special Bars shown for every class.
+  Deps: ShadowUI:CreateBar(), ShadowUI:RefreshPetBar()
   Public: ShadowUI:CreateSpecialBar(), ShadowUI:RefreshSpecialBars(),
           ShadowUI:FlushPendingSpecialBars()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local PAGES = { stance = 11, form = 12, aura = 13, pet = 14, possess = 15 }
+local PAGES = { pet = 14, possess = 15 }
 
 local function isTrue(value)
   return value == true or value == 1
@@ -23,42 +24,20 @@ local function setTexture(button, texture)
   button.icon:SetShown(texture ~= nil)
 end
 
-local function getShapeshiftInfo(index)
-  local icon, second, third, fourth, fifth = GetShapeshiftFormInfo(index)
-  if type(second) == "string" then
-    return icon, second, third, fifth
-  end
-  local spellId = fourth
-  return icon, spellId and GetSpellInfo(spellId), second, spellId
-end
-
-local function refreshShapeshift(bar)
-  local available = false
-  for i, button in ipairs(bar.buttons) do
-    local texture, name, active, spellId = getShapeshiftInfo(i)
-    if spellId and button.boundSpellId ~= spellId and not InCombatLockdown() then
-      button:SetState(0, "spell", spellId)
-      button.boundSpellId = spellId
-    elseif name and not button.boundSpellId and not InCombatLockdown() then
-      setMacro(button, "/cast " .. name)
-    end
-    setTexture(button, texture)
-    button:SetChecked(isTrue(active))
-    button:SetShown(name ~= nil)
-    available = available or name ~= nil
-  end
-  bar:SetShown(available)
+local function previewSpecialBar()
+  return Addon.editMode == true
 end
 
 local function refreshPossess(bar)
   local available = false
+  local preview = previewSpecialBar()
   for i, button in ipairs(bar.buttons) do
     local texture, _, enabled = GetPossessInfo(i)
     setTexture(button, texture)
-    button:SetShown(isTrue(enabled))
+    button:SetShown(isTrue(enabled) or preview)
     available = available or isTrue(enabled)
   end
-  bar:SetShown(available)
+  bar:SetShown(available or preview)
 end
 
 function Addon:CreateSpecialBar(barId, cfg)
@@ -70,16 +49,8 @@ function Addon:CreateSpecialBar(barId, cfg)
   for i, button in ipairs(bar.buttons) do
     if barId == "pet" then
       self:BindPetButton(button, i)
-    elseif barId == "possess" then
-      setMacro(button, "/click PossessButton" .. i)
     else
-      local _, name, _, spellId = getShapeshiftInfo(i)
-      if spellId then
-        button:SetState(0, "spell", spellId)
-        button.boundSpellId = spellId
-      else
-        setMacro(button, name and "/cast " .. name or "")
-      end
+      setMacro(button, "/click PossessButton" .. i)
     end
   end
 
@@ -98,8 +69,6 @@ function Addon:RefreshSpecialBars()
         self:RefreshPetBar(bar)
       elseif id == "possess" then
         refreshPossess(bar)
-      else
-        refreshShapeshift(bar)
       end
     end
   end

@@ -1,11 +1,11 @@
 --[[
   Purpose: Square the Blizzard minimap the SexyMap way, inside a Darken buffer
            with Zone Text on top and an Outer Edge. Cluster icons sit on the
-           square path, including late LFG, ItemRack, and LibDBIcon buttons. World Layer
-           from Nova World Buffs sits on the bottom of the holder. Time is a clock
-           square on the map. Hover shows realm time and local time. A click opens
-           the Stopwatch. GameTimeFrame stays hidden. The player can drag every
-           minimap icon.
+           square path, including late LFG, ItemRack, and LibDBIcon buttons.
+           World Layer from Nova World Buffs sits on the bottom of the holder.
+           Time is Blizzard TimeManagerClockButton, restyled under the map.
+           GameTimeFrame stays hidden. The mouse wheel zooms. After 5 seconds
+           the map zooms out. The player can drag every minimap icon.
   Deps: ShadowUI:LockVertex(), ShadowUI:DarkenFrameRegions(), ShadowUI:ApplyOuterChrome(),
         ShadowUI:SkinTime()
   Public: ShadowUI:SkinMinimap()
@@ -17,6 +17,8 @@ local BUFFER = 16
 local ZONE_GAP = 3
 local ZONE_TOP = 4
 local FILL = 0.6
+local ICON_PAD = 10
+local ZOOM_DELAY = 5
 -- SexyMap Shapes.lua Square: file 130871 / Interface\BUTTONS\WHITE8X8.
 -- A full-white mask removes the default circular clip.
 local MASK = "Interface\\BUTTONS\\WHITE8X8"
@@ -40,7 +42,6 @@ local HIDE = {
   "MiniMapWorldMapButton",
   "MinimapToggleButton",
   "GameTimeFrame",
-  "TimeManagerClockButton",
   "MinimapZoomIn",
   "MinimapZoomOut",
 }
@@ -55,7 +56,6 @@ local DARKEN = {
 local ICONS = {
   { name = "MiniMapTrackingFrame", angle = 135 },
   { name = "MiniMapTracking", angle = 135 },
-  { name = "MiniMapTrackingButton", angle = 135 },
   { name = "MiniMapMailFrame", angle = 315 },
   { name = "MiniMapBattlefieldFrame", angle = 45 },
   { name = "LFGMinimapFrame", angle = 225 },
@@ -71,14 +71,16 @@ local IGNORE = {
   ShadowUIMinimapHolder = true,
   ShadowUIMinimapIconWatch = true,
   MiniMapMailBorder = true,
+  MiniMapMailIcon = true,
   MiniMapTrackingBorder = true,
   MiniMapTrackingBackground = true,
+  MiniMapTrackingButton = true,
+  MiniMapTrackingIcon = true,
+  MiniMapBattlefieldIcon = true,
   MinimapLayerFrame = true,
   MinimapLayerFrameFS = true,
   NWBVersionDragTooltip = true,
   ShadowUIMinimapIconDrag = true,
-  ShadowUIMinimapClock = true,
-  ShadowUIStopwatch = true,
   GameTimeFrame = true,
   GameTimeTexture = true,
   TimeManagerClockButton = true,
@@ -92,13 +94,42 @@ _G.GetMinimapShape = function()
   return "SQUARE"
 end
 
+-- SexyMap calls Frame methods from a dummy so hooked Minimap methods do not
+-- recurse. FontString methods must come from a FontString dummy; Frame.Show
+-- and Frame.SetFrameStrata reject MinimapZoneText in the client.
+local proto = CreateFrame and CreateFrame("Frame")
+local protoButton = CreateFrame and CreateFrame("Button")
+local protoFont = protoButton and protoButton.CreateFontString
+  and protoButton:CreateFontString()
+local function native(host, method, ...)
+  local fn = proto and proto[method]
+  if fn then
+    return fn(host, ...)
+  end
+  if host and host[method] then
+    return host[method](host, ...)
+  end
+end
+
+local function nativeFont(host, method, ...)
+  local fn = protoFont and protoFont[method]
+  if fn then
+    return fn(host, ...)
+  end
+  if host and host[method] then
+    return host[method](host, ...)
+  end
+end
+
 local holder
 local dragHost
 local applyingMask
-local snapping
+local placing
 local dragging
 local watchingAddons
 local watchingCreate
+local zoomArmed
+local zoomStarted, zoomCurrent = 0, 0
 local parkIcon
 local makeMovable
 
@@ -148,10 +179,10 @@ local function hideRegions(frame)
 end
 
 local function squareOffset(angle, radius)
-  angle = angle % 360
   if angle < 0 then
-    angle = angle + 360
+    angle = 360 + angle
   end
+  angle = angle % 360
   local pre, post = SQUARE[1], SQUARE[#SQUARE]
   for i = 1, #SQUARE do
     local key = SQUARE[i]
@@ -170,6 +201,31 @@ local function squareOffset(angle, radius)
   local x = pre.x + ((post.x - pre.x) * pct)
   local y = pre.y + ((post.y - pre.y) * pct)
   return x * radius, y * radius
+end
+
+local function compassAngle(dx, dy)
+  -- SexyMap Buttons.lua: atan(h/w) in degrees, then +180 when west.
+  local w = dx
+  local h = dy
+  if not w or not h then
+    return 225
+  end
+  if w == 0 and h == 0 then
+    return 225
+  end
+  if w == 0 then
+    w = 0.001
+  end
+  local angle
+  if atan then
+    angle = atan(h / w)
+  else
+    angle = math.deg(math.atan(h / w))
+  end
+  if w < 0 then
+    angle = angle + 180
+  end
+  return angle
 end
 
 local function applyMask()
@@ -210,10 +266,75 @@ local function ensureHolder()
 end
 
 local function keepOnHolder()
-  if snapping or not holder or not Minimap then
+  if placing or not holder or not Minimap then
     return
   end
-  Addon:SkinMinimap()
+  placing = true
+  native(Minimap, "SetParent", holder)
+  native(Minimap, "ClearAllPoints")
+  native(Minimap, "SetPoint", "BOTTOM", holder, "BOTTOM", 0, BUFFER)
+  native(Minimap, "SetSize", MAP, MAP)
+  placing = false
+end
+
+local function zoomOut()
+  zoomCurrent = zoomCurrent + 1
+  if zoomStarted ~= zoomCurrent then
+    return
+  end
+  local levels = 0
+  if Minimap and Minimap.GetZoom then
+    levels = Minimap:GetZoom() or 0
+  end
+  for _ = 1, levels do
+    if Minimap_ZoomOutClick then
+      Minimap_ZoomOutClick()
+    end
+  end
+  zoomStarted, zoomCurrent = 0, 0
+end
+
+local function scheduleZoomOut()
+  zoomStarted = zoomStarted + 1
+  if C_Timer and C_Timer.After then
+    C_Timer.After(ZOOM_DELAY, zoomOut)
+  end
+end
+
+local function onMouseWheel(_, delta)
+  if delta > 0 then
+    if MinimapZoomIn and MinimapZoomIn.Click then
+      MinimapZoomIn:Click()
+    end
+  elseif delta < 0 then
+    if MinimapZoomOut and MinimapZoomOut.Click then
+      MinimapZoomOut:Click()
+    end
+  end
+end
+
+local function watchZoom()
+  if zoomArmed or not Minimap then
+    return
+  end
+  zoomArmed = true
+  if Minimap.EnableMouseWheel then
+    Minimap:EnableMouseWheel(true)
+  end
+  if Minimap.SetScript then
+    Minimap:SetScript("OnMouseWheel", onMouseWheel)
+  end
+  local function hookZoom(button)
+    if not button then
+      return
+    end
+    if button.HookScript then
+      button:HookScript("OnClick", scheduleZoomOut)
+    end
+  end
+  hookZoom(_G.MinimapZoomIn)
+  hookZoom(_G.MinimapZoomOut)
+  scheduleZoomOut()
 end
 
 local function watchMinimap()
@@ -234,23 +355,6 @@ local function watchMinimap()
   if Minimap.HookScript then
     Minimap:HookScript("OnShow", applyMask)
   end
-end
-
-local function angleFromOffset(x, y)
-  if not x or not y or (x == 0 and y == 0) then
-    return 225
-  end
-  local rad
-  if math.atan2 then
-    rad = math.atan2(y, x)
-  else
-    rad = math.atan(y, x)
-  end
-  local angle = math.deg(rad)
-  if angle < 0 then
-    angle = angle + 360
-  end
-  return angle
 end
 
 local function savedIcons()
@@ -282,7 +386,7 @@ local function iconAngle(frame)
     local _, _, _, px, py = frame:GetPoint(1)
     x, y = px, py
   end
-  return angleFromOffset(x, y)
+  return compassAngle(x, y)
 end
 
 local function isEdgeIcon(frame)
@@ -319,6 +423,17 @@ local function ensureDragHost()
   return dragHost
 end
 
+local function iconRadius()
+  local radius = MAP / 2
+  if Minimap and Minimap.GetWidth then
+    local width = Minimap:GetWidth()
+    if width and width > 0 then
+      radius = width / 2
+    end
+  end
+  return radius + ICON_PAD
+end
+
 makeMovable = function(frame)
   if not frame or frame._shadowUIDrag then
     return
@@ -353,7 +468,7 @@ makeMovable = function(frame)
       if Minimap.GetCenter then
         mx, my = Minimap:GetCenter()
       end
-      local angle = angleFromOffset(x - mx, y - my)
+      local angle = compassAngle(x - mx, y - my)
       local name = regionName(frame)
       if name then
         savedIcons()[name] = angle
@@ -368,53 +483,44 @@ makeMovable = function(frame)
       host:SetScript("OnUpdate", nil)
     end
   end
-  if frame.HookScript then
-    frame:HookScript("OnDragStart", start)
-    frame:HookScript("OnDragStop", stop)
-  elseif frame.SetScript then
+  if frame.SetScript then
     frame:SetScript("OnDragStart", start)
     frame:SetScript("OnDragStop", stop)
   end
 end
 
 parkIcon = function(frame, angle)
-  if not frame or not frame.SetPoint then
+  if not frame then
     return
   end
   angle = angle or iconAngle(frame)
-  local radius = MAP / 2
-  if Minimap and Minimap.GetWidth then
-    local width = Minimap:GetWidth()
-    if width and width > 0 then
-      radius = width / 2
-    end
+  local x, y = squareOffset(angle, iconRadius())
+  placing = true
+  native(frame, "SetParent", Minimap)
+  native(frame, "ClearAllPoints")
+  native(frame, "SetPoint", "CENTER", Minimap, "CENTER", x, y)
+  native(frame, "SetFrameStrata", "MEDIUM")
+  native(frame, "SetFrameLevel", 8)
+  if frame.SetFixedFrameStrata then
+    native(frame, "SetFixedFrameStrata", true)
   end
-  local x, y = squareOffset(angle, radius)
-  snapping = true
-  if frame.SetParent then
-    frame:SetParent(Minimap)
+  if frame.SetFixedFrameLevel then
+    native(frame, "SetFixedFrameLevel", true)
   end
-  if frame.ClearAllPoints then
-    frame:ClearAllPoints()
-  end
-  frame:SetPoint("CENTER", Minimap, "CENTER", x, y)
-  if frame.SetFrameStrata then
-    frame:SetFrameStrata("MEDIUM")
-  end
-  snapping = false
+  placing = false
   makeMovable(frame)
   if frame._shadowUIWatch or not hooksecurefunc then
     return
   end
   frame._shadowUIWatch = true
   hooksecurefunc(frame, "SetPoint", function()
-    if snapping or dragging then
+    if placing or dragging then
       return
     end
     parkIcon(frame, iconAngle(frame))
   end)
   hooksecurefunc(frame, "SetParent", function()
-    if snapping or dragging then
+    if placing or dragging then
       return
     end
     parkIcon(frame, iconAngle(frame))
@@ -464,44 +570,63 @@ end
 
 local function parkWorldLayer()
   local frame = _G.MinimapLayerFrame
-  if not frame or not frame.SetPoint or not Minimap then
+  if not frame or not Minimap then
     return
   end
   local box = ensureHolder()
-  snapping = true
-  if frame.SetParent then
-    frame:SetParent(box)
-  end
-  if frame.ClearAllPoints then
-    frame:ClearAllPoints()
-  end
-  frame:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 4)
-  if frame.SetFrameStrata then
-    frame:SetFrameStrata("HIGH")
-  end
-  if frame.SetFrameLevel then
-    frame:SetFrameLevel(9)
-  end
-  if frame.Show then
-    frame:Show()
-  end
-  snapping = false
+  placing = true
+  native(frame, "SetParent", box)
+  native(frame, "ClearAllPoints")
+  native(frame, "SetPoint", "BOTTOM", Minimap, "BOTTOM", 0, 4)
+  native(frame, "SetFrameStrata", "HIGH")
+  native(frame, "SetFrameLevel", 9)
+  native(frame, "Show")
+  placing = false
   if frame._shadowUIWorldLayer or not hooksecurefunc then
     return
   end
   frame._shadowUIWorldLayer = true
   hooksecurefunc(frame, "SetPoint", function()
-    if snapping or dragging then
+    if placing or dragging then
       return
     end
     parkWorldLayer()
   end)
   hooksecurefunc(frame, "SetParent", function()
-    if snapping or dragging then
+    if placing or dragging then
       return
     end
     parkWorldLayer()
   end)
+end
+
+local function passTrackingClicks()
+  local button = _G.MiniMapTrackingButton
+  if not button then
+    return
+  end
+  if button.SetPropagateMouseClicks then
+    button:SetPropagateMouseClicks(true)
+  end
+  if button.SetPropagateMouseMotion then
+    button:SetPropagateMouseMotion(true)
+  end
+end
+
+local function restoreTrackingIcon()
+  if not GetTrackingTexture then
+    return
+  end
+  local icon = GetTrackingTexture()
+  if not icon then
+    return
+  end
+  if MiniMapTrackingIcon and MiniMapTrackingIcon.SetTexture then
+    MiniMapTrackingIcon:SetTexture(icon)
+  end
+  if MiniMapTracking and MiniMapTracking.Show then
+    MiniMapTracking:Show()
+  end
 end
 
 local function watchLateIcons()
@@ -542,7 +667,7 @@ local function watchLateIcons()
   end
   watchingCreate = true
   hooksecurefunc("CreateFrame", function(_, name, parent)
-    if snapping or dragging then
+    if placing or dragging then
       return
     end
     if type(name) == "string" and name:find("ShadowUI", 1, true) then
@@ -554,9 +679,10 @@ local function watchLateIcons()
     if type(name) == "string" and IGNORE[name] then
       if name == "MinimapLayerFrame" then
         parkWorldLayer()
-      elseif name == "GameTimeFrame" or name == "TimeManagerClockButton" then
-        hideStay(_G[name])
+      elseif name == "TimeManagerClockButton" then
         Addon:SkinTime()
+      elseif name == "GameTimeFrame" then
+        hideStay(_G[name])
       end
       return
     end
@@ -571,60 +697,35 @@ local function parkZoneText(box)
   local button = _G.MinimapZoneTextButton
   local text = _G.MinimapZoneText
   if button then
-    if button.SetParent then
-      button:SetParent(box)
+    native(button, "SetParent", box)
+    native(button, "ClearAllPoints")
+    if Minimap then
+      native(button, "SetPoint", "BOTTOM", Minimap, "TOP", 0, ZONE_GAP)
+    else
+      native(button, "SetPoint", "TOP", box, "TOP", 0, 0)
     end
-    if button.ClearAllPoints then
-      button:ClearAllPoints()
-    end
-    if button.SetPoint then
-      if Minimap then
-        button:SetPoint("BOTTOM", Minimap, "TOP", 0, ZONE_GAP)
-      else
-        button:SetPoint("TOP", box, "TOP", 0, 0)
-      end
-    end
-    if button.SetSize then
-      button:SetSize(MAP, BUFFER - ZONE_GAP)
-    end
-    if button.SetFrameStrata then
-      button:SetFrameStrata("MEDIUM")
-    end
-    if button.SetFrameLevel then
-      button:SetFrameLevel(4)
-    end
+    native(button, "SetSize", MAP, BUFFER - ZONE_GAP)
+    native(button, "SetFrameStrata", "MEDIUM")
+    native(button, "SetFrameLevel", 4)
     if button.EnableMouse then
       button:EnableMouse(true)
     end
-    if button.Show then
-      button:Show()
-    end
+    native(button, "Show")
   end
   if not text then
     return
   end
-  if text.SetParent then
-    text:SetParent(button or box)
-  end
-  if text.ClearAllPoints then
-    text:ClearAllPoints()
-  end
-  if text.SetPoint then
-    if button then
-      text:SetPoint("CENTER", button, "CENTER")
-    else
-      text:SetPoint("TOP", box, "TOP", 0, 0)
-    end
+  nativeFont(text, "SetParent", button or box)
+  nativeFont(text, "ClearAllPoints")
+  if button then
+    nativeFont(text, "SetPoint", "CENTER", button, "CENTER")
+  else
+    nativeFont(text, "SetPoint", "TOP", box, "TOP", 0, 0)
   end
   if text.SetJustifyH then
     text:SetJustifyH("CENTER")
   end
-  if text.SetFrameStrata then
-    text:SetFrameStrata("MEDIUM")
-  end
-  if text.Show then
-    text:Show()
-  end
+  nativeFont(text, "Show")
 end
 
 function Addon:SkinMinimap()
@@ -633,37 +734,38 @@ function Addon:SkinMinimap()
   end
 
   local box = ensureHolder()
-  box:ClearAllPoints()
-  box:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, 0)
-  box:SetSize(MAP + BUFFER * 2, MAP + BUFFER * 2 + ZONE_TOP)
-  if box.Show then
-    box:Show()
-  end
+  native(box, "ClearAllPoints")
+  native(box, "SetPoint", "TOPRIGHT", UIParent, "TOPRIGHT", 0, 0)
+  native(box, "SetSize", MAP + BUFFER * 2, MAP + BUFFER * 2 + ZONE_TOP)
+  native(box, "Show")
   self:ApplyOuterChrome(box)
 
-  snapping = true
-  Minimap:SetParent(box)
-  if Minimap.SetFrameStrata then
-    Minimap:SetFrameStrata("LOW")
+  placing = true
+  native(Minimap, "SetParent", box)
+  native(Minimap, "SetFrameStrata", "LOW")
+  native(Minimap, "SetFrameLevel", 2)
+  if Minimap.SetFixedFrameStrata then
+    native(Minimap, "SetFixedFrameStrata", true)
   end
-  if Minimap.SetFrameLevel then
-    Minimap:SetFrameLevel(2)
+  if Minimap.SetFixedFrameLevel then
+    native(Minimap, "SetFixedFrameLevel", true)
   end
-  Minimap:ClearAllPoints()
-  Minimap:SetPoint("BOTTOM", box, "BOTTOM", 0, BUFFER)
-  Minimap:SetSize(MAP, MAP)
-  if Minimap.SetWidth then
-    Minimap:SetWidth(MAP)
-    Minimap:SetHeight(MAP)
-  end
-  snapping = false
+  native(Minimap, "ClearAllPoints")
+  native(Minimap, "SetPoint", "BOTTOM", box, "BOTTOM", 0, BUFFER)
+  native(Minimap, "SetSize", MAP, MAP)
+  native(Minimap, "SetWidth", MAP)
+  native(Minimap, "SetHeight", MAP)
+  placing = false
 
   applyMask()
   muteBlobRing()
   watchMinimap()
+  watchZoom()
   watchLateIcons()
   parkAllIcons()
   parkWorldLayer()
+  passTrackingClicks()
+  restoreTrackingIcon()
   self:SkinTime()
 
   if MinimapCluster.EnableMouse then

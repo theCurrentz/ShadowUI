@@ -1,8 +1,9 @@
 ## Interface: 11509
 ## Title: ShadowUI
-## Notes: Opinionated Classic Era/SoD bars, chrome, and cast bar. Class-profiled Base → Class → Variant layouts.
+## Notes: Opinionated Classic Era bars, chrome, and cast bar. Class-profiled Base → Class → Variant layouts.
 ## Author: Parker Westfall
 ## Version: 0.1.0
+## OptionalDeps: Bagnon, Bagnon_Bank
 ## SavedVariables: ShadowUIDB
 ## SavedVariablesPerCharacter: ShadowUICharDB
 
@@ -12,8 +13,10 @@ core\init.lua
 core\db.lua
 core\resolve.lua
 core\keybinds.lua
+core\deck.lua
 
 defaults\base.lua
+defaults\catalog.lua
 defaults\classes\WARRIOR.lua
 defaults\classes\PALADIN.lua
 defaults\classes\HUNTER.lua
@@ -26,7 +29,9 @@ defaults\classes\DRUID.lua
 
 bars\button.lua
 bars\cooldown.lua
+bars\grid.lua
 bars\bar.lua
+bars\overlay.lua
 bars\pet.lua
 bars\special.lua
 bars\manager.lua
@@ -45,6 +50,8 @@ skin\darken.lua
 skin\frames.lua
 skin\statustext.lua
 skin\threat.lua
+skin\portrait.lua
+skin\statusbars.lua
 skin\windows.lua
 skin\auras.lua
 skin\auratime.lua
@@ -55,6 +62,9 @@ skin\minimap.lua
 skin\time.lua
 skin\details.lua
 skin\itemrack.lua
+skin\rainbow.lua
+skin\bagnon.lua
+skin\stance.lua
 
 edit\mode.lua
 edit\frames.lua

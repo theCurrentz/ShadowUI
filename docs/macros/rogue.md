@@ -1,234 +1,161 @@
 # Rogue
 
-## Stealth
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
+
+## Rogue Combat — class-specific
+
+Openers, Kick, finishers. /startattack on builders.
+
+### st — `r-stealth`
 
 ```
 #showtooltip Stealth
+# class-specific ROGUE all
 /cast Stealth
 ```
 
-Cancel stealth:
-
-```
-/cancelaura Stealth
-```
-
-## Cheap Shot opener
-
-```
-#showtooltip Cheap Shot
-/cast [nostealth] Stealth
-/cast Cheap Shot
-```
-
-## Ambush / Garrote / Premeditation
-
-```
-#showtooltip Ambush
-/cast [nostealth] Stealth
-/cast Ambush
-```
-
-```
-#showtooltip Garrote
-/cast [nostealth] Stealth
-/cast Garrote
-```
-
-```
-#showtooltip Premeditation
-/cast [nostealth] Stealth
-/cast Premeditation
-```
-
-## Pick Pocket then Sap
-
-```
-#showtooltip Pick Pocket
-/cast [nostealth] Stealth
-/cast Pick Pocket
-```
-
-```
-#showtooltip Sap
-/cast [nostealth] Stealth
-/cast Sap
-```
-
-Modifier: shift sap, else pick pocket:
-
-```
-#showtooltip
-/cast [nostealth] Stealth
-/cast [mod:shift] Sap; Pick Pocket
-```
-
-## Kick (interrupt)
-
-```
-#showtooltip Kick
-/stopcasting
-/cast Kick
-```
-
-## Gouge
-
-```
-#showtooltip Gouge
-/stopattack
-/cast Gouge
-```
-
-`/stopattack` helps the Gouge land if a swing would break it.
-
-## Kidney Shot
-
-```
-#showtooltip Kidney Shot
-/cast Kidney Shot
-```
-
-## Eviscerate / Rupture / Slice and Dice
-
-```
-#showtooltip Eviscerate
-/cast Eviscerate
-```
-
-```
-#showtooltip Rupture
-/cast Rupture
-```
-
-```
-#showtooltip Slice and Dice
-/cast Slice and Dice
-```
-
-Cold Blood + Eviscerate (assa talent):
-
-```
-#showtooltip Eviscerate
-/cast Cold Blood
-/cast Eviscerate
-```
-
-## Backstab / Hemorrhage / Ghostly Strike / Sinister Strike
-
-```
-#showtooltip Backstab
-/startattack
-/cast Backstab
-```
+### sinister — `r-ss`
 
 ```
 #showtooltip Sinister Strike
+# class-specific ROGUE combat
 /startattack
 /cast Sinister Strike
 ```
 
-```
-#showtooltip Hemorrhage
-/startattack
-/cast Hemorrhage
-```
+### kick — `r-kick`
 
 ```
-#showtooltip Ghostly Strike
-/startattack
-/cast Ghostly Strike
+#showtooltip Kick
+# class-specific ROGUE all
+/stopcasting
+/cast Kick
 ```
 
-## Expose Armor
+### ev — `r-evis`
 
 ```
-#showtooltip Expose Armor
-/cast Expose Armor
+#showtooltip Eviscerate
+# class-specific ROGUE all
+/cast Eviscerate
 ```
 
-## Feint
+### snd — `r-snd`
 
 ```
-#showtooltip Feint
-/cast Feint
+#showtooltip Slice and Dice
+# class-specific ROGUE combat
+/cast Slice and Dice
 ```
 
-## Blade Flurry / Adrenaline Rush / Evasion
+### rup — `r-rup`
+
+```
+#showtooltip Rupture
+# class-specific ROGUE assassination
+/cast Rupture
+```
+
+### ks — `r-ks`
+
+```
+#showtooltip Kidney Shot
+# class-specific ROGUE assassination
+/cast Kidney Shot
+```
+
+### g — `r-gouge`
+
+```
+#showtooltip Gouge
+# class-specific ROGUE combat
+/stopattack
+/cast Gouge
+```
+
+### cheap — `r-cheap`
+
+```
+#showtooltip Cheap Shot
+# class-specific ROGUE all
+/cast [nostealth] Stealth
+/cast Cheap Shot
+```
+
+### ambush — `r-ambush`
+
+```
+#showtooltip Ambush
+# class-specific ROGUE assassination
+/cast [nostealth] Stealth
+/cast Ambush
+```
+
+### bf — `r-bf`
 
 ```
 #showtooltip Blade Flurry
-/cast Blade Flurry
-```
-
-```
-#showtooltip Adrenaline Rush
-/cast Adrenaline Rush
-```
-
-```
-#showtooltip Evasion
-/cast Evasion
-```
-
-Trinket + Blade Flurry:
-
-```
-#showtooltip Blade Flurry
+# class-specific ROGUE combat
 /use 13
 /cast Blade Flurry
 ```
 
-## Vanish / Preparation / Sprint
+### ar — `r-ar`
+
+```
+#showtooltip Adrenaline Rush
+# class-specific ROGUE combat
+/cast Adrenaline Rush
+```
+
+### eva — `r-eva`
+
+```
+#showtooltip Evasion
+# class-specific ROGUE combat
+/cast Evasion
+```
+
+### van — `r-vanish`
 
 ```
 #showtooltip Vanish
+# class-specific ROGUE subtlety
 /stopattack
 /cast Vanish
 ```
 
-```
-#showtooltip Preparation
-/cast Preparation
-```
+### sp — `r-sprint`
 
 ```
 #showtooltip Sprint
+# class-specific ROGUE all
 /cast Sprint
 ```
 
-## Blind / Distract / Cheap Shot from vanish
+### blind — `r-blind`
 
 ```
 #showtooltip Blind
+# class-specific ROGUE all
 /cast Blind
 ```
 
-```
-#showtooltip Distract
-/cast Distract
-```
-
-## Throw / Shoot (pull)
+### sap — `r-sap`
 
 ```
-#showtooltip Throw
-/cast Throw
+#showtooltip
+# class-specific ROGUE all
+/cast [nostealth] Stealth
+/cast [mod:shift] Sap; Pick Pocket
 ```
 
-```
-#showtooltip Shoot
-/cast Shoot
-```
-
-## Cannibalize
-
-Troll racial, not a rogue spell. If you are a Troll rogue:
+### coldb — `r-cb`
 
 ```
-#showtooltip Cannibalize
-/cast Cannibalize
+#showtooltip Eviscerate
+# class-specific ROGUE assassination
+/cast Cold Blood
+/cast Eviscerate
 ```
-
-## SoD note
-
-SoD runes (for example Saber Slash, Between the Eyes) follow `/startattack` + `/cast`. Kick still wants `/stopcasting`.

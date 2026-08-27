@@ -1,6 +1,7 @@
 --[[
   Purpose: AceConfig panel for variants, talent binding, Action Slot hard lock,
-  ShadowUI vs Blizzard menu, Bar on/off toggles, edit layers, and resets.
+  ShadowUI vs Blizzard menu, on/off toggles for every Bar including pet and possess,
+  edit layers, and resets. Bar toggles read Layout through the selected Layer.
   Deps: AceConfig-3.0, AceConfigDialog-3.0, profile and edit-layer helpers
   Public: ShadowUI:OpenOptions()
 ]]
@@ -23,17 +24,26 @@ local function activeVariant()
   local name = activeName()
   return name and classData().variants[name]
 end
+local function shippedVariants()
+  local defaults = Addon.Defaults
+  local class = Addon:GetPlayerClass()
+  local shipped = defaults and defaults.classes and defaults.classes[class]
+  return shipped and shipped.variants or {}
+end
 local function variantValues()
   local values = {}
+  for name in pairs(shippedVariants()) do
+    values[name] = name
+  end
   for name in pairs(classData().variants) do
     values[name] = name
   end
   return values
 end
-local HOST_LAYOUT = { player = true, target = true, cast = true, range = true }
+local HOST_LAYOUT = { player = true, target = true, cast = true, range = true, stance = true }
 local BAR_TOGGLE_IDS = {
   "bar1", "bar2", "bar3", "bar4", "bar5", "bar6", "bar7", "bar8", "bar9", "bar10",
-  "pet", "possess", "stance", "aura", "form",
+  "pet", "possess",
 }
 local function barToggleName(id)
   local index = id:match("^bar(%d+)$")
@@ -42,24 +52,47 @@ local function barToggleName(id)
   end
   return (id:sub(1, 1):upper() .. id:sub(2))
 end
+local function shippedBarLayout(id)
+  local defaults = Addon.Defaults
+  if not defaults then
+    return nil
+  end
+  local base = defaults.base and defaults.base.layout
+  return base and base[id]
+end
+local function barTogglePatch(id, value)
+  local patch = { enabled = value and true or false }
+  if not value or not Addon.DeepCopy then
+    return patch
+  end
+  local current = (Addon:ResolveEffective(nil, nil, Addon:GetCharDB().editLayer or "variant").layout or {})[id]
+  if current and current.buttons then
+    return patch
+  end
+  local shipped = shippedBarLayout(id)
+  if not shipped then
+    return patch
+  end
+  patch = Addon:DeepCopy(shipped)
+  patch.enabled = true
+  return patch
+end
 local function barToggleArgs()
   local args = {}
   for order, id in ipairs(BAR_TOGGLE_IDS) do
     args[id] = {
       type = "toggle", name = barToggleName(id), order = order,
-      desc = "On shows the Bar. Off hides it. Writes go to the selected Layer.",
+      desc = "On shows the Bar. Off hides it. Reads and writes the selected Layer.",
       hidden = function()
-        local layout = Addon:ResolveEffective().layout or {}
-        return layout[id] == nil or HOST_LAYOUT[id] == true
+        return HOST_LAYOUT[id] == true
       end,
       get = function()
-        local bar = (Addon:ResolveEffective().layout or {})[id]
+        local layer = Addon:GetCharDB().editLayer or "variant"
+        local bar = (Addon:ResolveEffective(nil, nil, layer).layout or {})[id]
         return not bar or bar.enabled ~= false
       end,
       set = function(_, value)
-        Addon:WriteLayerDelta(Addon:GetCharDB().editLayer, "layout", id, {
-          enabled = value and true or false,
-        })
+        Addon:WriteLayerDelta(Addon:GetCharDB().editLayer, "layout", id, barTogglePatch(id, value))
         Addon:ApplyAll()
       end,
     }
@@ -145,15 +178,16 @@ local options = {
         Addon:ApplyAll()
       end,
     },
-    bars = {
-      type = "group", name = "Action bars", order = 17, inline = true,
-      args = barToggleArgs(),
-    },
     layer = {
-      type = "select", name = "Current edit layer", order = 20,
+      type = "select", name = "Current edit layer", order = 17,
+      desc = "Writes and Action bar toggles use this Layer: Base, Class, or Variant.",
       values = { base = "Base", class = "Class", variant = "Variant" },
       get = function() return Addon:GetCharDB().editLayer or "variant" end,
       set = function(_, value) Addon:SetEditLayer(value) end,
+    },
+    bars = {
+      type = "group", name = "Action bars", order = 18, inline = true,
+      args = barToggleArgs(),
     },
     editLayout = {
       type = "execute", name = "Edit layout", order = 21,
@@ -169,6 +203,14 @@ local options = {
       func = function()
         AceConfigDialog:Close("ShadowUI")
         Addon:ToggleKeybindMode()
+      end,
+    },
+    placeDeck = {
+      type = "execute", name = "Place Action Deck", order = 23,
+      desc = "Overwrite Action Slots for this Class and Variant with catalog macros. Out of combat only. Creates missing macros on the General tab. After Macro Cursor loadout save, /reload then place. Does not change Keybinds.",
+      confirm = true,
+      func = function()
+        Addon:PlaceDeck()
       end,
     },
     resetLayer = {

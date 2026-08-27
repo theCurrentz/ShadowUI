@@ -65,6 +65,22 @@ _G.EditModeSystemMixin = {
 
 _G.PlayerFrame = fakeFrame("PlayerFrame")
 _G.TargetFrame = fakeFrame("TargetFrame")
+local tot = {
+  name = "TargetFrameToT",
+  parent = _G.UIParent,
+  points = { { "TOPLEFT", _G.TargetFrame, "TOPRIGHT", 4, 0 } },
+}
+function tot:ClearAllPoints()
+  self.points = {}
+end
+function tot:SetPoint(...)
+  self.points[#self.points + 1] = { ... }
+end
+function tot:SetParent(parent)
+  self.parent = parent
+end
+_G.TargetFrameToT = tot
+_G.TargetFrame.totFrame = tot
 
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/darken.lua"))()
@@ -80,6 +96,10 @@ assert(last(player)[1] == "CENTER" and last(player)[4] == -200, "player sits lef
 assert(last(player)[5] == -179, "player sits with the Currentz cluster")
 assert(last(target)[1] == "CENTER" and last(target)[4] == 202, "target sits right of centre")
 assert(last(target)[5] == -179, "target matches player height")
+assert(tot.points[1][1] == "BOTTOMRIGHT" and tot.points[1][2] == target
+    and tot.points[1][4] == -35 and tot.points[1][5] == -10,
+  "target of target stays on the Blizzard default offset")
+assert(tot.parent == target, "target of target stays a Target Frame child")
 assert(player.userPlaced == true, "player keeps the parked place")
 assert(player.isLocked == true, "Classic drag stays locked")
 assert(player.dragRegistered == false, "Blizzard drag does not move the Player Frame")

@@ -1,5 +1,6 @@
 --[[
   Purpose: Bind and refresh the pet action bar across pet API return shapes.
+           Layout Edit Mode shows the pet bar with no pet.
   Deps: Classic Era pet action APIs
   Public: ShadowUI:BindPetButton(), ShadowUI:RefreshPetBar()
 ]]
@@ -32,12 +33,13 @@ function Addon:BindPetButton(button, index)
 end
 
 function Addon:RefreshPetBar(bar)
+  local preview = self.editMode == true
   for i, button in ipairs(bar.buttons) do
     local name, texture, active = petAction(i)
     button.icon:SetTexture(texture)
     button.icon:SetShown(texture ~= nil)
     button:SetChecked(active == true or active == 1)
-    button:SetShown(name ~= nil)
+    button:SetShown(name ~= nil or preview)
   end
-  bar:SetShown(UnitExists("pet"))
+  bar:SetShown(UnitExists("pet") or preview)
 end

@@ -38,7 +38,8 @@ assert(tex.calls[1][1] == "vertex", "falls back when SetGradient errors")
 _G.CreateColor = nil
 tex = fakeTexture(true)
 Addon:ApplyStatusBarGradient(tex, "HORIZONTAL", { 0, 0, 0, 1 }, { 1, 1, 1, 1 })
-assert(tex.calls[1][1] == "vertex", "falls back when CreateColor is missing")
+assert(tex.calls[1][1] == "gradient", "uses numeric SetGradient when CreateColor is missing")
+assert(tex.calls[1][3] == 0 and tex.calls[1][8] == 1, "passes six colour components")
 Addon:ApplyStatusBarGradient(nil, "HORIZONTAL", { 0, 0, 0, 1 }, { 1, 1, 1, 1 })
 
 local function fakeBar(count)

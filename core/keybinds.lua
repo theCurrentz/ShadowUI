@@ -1,6 +1,7 @@
 --[[
   Purpose: Apply profile keybinds as overrides onto ShadowUI LAB buttons.
   Deps: ShadowUI addon table; PLAYER_REGEN_ENABLED wired in init.lua
+  Notes: MergeBindingTables — profile wins by key and by Action Slot.
   Public: SlotFromBindingName, MergeBindingTables, CanonicalBindName,
           NormalizeBindingKey, BindButtonKey, ClearButtonBinds,
           CollectClientActionBinds, ApplyKeybinds, FlushPendingKeybinds
@@ -39,16 +40,52 @@ end
 
 function Addon:MergeBindingTables(client, profile)
   local out = {}
+  local byKey = {}
+  local bySlot = {}
+
+  local function dropName(name)
+    local key = name and out[name]
+    if not name or key == nil then
+      return
+    end
+    out[name] = nil
+    if byKey[key] == name then
+      byKey[key] = nil
+    end
+    local slot = self:SlotFromBindingName(name)
+    if slot and bySlot[slot] == name then
+      bySlot[slot] = nil
+    end
+  end
+
+  local function set(name, key)
+    dropName(name)
+    local priorKey = byKey[key]
+    if priorKey then
+      dropName(priorKey)
+    end
+    local slot = self:SlotFromBindingName(name)
+    if slot then
+      local priorSlot = bySlot[slot]
+      if priorSlot then
+        dropName(priorSlot)
+      end
+      bySlot[slot] = name
+    end
+    byKey[key] = name
+    out[name] = key
+  end
+
   for name, key in pairs(client or {}) do
     if key and key ~= "" then
-      out[name] = key
+      set(name, key)
     end
   end
   for name, key in pairs(profile or {}) do
     if key == false or key == "" then
-      out[name] = nil
+      dropName(name)
     elseif key then
-      out[name] = key
+      set(name, key)
     end
   end
   return out
@@ -117,13 +154,16 @@ function Addon:BindingSlotFromButton(button)
   if not button then
     return nil
   end
+  local name = button.GetName and button:GetName()
+  if type(name) == "string" then
+    local slot = tonumber(name:match("ShadowUIActionButton(%d+)"))
+    if slot then
+      return slot
+    end
+  end
   local slot = button._state_action
   if type(slot) == "number" then
     return slot
-  end
-  local name = button.GetName and button:GetName()
-  if type(name) == "string" then
-    return tonumber(name:match("ShadowUIActionButton(%d+)"))
   end
   return nil
 end
@@ -229,10 +269,18 @@ function Addon:PaintButtonHotkeys(binds)
       if hotkey then
         if button.shadowUIHotkey then
           hotkey:SetText(button.shadowUIHotkey)
-          hotkey:Show()
         else
           hotkey:SetText("")
         end
+        local filled = not button.HasAction or button:HasAction()
+        if button.shadowUIHotkey and (filled or self.keybindMode) then
+          hotkey:Show()
+        elseif hotkey.Hide then
+          hotkey:Hide()
+        end
+      end
+      if self.PaintEmptySlotVisibility then
+        self:PaintEmptySlotVisibility(button)
       end
     end
   end

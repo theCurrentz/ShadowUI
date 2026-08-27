@@ -1,6 +1,7 @@
 -- Action-button chrome is a 0.05 fill with a 2px icon inset, a 0.07 crop,
 -- hover/press darken, a GCD clock swipe, and a 4px Lorti outer edge.
 -- The icon must not fill the whole button or the chrome is covered.
+-- An Action Slot with no spell, macro, or item stays hidden, including its Keybind.
 -- Run: lua tests/button_skin_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -11,15 +12,23 @@ _G.LibStub = function()
   }
 end
 _G.CreateFrame = function(_, _, parent, template)
-  local frame = { points = {}, parent = parent, template = template }
+  local frame = { points = {}, parent = parent, template = template, shown = true }
   function frame:ClearAllPoints() self.points = {} end
   function frame:SetPoint(...) self.points[#self.points + 1] = { ... } end
   function frame:SetFrameLevel(level) self.level = level end
   function frame:SetBackdrop(spec) self.backdrop = spec end
+  function frame:SetBackdropColor(r, g, b, a)
+    self.fill = { r, g, b, a }
+  end
   function frame:SetBackdropBorderColor(r, g, b, a)
     self.border = { r, g, b, a }
   end
+  function frame:SetParent(parent) self.parent = parent end
   function frame:Show() self.shown = true end
+  function frame:Hide() self.shown = false end
+  function frame:ApplyBackdrop()
+    self.border = { 1, 1, 1, 1 }
+  end
   return frame
 end
 
@@ -51,13 +60,23 @@ local function fakeTex()
   return tex
 end
 
+local hotkey = { shown = true, text = "1" }
+function hotkey:SetText(text) self.text = text end
+function hotkey:Show() self.shown = true end
+function hotkey:Hide() self.shown = false end
+
 local button = {
   icon = fakeTex(),
   NormalTexture = fakeTex(),
   HighlightTexture = fakeTex(),
   PushedTexture = fakeTex(),
   cooldown = fakeTex(),
+  HotKey = hotkey,
+  alpha = 1,
 }
+function button:SetAlpha(a)
+  self.alpha = a
+end
 button.cooldown.clearCount = 0
 function button.cooldown:ClearAllPoints()
   self.clearCount = self.clearCount + 1
@@ -96,6 +115,9 @@ _G.InCombatLockdown = function()
 end
 function button:GetFrameLevel() return 4 end
 function button:SetFrameLevel() end
+function button:SetClipsChildren(clips) self.clipsChildren = clips end
+local barHost = { name = "ShadowUIBar1" }
+function button:GetParent() return barHost end
 
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "bars/button.lua"))()
@@ -129,7 +151,11 @@ assert(outer, "button keeps a Lorti outer edge")
 assert(outer.template == "BackdropTemplate", "outer edge uses BackdropTemplate")
 assert(outer.backdrop.edgeFile:find("outer_shadow", 1, true), "outer edge uses the Lorti shadow texture")
 assert(outer.backdrop.edgeSize == 5, "outer edge size matches Lorti")
-assert(outer.border[1] == 0 and outer.border[4] == 0.9, "outer edge is black at 0.9")
+assert(outer.border[1] == 0 and outer.border[2] == 0 and outer.border[3] == 0
+  and outer.border[4] == 0.9, "outer edge is black at 0.9")
+assert(outer.fill[1] == 0 and outer.fill[4] == 0, "outer edge has no grey fill")
+assert(outer.parent == barHost, "outer edge is a sibling of the action button")
+assert(button.clipsChildren == false, "the action button does not clip Outer Edge")
 assert(outer.points[1][1] == "TOPLEFT" and outer.points[1][4] == -4,
   "outer edge extends 4px past the button")
 assert(outer.level == 3, "outer edge sits behind the button")
@@ -139,5 +165,45 @@ combat = true
 Addon:SkinBarButton(button)
 assert(button.hitRectCalls == 1, "do not call SetHitRectInsets in combat")
 assert(button.cooldown.clearCount == 1, "do not re-anchor cooldown or the GCD swipe restarts")
+outer.border = { 1, 1, 1, 1 }
+Addon:SkinBarButton(button)
+assert(outer.border[1] == 0 and outer.border[4] == 0.9,
+  "Outer Edge stays black after a later Action Slot update")
+outer:ApplyBackdrop()
+Addon:SkinBarButton(button)
+assert(outer.border[1] == 0 and outer.border[4] == 0.9,
+  "Outer Edge stays black after BackdropTemplate resets the border to white")
+
+function button:HasAction()
+  return false
+end
+button.shown = true
+function button:Hide()
+  self.shown = false
+end
+Addon:SkinBarButton(button)
+assert(button.shown ~= false, "an empty Action Slot stays a drop target")
+assert(button.alpha == 0, "an empty Action Slot is invisible")
+assert(button.HotKey.shown == false, "an empty Action Slot hides its Keybind")
+assert(button.chrome.hidden, "an empty Action Slot does not keep Darken chrome")
+assert(button.shadowUIOuter.shown == false, "an empty Action Slot does not keep an Outer Edge")
+
+Addon.keybindMode = true
+Addon:SkinBarButton(button)
+assert(button.alpha == 1, "Keybind Edit Mode shows empty Action Slots")
+Addon.keybindMode = false
+
+function button:HasAction()
+  return true
+end
+Addon:SkinBarButton(button)
+assert(button.alpha == 1, "a bound Action Slot is visible")
+assert(not button.chrome.hidden, "a bound Action Slot keeps Darken chrome")
+assert(button.shadowUIOuter.shown, "a bound Action Slot keeps an Outer Edge")
+
+local bar = { fill = fakeTex(), shadow = fakeTex() }
+bar.fill.hidden = false
+Addon:ApplyBarChrome(bar)
+assert(bar.fill.hidden, "the Bar does not paint a black fill under empty Action Slots")
 
 print("button_skin_spec OK")

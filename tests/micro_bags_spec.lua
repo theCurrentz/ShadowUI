@@ -156,6 +156,8 @@ _G.QuestLogMicroButton = fakeButton("QuestLogMicroButton", art, false)
 _G.SocialsMicroButton = fakeButton("SocialsMicroButton", art, false)
 _G.GuildMicroButton = fakeButton("GuildMicroButton", art, true)
 _G.WorldMapMicroButton = fakeButton("WorldMapMicroButton", art, false)
+_G.CollectionsMicroButton = fakeButton("CollectionsMicroButton", art, true)
+_G.EJMicroButton = fakeButton("EJMicroButton", art, true)
 _G.StoreMicroButton = fakeButton("StoreMicroButton", art, true)
 _G.MainMenuMicroButton = fakeButton("MainMenuMicroButton", art, false)
 _G.HelpMicroButton = fakeButton("HelpMicroButton", art, false)
@@ -215,6 +217,10 @@ assert(_G.SocialsMicroButton.shown, "Classic Era Socials button must stay in the
 assert(_G.GuildMicroButton.shown == false, "GuildMicroButton is a no-op on Classic Era and must stay hidden")
 assert(_G.AchievementMicroButton.shown == false, "AchievementMicroButton stays out of the Micro Cluster")
 assert(_G.StoreMicroButton.shown == false, "StoreMicroButton stays out of the Micro Cluster")
+assert(_G.EJMicroButton.shown == false,
+  "EJMicroButton stays out of the Micro Cluster when ToggleEncounterJournal is missing")
+assert(_G.CollectionsMicroButton.shown == false,
+  "CollectionsMicroButton stays out of the Micro Cluster when ToggleCollectionsJournal is missing")
 assert(bag.width == 37 and bag.height == 37, "backpack keeps native Blizzard size")
 
 local cluster = host.parent
@@ -276,5 +282,11 @@ assert(dbSrc:find("useShadowUIMenu%s*=%s*true"), "character default uses the Sha
 
 local configSrc = assert(io.open(root .. "options/config.lua", "r")):read("*a")
 assert(configSrc:find("useShadowUIMenu"), "/shadowui exposes the menu toggle")
+
+char.useShadowUIMenu = true
+_G.ToggleEncounterJournal = function() end
+Addon:SkinMicroAndBags()
+assert(_G.EJMicroButton.shown,
+  "EJMicroButton stays in the Micro Cluster when ToggleEncounterJournal exists")
 
 print("micro_bags_spec OK")

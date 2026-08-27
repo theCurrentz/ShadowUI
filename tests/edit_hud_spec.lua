@@ -161,6 +161,7 @@ end
 function Addon:ApplyKeybindSession() end
 
 assert(loadfile(root .. "bars/bar.lua"))()
+assert(loadfile(root .. "bars/overlay.lua"))()
 assert(loadfile(root .. "edit/mode.lua"))()
 assert(loadfile(root .. "edit/layer.lua"))()
 
@@ -185,6 +186,7 @@ assert(overlay.fill.r == 0 and overlay.fill.g > 0.4 and overlay.fill.b > 0.8,
   "overlay fill is Blizzard HUD blue")
 assert(overlay.fill.a > 0.2 and overlay.fill.a < 0.55, "overlay fill stays translucent")
 assert(overlay.fontString and overlay.fontString.text == "Bar 1", "overlay names the Bar")
+assert(overlay.resizeGrip, "Bar overlay has a resize grip")
 assert(bar.movable == true, "Bar can move while the overlay is shown")
 
 bar.left, bar.bottom = 100, 50

@@ -342,6 +342,14 @@ function Addon:SkinMicroAndBags()
   end
   hideExtra("AchievementMicroButton")
   hideExtra("StoreMicroButton")
+  -- Classic Era still builds EJMicroButton; OnClick calls ToggleEncounterJournal,
+  -- which is nil. Collections is the same with ToggleCollectionsJournal.
+  if not _G.ToggleEncounterJournal then
+    hideExtra("EJMicroButton")
+  end
+  if not _G.ToggleCollectionsJournal then
+    hideExtra("CollectionsMicroButton")
+  end
 
   local menu = _G.MicroMenu
   local container = _G.MicroMenuContainer
@@ -391,7 +399,10 @@ function Addon:SkinMicroAndBags()
   local row = {}
   local microParent = menu or cluster
   for _, name in ipairs(MICRO_BUTTONS) do
-    if name ~= "GuildMicroButton" or not socials then
+    local skip = (name == "GuildMicroButton" and socials)
+      or (name == "EJMicroButton" and not _G.ToggleEncounterJournal)
+      or (name == "CollectionsMicroButton" and not _G.ToggleCollectionsJournal)
+    if not skip then
       local button = _G[name]
       if button then
         restoreLayoutIndex(button)

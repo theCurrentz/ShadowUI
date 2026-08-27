@@ -1,8 +1,10 @@
 --[[
   Purpose: Merge shipped defaults with account Base → Class → Variant into effective config.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
-  Public: DeepCopy, SparseMerge, ResolveEffective, GetActiveVariantName, WriteLayerDelta,
-          TalentPointsFromTabInfo, GetPrimaryTalentTree
+  Public: DeepCopy, SparseMerge, ShippedClass, ResolveEffective, GetActiveVariantName,
+          WriteLayerDelta, TalentPointsFromTabInfo, GetPrimaryTalentTree
+  Notes: ResolveEffective(classFile?, variantName?, through?) stops the merge after
+         through (base, class, or variant). Omit through for the full merge.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -30,22 +32,40 @@ function Addon:SparseMerge(dst, src)
   return dst
 end
 
+function Addon:ShippedClass(classFile)
+  classFile = classFile or self:GetPlayerClass()
+  local shipped = self.Defaults or { classes = {} }
+  return (shipped.classes or {})[classFile] or {}
+end
+
+local function matchTalentTree(variants, tree)
+  if type(variants) ~= "table" or not tree then
+    return nil
+  end
+  for name, variant in pairs(variants) do
+    if variant and variant.talentTree == tree then
+      return name
+    end
+  end
+  return nil
+end
+
 function Addon:GetActiveVariantName(classFile)
   classFile = classFile or self:GetPlayerClass()
   local char = self:GetCharDB()
   if char.variantManual and char.activeVariant then
     return char.activeVariant
   end
-  local classData = self:GetDB().classes[classFile]
-  if not classData or not classData.variants then
-    return char.activeVariant
-  end
   local tree = self:GetPrimaryTalentTree()
   if tree then
-    for name, variant in pairs(classData.variants) do
-      if variant.talentTree == tree then
-        return name
-      end
+    local classAcc = self:GetDB().classes[classFile]
+    local accountName = matchTalentTree(classAcc and classAcc.variants, tree)
+    if accountName then
+      return accountName
+    end
+    local shippedName = matchTalentTree(self:ShippedClass(classFile).variants, tree)
+    if shippedName then
+      return shippedName
     end
   end
   return char.activeVariant
@@ -74,23 +94,45 @@ function Addon:GetPrimaryTalentTree()
   return best
 end
 
-function Addon:ResolveEffective(classFile, variantName)
+function Addon:ResolveEffective(classFile, variantName, through)
   classFile = classFile or self:GetPlayerClass()
   variantName = variantName or self:GetActiveVariantName(classFile)
+  if through ~= "base" and through ~= "class" then
+    through = "variant"
+  end
 
   local shipped = self.Defaults or { base = { layout = {}, keybinds = {} }, classes = {} }
   local account = self:GetDB()
 
+  local function layerFields(src)
+    if type(src) ~= "table" then
+      return { layout = {}, keybinds = {} }
+    end
+    return { layout = src.layout or {}, keybinds = src.keybinds or {} }
+  end
+
+  local includeClass = through ~= "base"
+  local includeVariant = through == "variant"
+
   local eff = { layout = {}, keybinds = {} }
   self:SparseMerge(eff, shipped.base or {})
-  self:SparseMerge(eff, (shipped.classes[classFile] or {}))
+  local shippedClass = (shipped.classes or {})[classFile] or {}
+  if includeClass then
+    self:SparseMerge(eff, layerFields(shippedClass))
+  end
+  local shippedVariant = includeVariant and variantName and shippedClass.variants and shippedClass.variants[variantName]
+  if shippedVariant then
+    self:SparseMerge(eff, layerFields(shippedVariant))
+  end
   self:SparseMerge(eff, account.base or {})
   local classAcc = account.classes[classFile]
   if classAcc then
-    self:SparseMerge(eff, { layout = classAcc.layout or {}, keybinds = classAcc.keybinds or {} })
-    local variant = variantName and classAcc.variants and classAcc.variants[variantName]
+    if includeClass then
+      self:SparseMerge(eff, layerFields(classAcc))
+    end
+    local variant = includeVariant and variantName and classAcc.variants and classAcc.variants[variantName]
     if variant then
-      self:SparseMerge(eff, { layout = variant.layout or {}, keybinds = variant.keybinds or {} })
+      self:SparseMerge(eff, layerFields(variant))
     end
   end
   return eff

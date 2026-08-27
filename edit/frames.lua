@@ -1,5 +1,6 @@
 --[[
-  Purpose: HUD drag hosts for Player Frame, Target Frame, Cast Bar, and Range Display.
+  Purpose: HUD drag hosts for Player Frame, Target Frame, Cast Bar, Range Display,
+           and the Blizzard Stance Bar.
   Deps: ShadowUI:SnapFrameToGrid(), ShadowUI:PersistHostPosition(),
         ShadowUI:SnapFrameSize(), ShadowUI:SelectEditOverlay()
   Public: ShadowUI:RefreshUnitDragOverlays()
@@ -11,6 +12,8 @@ local HUD_FILL = 0.33
 local HOSTS = {
   { id = "player", global = "PlayerFrame", overlay = "ShadowUIPlayerDrag", label = "Player" },
   { id = "target", global = "TargetFrame", overlay = "ShadowUITargetDrag", label = "Target" },
+  { id = "stance", overlay = "ShadowUIStanceDrag", label = "Stance",
+    resolve = function() return _G.StanceBarFrame or _G.ShapeshiftBarFrame end },
   { id = "cast", overlay = "ShadowUICastDrag", label = "Cast", resizable = true,
     resolve = function() return Addon.castGroup end,
     visual = function() return Addon.castBar or Addon.castGroup end },
@@ -174,8 +177,12 @@ function Addon:RefreshUnitDragOverlays()
         overlay.host = frame
         local visual = spec.visual and spec.visual() or frame
         overlay:SetAllPoints(visual or frame)
-        overlay:EnableMouse(editable)
-        overlay:SetShown(editable)
+        local show = editable
+        if spec.id == "stance" and frame.IsShown and not frame:IsShown() then
+          show = false
+        end
+        overlay:EnableMouse(show)
+        overlay:SetShown(show)
         if overlay.resizeGrip then
           overlay.resizeGrip:EnableMouse(editable)
           overlay.resizeGrip:SetShown(editable)

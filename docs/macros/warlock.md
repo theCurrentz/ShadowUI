@@ -1,371 +1,163 @@
 # Warlock
 
-## Life Tap
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
 
-Shift Rank 1 (cheap tap):
+## Warlock core — class-specific
+
+Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
+
+### lt — `l-tap`
 
 ```
 #showtooltip
+# class-specific WARLOCK all
 /cast [mod:shift] Life Tap(Rank 1); Life Tap
 ```
 
-## Dark Pact (aff talent, tap pet mana)
-
-```
-#showtooltip Dark Pact
-/cast Dark Pact
-```
-
-## Shadow Bolt ranks
-
-Shift Rank 1:
+### sbolt — `l-sb`
 
 ```
 #showtooltip
+# class-specific WARLOCK destruction
 /cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt
 ```
 
-Nightfall proc is still `/cast Shadow Bolt`. No aura test for the proc in Era macros.
-
-## Searing Pain / Immolate / Conflagrate / Soul Fire
-
-```
-#showtooltip Searing Pain
-/cast Searing Pain
-```
+### imm — `l-imm`
 
 ```
 #showtooltip Immolate
+# class-specific WARLOCK destruction
 /cast Immolate
 ```
 
-```
-#showtooltip Conflagrate
-/cast Conflagrate
-```
-
-```
-#showtooltip Soul Fire
-/cast Soul Fire
-```
-
-## Corruption / Siphon Life / Drain Life
-
-Shift Rank 1 (tag / contest):
+### corr — `l-corr`
 
 ```
 #showtooltip
+# class-specific WARLOCK affliction
 /cast [mod:shift] Corruption(Rank 1); Corruption
 ```
 
-```
-#showtooltip Siphon Life
-/cast Siphon Life
-```
-
-```
-#showtooltip Drain Life
-/cast Drain Life
-```
-
-## Drain Soul / Drain Mana
-
-Shift Rank 1 (shard farming, less overkill):
+### coa — `l-coa`
 
 ```
 #showtooltip
-/cast [mod:shift] Drain Soul(Rank 1); Drain Soul
-```
-
-```
-#showtooltip Drain Mana
-/cast Drain Mana
-```
-
-## Shadowburn (destro talent)
-
-```
-#showtooltip Shadowburn
-/cast Shadowburn
-```
-
-## Curses (one on the target)
-
-Elements (raid caster):
-
-```
-#showtooltip Curse of the Elements
-/cast Curse of the Elements
-```
-
-Shadow (shadow raid):
-
-```
-#showtooltip Curse of Shadow
-/cast Curse of Shadow
-```
-
-Agony (affliction):
-
-```
-#showtooltip Curse of Agony
-/cast Curse of Agony
-```
-
-Recklessness (pve stun-immune packs, pvp):
-
-```
-#showtooltip Curse of Recklessness
-/cast Curse of Recklessness
-```
-
-Weakness:
-
-```
-#showtooltip Curse of Weakness
-/cast Curse of Weakness
-```
-
-Tongues:
-
-```
-#showtooltip Curse of Tongues
-/cast Curse of Tongues
-```
-
-Exhaustion (aff talent):
-
-```
-#showtooltip Curse of Exhaustion
-/cast Curse of Exhaustion
-```
-
-Doom (destro talent):
-
-```
-#showtooltip Curse of Doom
-/cast Curse of Doom
-```
-
-Shift Agony, else Elements (solo vs raid):
-
-```
-#showtooltip
+# class-specific WARLOCK affliction
 /cast [mod:shift] Curse of Agony; Curse of the Elements
 ```
 
-## Fear / Howl of Terror / Death Coil / Banish
-
-Shift Rank 1 (pvp, shorter):
+### fear — `l-fear`
 
 ```
 #showtooltip
+# class-specific WARLOCK affliction
 /stopcasting
 /cast [mod:shift] Fear(Rank 1); Fear
 ```
 
-```
-#showtooltip Howl of Terror
-/cast Howl of Terror
-```
-
-```
-#showtooltip Death Coil
-/cast Death Coil
-```
-
-```
-#showtooltip Banish
-/stopcasting
-/cast Banish
-```
-
-## Enslave Demon / Inferno / Ritual
-
-```
-#showtooltip Enslave Demon
-/cast Enslave Demon
-```
-
-```
-#showtooltip Inferno
-/cast Inferno
-```
-
-```
-#showtooltip Ritual of Summoning
-/cast Ritual of Summoning
-```
-
-```
-#showtooltip Ritual of Doom
-/cast Ritual of Doom
-```
-
-## Soulstone / Healthstone / Firestone / Spellstone
-
-```
-#showtooltip Create Soulstone
-/cast Create Soulstone
-```
-
-Use the created item (name follows rank, e.g. Major Soulstone):
-
-```
-#showtooltip Major Soulstone
-/use Major Soulstone
-```
-
-```
-/raid Soulstone on %t
-```
-
-```
-#showtooltip Create Healthstone
-/cast Create Healthstone
-```
-
-```
-#showtooltip Major Healthstone
-/use Major Healthstone
-```
-
-```
-#showtooltip Create Firestone
-/cast Create Firestone
-```
-
-```
-#showtooltip Create Spellstone
-/cast Create Spellstone
-```
-
-## Pets
-
-```
-#showtooltip Summon Imp
-/cast Summon Imp
-```
-
-```
-#showtooltip Summon Voidwalker
-/cast Summon Voidwalker
-```
-
-```
-#showtooltip Summon Succubus
-/cast Summon Succubus
-```
-
-```
-#showtooltip Summon Felhunter
-/cast Summon Felhunter
-```
-
-Shift succubus, else felhunter (example):
-
-```
-#showtooltip
-/cast [mod:shift] Summon Succubus; Summon Felhunter
-```
-
-## Voidwalker Sacrifice
-
-```
-#showtooltip Sacrifice
-/cast Sacrifice
-```
-
-## Felhunter Spell Lock (interrupt)
+### lock — `l-lock`
 
 ```
 #showtooltip Spell Lock
+# class-specific WARLOCK demonology
 /stopcasting
 /cast Spell Lock
 ```
 
-If the pet bar is the one that has Spell Lock, you can also `/cast Spell Lock` from a player macro when the felhunter is out.
-
-## Devour Magic / Seduction / Suffering / Torment
+### lpa — `l-pa`
 
 ```
-#showtooltip Devour Magic
-/cast Devour Magic
-```
-
-```
-#showtooltip Seduction
-/petattack
-/cast Seduction
-```
-
-```
-#showtooltip Suffering
-/cast Suffering
-```
-
-```
-#showtooltip Torment
-/cast Torment
-```
-
-## Pet stance (shared hunter-style)
-
-```
+# class-specific WARLOCK demonology
 /petattack
 ```
 
+### lpf — `l-pf`
+
 ```
+# class-specific WARLOCK demonology
 /petfollow
 ```
 
-```
-/petpassive
-```
-
-## Detect Invisibility / Unending Breath / Eye of Kilrogg
+### sum — `l-sum`
 
 ```
-#showtooltip Detect Invisibility
-/cast [mod:alt,target=player] Detect Invisibility; Detect Invisibility
+# class-specific WARLOCK all
+/ra Summoning %t
+/rw Summoning %t, click!
+/cast Ritual of Summoning
 ```
 
-```
-#showtooltip Unending Breath
-/cast [mod:alt,target=player] Unending Breath; Unending Breath
-```
+### soulstone — `l-ss`
 
 ```
-#showtooltip Eye of Kilrogg
-/cast Eye of Kilrogg
+#showtooltip Major Soulstone
+# class-specific WARLOCK all
+/raid Soulstone on %t
+/use Major Soulstone
 ```
 
-## Wand
+### sac — `l-sac`
 
 ```
-#showtooltip Shoot
-/cast Shoot
+#showtooltip Sacrifice
+# class-specific WARLOCK demonology
+/cast Sacrifice
 ```
 
-## Demon Armor / Fel Armor / Shadow Ward
+### ban — `l-banish`
 
-Fel Armor is TBC. Era:
+```
+#showtooltip Banish
+# class-specific WARLOCK demonology
+/stopcasting
+/cast Banish
+```
+
+### dc — `l-coil`
+
+```
+#showtooltip Death Coil
+# class-specific WARLOCK affliction
+/cast Death Coil
+```
+
+### fel — `l-fel`
+
+```
+#showtooltip
+# class-specific WARLOCK demonology
+/cast [mod:shift] Summon Succubus; Summon Felhunter
+```
+
+### da — `l-armor`
 
 ```
 #showtooltip Demon Armor
+# class-specific WARLOCK all
 /cast Demon Armor
 ```
 
-```
-#showtooltip Demon Skin
-/cast Demon Skin
-```
+### drain — `l-drain`
 
 ```
-#showtooltip Shadow Ward
-/cast Shadow Ward
+#showtooltip
+# class-specific WARLOCK affliction
+/cast [mod:shift] Drain Soul(Rank 1); Drain Soul
 ```
 
-## SoD note
+### sbn — `l-shadowburn`
 
-SoD adds extra pets and runes (for example Chaos Bolt, Haunt, Metamorphosis by phase). Life Tap downrank and Spell Lock `/stopcasting` stay valid.
+```
+#showtooltip Shadowburn
+# class-specific WARLOCK destruction
+/cast Shadowburn
+```
+
+### lwand — `l-wand`
+
+```
+#showtooltip Shoot
+# class-specific WARLOCK all
+/cast Shoot
+```

@@ -18,7 +18,7 @@ local WIDTH, HEIGHT, ICON = 288, 20, 20
 local X, Y = -6, -132
 local FAIL_SECONDS = 0.45
 local ICON_ALPHA = 0.55
--- Interior notches: tick count minus the channel end. Classic Era / SoD ranks.
+-- Interior notches: tick count minus the channel end. Classic Era ranks.
 local CHANNEL_TICKS = {
   [10] = 8, [6141] = 8, [8427] = 8, [10185] = 8, [10186] = 8, [10187] = 8,
   [5143] = 3, [5144] = 4, [5145] = 5, [8416] = 5, [8417] = 5, [10211] = 5,
@@ -54,6 +54,30 @@ function Addon:ApplyStatusBarGradient(texture, orientation, from, to)
       orientation,
       CreateColor(from[1], from[2], from[3], from[4]),
       CreateColor(to[1], to[2], to[3], to[4])
+    )
+    if ok then
+      return
+    end
+  end
+  if texture.SetGradientAlpha then
+    local ok = pcall(
+      texture.SetGradientAlpha,
+      texture,
+      orientation,
+      from[1], from[2], from[3], from[4],
+      to[1], to[2], to[3], to[4]
+    )
+    if ok then
+      return
+    end
+  end
+  if texture.SetGradient then
+    local ok = pcall(
+      texture.SetGradient,
+      texture,
+      orientation,
+      from[1], from[2], from[3],
+      to[1], to[2], to[3]
     )
     if ok then
       return

@@ -1,364 +1,239 @@
 # Druid
 
-**Forms (typical Era index):** `1` Bear (or Dire Bear), `2` Aquatic, `3` Cat, `4` Travel. Moonkin is a talent form and can shift the index. Test `form:N` on your character if a macro misses.
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
 
-`/cancelform` leaves any shapeshift so you can heal or innervate.
+**Forms (typical Era index):** `1` Bear, `2` Aquatic, `3` Cat, `4` Travel. Test `form:N` if a macro misses.
 
-## Cancel form + Healing Touch
+## Druid Balance / Resto extras — class-specific
 
-Alt self. Shift Rank 4. Ctrl Rank 1.
+Moonkin and healer extras.
 
-```
-#showtooltip
-/cancelform
-/cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch
-```
-
-## Regrowth / Rejuvenation
-
-```
-#showtooltip Regrowth
-/cancelform
-/cast [mod:alt,target=player] Regrowth; Regrowth
-```
-
-Shift Rejuvenation Rank 3:
+### mfire — `d-mf`
 
 ```
 #showtooltip
+# class-specific DRUID balance
+/cast [mod:shift] Moonfire(Rank 1); Moonfire
+```
+
+### wr — `d-wrath`
+
+```
+#showtooltip Wrath
+# class-specific DRUID balance
+/cast Wrath
+```
+
+### stf — `d-star`
+
+```
+#showtooltip Starfire
+# class-specific DRUID balance
+/cast Starfire
+```
+
+### mk — `d-moonkin`
+
+```
+#showtooltip Moonkin Form
+# class-specific DRUID balance
+/cast Moonkin Form
+```
+
+### er — `d-roots`
+
+```
+#showtooltip
+# class-specific DRUID balance
+/cancelform
+/cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots
+```
+
+### rej — `d-rejuv`
+
+```
+#showtooltip
+# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation
 ```
 
-## Swiftmend (resto talent)
+### sm — `d-swift`
 
 ```
 #showtooltip Swiftmend
+# class-specific DRUID restoration
 /cancelform
 /cast Swiftmend
 ```
 
-## Nature's Swiftness + Healing Touch
+### dnsw — `d-ns`
 
 ```
 #showtooltip Healing Touch
+# class-specific DRUID restoration
 /cancelform
 /cast Nature's Swiftness
 /cast Healing Touch
 ```
 
-## Tranquility
+## Druid Feral — class-specific
 
-```
-#showtooltip Tranquility
-/cancelform
-/cast Tranquility
-```
+Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
-## Innervate
-
-```
-#showtooltip Innervate
-/cancelform
-/cast [mod:alt,target=player] Innervate; Innervate
-```
-
-```
-/raid Innervate on %t
-```
-
-## Rebirth
-
-```
-#showtooltip Rebirth
-/cancelform
-/cast Rebirth
-```
-
-```
-/raid {rt8} Rebirth on %t {rt8}
-/cast Rebirth
-```
-
-## Remove Curse / Abolish Poison
-
-```
-#showtooltip Remove Curse
-/cancelform
-/cast [mod:alt,target=player] Remove Curse; Remove Curse
-```
-
-```
-#showtooltip Abolish Poison
-/cancelform
-/cast [mod:alt,target=player] Abolish Poison; Abolish Poison
-```
-
-```
-#showtooltip Cure Poison
-/cancelform
-/cast [mod:alt,target=player] Cure Poison; Cure Poison
-```
-
-## Mark of the Wild / Thorns / Gift
-
-```
-#showtooltip Mark of the Wild
-/cancelform
-/cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
-```
-
-```
-#showtooltip Gift of the Wild
-/cancelform
-/cast Gift of the Wild
-```
-
-```
-#showtooltip Thorns
-/cancelform
-/cast [mod:alt,target=player] Thorns; Thorns
-```
-
-## Hibernate / Entangling Roots / Nature's Grasp / Cyclone
-
-Cyclone is TBC. Era:
-
-```
-#showtooltip Hibernate
-/cancelform
-/cast Hibernate
-```
-
-Shift Rank 1 (pvp / kite):
-
-```
-#showtooltip
-/cancelform
-/cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots
-```
-
-```
-#showtooltip Nature's Grasp
-/cast Nature's Grasp
-```
-
-## Moonfire / Wrath / Starfire / Insect Swarm / Hurricane
-
-Shift Rank 1 (tag):
-
-```
-#showtooltip
-/cast [mod:shift] Moonfire(Rank 1); Moonfire
-```
-
-```
-#showtooltip Wrath
-/cast Wrath
-```
-
-```
-#showtooltip Starfire
-/cast Starfire
-```
-
-```
-#showtooltip Insect Swarm
-/cast Insect Swarm
-```
-
-```
-#showtooltip Hurricane
-/cast Hurricane
-```
-
-## Faerie Fire (caster vs feral)
-
-```
-#showtooltip Faerie Fire
-/cast Faerie Fire
-```
-
-```
-#showtooltip Faerie Fire (Feral)
-/cast Faerie Fire (Feral)
-```
-
-One key that prefers feral in cat/bear:
-
-```
-#showtooltip
-/cast [form:1/3] Faerie Fire (Feral); Faerie Fire
-```
-
-Form numbers must match your character. If Moonkin is form 5, add it.
-
-## Barkskin / Omen of Clarity / Nature's Grace
-
-```
-#showtooltip Barkskin
-/cast Barkskin
-```
-
-Omen is a talent proc, not a spam button.
-
-## Bear: Growl / Maul / Swipe / Demoralizing Roar / Enrage / Frenzied Regeneration
-
-```
-#showtooltip Growl
-/cast [noform:1] Dire Bear Form
-/cast Growl
-```
-
-Use `Bear Form` until you train Dire Bear.
-
-```
-#showtooltip Maul
-/startattack
-/cast Maul
-```
-
-```
-#showtooltip Swipe
-/startattack
-/cast Swipe
-```
-
-```
-#showtooltip Demoralizing Roar
-/cast Demoralizing Roar
-```
-
-```
-#showtooltip Enrage
-/cast Enrage
-```
-
-```
-#showtooltip Frenzied Regeneration
-/cast Frenzied Regeneration
-```
-
-```
-#showtooltip Challenging Roar
-/cast Challenging Roar
-```
-
-```
-#showtooltip Bash
-/stopcasting
-/cast Bash
-```
-
-Bash is the bear interrupt/stun.
-
-```
-#showtooltip Feral Charge
-/cast Feral Charge
-```
-
-## Cat: Prowl / Claw / Rake / Rip / Ferocious Bite / Shred / Ravage / Pounce
-
-```
-#showtooltip Prowl
-/cast [noform:3] Cat Form
-/cast Prowl
-```
-
-```
-#showtooltip Claw
-/startattack
-/cast Claw
-```
+### shred — `d-shred`
 
 ```
 #showtooltip Shred
+# class-specific DRUID feral
 /startattack
 /cast Shred
 ```
 
+### fbite — `d-fb`
+
+```
+#showtooltip
+# class-specific DRUID feral
+/cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite
+```
+
+### rip — `d-rip`
+
+```
+#showtooltip Rip
+# class-specific DRUID feral
+/cast Rip
+```
+
+### rake — `d-rake`
+
 ```
 #showtooltip Rake
+# class-specific DRUID feral
 /startattack
 /cast Rake
 ```
 
+### pr — `d-prowl`
+
 ```
-#showtooltip Rip
-/cast Rip
+#showtooltip Prowl
+# class-specific DRUID feral
+/cast [noform:3] Cat Form
+/cast Prowl
 ```
+
+### ml — `d-maul`
+
+```
+#showtooltip Maul
+# class-specific DRUID feral
+/startattack
+/cast Maul
+```
+
+### gr — `d-growl`
+
+```
+#showtooltip Growl
+# class-specific DRUID feral
+/cast [noform:1] Dire Bear Form
+/cast Growl
+```
+
+### bash — `d-bash`
+
+```
+#showtooltip Bash
+# class-specific DRUID feral
+/stopcasting
+/cast Bash
+```
+
+### ff — `d-ff`
 
 ```
 #showtooltip
-/cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite
+# class-specific DRUID all
+/cast [form:1/3] Faerie Fire (Feral); Faerie Fire
 ```
 
-```
-#showtooltip Ravage
-/cast [nostealth] Prowl
-/cast Ravage
-```
+### fc — `d-charge`
 
 ```
-#showtooltip Pounce
-/cast [nostealth] Prowl
-/cast Pounce
+#showtooltip Feral Charge
+# class-specific DRUID feral
+/cast Feral Charge
 ```
 
+### fr — `d-fr`
+
 ```
-#showtooltip Tiger's Fury
-/cast Tiger's Fury
+#showtooltip Frenzied Regeneration
+# class-specific DRUID feral
+/cast Frenzied Regeneration
 ```
+
+### dash — `d-dash`
 
 ```
 #showtooltip Dash
+# class-specific DRUID feral
 /cast Dash
 ```
 
-```
-#showtooltip Cower
-/cast Cower
-```
-
-```
-#showtooltip Track Humanoids
-/cast Track Humanoids
-```
-
-## Travel / Aquatic / caster form
-
-```
-#showtooltip Travel Form
-/cast Travel Form
-```
-
-```
-#showtooltip Aquatic Form
-/cast Aquatic Form
-```
-
-```
-#showtooltip Dire Bear Form
-/cast Dire Bear Form
-```
-
-```
-#showtooltip Cat Form
-/cast Cat Form
-```
-
-```
-#showtooltip Moonkin Form
-/cast Moonkin Form
-```
-
-Shift travel, else cat (example):
+### cat — `d-cat`
 
 ```
 #showtooltip
+# class-specific DRUID feral
 /cast [mod:shift] Travel Form; Cat Form
 ```
 
-## SoD note
+### bear — `d-bear`
 
-SoD feral and balance runes add strikes and starsurge-like spells. `/cancelform` before a heal still matters. Maul still needs `/startattack`.
+```
+#showtooltip Dire Bear Form
+# class-specific DRUID feral
+/cast Dire Bear Form
+```
+
+### ht — `d-ht`
+
+```
+#showtooltip
+# class-specific DRUID restoration
+/cancelform
+/cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch
+```
+
+### inn — `d-inn`
+
+```
+#showtooltip Innervate
+# class-specific DRUID restoration
+/cancelform
+/raid Innervate on %t
+/cast [mod:alt,target=player] Innervate; Innervate
+```
+
+### reb — `d-reb`
+
+```
+#showtooltip Rebirth
+# class-specific DRUID restoration
+/cancelform
+/raid {rt8} Rebirth on %t {rt8}
+/cast Rebirth
+```
+
+### motw — `d-motw`
+
+```
+#showtooltip Mark of the Wild
+# class-specific DRUID restoration
+/cancelform
+/cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
+```

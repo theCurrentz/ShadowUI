@@ -2,7 +2,8 @@
   Purpose: Layout Edit Mode (grid drag; Shift skips snap) and session switching for Keybind Edit Mode.
   Deps: ShadowUI:WriteLayerDelta(), ShadowUI:ApplyAll(), bar frames, edit/keybinds.lua
   Public: SetEditSession(), ApplyEditSession(), ToggleEditMode(), ToggleKeybindMode(),
-          PersistBarPosition(), PersistHostPosition(), SnapFrameSize(), OnRegenDisabled()
+          PersistBarPosition(bar, withGrid?), PersistHostPosition(), SnapFrameSize(),
+          OnRegenDisabled()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -126,15 +127,15 @@ function Addon:ApplyEditSession(reapply)
   elseif self.layerPicker then
     self.layerPicker:Hide()
   end
+  if (reapply or self.editMode) and self.ApplyAll then
+    self:ApplyAll()
+  end
   self:RefreshBarDragOverlays()
   if self.RefreshUnitDragOverlays then
     self:RefreshUnitDragOverlays()
   end
   if self.ApplyKeybindSession then
     self:ApplyKeybindSession()
-  end
-  if reapply then
-    self:ApplyAll()
   end
   if self.ApplyCombatMeterPreview then
     self:ApplyCombatMeterPreview()
@@ -199,8 +200,26 @@ function Addon:PersistHostPosition(frame, layoutId, withSize)
   self:ApplyAll()
 end
 
-function Addon:PersistBarPosition(bar)
-  self:PersistHostPosition(bar, bar and bar.barId)
+function Addon:PersistBarPosition(bar, withGrid)
+  if not self.editMode or not bar or not bar.barId then
+    return
+  end
+  local x, y = self:SnapFrameToGrid(bar)
+  if not x then
+    return
+  end
+  local patch = {
+    point = "BOTTOMLEFT",
+    relativeTo = "UIParent",
+    relativePoint = "BOTTOMLEFT",
+    x = x,
+    y = y,
+  }
+  if withGrid and bar.columns then
+    patch.columns = bar.columns
+  end
+  self:WriteLayerDelta(self:GetCharDB().editLayer, "layout", bar.barId, patch)
+  self:ApplyAll()
 end
 
 function Addon:ToggleEditMode()

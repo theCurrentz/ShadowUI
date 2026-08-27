@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship a Classic Era/SoD addon that auto-applies class-profiled action bars, selective chrome skins, and a fixed cast/GCD bar via Base → Class → Variant inheritance.
+**Goal:** Ship a Classic Era addon that auto-applies class-profiled action bars, selective chrome skins, and a fixed cast/GCD bar via Base → Class → Variant inheritance.
 
 **Architecture:** AceAddon bootstrap with AceDB account + character stores; `resolve.lua` merges shipped defaults with sparse layer overlays into an effective layout; custom LibActionButton bars replace Blizzard bar chrome; skin/cast/edit/options modules consume the resolved config only.
 
@@ -10,10 +10,10 @@
 
 ## Global Constraints
 
-- Target: Classic Era / SoD only — Interface `11509` (patch 1.15.9)
+- Target: Classic Era only — Interface `11509` (patch 1.15.9)
 - Addon name: `ShadowUI`; SVs: `ShadowUIDB` (account), `ShadowUICharDB` (character)
 - Profiles by **class**, not character; inheritance **Base → Class → Variant**
-- Visual buttons: flush square icons, zero gap; bar backdrop matte black; Blizzard chrome uses Lorti vertex colors
+- Visual buttons: flush square icons, zero gap; empty Action Slots stay empty; Blizzard chrome uses Lorti vertex colors
 - Cast/GCD bar fixed by design — no AceConfig options for it
 - File size: prefer ≤120 lines, hard cap ~200; no undeclared globals; public API on `ShadowUI` table
 - Every Lua file starts with header (purpose, deps, public API)
@@ -43,7 +43,7 @@
 ```toc
 ## Interface: 11509
 ## Title: ShadowUI
-## Notes: Opinionated Classic Era/SoD bars, chrome, and cast bar. Class-profiled Base → Class → Variant layouts.
+## Notes: Opinionated Classic Era bars, chrome, and cast bar. Class-profiled Base → Class → Variant layouts.
 ## Author: Parker Westfall
 ## Version: 0.1.0
 ## SavedVariables: ShadowUIDB
@@ -114,7 +114,7 @@ options\config.lua
 
 - [ ] **Step 3: Write README**
 
-Cover: install path `Interface/AddOns/ShadowUI`, slash commands from the spec, Base → Class → Variant model, Classic Era/SoD only.
+Cover: install path `Interface/AddOns/ShadowUI`, slash commands from the spec, Base → Class → Variant model, Classic Era only.
 
 - [ ] **Step 4: Commit**
 
@@ -584,7 +584,7 @@ Create LAB buttons with no normal texture / pushed / checked border padding. Str
 - Soft shadow: child texture or second backdrop frame offset +2,+2 with low alpha black
 - Buttons packed in row-major grid: `columns`, `buttons`, `buttonSize`, gap `0`
 - Drag header enabled only when edit mode flag `ShadowUI.editMode` is true
-- Map `bar1`→ action slots 1–12, `bar2`→13–24, … Classic paging via LAB state driver where needed (`actionpage` / `bonusbar` — follow LAB Classic docs)
+- Map standard Bars to fixed 12-slot ranges. Warrior `bar1` is the exception: a secure stance state driver selects Battle 73–84, Defensive 85–96, or Berserker 97–108 while the physical button names stay at 73–84.
 
 - [ ] **Step 3: Commit**
 
@@ -733,7 +733,7 @@ EOF
 - Consumes: created ShadowUI bars
 - Produces: `ShadowUI:ApplySkins()` orchestrating all four
 
-- [ ] **Step 1: `skin/chrome.lua`** — ensure each ShadowUI bar backdrop is matte black (shared helper `ApplyBarChrome(frame)`).
+- [ ] **Step 1: `skin/chrome.lua`** — hide any leftover Bar fill so empty Action Slots stay empty (`ApplyBarChrome(frame)`).
 
 - [ ] **Step 2: `skin/chat.lua`** — for ChatFrame1–N and their backgrounds: set backdrop to black at ~0.6 alpha; leave font/default behavior alone.
 

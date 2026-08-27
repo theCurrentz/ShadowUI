@@ -1,311 +1,155 @@
-# Shaman (Horde in Classic Era)
+# Shaman
 
-## Earth Shock interrupt
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
+
+## Shaman Enhancement — class-specific
+
+Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
+
+### es — `s-es`
 
 ```
 #showtooltip Earth Shock
+# class-specific SHAMAN all
 /stopcasting
 /cast [mod:shift] Earth Shock(Rank 1); Earth Shock
 ```
 
-Shift Rank 1 still interrupts and costs less mana.
-
-## Flame Shock / Frost Shock
-
-```
-#showtooltip Flame Shock
-/cast Flame Shock
-```
-
-```
-#showtooltip Frost Shock
-/cast Frost Shock
-```
-
-Shift Frost, else Flame:
+### fl — `s-shock`
 
 ```
 #showtooltip
+# class-specific SHAMAN enhancement
 /cast [mod:shift] Frost Shock; Flame Shock
 ```
 
-## Lightning Bolt / Chain Lightning ranks
-
-```
-#showtooltip
-/cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt
-```
-
-```
-#showtooltip Chain Lightning
-/cast Chain Lightning
-```
-
-## Stormstrike (enh talent)
+### storm — `s-ss`
 
 ```
 #showtooltip Stormstrike
+# class-specific SHAMAN enhancement
 /startattack
 /cast Stormstrike
 ```
 
-## Lightning Shield
+### lb — `s-lb`
+
+```
+#showtooltip
+# class-specific SHAMAN elemental
+/cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt
+```
+
+### chain — `s-cl`
+
+```
+#showtooltip Chain Lightning
+# class-specific SHAMAN elemental
+/cast Chain Lightning
+```
+
+### lshield — `s-ls`
 
 ```
 #showtooltip Lightning Shield
+# class-specific SHAMAN all
 /cast Lightning Shield
 ```
 
-## Weapon imbues
+### wf — `s-wf`
 
 ```
 #showtooltip
+# class-specific SHAMAN enhancement
 /cast [mod:shift] Flametongue Weapon; Windfury Weapon
 ```
 
-```
-#showtooltip Rockbiter Weapon
-/cast Rockbiter Weapon
-```
-
-```
-#showtooltip Frostbrand Weapon
-/cast Frostbrand Weapon
-```
-
-Two-hand vs off-hand: Classic imbue applies to the weapon you have in the enchant UI sense — Windfury on main-hand is the usual enhance play. Off-hand often Flametongue. Put two macros if you dual wield.
-
-## Ghost Wolf
-
-```
-#showtooltip Ghost Wolf
-/cast Ghost Wolf
-```
-
-## Astral Recall
-
-```
-#showtooltip Astral Recall
-/cast Astral Recall
-```
-
-## Purge
-
-```
-#showtooltip Purge
-/cast Purge
-```
-
-## Cure Poison / Cure Disease
-
-```
-#showtooltip Cure Poison
-/cast [mod:alt,target=player] Cure Poison; Cure Poison
-```
-
-```
-#showtooltip Cure Disease
-/cast [mod:alt,target=player] Cure Disease; Cure Disease
-```
-
-## Healing Wave / Lesser Healing Wave ranks
-
-Alt self. Shift LHW Rank 4. Ctrl LHW Rank 1.
+### lhw — `s-lhw`
 
 ```
 #showtooltip
+# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave
 ```
 
-Healing Wave. Shift Rank 1:
+### hw — `s-hw`
 
 ```
 #showtooltip
+# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave
 ```
 
-## Chain Heal
-
-```
-#showtooltip Chain Heal
-/cast [mod:alt,target=player] Chain Heal; Chain Heal
-```
-
-## Nature's Swiftness + heal (resto talent)
+### ns — `s-ns`
 
 ```
 #showtooltip Healing Wave
+# class-specific SHAMAN restoration
 /cast Nature's Swiftness
 /cast Healing Wave
 ```
 
-## Totems — earth
+### pg — `s-purge`
 
 ```
-#showtooltip Stoneskin Totem
-/cast Stoneskin Totem
+#showtooltip Purge
+# class-specific SHAMAN elemental
+/cast [target=mouseover,exists] Purge; Purge
 ```
 
-```
-#showtooltip Strength of Earth Totem
-/cast Strength of Earth Totem
-```
+### gw — `s-wolf`
 
 ```
-#showtooltip Earthbind Totem
-/cast Earthbind Totem
+#showtooltip Ghost Wolf
+# class-specific SHAMAN all
+/cast Ghost Wolf
 ```
 
-```
-#showtooltip Stoneclaw Totem
-/cast Stoneclaw Totem
-```
-
-```
-#showtooltip Tremor Totem
-/cast Tremor Totem
-```
-
-```
-#showtooltip Earth Elemental Totem
-```
-
-Earth Elemental is TBC. Skip in Era.
-
-## Totems — fire
-
-```
-#showtooltip Searing Totem
-/cast Searing Totem
-```
-
-```
-#showtooltip Magma Totem
-/cast Magma Totem
-```
-
-```
-#showtooltip Fire Nova Totem
-/cast Fire Nova Totem
-```
-
-```
-#showtooltip Frost Resistance Totem
-/cast Frost Resistance Totem
-```
-
-```
-#showtooltip Flametongue Totem
-/cast Flametongue Totem
-```
-
-## Totems — water
-
-```
-#showtooltip Healing Stream Totem
-/cast Healing Stream Totem
-```
-
-```
-#showtooltip Mana Spring Totem
-/cast Mana Spring Totem
-```
-
-```
-#showtooltip Poison Cleansing Totem
-/cast Poison Cleansing Totem
-```
-
-```
-#showtooltip Disease Cleansing Totem
-/cast Disease Cleansing Totem
-```
-
-```
-#showtooltip Fire Resistance Totem
-/cast Fire Resistance Totem
-```
-
-```
-#showtooltip Mana Tide Totem
-/cast Mana Tide Totem
-```
-
-## Totems — air
-
-```
-#showtooltip Grace of Air Totem
-/cast Grace of Air Totem
-```
-
-```
-#showtooltip Windfury Totem
-/cast Windfury Totem
-```
-
-```
-#showtooltip Grounding Totem
-/cast Grounding Totem
-```
-
-```
-#showtooltip Windwall Totem
-/cast Windwall Totem
-```
-
-```
-#showtooltip Sentry Totem
-/cast Sentry Totem
-```
-
-```
-#showtooltip Tranquil Air Totem
-/cast Tranquil Air Totem
-```
-
-```
-#showtooltip Nature Resistance Totem
-/cast Nature Resistance Totem
-```
-
-Modifier air (grounding vs WF):
+### gt — `s-ground`
 
 ```
 #showtooltip
+# class-specific SHAMAN all
 /cast [mod:shift] Grounding Totem; Windfury Totem
 ```
 
-## Totem recall
+### tt — `s-tremor`
 
 ```
-#showtooltip Totemic Recall
+#showtooltip Tremor Totem
+# class-specific SHAMAN all
+/cast Tremor Totem
 ```
 
-Totemic Recall is TBC. In Era you drop a new totem of that element to replace it, or walk out of range.
-
-## Reincarnation
-
-Reincarnation is an auto-rez talent, not a `/cast` you fire on a corpse. Do not macro it.
-
-## Far Sight
+### mst — `s-mana`
 
 ```
-#showtooltip Far Sight
-/cast Far Sight
+#showtooltip Mana Spring Totem
+# class-specific SHAMAN all
+/cast Mana Spring Totem
 ```
 
-## Water Breathing / Water Walking
+### str — `s-str`
 
 ```
-#showtooltip Water Breathing
-/cast [mod:alt,target=player] Water Breathing; Water Breathing
+#showtooltip Strength of Earth Totem
+# class-specific SHAMAN enhancement
+/cast Strength of Earth Totem
 ```
 
+### mt — `s-tide`
+
 ```
-#showtooltip Water Walking
-/cast [mod:alt,target=player] Water Walking; Water Walking
+#showtooltip Mana Tide Totem
+# class-specific SHAMAN restoration
+/cast Mana Tide Totem
 ```
 
-## SoD note
+### cure — `s-cure`
 
-SoD Shaman exists on Alliance. Extra runes (for example Lava Lash, Dual Wield) use `/startattack` + `/cast`. Shocks still use `/stopcasting` on the interrupt key.
+```
+#showtooltip Cure Poison
+# class-specific SHAMAN restoration
+/cast [mod:alt,target=player] Cure Poison; [target=mouseover,exists] Cure Poison; Cure Poison
+```

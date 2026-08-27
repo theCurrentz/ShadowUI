@@ -1,293 +1,459 @@
 # Warrior
 
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
+
 **Stances:** `1` Battle, `2` Defensive, `3` Berserker.
 
-## Charge (swap to Battle)
+Warrior core contains useful macros for non-talent abilities. Arms, Fury, and Protection contain only useful wrappers for abilities unlocked by that talent tree.
+Piercing Howl needs no macro logic, so drag the spell itself to an unmanaged slot.
+For Fury, load Warrior core + Warrior Fury. For Fury/Protection, add Last Stand separately if learned; do not add Concussion Blow or Shield Slam unless the build unlocks them.
+
+Catalog bodies stay stance-aware so they also work outside the Action Deck. On a matching stance page, the stance line is a no-op.
+Charge / Intercept share `E`; Shield Bash / Pummel share `F`; the three major stance cooldowns share `Z`.
+A stance change can require a second key press after the stance cooldown. Shield Slam and Shield Wall require an equipped shield.
+
+## Warrior core — class-specific
+
+Useful macros for non-talent Warrior abilities. Load this complete set on the General tab; named gear swaps stay character-specific.
+
+### charge — `w-charge`
+
+Enters Battle for Charge or Berserker for Intercept. Do not add Rend.
 
 ```
-#showtooltip Charge
-/cast [nostance:1] Battle Stance
-/cast Charge
-```
-
-## Intercept (swap to Berserker)
-
-```
-#showtooltip Intercept
-/cast [nostance:3] Berserker Stance
-/cast Intercept
-```
-
-Charge or Intercept by combat state:
-
-```
-#showtooltip
-/cast [nostance:1,nocombat] Battle Stance
-/cast [nocombat] Charge
-/cast [nostance:3,combat] Berserker Stance
-/cast [combat] Intercept
-```
-
-That block is near the character cap. Drop `#showtooltip` if it will not save.
-
-## Heroic Strike queue
-
-Shift Rank 3 (rage control):
-
-```
-#showtooltip
+#showtooltip [combat] Intercept; Charge
+# class-specific WARRIOR all | key (T)
+/cast [nocombat,nostance:1] Battle Stance; [combat,nostance:3] Berserker Stance
+/cast [nocombat] Charge; Intercept
 /startattack
-/cast [mod:shift] Heroic Strike(Rank 3); Heroic Strike
 ```
 
-## Cleave queue
+### brage — `w-bloodrage`
+
+Bloodrage stays separate from Berserker Rage.
 
 ```
-#showtooltip Cleave
-/startattack
-/cast Cleave
-```
-
-## Bloodrage then dump
-
-```
-#showtooltip Heroic Strike
+#showtooltip Bloodrage
+# class-specific WARRIOR all | key (F)
 /cast Bloodrage
 /startattack
-/cast Heroic Strike
 ```
 
-## Overpower (Battle Stance)
-
-```
-#showtooltip Overpower
-/cast [nostance:1] Battle Stance
-/cast Overpower
-```
-
-## Revenge (Defensive)
-
-```
-#showtooltip Revenge
-/cast [nostance:2] Defensive Stance
-/cast Revenge
-```
-
-## Execute
-
-```
-#showtooltip Execute
-/startattack
-/cast Execute
-```
-
-Berserker Execute (Arms/Fury often sit in Berserker):
-
-```
-#showtooltip Execute
-/cast [nostance:3] Berserker Stance
-/startattack
-/cast Execute
-```
-
-## Mortal Strike / Bloodthirst / Shield Slam
-
-```
-#showtooltip Mortal Strike
-/startattack
-/cast Mortal Strike
-```
-
-```
-#showtooltip Bloodthirst
-/startattack
-/cast Bloodthirst
-```
-
-```
-#showtooltip Shield Slam
-/startattack
-/cast Shield Slam
-```
-
-## Whirlwind (Berserker)
-
-```
-#showtooltip Whirlwind
-/cast [nostance:3] Berserker Stance
-/cast Whirlwind
-```
-
-## Slam (Arms — stop the swing timer reset by accident)
-
-```
-#showtooltip Slam
-/startattack
-/cast Slam
-```
-
-## Hamstring (Battle or Berserker)
-
-```
-#showtooltip Hamstring
-/cast [stance:2] Battle Stance
-/cast Hamstring
-```
-
-## Pummel (Berserker interrupt)
-
-```
-#showtooltip Pummel
-/stopcasting
-/cast [nostance:3] Berserker Stance
-/cast Pummel
-```
-
-Stance swap costs a GCD. Many players keep Pummel on a Berserker bar and Shield Bash on a Defensive bar instead.
-
-## Shield Bash (Defensive, shield equipped)
-
-```
-#showtooltip Shield Bash
-/stopcasting
-/cast [nostance:2] Defensive Stance
-/cast Shield Bash
-```
-
-## Taunt / Mocking Blow / Challenging Shout
-
-```
-#showtooltip Taunt
-/cast [nostance:2] Defensive Stance
-/cast Taunt
-```
-
-```
-#showtooltip Mocking Blow
-/cast [nostance:1] Battle Stance
-/cast Mocking Blow
-```
-
-```
-#showtooltip Challenging Shout
-/cast Challenging Shout
-```
-
-## Disarm (Defensive)
-
-```
-#showtooltip Disarm
-/cast [nostance:2] Defensive Stance
-/cast Disarm
-```
-
-## Shield Block / Shield Wall / Last Stand
-
-```
-#showtooltip Shield Block
-/cast [nostance:2] Defensive Stance
-/cast Shield Block
-```
-
-```
-#showtooltip Shield Wall
-/cast [nostance:2] Defensive Stance
-/cast Shield Wall
-```
-
-```
-#showtooltip Last Stand
-/cast Last Stand
-```
-
-## Recklessness / Retaliation / Sweeping Strikes
-
-```
-#showtooltip Recklessness
-/cast [nostance:3] Berserker Stance
-/cast Recklessness
-```
-
-```
-#showtooltip Retaliation
-/cast [nostance:1] Battle Stance
-/cast Retaliation
-```
-
-```
-#showtooltip Sweeping Strikes
-/cast [nostance:1] Battle Stance
-/cast Sweeping Strikes
-```
-
-## Berserker Rage (Fear / sap break)
+### br — `w-br`
 
 ```
 #showtooltip Berserker Rage
+# class-specific WARRIOR all | key (G)
 /cast [nostance:3] Berserker Stance
 /cast Berserker Rage
 ```
 
-## Intimidating Shout
+### b — `w-b`
 
 ```
-#showtooltip Intimidating Shout
-/cast Intimidating Shout
+#showtooltip Battle Stance
+# class-specific WARRIOR all | key (moust button 1)
+/cast Battle Stance
+/startattack
 ```
 
-## Shouts
+### bs — `w-bs`
 
 ```
-#showtooltip Battle Shout
-/cast Battle Shout
+#showtooltip Berserker Stance
+# class-specific WARRIOR all | key (mouse button 2)
+/cast Berserker Stance
+/startattack
 ```
 
-```
-#showtooltip Demoralizing Shout
-/cast Demoralizing Shout
-```
-
-Shift for Demo, else Battle:
+### d — `w-d-def`
 
 ```
-#showtooltip
-/cast [mod:shift] Demoralizing Shout; Battle Shout
+#showtooltip Defensive Stance
+# class-specific WARRIOR all | key (mouse button 3)
+/cast Defensive Stance
+/startattack
 ```
 
-## Rend / Thunder Clap / Sunder
+### h — `w-h`
+
+Uses maximum rank. Rank 3 has the same listed rage cost and is not a rage-saving option.
+
+```
+#showtooltip Heroic Strike
+# class-specific WARRIOR all | key (1)
+/cast Heroic Strike
+/startattack
+```
+
+### c — `w-c`
+
+```
+#showtooltip Cleave
+# class-specific WARRIOR all | key (R)
+/cast Cleave
+/startattack
+```
+
+### ww — `w-ww`
+
+Enters Berserker Stance. A stance change can require a second press.
+
+```
+#showtooltip Whirlwind
+# class-specific WARRIOR all | key (C)
+/cast [nostance:3] Berserker Stance
+/cast Whirlwind
+/startattack
+```
+
+### ex — `w-ex`
+
+Leaves Defensive Stance because Execute requires Battle or Berserker Stance.
+
+```
+#showtooltip Execute
+# class-specific WARRIOR all | key (4)
+/cast [stance:2] Battle Stance
+/cast Execute
+/startattack
+```
+
+### o — `w-o`
+
+Enters Battle Stance. A stance change can require a second press.
+
+```
+#showtooltip Overpower
+# class-specific WARRIOR all | key (2)
+/cast [nostance:1] Battle Stance
+/cast Overpower
+/startattack
+```
+
+### rend — `w-rend`
+
+Leaves Berserker Stance because Rend requires Battle or Defensive Stance.
 
 ```
 #showtooltip Rend
-/startattack
+# class-specific WARRIOR all | key (6)
+/cast [stance:3] Battle Stance
 /cast Rend
+/startattack
 ```
+
+### s — `w-s`
+
+Uses a hostile living mouseover, then the current target. Useful for multi-target tanking.
+
+```
+#showtooltip Sunder Armor
+# class-specific WARRIOR all | key (Q)
+/startattack
+/cast [target=mouseover,harm,nodead][] Sunder Armor
+```
+
+### wkick — `w-interrupt`
+
+One interrupt replaces separate Pummel and Shield Bash copies. It uses Shield Bash with a shield; otherwise it enters Berserker and uses Pummel.
+
+```
+#showtooltip [stance:3] Pummel; [equipped:Shields] Shield Bash; Pummel
+# class-specific WARRIOR all | key (G)
+/stopcasting
+/startattack
+/cast [noequipped:Shields,nostance:3] Berserker Stance
+/cast [stance:3] Pummel; [equipped:Shields] Shield Bash
+```
+
+### major — `w-major-cd`
+
+One major cooldown key. The current stance selects the spell.
+
+```
+#showtooltip
+# class-specific WARRIOR all | key (B)
+/cast [stance:1] Retaliation; [stance:2] Shield Wall; Recklessness
+```
+
+### a — `w-taunt`
+
+Uses a hostile living mouseover, then the current target.
+
+```
+#showtooltip Taunt
+# class-specific WARRIOR all | key (X)
+/cast [nostance:2] Defensive Stance
+/cast [target=mouseover,harm,nodead][] Taunt
+```
+
+### bshout — `w-shout`
+
+Battle Shout normally. Shift uses Demoralizing Shout.
+
+```
+#showtooltip [mod:shift] Demoralizing Shout; Battle Shout
+# class-specific WARRIOR all | key (Y)
+/cast [mod:shift] Demoralizing Shout; Battle Shout
+```
+
+### ds — `w-ds`
+
+Dedicated Action Deck copy; `w-shout` also provides Demoralizing Shout on Shift.
+
+```
+#showtooltip Demoralizing Shout
+# class-specific WARRIOR all | key (Shift-V)
+/cast Demoralizing Shout
+/startattack
+```
+
+### hm — `w-hm`
+
+Leaves Defensive Stance because Hamstring requires Battle or Berserker Stance.
+
+```
+#showtooltip Hamstring
+# class-specific WARRIOR all | key (`)
+/cast [stance:2] Battle Stance
+/cast Hamstring
+/startattack
+```
+
+### disarm — `w-disarm`
+
+```
+#showtooltip Disarm
+# class-specific WARRIOR all | key (shift-c)
+/startattack
+/cast [nostance:2] Defensive Stance
+/cast Disarm
+```
+
+### is — `w-intimid`
+
+Stops auto-attack so the primary target is not hit immediately after the fear.
+
+```
+#showtooltip Intimidating Shout
+# class-specific WARRIOR all | key (shift-T)
+/cast Intimidating Shout
+/stopattack
+```
+
+### rev — `w-revenge`
+
+```
+#showtooltip Revenge
+# class-specific WARRIOR all | key (2)
+/cast [nostance:2] Defensive Stance
+/cast Revenge
+/startattack
+```
+
+### sbk — `w-sblock`
+
+```
+#showtooltip Shield Block
+# class-specific WARRIOR all | key (shift-r)
+/cast [nostance:2] Defensive Stance
+/cast Shield Block
+```
+
+### mb — `w-mock`
+
+Uses a hostile living mouseover, then the current target.
+
+```
+#showtooltip Mocking Blow
+# class-specific WARRIOR all | key (shift-X)
+/cast [nostance:1] Battle Stance
+/cast [target=mouseover,harm,nodead][] Mocking Blow
+```
+
+### ch — `w-chall`
+
+```
+#showtooltip Challenging Shout
+# class-specific WARRIOR all | key (X)
+/cast Challenging Shout
+/startattack
+```
+
+### tc — `w-tc`
 
 ```
 #showtooltip Thunder Clap
+# class-specific WARRIOR all | key (6)
 /cast [nostance:1] Battle Stance
 /cast Thunder Clap
 ```
 
+### ret — `w-retal`
+
 ```
-#showtooltip Sunder Armor
+#showtooltip Retaliation
+# class-specific WARRIOR all | key (Z)
+/cast [nostance:1] Battle Stance
+/cast Retaliation
+```
+
+### rk — `w-reck`
+
+```
+#showtooltip Recklessness
+# class-specific WARRIOR all | key (Z)
+/cast [nostance:3] Berserker Stance
+/cast Recklessness
+```
+
+### sw — `w-sw`
+
+Requires an equipped shield. Named equip copies stay in the gear kit.
+
+```
+#showtooltip Shield Wall
+# class-specific WARRIOR all | key (Z)
+/cast [nostance:2] Defensive Stance
+/cast Shield Wall
+```
+
+## Warrior Arms — class-specific
+
+Only active abilities unlocked by Arms talents.
+
+### ss — `w-sweep`
+
+```
+#showtooltip Sweeping Strikes
+# class-specific WARRIOR arms | key (T)
+/cast [nostance:1] Battle Stance
+/cast Sweeping Strikes
+```
+
+### ms — `w-ms`
+
+```
+#showtooltip Mortal Strike
+# class-specific WARRIOR arms | key (1)
+/cast Mortal Strike
 /startattack
-/cast Sunder Armor
 ```
 
-## Stance only (no spell)
+## Warrior Fury — class-specific
+
+Useful macros for Fury talent abilities. Piercing Howl needs no wrapper; drag the spell itself to an unmanaged slot.
+
+### dwish — `w-deathwish`
 
 ```
-/cast Battle Stance
+#showtooltip Death Wish
+# class-specific WARRIOR fury | key (T)
+/cast Death Wish
+/startattack
 ```
 
-```
-/cast Defensive Stance
-```
+### bt — `w-bt`
 
 ```
-/cast Berserker Stance
+#showtooltip Bloodthirst
+# class-specific WARRIOR fury | key (1)
+/cast Bloodthirst
+/startattack
 ```
 
-## SoD note
+## Warrior Protection — class-specific
 
-SoD runes add buttons (for example Quick Strike, Raging Blow, Devastate). Use the same `/startattack` + `/cast` pattern. Stance numbers stay 1/2/3.
+Only active abilities unlocked by Protection talents. A Fury/Protection build usually adds only Last Stand; Concussion Blow and Shield Slam require deeper Protection talents.
+
+### ls — `w-ls`
+
+Stops a cast or queued spell so the emergency defensive can fire immediately.
+
+```
+#showtooltip Last Stand
+# class-specific WARRIOR protection | key (T)
+/stopcasting
+/cast Last Stand
+```
+
+### cb — `w-concussion`
+
+```
+#showtooltip Concussion Blow
+# class-specific WARRIOR protection | key (7)
+/startattack
+/cast Concussion Blow
+```
+
+### ssl — `w-sslam`
+
+```
+#showtooltip Shield Slam
+# class-specific WARRIOR protection | key (1)
+/startattack
+/cast Shield Slam
+```
+
+## Tazzy gear kit — character-specific Tazzy
+
+Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this group when the gear kit changes.
+
+### dfdw — `w-dfdw`
+
+Uses Diamond Flask, then Death Wish. The flask can consume the first press; press again after the global cooldown.
+
+```
+# character-specific WARRIOR fury Tazzy | key (T)
+/use Diamond Flask
+/cast Death Wish
+```
+
+### dual — `w-dual`
+
+Cancels a queued attack, then equips the dual-wield threat set.
+
+```
+# character-specific WARRIOR all Tazzy | key (unbound)
+/stopcasting
+/equipslot 16 Quel'Serrar
+/equipslot 17 Mirah's Song
+```
+
+### shqs — `w-sh-qs`
+
+Cancels a queued attack, then equips the alternate shield set. The one-handed weapon goes on before the shield.
+
+```
+# character-specific WARRIOR all Tazzy | key (unbound)
+/stopcasting
+/equipslot 16 Quel'Serrar
+/equipslot 17 Buru's Skull Fragment
+```
+
+### shh — `w-shh`
+
+Cancels a queued attack, then equips the mitigation shield set.
+
+```
+# character-specific WARRIOR all Tazzy | key (unbound)
+/stopcasting
+/equipslot 16 Quel'Serrar
+/equipslot 17 The Immovable Object
+```
+
+### sd — `w-sd-item`
+
+Cancels a queued attack, equips the mitigation set, enters Defensive Stance, then uses Shield Wall. Combat swaps can require repeated presses.
+
+```
+#showtooltip Shield Wall
+# character-specific WARRIOR all Tazzy | key (unbound)
+/stopcasting
+/equipslot 16 Quel'Serrar
+/equipslot 17 The Immovable Object
+/cast [nostance:2] Defensive Stance
+/cast Shield Wall
+```

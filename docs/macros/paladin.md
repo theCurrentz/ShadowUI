@@ -1,280 +1,201 @@
-# Paladin (Alliance in Classic Era)
+# Paladin
 
-## Start attack + Judgement
+Generated from `build_catalog.py`.
+Full records: [catalog.md](catalog.md).
 
-```
-#showtooltip Judgement
-/startattack
-/cast Judgement
-```
+## Paladin Holy — class-specific
 
-## Seal swap (hold shift for the other seal)
+Heals. Alt self. Shift cheap rank.
 
-Righteousness vs Command (ret):
+### hl — `p-hl`
 
 ```
 #showtooltip
-/cast [mod:shift] Seal of Command; Seal of Righteousness
-```
-
-Wisdom vs Light (holy):
-
-```
-#showtooltip
-/cast [mod:shift] Seal of Light; Seal of Wisdom
-```
-
-The Justice (stun on judge, pvp):
-
-```
-#showtooltip Seal of Justice
-/cast Seal of Justice
-```
-
-Crusader (mana, older content):
-
-```
-#showtooltip Seal of the Crusader
-/cast Seal of the Crusader
-```
-
-## Auto seal then judge (one key)
-
-```
-#showtooltip Judgement
-/cast Seal of Command
-/startattack
-/cast Judgement
-```
-
-This recasts the seal every press if you are not careful. Prefer separate keys in raids.
-
-## Hammer of Justice
-
-```
-#showtooltip Hammer of Justice
-/stopcasting
-/cast Hammer of Justice
-```
-
-## Consecration
-
-Shift Rank 1 (grind / low threat):
-
-```
-#showtooltip
-/cast [mod:shift] Consecration(Rank 1); Consecration
-```
-
-## Holy Shield (prot)
-
-```
-#showtooltip Holy Shield
-/cast Holy Shield
-```
-
-## Righteous Fury
-
-```
-#showtooltip Righteous Fury
-/cast Righteous Fury
-```
-
-Cancel when you must drop threat:
-
-```
-/cancelaura Righteous Fury
-```
-
-## Hammer of Wrath (execute window)
-
-```
-#showtooltip Hammer of Wrath
-/cast Hammer of Wrath
-```
-
-## Exorcism / Holy Wrath (undead / demon)
-
-```
-#showtooltip Exorcism
-/cast Exorcism
-```
-
-```
-#showtooltip Holy Wrath
-/cast Holy Wrath
-```
-
-## Repentance (ret talent)
-
-```
-#showtooltip Repentance
-/stopcasting
-/cast Repentance
-```
-
-## Flash of Light / Holy Light
-
-Alt self. Shift Flash Rank 4. Ctrl Flash Rank 1.
-
-```
-#showtooltip
-/cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light
-```
-
-Holy Light. Shift Rank 1 (cheap top / 5SR):
-
-```
-#showtooltip
+# class-specific PALADIN holy
 /cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light
 ```
 
-## Divine Favor (holy)
+### df — `p-df`
 
 ```
 #showtooltip Flash of Light
+# class-specific PALADIN holy
 /cast Divine Favor
 /cast Flash of Light
 ```
 
-## Holy Shock (holy talent)
+### hsk — `p-shock`
 
 ```
 #showtooltip Holy Shock
+# class-specific PALADIN holy
 /cast Holy Shock
 ```
 
-## Lay on Hands
+### sealh — `p-seal-h`
+
+```
+#showtooltip
+# class-specific PALADIN holy
+/cast [mod:shift] Seal of Light; Seal of Wisdom
+```
+
+### chg — `p-mount`
+
+```
+#showtooltip
+# class-specific PALADIN all
+/cast [mod:shift] Summon Warhorse; Summon Charger
+```
+
+## Paladin Retribution — class-specific
+
+Alliance Era ret. Seal + judge + stun + consecrate.
+
+### judge — `p-judge`
+
+```
+#showtooltip Judgement
+# class-specific PALADIN retribution
+/startattack
+/cast Judgement
+```
+
+### seal — `p-seal`
+
+```
+#showtooltip
+# class-specific PALADIN retribution
+/cast [mod:shift] Seal of Command; Seal of Righteousness
+```
+
+### hoj — `p-hoj`
+
+```
+#showtooltip Hammer of Justice
+# class-specific PALADIN all
+/stopcasting
+/cast Hammer of Justice
+```
+
+### cons — `p-cons`
+
+```
+#showtooltip
+# class-specific PALADIN all
+/cast [mod:shift] Consecration(Rank 1); Consecration
+```
+
+### how — `p-how`
+
+```
+#showtooltip Hammer of Wrath
+# class-specific PALADIN all
+/cast Hammer of Wrath
+```
+
+### exo — `p-exo`
+
+```
+#showtooltip Exorcism
+# class-specific PALADIN retribution
+/cast Exorcism
+```
+
+### rep — `p-rep`
+
+```
+#showtooltip Repentance
+# class-specific PALADIN retribution
+/stopcasting
+/cast Repentance
+```
+
+### bubble — `p-bubble`
+
+```
+#showtooltip Divine Shield
+# class-specific PALADIN all
+/cast Divine Shield
+```
+
+### cds — `p-cancel-ds`
+
+```
+# class-specific PALADIN all
+/cancelaura Divine Shield
+```
+
+### bop — `p-bop`
+
+```
+#showtooltip Blessing of Protection
+# class-specific PALADIN all
+/cast Blessing of Protection
+```
+
+### cl — `p-cleanse`
+
+```
+#showtooltip Cleanse
+# class-specific PALADIN all
+/cast [mod:alt,target=player] Cleanse; [target=mouseover,exists] Cleanse; Cleanse
+```
+
+### fol — `p-fol`
+
+```
+#showtooltip
+# class-specific PALADIN holy
+/cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light
+```
+
+### bom — `p-might`
+
+```
+#showtooltip
+# class-specific PALADIN all
+/cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might
+```
+
+### aura — `p-aura`
+
+```
+#showtooltip
+# class-specific PALADIN all
+/cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura
+```
+
+### rf — `p-rf`
+
+```
+#showtooltip Righteous Fury
+# class-specific PALADIN protection
+/cast Righteous Fury
+```
+
+### hsh — `p-hs`
+
+```
+#showtooltip Holy Shield
+# class-specific PALADIN protection
+/cast Holy Shield
+```
+
+### loh — `p-loh`
 
 ```
 #showtooltip Lay on Hands
-/cast Lay on Hands
-```
-
-```
+# class-specific PALADIN holy
 /raid Lay on Hands on %t
 /cast Lay on Hands
 ```
 
-## Blessing of Protection
-
-```
-#showtooltip Blessing of Protection
-/cast Blessing of Protection
-```
-
-Cancel BoP (so the tank can hit again, or you can swing):
-
-```
-/cancelaura Blessing of Protection
-```
-
-## Divine Shield
-
-```
-#showtooltip Divine Shield
-/cast Divine Shield
-```
-
-Cancel bubble:
-
-```
-/cancelaura Divine Shield
-```
-
-Bubble-hearth:
-
-```
-#showtooltip Hearthstone
-/cast Divine Shield
-/use Hearthstone
-```
-
-## Divine Intervention
+### di — `p-di`
 
 ```
 #showtooltip Divine Intervention
-/cast Divine Intervention
-```
-
-```
+# class-specific PALADIN all
 /raid DI on %t
 /cast Divine Intervention
 ```
-
-## Cleanse
-
-```
-#showtooltip Cleanse
-/cast [mod:alt,target=player] Cleanse; Cleanse
-```
-
-Purify (lower ranks / no magic dispel):
-
-```
-#showtooltip Purify
-/cast [mod:alt,target=player] Purify; Purify
-```
-
-## Blessings (single)
-
-```
-#showtooltip
-/cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might
-```
-
-Kings / Light / Sanctuary as their own keys if you have the talent or raid role.
-
-```
-#showtooltip Blessing of Might
-/cast Blessing of Might
-```
-
-Greater Blessing of Might (class click):
-
-```
-#showtooltip Greater Blessing of Might
-/cast Greater Blessing of Might
-```
-
-Target a class member, then press Greater Blessing. One macro per greater blessing.
-
-## Auras
-
-```
-#showtooltip
-/cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura
-```
-
-```
-#showtooltip Shadow Resistance Aura
-/cast Shadow Resistance Aura
-```
-
-```
-#showtooltip Frost Resistance Aura
-/cast Frost Resistance Aura
-```
-
-```
-#showtooltip Fire Resistance Aura
-/cast Fire Resistance Aura
-```
-
-```
-#showtooltip Sanctity Aura
-/cast Sanctity Aura
-```
-
-## Mount
-
-```
-#showtooltip
-/cast [mod:shift] Summon Warhorse; Summon Charger
-```
-
-Use the spell you actually trained. Epic is Summon Charger.
-
-## SoD note
-
-SoD Paladin exists on Horde. Same spell names. Extra runes (for example Crusader Strike, Divine Storm) use `/startattack` + `/cast`.

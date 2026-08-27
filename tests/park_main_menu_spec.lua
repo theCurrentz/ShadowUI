@@ -1,5 +1,6 @@
 -- ActionBarController shows MainMenuBar whenever it is hidden. Do not Hide it.
 -- Parent it to a hidden park frame after micro/bag buttons are reparented.
+-- The Blizzard Stance Bar stays shown on UIParent.
 -- Run: lua tests/park_main_menu_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -58,6 +59,10 @@ local function fakeBar(name)
     self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
   end
   function bar:SetParent(parent) self.parent = parent end
+  function bar:EnableMouse(enabled) self.mouse = enabled and true or false end
+  function bar:SetMovable(enabled) self.movable = enabled and true or false end
+  function bar:UnregisterForDrag() self.dragRegistered = false end
+  function bar:IgnoreFramePositionManager() self.ignored = true end
   return bar
 end
 
@@ -68,6 +73,8 @@ _G.ActionButton1 = fakeBar("ActionButton1")
 _G.PossessBarFrame = fakeBar("PossessBarFrame")
 _G.ShapeshiftBarFrame = fakeBar("ShapeshiftBarFrame")
 _G.StanceBarFrame = fakeBar("StanceBarFrame")
+_G.ShapeshiftBarFrame.parent = _G.MainMenuBar
+_G.StanceBarFrame.parent = _G.MainMenuBar
 
 assert(loadfile(root .. "bars/manager.lua"))()
 Addon:HideBlizzardBars()
@@ -79,13 +86,20 @@ assert(_G.MainMenuBar.parent.shown == false, "park frame stays hidden")
 assert(_G.MainMenuBarArtFrame.hidden, "default art frame hides")
 assert(_G.ActionButton1.hidden, "default action buttons hide")
 assert(_G.MainMenuBarOverlayFrame.hidden, "overlay art still hides")
-assert(_G.ShapeshiftBarFrame.hidden, "default shapeshift bar hides")
-assert(_G.StanceBarFrame.hidden, "default stance bar hides")
+assert(_G.ShapeshiftBarFrame.hidden == false, "default shapeshift bar stays shown")
+assert(_G.StanceBarFrame.hidden == false, "default stance bar stays shown")
+assert(_G.ShapeshiftBarFrame.parent == _G.UIParent, "shapeshift bar parents to UIParent")
+assert(_G.StanceBarFrame.parent == _G.UIParent, "stance bar parents to UIParent")
+local shapeshiftPoint = _G.ShapeshiftBarFrame.points[#_G.ShapeshiftBarFrame.points]
+assert(shapeshiftPoint[1] == "CENTER" and shapeshiftPoint[4] == 0 and shapeshiftPoint[5] == -84,
+  "shapeshift bar parks at centre above the Cast Bar")
 
 _G.ShapeshiftBarFrame:Show()
-assert(_G.ShapeshiftBarFrame.shown == false, "shapeshift Show must not bring the default bar back")
+assert(_G.ShapeshiftBarFrame.shown == true, "shapeshift Show must keep the default bar")
+_G.ShapeshiftBarFrame:SetParent(_G.MainMenuBar)
+assert(_G.ShapeshiftBarFrame.parent == _G.UIParent, "MainMenuBar must not keep the shapeshift bar")
 _G.MainMenuBar:Show()
-assert(_G.ShapeshiftBarFrame.shown == false, "MainMenuBar Show must re-hide the shapeshift bar")
+assert(_G.ShapeshiftBarFrame.shown == true, "MainMenuBar Show must not hide the shapeshift bar")
 assert(_G.MainMenuBarArtFrame.hidden, "MainMenuBar Show must re-hide default art")
 
 print("park_main_menu_spec OK")

@@ -1,5 +1,5 @@
 --[[
-  Purpose: Park and fill the General chat window.
+  Purpose: Park General chat place and fill it. Size stays with Blizzard Chat.
   Deps: Blizzard chat frames; ShadowUI:ParkFrame()
   Public: ShadowUI:SkinChat()
 ]]
@@ -40,7 +40,8 @@ function Addon:SkinChat()
   if not chat then
     return
   end
-  self:ParkFrame(chat, "BOTTOMLEFT", 36, 32, 608, 294)
+  -- Park place only. Size stays with Blizzard Chat / Edit Mode.
+  self:ParkFrame(chat, "BOTTOMLEFT", 36, 32)
   if chat.GetFont and chat.SetFont then
     local file, _, flags = chat:GetFont()
     if file then

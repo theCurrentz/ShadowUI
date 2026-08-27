@@ -1,15 +1,20 @@
 --[[
-  Purpose: Apply a tight matte fill to ShadowUI action bars and Lorti outer chrome.
+  Purpose: Apply Lorti outer chrome to ShadowUI hosts. Action Bars have no matte fill
+           so empty Action Slots stay hidden. ApplySkins also skins Bagnon and the Stance Bar.
   Deps: ShadowUI bars, media/outer_shadow.tga
-  Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:ApplyBarChrome(),
-          ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
+  Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:PaintOuterChrome(),
+          ShadowUI:ApplyBarChrome(), ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
   Notes: ParkFrame uses SetPointBase when 1.15.9 Edit Mode has replaced SetPoint.
+         outer_shadow.tga is white RGB. PaintOuterChrome tints it black. BackdropTemplate
+         ApplyBackdrop resets that tint to white.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
 function Addon:SkinTargetStatus() end
 function Addon:SkinTargetThreat() end
+function Addon:SkinPortraitRings() end
+function Addon:SkinStatusBarGradients() end
 local snapping = {}
 local OUTER_PAD = 4
 local OUTER_EDGE = 5
@@ -79,6 +84,10 @@ function Addon:ParkFrame(frame, point, x, y, width, height, relativeTo, relative
   -- re-applies its layout while snapping is on. SetPointBase skips that fight.
   local clear = frame.ClearAllPointsBase or frame.ClearAllPoints
   local setPoint = frame.SetPointBase or frame.SetPoint
+  if relativeTo == _G.FocusFrameToT or relativeTo == _G.TargetFrameToT
+      or relativeTo == "FocusFrameToT" or relativeTo == "TargetFrameToT" then
+    relativeTo = UIParent
+  end
   if clear then
     clear(frame)
   end
@@ -98,6 +107,18 @@ function Addon:ParkFrame(frame, point, x, y, width, height, relativeTo, relative
     pcall(frame.SetUserPlaced, frame, true)
   end
   snapping[frame] = nil
+end
+
+function Addon:PaintOuterChrome(outer)
+  if not outer then
+    return
+  end
+  if outer.SetBackdropColor then
+    outer:SetBackdropColor(0, 0, 0, 0)
+  end
+  if outer.SetBackdropBorderColor then
+    outer:SetBackdropBorderColor(0, 0, 0, 0.9)
+  end
 end
 
 function Addon:ApplyOuterChrome(host)
@@ -125,7 +146,13 @@ function Addon:ApplyOuterChrome(host)
   end
   if outer.SetBackdrop then
     outer:SetBackdrop(OUTER_BACKDROP)
-    outer:SetBackdropBorderColor(0, 0, 0, 0.9)
+    self:PaintOuterChrome(outer)
+  end
+  if hooksecurefunc and outer.ApplyBackdrop and not outer._shadowUIOuterPaint then
+    outer._shadowUIOuterPaint = true
+    hooksecurefunc(outer, "ApplyBackdrop", function(self)
+      Addon:PaintOuterChrome(self)
+    end)
   end
   if outer.Show then
     outer:Show()
@@ -135,18 +162,15 @@ end
 
 function Addon:SkinDetails() end
 function Addon:SkinItemRack() end
+function Addon:SkinBagnon() end
+function Addon:SkinStanceBar() end
 function Addon:SkinTime() end
 
 function Addon:ApplyBarChrome(bar)
   local fill = bar.fill
-  if not fill then
-    fill = bar:CreateTexture(nil, "BACKGROUND", nil, -8)
-    bar.fill = fill
+  if fill and fill.Hide then
+    fill:Hide()
   end
-  fill:ClearAllPoints()
-  fill:SetAllPoints(bar)
-  fill:SetColorTexture(0, 0, 0, 1)
-  fill:Show()
   if bar.shadow then
     bar.shadow:Hide()
   end
@@ -169,9 +193,13 @@ function Addon:ApplySkins()
   self:SkinTrackingBars()
   self:SkinMinimap()
   self:SkinDarken()
+  self:SkinStatusBarGradients()
   self:SkinAuras()
   self:SkinTargetStatus()
   self:SkinTargetThreat()
+  self:SkinPortraitRings()
   self:SkinDetails()
   self:SkinItemRack()
+  self:SkinBagnon()
+  self:SkinStanceBar()
 end

@@ -96,7 +96,7 @@ local enabled = 0
 for _, cfg in pairs(base) do
   if cfg.enabled ~= false then enabled = enabled + 1 end
 end
-assert(enabled == 10, "expected 6 rows, two 3x4 sides, pet, and possess, got " .. enabled)
+assert(enabled == 12, "expected 6 rows, two 3x4 sides, bar9, bar10, pet, and possess, got " .. enabled)
 for i = 1, 6 do
   local cfg = base["bar" .. i]
   assert(cfg.enabled ~= false, "bar" .. i .. " must ship enabled")
@@ -106,8 +106,12 @@ end
 assert(base.bar7.columns == 3 and base.bar8.columns == 3, "bar7 and bar8 must be 3x4")
 assert(base.bar7.x < 0 and base.bar8.x > 0, "bar7 left, bar8 right")
 for _, id in ipairs({ "bar9", "bar10" }) do
-  assert(base[id].enabled == false, id .. " must ship disabled")
+  assert(base[id].enabled ~= false, id .. " must ship enabled")
+  assert(base[id].point == "BOTTOM", id .. " must sit on the bottom edge")
+  assert(base[id].columns == 12, id .. " must be a horizontal row")
 end
+assert(base.bar9.y > base.possess.y, "bar9 sits above possess")
+assert(base.bar10.y > base.bar9.y, "bar10 sits above bar9")
 assert(base.bar1.y > base.bar6.y, "bar1 is the top row of the reversed stack")
 assert(base.bar6.y < base.bar5.y, "rows stack downward toward bar6")
 assert(base.bar6.y == 0, "bar6 must hug the screen bottom")
@@ -118,6 +122,25 @@ assert(mageLayout.bar3.firstSlot == 13, "mage bar3 shows old bar2 slots")
 assert(mageLayout.bar4.firstSlot == 25, "mage bar4 shows old bar3 slots")
 assert(mageLayout.bar5.firstSlot == 37, "mage bar5 shows old bar4 slots")
 assert(mageLayout.bar6.firstSlot == 49, "mage bar6 shows old bar5 slots")
+local warriorLayout = Addon.Defaults.classes.WARRIOR.layout
+assert(warriorLayout.bar1.stancePages[1] == 73, "warrior bar1 Battle page starts at slot 73")
+assert(warriorLayout.bar1.stancePages[2] == 85, "warrior bar1 Defensive page starts at slot 85")
+assert(warriorLayout.bar1.stancePages[3] == 97, "warrior bar1 Berserker page starts at slot 97")
+assert(warriorLayout.bar2.firstSlot == 1, "warrior bar2 keeps the first fixed page")
+assert(warriorLayout.bar7.firstSlot == 61, "warrior bar7 keeps the last fixed base page")
+assert(warriorLayout.bar8.firstSlot == 109, "warrior bar8 holds fixed stance buttons")
+assert(warriorLayout.bar9.enabled == false and warriorLayout.bar10.enabled == false,
+  "warrior hides bars that would duplicate stance pages")
+local druidLayout = Addon.Defaults.classes.DRUID.layout
+assert(druidLayout.bar1.stancePages[1] == 1, "druid bar1 Caster page starts at slot 1")
+assert(druidLayout.bar1.stancePages[2] == 73, "druid bar1 Cat page starts at slot 73")
+assert(druidLayout.bar1.stancePages[4] == 97, "druid bar1 Bear page starts at slot 97")
+assert(druidLayout.bar7.enabled == false and druidLayout.bar9.enabled == false,
+  "druid hides bars that would duplicate form pages")
+local rogueLayout = Addon.Defaults.classes.ROGUE.layout
+assert(rogueLayout.bar1.stancePages[1] == 1, "rogue bar1 Open page starts at slot 1")
+assert(rogueLayout.bar1.stancePages[2] == 73, "rogue bar1 Stealth page starts at slot 73")
+assert(rogueLayout.bar7.enabled == false, "rogue hides the bar that would duplicate Stealth")
 
 print("base: " .. check("base", { base }) .. " rects clear")
 for class, data in pairs(Addon.Defaults.classes) do

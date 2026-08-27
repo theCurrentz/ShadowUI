@@ -155,6 +155,8 @@ _G.SocialsMicroButton = fakeButton("SocialsMicroButton", menu, true, 3)
 _G.AchievementMicroButton = fakeButton("AchievementMicroButton", menu, true, 4)
 _G.StoreMicroButton = fakeButton("StoreMicroButton", menu, true, 5)
 _G.GuildMicroButton = fakeButton("GuildMicroButton", menu, true, 6)
+_G.EJMicroButton = fakeButton("EJMicroButton", menu, true, 7)
+_G.CollectionsMicroButton = fakeButton("CollectionsMicroButton", menu, true, 8)
 _G.CharacterBag0Slot = fakeButton("CharacterBag0Slot", art, true)
 _G.KeyRingButton = fakeButton("KeyRingButton", art, true)
 
@@ -165,6 +167,8 @@ local allMicro = {
   _G.AchievementMicroButton,
   _G.StoreMicroButton,
   _G.GuildMicroButton,
+  _G.EJMicroButton,
+  _G.CollectionsMicroButton,
 }
 function menu:GetChildren()
   local kids = {}
@@ -251,6 +255,12 @@ assert(_G.CharacterMicroButton.width == 28 and _G.CharacterMicroButton.height ==
 assert(_G.AchievementMicroButton.shown == false, "AchievementMicroButton stays out of the Micro Cluster")
 assert(_G.AchievementMicroButton.parent ~= menu or _G.AchievementMicroButton.layoutIndex == nil,
   "hidden extras must not stay on MicroMenu with layoutIndex")
+assert(_G.EJMicroButton.shown == false,
+  "EJMicroButton stays out of the Micro Cluster when ToggleEncounterJournal is missing")
+assert(_G.EJMicroButton.parent ~= menu or _G.EJMicroButton.layoutIndex == nil,
+  "hidden EJMicroButton must not stay on MicroMenu with layoutIndex")
+assert(_G.CollectionsMicroButton.shown == false,
+  "CollectionsMicroButton stays out of the Micro Cluster when ToggleCollectionsJournal is missing")
 
 container:Layout()
 menu:Layout()
@@ -268,6 +278,11 @@ assert(bag.parent.name == "ShadowUIMicroCluster", "backpack parents to the Micro
 local menuDock = menu.points[#menu.points]
 assert(menuDock[2] == bag and menuDock[3] == "BOTTOMLEFT",
   "MicroMenu sits on the backpack left so hosts stay inside the menu")
+
+_G.ToggleEncounterJournal = function() end
+Addon:SkinMicroAndBags()
+assert(_G.EJMicroButton.shown,
+  "EJMicroButton stays in the Micro Cluster when ToggleEncounterJournal exists")
 
 char.useShadowUIMenu = false
 Addon:SkinMicroAndBags()

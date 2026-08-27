@@ -1,93 +1,91 @@
 --[[
   Purpose: Create and lay out standard action bar frames.
-  Deps: ShadowUI:CreateBarButton(), ShadowUI:ApplyBarChrome()
-  Public: ShadowUI:FirstActionSlot(), ShadowUI:CreateBar(), ShadowUI:UpdateBarLayout(),
-          ShadowUI:UpdateBarDragOverlay()
+  Deps: ShadowUI:CreateBarButton(), ShadowUI:ApplyBarChrome(), ShadowUI:AttachBarDragOverlay()
+  Public: ShadowUI:FirstActionSlot(), ShadowUI:StancePageDriver(), ShadowUI:CreateBar(),
+          ShadowUI:PlaceBarButtons(), ShadowUI:UpdateBarLayout()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local HUD_BLUE = { 0.0, 0.447, 0.875 }
-local HUD_FILL = 0.33
-local HUD_FILL_SELECTED = 0.45
-local SPECIAL_NAMES = {
-  stance = "Stance",
-  aura = "Aura",
-  form = "Form",
-  pet = "Pet",
-  possess = "Possess",
-}
-
-local function barLabel(barId)
-  return SPECIAL_NAMES[barId] or (tostring(barId or ""):gsub("^bar", "Bar "))
+local function stancePages(cfg)
+  local pages = cfg and cfg.stancePages
+  if type(pages) ~= "table" or type(pages[1]) ~= "number" then
+    return nil
+  end
+  return pages
 end
 
-local function paintOverlay(overlay, selected)
-  if overlay.fill then
-    local alpha = selected and HUD_FILL_SELECTED or HUD_FILL
-    overlay.fill:SetColorTexture(HUD_BLUE[1], HUD_BLUE[2], HUD_BLUE[3], alpha)
+-- bonusbar:1 = slots 73, :2 = 85, :3 = 97, :4 = 109. No bonus bar uses the
+-- page whose first slot is 1 (caster / unstealthed), else page 1.
+local function bonusBarOfSlot(first)
+  if type(first) ~= "number" or first < 73 or (first - 73) % 12 ~= 0 then
+    return nil
   end
-  if overlay.SetBackdropBorderColor then
-    if selected then
-      overlay:SetBackdropBorderColor(1, 0.82, 0.1, 1)
-    else
-      overlay:SetBackdropBorderColor(0.45, 0.81, 1, 0.95)
-    end
-  end
+  return 1 + (first - 73) / 12
 end
 
-function Addon:SelectEditOverlay(overlay)
-  local seen = false
-  for _, bar in pairs(self.bars or {}) do
-    if bar.dragOverlay then
-      local selected = bar.dragOverlay == overlay
-      seen = seen or selected
-      paintOverlay(bar.dragOverlay, selected)
+function Addon:StancePageDriver(pages)
+  if not pages or #pages < 2 then
+    return nil
+  end
+  local parts = {}
+  local fallback = 1
+  for i, first in ipairs(pages) do
+    local bonus = bonusBarOfSlot(first)
+    if bonus then
+      parts[#parts + 1] = { bonus = bonus, state = i }
+    end
+    if first == 1 then
+      fallback = i
     end
   end
-  for _, host in pairs(self.unitHosts or {}) do
-    if host.overlay then
-      local selected = host.overlay == overlay
-      seen = seen or selected
-      paintOverlay(host.overlay, selected)
-    end
+  table.sort(parts, function(a, b) return a.bonus > b.bonus end)
+  local driver = {}
+  for _, part in ipairs(parts) do
+    driver[#driver + 1] = string.format("[bonusbar:%d] %d", part.bonus, part.state)
   end
-  if overlay and not seen then
-    paintOverlay(overlay, true)
-  end
+  driver[#driver + 1] = tostring(fallback)
+  return table.concat(driver, "; ")
 end
 
-function Addon:UpdateBarDragOverlay(bar, editable)
-  local overlay = bar.dragOverlay
-  if not overlay then
+local function configureStancePages(bar, pages)
+  if not pages then
     return
   end
-  overlay:SetAllPoints(bar)
-  if overlay.fontString then
-    overlay.fontString:SetText(barLabel(bar.barId))
+  bar:SetAttribute("state", 1)
+  bar:SetAttribute("_onstate-page", [[
+    self:SetAttribute("state", newstate)
+    control:ChildUpdate("state", newstate)
+  ]])
+  for i, button in ipairs(bar.buttons) do
+    for state, firstSlot in ipairs(pages) do
+      button:SetState(state, "action", firstSlot + i - 1)
+    end
   end
-  if overlay.SetFrameStrata then
-    overlay:SetFrameStrata("DIALOG")
+  RegisterStateDriver(bar, "page", Addon:StancePageDriver(pages))
+end
+
+function Addon:PlaceBarButtons(bar, columns, size)
+  local count = #bar.buttons
+  columns = math.max(1, math.min(columns or count, count))
+  bar.buttonSize = size
+  bar.columns = columns
+  bar:SetSize(columns * size, math.ceil(count / columns) * size)
+  for i, button in ipairs(bar.buttons) do
+    local column = (i - 1) % columns
+    local row = math.floor((i - 1) / columns)
+    button:ClearAllPoints()
+    button:SetSize(size, size)
+    button:SetPoint("TOPLEFT", bar, "TOPLEFT", column * size, -row * size)
   end
-  if overlay.SetFrameLevel then
-    overlay:SetFrameLevel(200)
+  if bar.dragOverlay and bar.dragOverlay.SetAllPoints then
+    bar.dragOverlay:SetAllPoints(bar)
   end
-  local show = editable == true and bar.configEnabled ~= false
-  if show and bar.IsShown and not bar:IsShown() then
-    show = false
-  end
-  overlay:EnableMouse(show)
-  overlay:SetShown(show)
-  paintOverlay(overlay, false)
 end
 
 function Addon:UpdateBarLayout(bar, cfg)
-  local count = #bar.buttons
   local size = cfg.buttonSize or 36
-  local columns = math.max(1, math.min(cfg.columns or count, count))
-  local rows = math.ceil(count / columns)
-
+  self:PlaceBarButtons(bar, cfg.columns or #bar.buttons, size)
   bar:SetScale(cfg.scale or 1)
-  bar:SetSize(columns * size, rows * size)
   bar:ClearAllPoints()
   bar:SetPoint(
     cfg.point or "CENTER",
@@ -97,20 +95,18 @@ function Addon:UpdateBarLayout(bar, cfg)
     cfg.y or 0
   )
 
-  for i, button in ipairs(bar.buttons) do
-    local column = (i - 1) % columns
-    local row = math.floor((i - 1) / columns)
-    button:ClearAllPoints()
-    button:SetSize(size, size)
-    button:SetPoint("TOPLEFT", bar, "TOPLEFT", column * size, -row * size)
-  end
-
   local editable = self.editMode == true
   bar:SetMovable(editable)
-  self:UpdateBarDragOverlay(bar, editable)
+  if self.UpdateBarDragOverlay then
+    self:UpdateBarDragOverlay(bar, editable)
+  end
 end
 
 function Addon:FirstActionSlot(barId, cfg)
+  local pages = stancePages(cfg)
+  if pages then
+    return pages[1]
+  end
   if cfg and type(cfg.firstSlot) == "number" then
     return cfg.firstSlot
   end
@@ -135,88 +131,6 @@ function Addon:CreateBar(barId, cfg)
   end
   self:ApplyBarChrome(bar)
   bar.buttons = {}
-
-  -- Parent to UIParent at DIALOG so the overlay sits above secure buttons.
-  -- A child of the Bar cannot rise above MEDIUM strata.
-  local overlayName = "ShadowUIBar" .. page .. "Drag"
-  local ok, dragOverlay = pcall(CreateFrame, "Button", overlayName, UIParent, "BackdropTemplate")
-  if not ok or not dragOverlay then
-    dragOverlay = CreateFrame("Button", overlayName, UIParent)
-  end
-  dragOverlay:SetFrameStrata("DIALOG")
-  dragOverlay:SetFrameLevel(200)
-  dragOverlay:SetAllPoints(bar)
-  dragOverlay:EnableMouse(false)
-  dragOverlay:RegisterForDrag("LeftButton")
-  if dragOverlay.SetBackdrop then
-    dragOverlay:SetBackdrop({
-      bgFile = "Interface\\Buttons\\WHITE8X8",
-      edgeFile = "Interface\\Buttons\\WHITE8X8",
-      edgeSize = 1,
-    })
-    dragOverlay:SetBackdropColor(0, 0, 0, 0)
-    dragOverlay:SetBackdropBorderColor(0.45, 0.81, 1, 0.95)
-  end
-  local fill = dragOverlay:CreateTexture(nil, "ARTWORK")
-  fill:SetAllPoints(dragOverlay)
-  fill:SetColorTexture(HUD_BLUE[1], HUD_BLUE[2], HUD_BLUE[3], HUD_FILL)
-  dragOverlay.fill = fill
-  local label = dragOverlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  label:SetPoint("CENTER")
-  label:SetTextColor(1, 1, 1, 1)
-  dragOverlay.fontString = label
-  dragOverlay.bar = bar
-  local drag
-  local function cursor()
-    local scale = 1
-    if UIParent.GetEffectiveScale then
-      scale = UIParent:GetEffectiveScale() or 1
-    end
-    local cx, cy = 0, 0
-    if GetCursorPosition then
-      cx, cy = GetCursorPosition()
-    end
-    return cx / scale, cy / scale
-  end
-  local function dragToCursor()
-    if not drag or not Addon.SnapValue then
-      return
-    end
-    local cx, cy = cursor()
-    local x = Addon:SnapValue(cx + drag.dx)
-    local y = Addon:SnapValue(cy + drag.dy)
-    bar:ClearAllPoints()
-    bar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
-    dragOverlay:SetAllPoints(bar)
-  end
-  local function beginMove(_, button)
-    if button ~= "LeftButton" or not Addon.editMode or drag then
-      return
-    end
-    Addon:SelectEditOverlay(dragOverlay)
-    local cx, cy = cursor()
-    drag = {
-      dx = (bar.GetLeft and bar:GetLeft() or 0) - cx,
-      dy = (bar.GetBottom and bar:GetBottom() or 0) - cy,
-    }
-    dragOverlay:SetScript("OnUpdate", dragToCursor)
-    dragToCursor()
-  end
-  local function endMove()
-    if not drag then
-      return
-    end
-    dragOverlay:SetScript("OnUpdate", nil)
-    dragToCursor()
-    drag = nil
-    if Addon.PersistBarPosition then
-      Addon:PersistBarPosition(bar)
-    end
-  end
-  dragOverlay:SetScript("OnMouseDown", beginMove)
-  dragOverlay:SetScript("OnMouseUp", endMove)
-  dragOverlay:Hide()
-  bar.dragOverlay = dragOverlay
   bar.barId = barId
 
   local firstSlot = self:FirstActionSlot(barId, cfg)
@@ -224,7 +138,11 @@ function Addon:CreateBar(barId, cfg)
     local slot = firstSlot + i - 1
     bar.buttons[i] = self:CreateBarButton(bar, slot, slot)
   end
+  configureStancePages(bar, stancePages(cfg))
 
+  if self.AttachBarDragOverlay then
+    self:AttachBarDragOverlay(bar)
+  end
   self:UpdateBarLayout(bar, cfg)
   return bar
 end

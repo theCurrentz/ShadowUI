@@ -1,14 +1,13 @@
 --[[
-  Purpose: Target Range Display from Whitemane Currentz RangeDisplay.
+  Purpose: Target Range Display on the top of the combat meter group.
   Deps: LibRangeCheck-3.0, PLAYER_TARGET_CHANGED
   Public: ShadowUI:ApplyRangeDisplay(), ShadowUI:RangeState(),
           ShadowUI:RangePaint(), ShadowUI:RangeFromClient()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local WIDTH, HEIGHT, FONT_SIZE = 112, 36, 20
+local WIDTH, HEIGHT, FONT_SIZE = 112, 36, 18
 local FONT = "Fonts\\ARIALN.TTF"
-local X, Y = -6, -170
 local UPDATE_DELAY = 0.1
 local RANGE_LIMIT = 100
 local TEXT = "%d - %d"
@@ -112,19 +111,35 @@ local function layoutHost(self, id, shipped)
 end
 
 local function parkDisplay(self, frame)
-  local park = layoutHost(self, "range", {
-    point = "CENTER",
-    x = X,
-    y = Y,
-    width = WIDTH,
-    height = HEIGHT,
-  })
+  local layout
+  if self.ResolveEffective then
+    local resolved = self:ResolveEffective()
+    layout = resolved and resolved.layout and resolved.layout.range
+  end
+  if layout and (layout.point or layout.x ~= nil or layout.y ~= nil) then
+    local park = layoutHost(self, "range", {
+      point = "CENTER",
+      x = 0,
+      y = 0,
+      width = WIDTH,
+      height = HEIGHT,
+    })
+    if frame.ClearAllPoints then
+      frame:ClearAllPoints()
+    end
+    frame:SetPoint(park.point, park.relativeTo or UIParent, park.relativePoint, park.x, park.y)
+    if frame.SetSize then
+      frame:SetSize(park.width, park.height)
+    end
+    return
+  end
+  local group = self.CombatMeterGroup and self:CombatMeterGroup() or UIParent
   if frame.ClearAllPoints then
     frame:ClearAllPoints()
   end
-  frame:SetPoint(park.point, park.relativeTo or UIParent, park.relativePoint, park.x, park.y)
+  frame:SetPoint("BOTTOM", group, "TOP", 0, 0)
   if frame.SetSize then
-    frame:SetSize(park.width, park.height)
+    frame:SetSize(WIDTH, HEIGHT)
   end
 end
 
@@ -139,7 +154,7 @@ end
 local function createDisplay()
   local frame = CreateFrame("Frame", "ShadowUIRangeDisplay", UIParent)
   frame:SetSize(WIDTH, HEIGHT)
-  frame:SetPoint("CENTER", UIParent, "CENTER", X, Y)
+  frame:SetPoint("BOTTOM", UIParent, "TOP", 0, 0)
   frame:SetFrameStrata("HIGH")
   frame:EnableMouse(false)
   local text = frame:CreateFontString(nil, "OVERLAY")

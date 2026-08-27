@@ -1,17 +1,16 @@
 --[[
-  Purpose: Shipped class defaults for ROGUE stealth form bar placement.
+  Purpose: Shipped class defaults for ROGUE.
   Deps: ShadowUI addon table
   Public: populates ShadowUI.Defaults.classes.ROGUE
+  Notes: bar1 pages Open (1) and Stealth (73).
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
 Addon.Defaults.classes.ROGUE = {
   layout = {
-    form = {
-      point = "CENTER", relativeTo = "UIParent", relativePoint = "CENTER",
-      x = 0, y = -84, buttons = 1, columns = 1, scale = 1, enabled = true, buttonSize = 36 * 0.9,
-    },
+    bar1 = { stancePages = { 1, 73 } },
+    bar7 = { enabled = false },
   },
   keybinds = {},
 }

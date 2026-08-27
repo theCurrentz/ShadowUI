@@ -1,10 +1,10 @@
 -- Square minimap chrome is a 16px Darken buffer around the map, with Zone Text
 -- on top and an Outer Edge. The map uses SexyMap's square mask and icon path.
--- Cluster icons, including late LFG and LibDBIcon buttons, sit on that square.
--- World Layer from Nova World Buffs sits on the bottom. Time is a clock square
--- on the map. Hover shows realm time and local time. A click opens the
--- Stopwatch. GameTimeFrame stays hidden. The player can drag every minimap
--- icon, including LFG.
+-- Cluster icons, including late LFG and LibDBIcon buttons, sit on that square
+-- with SexyMap's extra radius. World Layer from Nova World Buffs sits on the
+-- bottom. Time is Blizzard TimeManagerClockButton under the map. GameTimeFrame
+-- stays hidden. The mouse wheel zooms. After 5 seconds the map zooms out. The
+-- player can drag every minimap icon, including LFG.
 -- Run: lua tests/minimap_spec.lua
 local unpack = unpack or table.unpack
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -52,8 +52,33 @@ _G.hooksecurefunc = function(object, method, fn)
   end
 end
 
+-- MinimapZoneText is a FontString. Frame methods from the SexyMap dummy
+-- cannot run on it (SetFrameStrata Usage error in the client).
+local function fakeFontString(name)
+  local fs = { name = name, points = {}, text = "", hidden = false, objectType = "FontString" }
+  function fs:GetObjectType() return "FontString" end
+  function fs:SetPoint(point, relative, relativePoint, x, y)
+    self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
+  end
+  function fs:SetParent(parent) self.parent = parent end
+  function fs:GetName() return self.name end
+  function fs:SetFont() end
+  function fs:SetJustifyH() end
+  function fs:SetTextColor() end
+  function fs:ClearAllPoints() self.points = {} end
+  function fs:SetAllPoints(target) self.all = target end
+  function fs:SetText(value) self.text = value end
+  function fs:GetText() return self.text end
+  function fs:GetUnboundedStringWidth() return 32 end
+  function fs:GetStringHeight() return 10 end
+  function fs:Hide() self.hidden = true end
+  function fs:Show() self.hidden = false end
+  function fs:IsShown() return not self.hidden end
+  return fs
+end
+
 local function fakeFrame(name)
-  local frame = { name = name, points = {}, hidden = false, children = {} }
+  local frame = { name = name, points = {}, hidden = false, children = {}, objectType = "Frame" }
   function frame:ClearAllPoints() self.points = {} end
   function frame:SetPoint(point, relative, relativePoint, x, y)
     self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
@@ -96,12 +121,35 @@ local function fakeFrame(name)
   function frame:SetScale() end
   function frame:GetName() return self.name end
   function frame:GetFrameLevel() return self.level or 1 end
-  function frame:SetFrameStrata() end
+  function frame:SetFrameStrata()
+    if self.objectType == "FontString" then
+      error("bad argument #1 to 'fn' (Usage: self:SetFrameStrata(strata))")
+    end
+  end
   function frame:SetFrameLevel(level) self.level = level end
   function frame:EnableMouse(enabled) self.mouse = enabled end
+  function frame:EnableMouseWheel(enabled) self.mouseWheel = enabled end
+  function frame:GetZoom() return self.zoom or 0 end
+  function frame:Click()
+    if self.OnClick then
+      self:OnClick()
+    end
+    if self.hook_OnClick then
+      self.hook_OnClick(self)
+    end
+  end
+  function frame:SetFixedFrameStrata(locked) self.fixedStrata = locked end
+  function frame:SetFixedFrameLevel(locked) self.fixedLevel = locked end
+  function frame:SetPropagateMouseClicks(v) self.propagateClicks = v end
+  function frame:SetPropagateMouseMotion(v) self.propagateMotion = v end
   function frame:SetMaskTexture(path) self.mask = path end
   function frame:Hide() self.hidden = true end
-  function frame:Show() self.hidden = false end
+  function frame:Show()
+    if self.objectType == "FontString" then
+      error("bad argument #1 to 'fn' (Usage: self:SetFrameStrata(strata))")
+    end
+    self.hidden = false
+  end
   function frame:SetBackdrop(spec) self.backdrop = spec end
   function frame:SetBackdropBorderColor(r, g, b, a)
     self.border = { r, g, b, a }
@@ -119,15 +167,7 @@ local function fakeFrame(name)
   end
   function frame:GetEffectiveScale() return 1 end
   function frame:CreateFontString()
-    local fs = { points = {}, text = "" }
-    function fs:SetPoint(point, relative, relativePoint, x, y)
-      fs.points[#fs.points + 1] = { point, relative, relativePoint, x, y }
-    end
-    function fs:SetFont() end
-    function fs:SetJustifyH() end
-    function fs:SetTextColor() end
-    function fs:SetText(text) fs.text = text end
-    function fs:GetText() return fs.text end
+    local fs = fakeFontString()
     frame.font = fs
     return fs
   end
@@ -166,16 +206,19 @@ end
 _G.MinimapCluster = fakeFrame("MinimapCluster")
 _G.Minimap = fakeFrame("Minimap")
 _G.MinimapBorder = fakeFrame("MinimapBorder")
+_G.MinimapZoomIn = fakeFrame("MinimapZoomIn")
 _G.MinimapZoomOut = fakeFrame("MinimapZoomOut")
 _G.MinimapBackdrop = fakeFrame("MinimapBackdrop")
 _G.MiniMapTrackingBorder = fakeFrame("MiniMapTrackingBorder")
 _G.MiniMapMailFrame = fakeFrame("MiniMapMailFrame")
 _G.MiniMapTrackingFrame = fakeFrame("MiniMapTrackingFrame")
 _G.MinimapZoneTextButton = fakeFrame("MinimapZoneTextButton")
-_G.MinimapZoneText = fakeFrame("MinimapZoneText")
+_G.MinimapZoneText = fakeFontString("MinimapZoneText")
 _G.GameTimeFrame = fakeFrame("GameTimeFrame")
 _G.GameTimeFrame:SetParent(_G.MinimapCluster)
 _G.TimeManagerClockButton = fakeFrame("TimeManagerClockButton")
+_G.TimeManagerClockTicker = _G.TimeManagerClockButton:CreateFontString()
+_G.TimeManagerClockTicker:SetText("7:40")
 _G.MinimapLayerFrame = fakeFrame("MinimapLayerFrame")
 _G.MinimapLayerFrame:SetParent(_G.Minimap)
 _G.MinimapLayerFrame:SetPoint("BOTTOM", _G.Minimap, "BOTTOM", 2, 4)
@@ -190,6 +233,18 @@ end
 
 _G.GetCursorPosition = function()
   return 180, 100
+end
+
+local timers = {}
+_G.C_Timer = {
+  After = function(delay, fn)
+    timers[#timers + 1] = { delay = delay, fn = fn }
+  end,
+}
+
+_G.Minimap_ZoomOutClick = function()
+  local map = _G.Minimap
+  map.zoom = (map.zoom or 0) - 1
 end
 
 _G.GetGameTime = function()
@@ -254,6 +309,8 @@ assert(cluster.mouse == false, "cluster has no dead mouse zone")
 assert(_G.MinimapBorder.hidden, "round silver ring stays hidden on the square map")
 assert(_G.MinimapZoomOut.hidden, "zoom buttons stay hidden")
 assert(not _G.MinimapZoneText.hidden, "Zone Text stays visible")
+assert(_G.MinimapZoneText.parent == _G.MinimapZoneTextButton,
+  "Zone Text FontString sits on MinimapZoneTextButton")
 assert(_G.MinimapZoneTextButton.parent == box, "Zone Text sits on the square holder")
 local zone = _G.MinimapZoneTextButton.points[1]
 assert(zone and zone[1] == "BOTTOM" and zone[2] == map, "Zone Text sits above the map")
@@ -267,32 +324,18 @@ local track = _G.MiniMapTrackingFrame.points[1]
 assert(track[4] < 0 and track[5] > 0, "tracking sits on the north-west square corner, not the circle")
 
 assert(_G.GameTimeFrame.hidden, "sun/moon Time art stays hidden")
-assert(_G.TimeManagerClockButton.hidden, "digital Time Manager clock stays hidden")
-local timeFrame = _G.ShadowUIMinimapClock
-assert(timeFrame, "Time is a clock square")
-assert(not timeFrame.hidden, "Time stays visible")
+assert(not _G.TimeManagerClockButton.hidden, "Time stays the Blizzard clock")
+assert(_G.ShadowUIMinimapClock == nil, "Time does not create a custom clock")
+assert(_G.ShadowUIStopwatch == nil, "Time does not create a custom Stopwatch")
+local timeFrame = _G.TimeManagerClockButton
 assert(timeFrame.parent == map, "Time sits on the map")
-assert(timeFrame.width == 36 and timeFrame.height == 36, "Time is a little square")
-assert(timeFrame.text and timeFrame.text.text == "7:40", "Time shows realm time")
 local timePark = timeFrame.points[#timeFrame.points]
-assert(timePark and timePark[1] == "BOTTOMRIGHT" and timePark[2] == map,
-  "Time sits on the map, not the square icon path")
-assert(timePark[3] == "BOTTOMRIGHT" and timePark[4] == -2 and timePark[5] == 2,
-  "Time keeps a 2px inset from the map corner")
-assert(timeFrame.OnEnter, "Time hover is wired")
-timeFrame:OnEnter()
-assert(tooltipLines[1] == "realm" and tooltipLines[2] == "local",
-  "Time hover shows realm time and local time")
-assert(timeFrame.OnClick, "Time click is wired")
-local stopwatch = _G.ShadowUIStopwatch
-assert(stopwatch, "Stopwatch exists")
-assert(stopwatch.hidden, "Stopwatch starts hidden")
-timeFrame:OnClick()
-assert(not stopwatch.hidden, "Time click opens the Stopwatch")
-timeFrame:OnClick()
-assert(stopwatch.hidden, "Time click hides the Stopwatch")
+assert(timePark and timePark[1] == "TOP" and timePark[2] == map,
+  "Time parks under the map the SexyMap way")
+assert(timePark[3] == "BOTTOM" and timePark[4] == 0 and timePark[5] == 0,
+  "Time is centred under the map")
 Addon:SkinMinimap()
-assert(_G.ShadowUIMinimapClock == timeFrame, "Time does not create a second clock")
+assert(_G.TimeManagerClockButton == timeFrame, "Time does not replace the Blizzard clock")
 
 _G.MinimapZoomOut:Show()
 assert(_G.MinimapZoomOut.hidden, "zoom buttons cannot come back")
@@ -314,7 +357,7 @@ Addon:SkinMinimap()
 assert(lfg.parent == map, "dungeon finder leaves the hidden cluster")
 assert(not lfg.hidden, "dungeon finder stays visible")
 local lfgPark = lfg.points[#lfg.points]
-assert(lfgPark and lfgPark[4] == -80 and lfgPark[5] == -80,
+assert(lfgPark and lfgPark[4] == -90 and lfgPark[5] == -90,
   "dungeon finder sits on the south-west square corner, not the circle")
 
 -- Addon buttons that still SetPoint on the circle must snap to the square.
@@ -323,7 +366,7 @@ addonBtn:SetParent(map)
 addonBtn:SetPoint("CENTER", map, "CENTER", -57, -57)
 Addon:SkinMinimap()
 local addonPark = addonBtn.points[#addonBtn.points]
-assert(addonPark and addonPark[4] == -80 and addonPark[5] == -80,
+assert(addonPark and addonPark[4] == -90 and addonPark[5] == -90,
   "addon minimap icons sit on the square edge, not the circular path")
 
 -- Nova World Buffs already parents MinimapLayerFrame to Minimap. Keep it on
@@ -346,17 +389,17 @@ assert(latePark and latePark[1] == "CENTER" and latePark[2] == map,
 -- Drag stores the angle so a later skin does not snap LFG back to SW.
 map.cx, map.cy = 100, 100
 assert(lfg.drag, "dungeon finder accepts a drag")
-assert(lfg.hook_OnDragStart, "dungeon finder drag starts from the mouse")
-lfg.hook_OnDragStart(lfg)
+assert(lfg.OnDragStart, "dungeon finder drag starts from the mouse")
+lfg:OnDragStart()
 local dragHost = _G.ShadowUIMinimapIconDrag
 assert(dragHost and dragHost.OnUpdate, "icon drag updates from the cursor")
 dragHost:OnUpdate()
-lfg.hook_OnDragStop(lfg)
+lfg:OnDragStop()
 assert(char.minimapIcons.LFGMinimapFrame == 0,
   "a drag to the east of the map stores angle 0")
 Addon:SkinMinimap()
 local lfgAfterDrag = lfg.points[#lfg.points]
-assert(lfgAfterDrag[4] == 80 and lfgAfterDrag[5] == 0,
+assert(lfgAfterDrag[4] == 90 and lfgAfterDrag[5] == 0,
   "dungeon finder stays where the player dragged it")
 
 -- World Layer must still Show after the cluster is hidden. Nova World Buffs
@@ -394,5 +437,33 @@ assert(lateRack.parent == map, "LibDBIcon ItemRack parks from IconCreated")
 local lateRackPark = lateRack.points[#lateRack.points]
 assert(lateRackPark and lateRackPark[1] == "CENTER" and lateRackPark[2] == map,
   "LibDBIcon ItemRack sits on the square path after IconCreated")
+
+-- Tracking button stays on MiniMapTracking so SexyMap-style mouse propagate works.
+local trackBtn = fakeFrame("MiniMapTrackingButton")
+_G.MiniMapTrackingButton = trackBtn
+trackBtn:SetParent(_G.MiniMapTrackingFrame)
+Addon:SkinMinimap()
+assert(trackBtn.parent == _G.MiniMapTrackingFrame,
+  "tracking button stays on the tracking host")
+assert(trackBtn.propagateClicks and trackBtn.propagateMotion,
+  "tracking clicks pass through to the tracking host")
+
+assert(map.mouseWheel == true, "mouse wheel zooms the square map")
+assert(map.OnMouseWheel, "mouse wheel is wired")
+local zoomOutTimer
+for i = 1, #timers do
+  if timers[i].delay == 5 then
+    zoomOutTimer = timers[i].fn
+  end
+end
+assert(zoomOutTimer, "auto zoom-out is scheduled")
+map.zoom = 3
+zoomOutTimer()
+assert(map.zoom == 0, "auto zoom-out returns to the default zoom")
+_G.MinimapZoomOut.OnClick = function(self)
+  self.clicked = true
+end
+map:OnMouseWheel(-1)
+assert(_G.MinimapZoomOut.clicked, "mouse wheel uses the Blizzard zoom-out click")
 
 print("minimap_spec OK")

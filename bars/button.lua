@@ -1,9 +1,11 @@
 --[[
   Purpose: Create LibActionButton action buttons with Action Slot Lock and Lorti-dark icon chrome.
+           Empty Action Slots stay hidden, including the Keybind label.
   Deps: ShadowUI addon table, LibActionButton-1.0
   Public: ShadowUI:CreateBarButton(parent, id, actionSlot), ShadowUI:SkinBarButton(),
-          ShadowUI:LockBarButton(), ShadowUI:ApplyActionSlotLock(),
-          ShadowUI:SetActionSlotHardLock(), ShadowUI:SkinCooldownCount()
+          ShadowUI:PaintEmptySlotVisibility(), ShadowUI:LockBarButton(),
+          ShadowUI:ApplyActionSlotLock(), ShadowUI:SetActionSlotHardLock(),
+          ShadowUI:SkinCooldownCount()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -18,7 +20,7 @@ function Addon:SkinCooldownCount(button) end
 
 local CONFIG = {
   outOfRangeColoring = "button",
-  showGrid = true,
+  showGrid = false,
   colors = {
     range = { 0.8, 0.1, 0.1 },
     mana = { 0.5, 0.5, 1 },
@@ -86,6 +88,58 @@ local function skinCooldown(button)
   end
 end
 
+local function hideButtonChrome(button)
+  if button.shadowUIChrome and button.shadowUIChrome.Hide then
+    button.shadowUIChrome:Hide()
+  end
+  if button.shadowUIOuter and button.shadowUIOuter.Hide then
+    button.shadowUIOuter:Hide()
+  end
+end
+
+local function slotHasAction(button)
+  if not button.HasAction then
+    return true
+  end
+  return button:HasAction() and true or false
+end
+
+local function showEmptyActionSlot()
+  if Addon.keybindMode == true then
+    return true
+  end
+  -- Pickup shows empty Action Slots as drop targets without a Keybind label.
+  if GetCursorInfo then
+    local kind = GetCursorInfo()
+    return kind == "spell" or kind == "item" or kind == "macro" or kind == "petaction"
+  end
+  return false
+end
+
+function Addon:PaintEmptySlotVisibility(button)
+  if not button then
+    return
+  end
+  local filled = slotHasAction(button)
+  local showEmpty = showEmptyActionSlot()
+  if button.SetAlpha then
+    button:SetAlpha((filled or showEmpty) and 1 or 0)
+  end
+  local hotkey = button.HotKey
+  if not hotkey then
+    return
+  end
+  if filled or Addon.keybindMode then
+    if button.shadowUIHotkey and hotkey.Show then
+      hotkey:Show()
+    end
+    return
+  end
+  if hotkey.Hide then
+    hotkey:Hide()
+  end
+end
+
 local function paintChrome(button)
   local chrome = button.shadowUIChrome
   if not chrome and button.CreateTexture then
@@ -101,9 +155,38 @@ local function paintChrome(button)
   chrome:Show()
 end
 
+local function placeActionOuter(button, outer)
+  if not outer then
+    return
+  end
+  local parent = button.GetParent and button:GetParent()
+  if parent and outer.SetParent then
+    outer:SetParent(parent)
+  end
+  if button.SetClipsChildren then
+    button:SetClipsChildren(false)
+  end
+  if button.GetFrameLevel and outer.SetFrameLevel then
+    local level = button:GetFrameLevel()
+    if level > 0 then
+      outer:SetFrameLevel(level - 1)
+    end
+  end
+  Addon:PaintOuterChrome(outer)
+end
+
 function Addon:SkinBarButton(button)
-  paintChrome(button)
-  self:ApplyOuterChrome(button)
+  if slotHasAction(button) then
+    paintChrome(button)
+    local outer = self:ApplyOuterChrome(button)
+    placeActionOuter(button, outer)
+    if outer and outer.Show then
+      outer:Show()
+    end
+  else
+    hideButtonChrome(button)
+  end
+  self:PaintEmptySlotVisibility(button)
   strip(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()))
   strip(button.Border)
   strip(button.SlotBackground)
