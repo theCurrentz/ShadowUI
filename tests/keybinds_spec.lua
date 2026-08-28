@@ -31,7 +31,8 @@ assert(Addon:SlotFromBindingName(nil) == nil, "nil name")
 
 local mage = Addon.Defaults.classes.MAGE.keybinds
 eq("MULTIACTIONBAR1BUTTON1", Addon:SlotFromBindingName("MULTIACTIONBAR1BUTTON1"))
-assert(next(mage) == nil, "Mage uses Base Keybinds")
+assert(mage["CLICK ShadowUIActionButton1:Keybind"] == "Q",
+  "Mage Class Keybinds copy Base physical keys onto the Mage bar map")
 assert(Addon.Defaults.classes.MAGE.layout.bar2.firstSlot == 61, "old bar6 slots sit on bar2")
 assert(Addon.Defaults.classes.MAGE.layout.bar3.firstSlot == 13, "old bar2 slots sit on bar3")
 assert(Addon.Defaults.classes.MAGE.layout.bar6.firstSlot == 49, "old bar5 slots sit on bar6")
@@ -48,6 +49,14 @@ merged = Addon:MergeBindingTables(
 )
 assert(merged.ACTIONBUTTON1 == nil, "false tombstone drops a client bind")
 assert(merged.ACTIONBUTTON2 == nil, "empty string drops a client bind")
+merged = Addon:MergeBindingTables(
+  { MULTIACTIONBAR1BUTTON1 = "Q" },
+  { ["CLICK ShadowUIActionButton61:Keybind"] = false }
+)
+assert(merged.MULTIACTIONBAR1BUTTON1 == nil,
+  "canonical tombstone clears a client bind on the same slot")
+assert(merged["CLICK ShadowUIActionButton61:Keybind"] == nil,
+  "canonical tombstone does not leave a ShadowUI bind name")
 merged = Addon:MergeBindingTables(
   { MULTIACTIONBAR1BUTTON1 = "Q" },
   { ["CLICK ShadowUIActionButton13:Keybind"] = "Q" }
@@ -104,14 +113,12 @@ local function wslot(n)
 end
 assert(warrior.layout.bar1.stancePages[1] == 73, "Warrior main Bar starts on Battle slots")
 assert(warrior.layout.bar2.firstSlot == 1, "Warrior fixed utility row starts at slot 1")
-assert(next(warrior.keybinds) == nil, "Warrior uses Base Keybinds")
-assert(baseBinds[wslot(1)] == "1", "Base utility row starts on 1")
-assert(baseBinds[wslot(4)] == "4", "Base interrupt job sits on 4")
-assert(baseBinds[wslot(73)] == "Q", "Base main stance Bar starts on Q")
-assert(baseBinds[wslot(82)] == "X", "Base major cooldown sits on X")
-assert(baseBinds[wslot(109)] == "BUTTON5", "Base mouse5 is fixed Battle Stance")
-assert(baseBinds[wslot(110)] == "BUTTON4", "Base mouse4 is fixed Defensive Stance")
-assert(baseBinds[wslot(111)] == "BUTTON3", "Base mouse3 is fixed Berserker Stance")
+assert(warrior.keybinds[wslot(1)] == "1", "Warrior Class Keybinds overlay the utility row")
+assert(baseBinds[wslot(1)] == "Q", "Base main row starts on Q")
+assert(baseBinds[wslot(4)] == "F", "Base interrupt job sits on F")
+assert(baseBinds[wslot(73)] == "BUTTON5", "Base slot 73 is mouse5")
+assert(warrior.keybinds[wslot(73)] == "Q", "Warrior Class Keybinds keep stance page 1 on Q")
+assert(warrior.keybinds[wslot(82)] == "X", "Warrior Class Keybinds keep major cooldown on X")
 assert(warrior.variants.Arms.talentTree == 1, "Arms binds talent tree 1")
 assert(warrior.variants.Fury.talentTree == 2, "Fury binds talent tree 2")
 assert(warrior.variants.Protection.talentTree == 3, "Protection binds talent tree 3")
@@ -137,6 +144,16 @@ Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
   "Keybind Edit Mode still paints empty Action Slots")
 Addon.keybindMode = false
+function Addon:ShouldShowEmptyActionSlots()
+  return (self.actionBarGridCount or 0) > 0
+end
+Addon.actionBarGridCount = 1
+Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
+assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
+  "a pickup still paints empty Action Slot Keybinds")
+Addon.actionBarGridCount = 0
+Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
+assert(paintedHotkey.shown == false, "ending a pickup hides empty Action Slot Keybinds")
 function emptySlot:HasAction() return true end
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == true and paintedHotkey.text == "1",

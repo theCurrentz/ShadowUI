@@ -2,7 +2,9 @@
   Purpose: Paint Meter Fill on Blizzard health, power, and Name Background.
            The gradient lives on an overlay we own. StatusBar vertex colour
            flattens SetGradient on the native fill.
-  Deps: ShadowUI:ApplyStatusBarGradient()
+           Player Name Background uses class colour. Non-player Name Background
+           keeps reaction colour.
+  Deps: ShadowUI:ApplyStatusBarGradient(), ShadowUI:PortraitClassColor()
   Public: ShadowUI:LightingGradient(), ShadowUI:PaintStatusBarGradient(),
           ShadowUI:PaintNameBackgroundGradient(), ShadowUI:SkinNamePlate(),
           ShadowUI:SkinStatusBarGradients(), ShadowUI:OnNamePlateUnitAdded()
@@ -124,12 +126,41 @@ local function watchBar(bar)
   paintBar(bar)
 end
 
+local function unitForFrame(frame)
+  local name = frame and frame.GetName and frame:GetName()
+  if name == "TargetFrame" then
+    return "target"
+  end
+  if name == "FocusFrame" then
+    return "focus"
+  end
+end
+
+local function nameClassColor(tex)
+  local unit = tex and tex._shadowUINameUnit
+  if not unit or not Addon.PortraitClassColor then
+    return
+  end
+  if not (UnitIsPlayer and UnitIsPlayer(unit)) then
+    return
+  end
+  local classFile
+  if UnitClass then
+    _, classFile = UnitClass(unit)
+  end
+  return Addon:PortraitClassColor(classFile)
+end
+
 local function paintName(tex, r, g, b, a)
   if not tex or tex._shadowUIPainting then
     return
   end
   tex._shadowUIPainting = true
-  if r == nil and tex.GetVertexColor then
+  local cr, cg, cb = nameClassColor(tex)
+  if cr then
+    r, g, b = cr, cg, cb
+    a = a or 1
+  elseif r == nil and tex.GetVertexColor then
     r, g, b, a = tex:GetVertexColor()
   end
   local parent = tex.GetParent and tex:GetParent()
@@ -142,15 +173,18 @@ function Addon:PaintNameBackgroundGradient(tex, r, g, b, a)
   paintName(tex, r, g, b, a)
 end
 
-local function watchName(tex)
-  if not tex or tex._shadowUINameWatch then
+local function watchName(tex, unit)
+  if not tex then
     return
   end
-  tex._shadowUINameWatch = true
-  if hooksecurefunc and tex.SetVertexColor then
-    hooksecurefunc(tex, "SetVertexColor", function(self, r, g, b, a)
-      paintName(self, r, g, b, a)
-    end)
+  tex._shadowUINameUnit = unit
+  if not tex._shadowUINameWatch then
+    tex._shadowUINameWatch = true
+    if hooksecurefunc and tex.SetVertexColor then
+      hooksecurefunc(tex, "SetVertexColor", function(self, r, g, b, a)
+        paintName(self, r, g, b, a)
+      end)
+    end
   end
   paintName(tex)
 end
@@ -179,15 +213,16 @@ local function barsOn(frame)
   end
   watchBar(healthBarOf(frame))
   watchBar(frame.manabar or frame.powerbar or frame.powerBar)
-  watchName(frame.NameBackground or frame.nameBackground)
   local name = frame.GetName and frame:GetName()
+  local unit = unitForFrame(frame)
+  watchName(frame.NameBackground or frame.nameBackground, unit)
   if not name then
     return
   end
   watchBar(_G[name .. "HealthBar"])
   watchBar(_G[name .. "ManaBar"])
   watchBar(_G[name .. "AlternateManaBar"])
-  watchName(_G[name .. "NameBackground"])
+  watchName(_G[name .. "NameBackground"], unit)
 end
 
 function Addon:SkinNamePlate(plate)

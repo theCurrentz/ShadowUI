@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Build Classic Era class, racial, and profession spellbook JSON from Wowhead."""
+"""Build class, racial, profession, and general spellbook JSON from Wowhead.
+
+Default Version is Era. Pass `--version TBC` to write `spells-tbc.json`.
+"""
 
 from __future__ import annotations
 
@@ -14,6 +17,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "spells.json"
+
+WOWHEAD = "https://www.wowhead.com/classic"
+TOOLTIP_HOST = "https://nether.wowhead.com/classic"
 
 CLASS_PAGES = [
     ("WARRIOR", "warrior"),
@@ -64,6 +70,7 @@ SKILL_TITLES = {
     186: "Mining",
     393: "Skinning",
     197: "Tailoring",
+    755: "Jewelcrafting",
     185: "Cooking",
     129: "First Aid",
     356: "Fishing",
@@ -81,8 +88,42 @@ LINE_ORDER = {
     "DRUID": [574, 134, 573],
 }
 
+GENERAL_SKILL_ID = -5
 RACIAL_SKILL_ID = -4
 RACIAL_URL = "https://www.wowhead.com/classic/spells/racial-traits"
+SOURCE = "wowhead classic abilities, general, racial traits, professions"
+
+# Bar-placeable General-tab abilities. Wowhead has no Era list for this tab.
+GENERAL_SPELLS = [
+    {
+        "id": 6603,
+        "name": "Attack",
+        "icon": "ability_meleedamage",
+        "description": "Attack the current target with a melee weapon.",
+    },
+    {"id": 75, "name": "Auto Shot", "icon": "ability_whirlwind"},
+    {"id": 8690, "name": "Hearthstone", "icon": "inv_misc_rune_01"},
+    {"id": 5019, "name": "Shoot", "icon": "ability_shootwand"},
+    {
+        "id": 2480,
+        "name": "Shoot Bow",
+        "icon": "ability_marksmanship",
+        "description": "Shoot the target with an equipped bow.",
+    },
+    {
+        "id": 7919,
+        "name": "Shoot Crossbow",
+        "icon": "ability_marksmanship",
+        "description": "Shoot the target with an equipped crossbow.",
+    },
+    {
+        "id": 7918,
+        "name": "Shoot Gun",
+        "icon": "ability_marksmanship",
+        "description": "Shoot the target with an equipped gun.",
+    },
+    {"id": 2764, "name": "Throw", "icon": "ability_throw"},
+]
 PROFESSION_URLS = [
     "https://www.wowhead.com/classic/spells/professions/alchemy",
     "https://www.wowhead.com/classic/spells/professions/blacksmithing",
@@ -101,6 +142,39 @@ PROFESSION_ORDER = [171, 164, 333, 202, 182, 165, 186, 393, 197, 185, 129, 356]
 
 UA = {"User-Agent": "ShadowUI-MacroCursor/1.0 (Classic Era spellbook)"}
 
+
+def apply_game_version(version: str) -> None:
+    global OUT, SOURCE, UA, WOWHEAD, TOOLTIP_HOST, RACIAL_URL, PROFESSION_URLS, PROFESSION_ORDER
+    if version == "TBC":
+        OUT = ROOT / "spells-tbc.json"
+        SOURCE = "wowhead tbc abilities, general, racial traits, professions"
+        UA = {"User-Agent": "ShadowUI-MacroCursor/1.0 (TBC spellbook)"}
+        WOWHEAD = "https://www.wowhead.com/tbc"
+        TOOLTIP_HOST = "https://nether.wowhead.com/tbc"
+    else:
+        OUT = ROOT / "spells.json"
+        SOURCE = "wowhead classic abilities, general, racial traits, professions"
+        UA = {"User-Agent": "ShadowUI-MacroCursor/1.0 (Classic Era spellbook)"}
+        WOWHEAD = "https://www.wowhead.com/classic"
+        TOOLTIP_HOST = "https://nether.wowhead.com/classic"
+    RACIAL_URL = f"{WOWHEAD}/spells/racial-traits"
+    PROFESSION_URLS = [
+        f"{WOWHEAD}/spells/professions/alchemy",
+        f"{WOWHEAD}/spells/professions/blacksmithing",
+        f"{WOWHEAD}/spells/professions/enchanting",
+        f"{WOWHEAD}/spells/professions/engineering",
+        f"{WOWHEAD}/spells/professions/herbalism",
+        f"{WOWHEAD}/spells/professions/leatherworking",
+        f"{WOWHEAD}/spells/professions/mining",
+        f"{WOWHEAD}/spells/professions/skinning",
+        f"{WOWHEAD}/spells/professions/tailoring",
+        f"{WOWHEAD}/spells/secondary-skills/cooking",
+        f"{WOWHEAD}/spells/secondary-skills/first-aid",
+        f"{WOWHEAD}/spells/secondary-skills/fishing",
+    ]
+    if version == "TBC":
+        PROFESSION_URLS.insert(-3, f"{WOWHEAD}/spells/professions/jewelcrafting")
+        PROFESSION_ORDER = [171, 164, 333, 202, 755, 182, 165, 186, 393, 197, 185, 129, 356]
 
 def js_array_to_json(src: str) -> str:
     return re.sub(r"([{\[,]\s*)([A-Za-z_][\w]*)\s*:", r'\1"\2":', src)
@@ -137,7 +211,7 @@ def fetch_list(url: str) -> list[dict]:
 
 
 def fetch_class(slug: str) -> list[dict]:
-    return fetch_list(f"https://www.wowhead.com/classic/spells/abilities/{slug}")
+    return fetch_list(f"{WOWHEAD}/spells/abilities/{slug}")
 
 
 def is_profession_ability(row: dict) -> bool:
@@ -161,9 +235,11 @@ def strip_tooltip_html(raw: str) -> str:
 
 def fetch_tip(spell_id: int) -> tuple[str, str]:
     try:
-        body = fetch(f"https://nether.wowhead.com/classic/tooltip/spell/{spell_id}")
+        body = fetch(f"{TOOLTIP_HOST}/tooltip/spell/{spell_id}")
         data = json.loads(body)
         icon = str(data.get("icon") or "").strip().lower()
+        if icon in {"", "classic_temp", "inv_misc_questionmark"}:
+            icon = ""
         desc = strip_tooltip_html(str(data.get("tooltip") or ""))
         return icon, desc
     except Exception:
@@ -274,6 +350,43 @@ def max_ids(rows: list[dict], line_of: Callable[[dict], int]) -> set[int]:
     return needed
 
 
+def general_rows() -> list[dict]:
+    return [
+        {
+            "id": spec["id"],
+            "name": spec["name"],
+            "rank": "",
+            "level": 1,
+            "skill": [GENERAL_SKILL_ID],
+        }
+        for spec in GENERAL_SPELLS
+    ]
+
+
+def general_needed() -> set[int]:
+    return {int(spec["id"]) for spec in GENERAL_SPELLS}
+
+
+def apply_general_overrides(icons: dict[int, str], descriptions: dict[int, str]) -> None:
+    for spec in GENERAL_SPELLS:
+        sid = int(spec["id"])
+        if spec.get("icon"):
+            icons[sid] = str(spec["icon"])
+        if spec.get("description"):
+            descriptions[sid] = str(spec["description"])
+
+
+def general_line(icons: dict[int, str], descriptions: dict[int, str] | None = None) -> list[dict]:
+    return nest_lines(
+        general_rows(),
+        icons,
+        [GENERAL_SKILL_ID],
+        lambda _r: GENERAL_SKILL_ID,
+        {GENERAL_SKILL_ID: "General"},
+        descriptions,
+    )
+
+
 def fetch_shared() -> tuple[list[dict], list[dict], set[int]]:
     racial_rows = fetch_list(RACIAL_URL)
     racial_era = [r for r in racial_rows if is_era(r)]
@@ -294,6 +407,7 @@ def fetch_shared() -> tuple[list[dict], list[dict], set[int]]:
 
     needed = max_ids(racial_era, lambda _r: RACIAL_SKILL_ID)
     needed |= max_ids(profession_rows, skill_id)
+    needed |= general_needed()
     return racial_era, profession_rows, needed
 
 
@@ -355,7 +469,7 @@ def shared_lines(
     professions = nest_lines(
         profession_rows, icons, PROFESSION_ORDER, skill_id, SKILL_TITLES, descriptions
     )
-    return racial + professions
+    return general_line(icons, descriptions) + racial + professions
 
 
 def backfill_descriptions() -> None:
@@ -373,9 +487,35 @@ def backfill_descriptions() -> None:
     print(f"wrote descriptions {OUT}")
 
 
+def write_general_tab() -> None:
+    payload = json.loads(OUT.read_text())
+    icons, descriptions = fetch_tips(general_needed())
+    apply_general_overrides(icons, descriptions)
+    shared = [line for line in payload.get("shared") or [] if line.get("skillId") != GENERAL_SKILL_ID]
+    payload["source"] = SOURCE
+    payload["shared"] = general_line(icons, descriptions) + shared
+    OUT.write_text(json.dumps(payload, indent=2) + "\n")
+    print(f"wrote general tab {OUT}")
+
+
 def main() -> None:
+    version = "ERA"
+    args = sys.argv[1:]
+    if "--version" in args:
+        idx = args.index("--version")
+        if idx + 1 >= len(args):
+            raise SystemExit("build_spells.py --version ERA|TBC")
+        version = args[idx + 1].upper()
+        if version not in {"ERA", "TBC"}:
+            raise SystemExit("build_spells.py --version ERA|TBC")
+    apply_game_version(version)
+
     if "--descriptions" in sys.argv:
         backfill_descriptions()
+        return
+
+    if "--general-only" in sys.argv and OUT.exists():
+        write_general_tab()
         return
 
     racial_era, profession_rows, shared_needed = fetch_shared()
@@ -383,8 +523,9 @@ def main() -> None:
 
     if shared_only and OUT.exists():
         icons, descriptions = fetch_tips(shared_needed)
+        apply_general_overrides(icons, descriptions)
         payload = json.loads(OUT.read_text())
-        payload["source"] = "wowhead classic abilities, racial traits, professions"
+        payload["source"] = SOURCE
         payload["shared"] = shared_lines(racial_era, profession_rows, icons, descriptions)
         OUT.write_text(json.dumps(payload, indent=2) + "\n")
         print(f"wrote shared tabs {OUT}")
@@ -400,12 +541,13 @@ def main() -> None:
         print(f"{class_id}: {len(era)} era / {len(rows)}")
 
     icons, descriptions = fetch_tips(needed)
+    apply_general_overrides(icons, descriptions)
     classes = {
         cid: nest_class(cid, class_rows[cid], icons, descriptions) for cid, _ in CLASS_PAGES
     }
     payload = {
         "version": 1,
-        "source": "wowhead classic abilities, racial traits, professions",
+        "source": SOURCE,
         "classes": classes,
         "shared": shared_lines(racial_era, profession_rows, icons, descriptions),
     }

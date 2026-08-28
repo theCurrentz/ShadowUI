@@ -67,7 +67,7 @@ explicit equipment slots and role-neutral classification. Dedicated
 Demoralizing Shout and Shield Wall stay because they are distinct controls,
 not tab-only duplicates. [Repository:
 `docs/macros/build_catalog.py`; `docs/macros/catalog.json`;
-`macro-cursor/test/sync.test.ts`.]
+`../MacroCursor/test/sync.test.ts`.]
 
 For Fury/Protection, load `warrior-core` and `warrior-fury`, then copy Last
 Stand separately when the actual build has it. Do not load Concussion Blow or
@@ -233,11 +233,10 @@ records. [Repository: `docs/macros/inventory.md:1-9`,
 `docs/macros/build_catalog.py:135-332`.]
 
 The Warrior Action Deck uses body markers, not names alone. It owns action
-slots `1-12` and `73-111`, creates missing General-tab macros, and changes
-slots only out of combat. [Repository:
-`defaults/classes/WARRIOR.lua:49-52,77-219`;
-`core/deck.lua:61-115,131-162`;
-`docs/architecture.md:360`.]
+slots `1-12` and `73-111` plus each selected loadout slot. Out of combat, apply
+replaces both macro tabs with only its unique General-tab macros before it
+places the Action Slots. [Repository: `defaults/classes/WARRIOR.lua`;
+`core/deck.lua`; `docs/architecture.md`.]
 
 The Action Deck already gives the Fury Variant Bloodthirst and Death Wish.
 The Protection Variant gives Last Stand, Shield Slam, and Concussion Blow.

@@ -63,7 +63,7 @@ These sit on the General tab and follow every character.
 | `Decursive` | addon stub (`Println`) | **drop** from the plan — addon owns it |
 | `pi` | whisper Stinkytoez for PI + Fireball | **drop** from the shared plan — character social |
 | `sum` | Ritual of Summoning announce | **keep** on Warlock, not Mage |
-| `pa` / `pf` | pet attack / follow | **keep** on Hunter/Warlock |
+| `pa` / `pf` | pet attack / follow | **keep** as shared General-tab macros (`shared-pa` / `shared-pf`) |
 | `a` | Taunt | **keep** Warrior |
 | `br` | Berserker Rage | **keep** Warrior |
 | `bs` | Battle Shout | **keep** Warrior |

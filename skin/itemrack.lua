@@ -32,6 +32,30 @@ local function inset(region)
   region:SetPoint("BOTTOMRIGHT", -INSET, INSET)
 end
 
+local function skinCooldown(button)
+  local cooldown = button.cooldown
+  if not cooldown or button.shadowUICooldownSkinned then
+    return
+  end
+  button.shadowUICooldownSkinned = true
+  inset(cooldown)
+  if cooldown.SetDrawSwipe then
+    cooldown:SetDrawSwipe(true)
+  end
+  if cooldown.SetSwipeColor then
+    cooldown:SetSwipeColor(0, 0, 0, 0.8)
+  end
+  if cooldown.SetDrawEdge then
+    cooldown:SetDrawEdge(true)
+  end
+  if cooldown.SetDrawBling then
+    cooldown:SetDrawBling(true)
+  end
+  if button.GetFrameLevel and cooldown.SetFrameLevel then
+    cooldown:SetFrameLevel(button:GetFrameLevel() + 1)
+  end
+end
+
 local function itemIcon(button, name)
   return button.icon or button.Icon or (name and _G[name .. "Icon"])
 end
@@ -54,8 +78,19 @@ function Addon:SkinItemRackButton(button)
   end
   self:ApplyOuterChrome(button)
   strip(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()))
+  strip(button.Border)
+  strip(button.SlotBackground)
+  strip(button.Flash)
+  strip(button.FloatingBG)
+  strip(button.IconBorder)
   local icon = itemIcon(button, name)
   if icon then
+    if button.IconMask then
+      if icon.RemoveMaskTexture then
+        icon:RemoveMaskTexture(button.IconMask)
+      end
+      button.IconMask:Hide()
+    end
     inset(icon)
     if icon.SetTexCoord then
       icon:SetTexCoord(CROP, 1 - CROP, CROP, 1 - CROP)
@@ -64,6 +99,7 @@ function Addon:SkinItemRackButton(button)
       icon:SetDrawLayer("ARTWORK", 0)
     end
   end
+  skinCooldown(button)
 end
 
 local function watchLateButtons()
@@ -77,6 +113,11 @@ local function watchLateButtons()
     end
     if rack.InitButtons then
       hooksecurefunc(rack, "InitButtons", function()
+        Addon:SkinItemRack()
+      end)
+    end
+    if rack.UpdateButtons then
+      hooksecurefunc(rack, "UpdateButtons", function()
         Addon:SkinItemRack()
       end)
     end

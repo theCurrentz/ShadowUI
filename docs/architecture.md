@@ -1,28 +1,30 @@
 # ShadowUI Architecture
 
-Classic Era addon. Replaces Blizzard action bars with custom LibActionButton bars, applies selective chrome skinning, and provides a fixed cast/GCD bar. Layout and keybinds inherit through **Base → Class → Variant**. Domain terms live in [CONTEXT.md](../CONTEXT.md). The account-owned stack is [ADR 0001](adr/0001-account-class-inheritance.md).
+Classic Era and TBC addon. Replaces Blizzard action bars with custom LibActionButton bars, applies selective chrome skinning, and provides a fixed cast/GCD bar. **Version** selects Era or TBC. Layout and keybinds inherit through **Base → Class → Variant → Character**. Domain terms live in [CONTEXT.md](../CONTEXT.md). The account-owned stack is [ADR 0001](adr/0001-account-class-inheritance.md). Version sits outside that stack ([ADR 0002](adr/0002-version-outside-layers.md)). Macro Cursor is a local sidecar that writes the Macro Library ([ADR 0003](adr/0003-local-macro-library.md)). Live Layout, Keybind, and Action Deck overlays live in WTF SavedVariables ([ADR 0004](adr/0004-wtf-live-overlays.md)).
 
 ## Module layout
 
 ```text
 ShadowUI/
-  ShadowUI.toc
+  ShadowUI.toc                Era (interface 11509)
+  ShadowUI_TBC.toc            TBC Anniversary (interface 20506)
   libs/                         Ace3, LibStub, CallbackHandler, LibActionButton, LibRangeCheck
   core/
     init.lua                    AceAddon bootstrap, lifecycle, slash commands
     db.lua                      AceDB account + character schema
     resolve.lua                 sparse merge and effective config resolution
     keybinds.lua                combat-safe keybind apply
-    deck.lua                    Warrior Action Deck macro lookup and slot placement
+    deck.lua                    Action Deck placement; macros and spells; tombstoned slots stay empty on apply
   defaults/
-    base.lua                    shared centered bar layout
+    base.lua                    shared centered bar layout; Addon.Defaults.act for Action Deck entries
     catalog.lua                 generated Warrior deck macro bodies
     classes/*.lua               sparse class deltas (mage firstSlot, Warrior stance layout, keys, and deck)
   bars/
-    button.lua                  LAB buttons, Action Slot Lock, 2px Lorti-dark icon chrome; empty Action Slots stay hidden
+    button.lua                  LAB buttons, Action Slot Lock, 2px Lorti-dark icon chrome; empty Action Slots stay hidden except during Keybind Edit Mode or an Action Slot pickup (Keybind labels show too)
     cooldown.lua                remaining cooldown seconds on ShadowUI action buttons
     grid.lua                    snap a Bar size to columns and rows that fill the slot count
     bar.lua                     standard bar frames, button grid, and Warrior stance state driver
+    slotshift.lua               Shift and Prune packs Keybinds left; Shift+Alt insert shifts a row right
     overlay.lua                 HUD overlay drag and column/row resize for Bars
     pet.lua                     pet action binding and token texture resolve
     special.lua                 pet and possess bars
@@ -43,7 +45,7 @@ ShadowUI/
     statustext.lua              hide leftover ShadowUI Target Frame Status Text
     threat.lua                  Target Frame Threat Bar bubble tab; Aggro Glow on targeting-frame silhouette
     portrait.lua                Target Frame and Focus Frame circular portrait class-colour ring
-    statusbars.lua              Meter Fill on unit-frame health/power, Name Background, and nameplates
+    statusbars.lua              Meter Fill on unit-frame health/power, Name Background (player class colour), and nameplates
     windows.lua                 bags, character, vendor, XP art
     auras.lua                   buff and debuff icon chrome and Outer Edge (BuffButton and BuffFrame.auraFrames)
     auratime.lua                Target Frame and Focus Frame Aura Duration swipe and seconds
@@ -54,36 +56,37 @@ ShadowUI/
     time.lua                    restyle TimeManagerClockButton under the map; hover Time Info; Blizzard Stopwatch
     details.lua                 parked Details! damage and threat charts
     itemrack.lua                ItemRack worn-item and menu button icon chrome and Outer Edge
-    rainbow.lua                 Rainbow Organizer category order, layout, and glow
-    bagnon.lua                  Bagnon inventory and bank Darken, Outer Edge, and Rainbow Organizer hooks
+    rainbow.lua                 Rainbow Organizer (parked; TOC does not load)
+    bags.lua                    combined inventory and bank (parked; TOC does not load)
     stance.lua                  Blizzard Stance Bar button icon chrome and Outer Edge
   edit/
     mode.lua                    layout edit toggle, snap grid, magenta centre guides, persist drags
     frames.lua                  HUD drag hosts for Player Frame, Target Frame, Cast Bar, Range Display, and Stance Bar
     keybinds.lua                hover-and-press Keybind Edit Mode
-    layer.lua                   HUD layer picker: Base | Class | Variant save target
+    layer.lua                   HUD layer picker: Base | Class | Variant | Character save target
   profile/
     variants.lua                named variants, talent bind, manual override
   options/
     config.lua                  AceConfig panel; Bar on/off toggles read and write Layout `enabled` on the selected Layer
-  docs/macros/                  Classic Era macro catalog (notes only; the addon does not load it)
-  macro-cursor/                 WoW Macro Cursor sidecar (pnpm, Vite). Reads docs/macros/catalog.json, live WTF caches, and shipped Layout / Keybinds / Action Deck. Loadout drops bake managed macros into the Class Lua Action Deck
+  docs/macros/                  Macro Library (catalog.json is source; the addon does not load the sidecar). Version TBC spellbook is spells-tbc.json
 ```
+
+WoW Macro Cursor lives in a sibling repo (`../MacroCursor`). It is local-only (pnpm, Vite). Version Era | TBC. It reads and writes `docs/macros/catalog.json`, live WTF caches, AceDB SavedVariables, and shipped Layout / Keybinds / Action Deck. Close the client before SavedVariables writes.
 
 ## Layout Edit Mode
 
-Layout Edit Mode snaps Bars, the Player Frame, the Target Frame, the Cast Bar, the Range Display, and the Stance Bar to 32.4px from screen bottom-left. Hold Shift while dragging to skip snap. Bars resize by columns and rows; scale does not change. The Cast Bar also resizes. A DIALOG-strata HUD overlay sits on each host so drag is not eaten by action buttons. Magenta guides mark screen centre. Layout Edit Mode does not move other Chrome, the GCD Sweep or Swing Timer on their own, Chat, Details Windows, or the Shield Row. If Blizzard Edit Mode moves the Player Frame, the Target Frame, or the Stance Bar, ParkFrame snaps them back to Layout.
+Layout Edit Mode snaps Bars, the Player Frame, the Target Frame, the Cast Bar, the Range Display, and the Stance Bar to 32.4px from screen bottom-left. Hold Shift while dragging to skip snap. Bars resize by columns and rows; scale does not change. The Cast Bar also resizes. A DIALOG-strata HUD overlay sits on each host so drag is not eaten by action buttons. Magenta guides mark screen centre. Layout Edit Mode does not move other Chrome, the GCD Sweep or Swing Timer on their own, Chat, Details Windows, or the Shield Row. Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place. If Blizzard Edit Mode moves the Player Frame, the Target Frame, or the Stance Bar, ParkFrame snaps them back to Layout.
 
 ## Load order
 
-Defined in `ShadowUI.toc`:
+Defined in `ShadowUI.toc` (Era) and `ShadowUI_TBC.toc` (TBC). File order is the same:
 
 1. `libs/embeds.xml` — vendored libraries
 2. `core/` — init, db, resolve, keybinds, deck
 3. `defaults/` — base, catalog (Action Deck bodies), then class files (WARRIOR … DRUID)
-4. `bars/` — button, cooldown, grid, bar, overlay, pet, special, manager
+4. `bars/` — button, cooldown, grid, bar, slotshift, overlay, pet, special, manager
 5. `cast/` — castbar, gcd, manaticker, swing, range, shields, shieldrow
-6. `skin/` — chrome, darken, frames, statustext, threat, windows, auras, auratime, chat, micro, tracking, minimap, time, details, itemrack, rainbow, bagnon, stance
+6. `skin/` — chrome, darken, frames, statustext, threat, windows, auras, auratime, chat, micro, tracking, minimap, time, details, itemrack, stance (`rainbow` and `bags` stay in the tree, TOC does not load them)
 7. `edit/` — mode, frames, keybinds, layer
 8. `profile/` — variants
 9. `options/` — config
@@ -101,16 +104,19 @@ Shared across characters on the account.
   base = {
     layout = { [barId] = { point, relativeTo, relativePoint, x, y, columns, buttons, scale, enabled, buttonSize, ... } },
     keybinds = { [bindingName] = key },
+    actions = { [slot] = { id, name, kind? } or false },
   },
   classes = {
     WARRIOR = {
       layout = {},
       keybinds = {},
+      actions = {},
       variants = {
         Arms = {
           talentTree = 1,   -- optional; nil = manual-only
           layout = {},
           keybinds = {},
+          actions = {},
         },
       },
     },
@@ -120,15 +126,18 @@ Shared across characters on the account.
 
 ### Character (`ShadowUICharDB`)
 
-Per-character state only.
+Per-character state plus a sparse last overlay.
 
 ```lua
 {
   activeVariant = "Arms",   -- nil until set or talent auto-bind
-  editLayer = "variant",    -- "base" | "class" | "variant"
+  editLayer = "variant",    -- "base" | "class" | "variant" | "character"
   variantManual = false,    -- true after manual /shadowui variant; cleared by variant clear
   hardLockActionSlots = false, -- true blocks Shift-drag between Action Slots
   useShadowUIMenu = true,      -- false restores the default Blizzard micro menu and bags
+  layout = {},
+  keybinds = {},
+  actions = {},
 }
 ```
 
@@ -136,7 +145,7 @@ Shipped defaults live in `ShadowUI.Defaults` (populated by `defaults/*.lua`), no
 
 ## Resolve rules
 
-`ResolveEffective(classFile?, variantName?, through?)` returns `{ layout, keybinds }`. `through` is `base`, `class`, or `variant` (default). It stops the merge after that Layer. Apply uses the full merge. Options Bar toggles read through the selected edit Layer.
+`ResolveEffective(classFile?, variantName?, through?)` returns `{ layout, keybinds }`. `through` is `base`, `class`, `variant`, or `character` (default). It stops the merge after that Layer. Apply uses the full merge. Options Bar toggles read through the selected edit Layer.
 
 Merge order (each step sparse-merges into the result; later wins per field):
 
@@ -146,6 +155,9 @@ Merge order (each step sparse-merges into the result; later wins per field):
 4. Account `db.base`
 5. Account `db.classes[classFile].layout` and `.keybinds`
 6. Account `db.classes[classFile].variants[variantName]`
+7. Character `chardb.layout` and `.keybinds`
+
+`ResolveDeck(classFile?, variantName?, through?)` uses the same order for `actions`. Variant or Character `false` tombstones a slot. `through` is the same stop as `ResolveEffective`.
 
 **Active variant selection** (`GetActiveVariantName`):
 
@@ -159,9 +171,10 @@ Warrior is the first Class that ships Variants (`Arms`, `Fury`, `Protection`). B
 
 - `layer` defaults to `editLayer` on the character DB
 - `base` → `db.base[section][key]`
-- `class` → `db.classes[class].layout|keybinds[key]`
+- `class` → `db.classes[class].layout|keybinds|actions[key]`
 - `variant` → active variant (or `"Default"`) under `db.classes[class].variants`
-- Layout patches are tables (sparse-merged). Keybind patches are strings, or `false` to unbind a name on that Layer.
+- `character` → `chardb[section][key]`
+- Layout patches are tables (sparse-merged). Keybind patches are strings, or `false` to unbind a name on that Layer. Action Deck patches are slot tables, or `false` to tombstone.
 
 `/shadowui edit` toggles Layout Edit Mode (grid + HUD overlay drag on Bars, the Player Frame, the Target Frame, the Cast Bar, and the Range Display). Hold Shift while dragging to skip snap. A Bar resize grip writes `columns` and does not write `scale`. `/shadowui binds` toggles Keybind Edit Mode (hover a button, press a key). The two sessions cannot run together. Keybind Edit Mode does not call `SaveBindings`. Combat closes either edit session.
 
@@ -283,8 +296,10 @@ shield fills the lower half of the icon and reads `50%`.
   It does not call `SaveBindings`. Mage defaults ship Currentz's
   Bartender hotkeys. Warrior ships one Class physical grid for every Variant:
   `Q` starts the fixed utility row at slot 1, `1` starts the paged main Bar at
-  button 73, and mouse stances use fixed slots 109–111. Arms, Fury, and
-  Protection change Action Deck entries, not physical keys. Merge prefers the
+  button 73, and mouse keys stay on slots 109–111. Arms, Fury, and
+  Protection tombstone those stance macros (`false`) and use the Blizzard Stance Bar.
+  Apply clears tombstoned Action Slots so a reload cannot put Battle, Defensive, or
+  Berserker Stance back on `bar8`. Variants change Action Deck entries, not physical keys. Merge prefers the
   profile bind when two names share a key, so a
   leftover client `Q` on slot 61 does not win. Other classes import live
   client BT4/Blizzard binds.
@@ -339,8 +354,10 @@ shield fills the lower half of the icon and reads `50%`.
   `UpdateSystems` errors.   `WatchBlizzardUnitEdit` wraps `FocusFrame.SetSmallSize`
   (the XML mixin copy) so the Focus Frame cannot stay snapped to its ToT.
   Target of Target stays on the Blizzard default `BOTTOMRIGHT` (−35, −10) on the
-  Target Frame. The Target Frame spell bar sits flush under the mana bar at mana
-  width and shows remaining / duration. Layout Edit Mode drags Bars, the Player
+  Target Frame. The Target Frame spell bar sits 2px above Name Background at mana
+  width. Spell name sits on the left. Remaining / duration sits on the right. Target auras sit 2px to the right of the
+  Target Frame in horizontal rows at 32px so Aura Duration numbers fit. Target of Target auras sit 2px to the right of
+  Target of Target in a horizontal row. Layout Edit Mode drags Bars, the Player
   Frame, and the Target Frame. If Details! is not loaded, `SkinDetails` does
   nothing.
 - **Blizzard chrome uses Lorti vertex colors.** `SkinDarken` sets 0.05 on unit-frame
@@ -352,31 +369,31 @@ shield fills the lower half of the icon and reads `50%`.
   Action buttons that have a spell or item, plus buffs and debuffs, use
   a 0.05 fill with a 2px icon inset and a 4px black outer edge (`media/outer_shadow.tga`).
   An Action Slot with no spell, macro, or item stays hidden, including its Keybind label.
+  A Shift-drag pickup shows every standard Bar (including a Bar that is off) and paints
+  empty Action Slots as drop targets, including each Keybind label. Special Bars that are off stay hidden.
   ItemRack worn-item buttons (`ItemRackButton0`–`20`) and menu buttons (`ItemRackMenuN`)
   get the same icon chrome when ItemRack is loaded. The ItemRack minimap icon stays a
   Minimap Icon on the square path and does not get a second Outer Edge. If ItemRack is
   not loaded, `SkinItemRack` does nothing.
-  Bagnon inventory and bank get Darken fill `{0.05, 0.05, 0.05, 0.92}`, Outer Edge, and
-  the ShadowUI skin template. Search and sort stay on. `bagBreak` stays 0. The Rainbow
-  Organizer sorts items by category, starts each category on a new row with extra padding,
-  and paints a coloured ADD glow plus Outer Edge tint around the slot. Bagnon quality
-  `IconGlow` / `IconBorder` stay. If Bagnon is not loaded, `SkinBagnon` does nothing.
+  Bags (`skin/bags.lua`, `skin/rainbow.lua`) stay in the tree and are not loaded.
+  `ApplySkins` does not call `SkinBags`. Blizzard bag and bank windows stay. Darken
+  still tints those Blizzard windows. Extra bag-slot icons on the Micro Cluster stay hidden.
   ShadowUI action buttons show Cooldown Count for cooldowns of 2s or more. The GCD swipe
-  has no number. Unused buff and debuff slots stay empty. Player buffs sit 4px below the top of the screen and 4px left of the square minimap.
-  Target Frame and Focus Frame auras show Aura Duration from UnitAura. Player BuffFrame keeps Blizzard duration text.
+  has no number.   Unused buff and debuff slots stay empty. Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place. ShadowUI skins their icons and does not park or snap them.
+  Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit. Target of Target auras sit 2px to the right of Target of Target in a horizontal row. Target Frame and Focus Frame auras show Aura Duration from UnitAura. Native Duration text stays hidden. Player BuffFrame keeps Blizzard duration text.
   The Target Frame keeps native Blizzard Status Text on health and mana. ShadowUI does not paint a caption.
-  Health, mana, rage, energy, and other power bars use Meter Fill: a horizontal lighting overlay of the live Blizzard colour. Name Background on the Target Frame and Focus Frame uses the same lighting. Nameplates keep Blizzard layout; Meter Fill paints their health and power bars.
-  The Threat Bar is a round bubble tab on the 45-degree edge of the portrait. It sits over the portrait rim. It stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host. Fill is one circle with a vertical lighting gradient. Colour follows UnitDetailedThreatSituation: dark glass below 70%, yellow-to-orange at 70–88%, orange-to-deep-orange at 88–99%, red-to-deep-red at 100% and above. Percent can exceed 100. A thick circular Darken stroke matches Target Frame chrome. Nested discs, offset drops, and Outer Edge stay hidden. Threat Number is one outlined line at size 9. It is not a StatusBar.
+  Health, mana, rage, energy, and other power bars use Meter Fill: a horizontal lighting overlay of the live Blizzard colour. Name Background on the Target Frame and Focus Frame uses the same lighting. A player unit uses class colour. A non-player unit keeps reaction colour. Nameplates keep Blizzard layout; Meter Fill paints their health and power bars.
+  The Threat Bar is a round bubble tab on the 45-degree edge of the portrait. It sits over the portrait rim. It stays hidden at 0%. Solo still shows the percent. Native NumericalThreat is not the host. Fill is one circle with a vertical lighting gradient. The fill host sits at 50% opacity so Classic SetGradient cannot drop the glass. The Darken stroke stays opaque. Colour follows UnitDetailedThreatSituation: dark glass below 70%, yellow-to-orange at 70–88%, orange-to-deep-orange at 88–99%, red-to-deep-red at 100% and above. Percent can exceed 100. A thick circular Darken stroke matches Target Frame chrome. Nested discs, offset drops, and Outer Edge stay hidden. Threat Number is one outlined line at size 9. It is not a StatusBar.
   The minimap parks flush at `TOPRIGHT` (0, 0). It uses SexyMap's square mask (`WHITE8X8`) and square icon path, inside a 16px 0.05 Darken buffer at 0.6 alpha. Zone Text sits 4px below the top of the screen and 3px above the map. Time is Blizzard `TimeManagerClockButton`, restyled under the map: the clock border stays hidden, the chip sizes to the ticker, hover keeps Time Info, and a click opens the Blizzard Stopwatch. `GameTimeFrame` stays hidden. The mouse wheel zooms. After 5 seconds the map zooms out. Nova World Buffs `MinimapLayerFrame` (World Layer) sits on the bottom of the holder so the map mask does not clip it. An Outer Edge wraps the holder. The circular `MinimapCluster` does not stay behind it. Cluster icons, including late `LFGMinimapFrame`, ItemRack, and LibDBIcon buttons, sit on the square path 10px outside the map. The player can drag those icons. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park on the square map.
 - **Classic LAB create is patched in-tree.** Vendored LibActionButton-1.0 `CreateButton` pcalls `RegisterForClicks("AnyDown", "AnyUp")` (fallback `AnyUp`), sets `MasqueSkinned` from config **before** `UpdateConfig` (which runs `UpdateAction`), and nil-guards retail-only regions. Unknown events are `pcall`ed. Bar frames use `SecureHandlerStateTemplate` only; black chrome is a color texture. `ApplyBars` hides Blizzard bars only after ShadowUI bars exist. `ApplyAll` pcalls each step and prints the label if one fails, so skins can still run.
-- **Hotkeys are painted from binds, not GetBindingKey.** Override clicks do not show in LAB's hotkey lookup. `FlushPendingKeybinds` merges the live client ACTIONBUTTON / MULTIACTIONBAR / BT4 names with the profile (profile wins by name, by key, and by Action Slot), then writes `shadowUIHotkey` onto each LAB button. A paged Warrior button uses the stable Action Slot in its frame name, not LAB's active stance slot, so its label does not move with the stance. An empty Action Slot hides that Keybind label. Priest/class files with empty `keybinds` still pick up Bartender keys from the client. Warrior shipped Keybinds win when they share a key or an Action Slot with a leftover client name.
-- **Options are variant/layer, Bar on/off, and edit-session entry.** `/shadowui` does not contain bar-layout sliders. It has an on/off toggle for every Bar, including pet and possess when the current class Layout does not list them. Each toggle reads `enabled` through the selected Layer and writes to that Layer. **Edit layout**, **Edit keybinds**, and **Place Action Deck** stay in the same panel.
+- **Hotkeys are painted from binds, not GetBindingKey.** Override clicks do not show in LAB's hotkey lookup. `FlushPendingKeybinds` merges the live client ACTIONBUTTON / MULTIACTIONBAR / BT4 names with the profile (profile wins by name, by key, and by Action Slot), then writes `shadowUIHotkey` onto each LAB button. A paged Warrior button uses the stable Action Slot in its frame name, not LAB's active stance slot, so its label does not move with the stance. An empty Action Slot hides that Keybind label except during Keybind Edit Mode or a pickup. Priest/class files with empty `keybinds` still pick up Bartender keys from the client. Warrior shipped Keybinds win when they share a key or an Action Slot with a leftover client name.
+- **Options are variant/layer, Bar on/off, and edit-session entry.** `/shadowui` does not contain bar-layout sliders. It has an on/off toggle for every Bar, including pet and possess when the current class Layout does not list them. Each toggle reads `enabled` through the selected Layer and writes to that Layer. **Action Deck** has a Loadout chooser (Class, Variant, or Character) and **Place Action Deck**. **Shift and Prune** packs Keybinds left. **Edit layout** and **Edit keybinds** stay in the same panel. A Shift+Alt drag on a standard Bar inserts the action and Keybind and shifts that row right.
 - **Talent tab shape is inferred.** `TalentPointsFromTabInfo` takes the larger numeric
   value of the third and fifth returns of `GetTalentTabInfo` to read both the Classic
   Era and modernized signatures without branching on client build.
 
 ## Out of scope
 
-Nameplate replacement, objective tracker, bag-slot icons on the Micro Cluster, and unit-frame replacement are not in scope. Combined bags come from Bagnon when that addon is loaded. ShadowUI parks and darkens Blizzard Player and Target frames and paints Meter Fill on their health, power, and Name Background. It does not replace those frames. Nameplates stay Blizzard frames; Meter Fill paints their health and power bars. Target of Target stays on the Blizzard default `BOTTOMRIGHT` (−35, −10) on the Target Frame. The player Cast Bar stays the ShadowUI combat meter. Target and focus cast bars stay the Blizzard spell bars (Classic Era 1.15 Show Enemy Cast Bar). The Target Frame spell bar sits flush under the mana bar at mana width and shows remaining / duration. Party and nameplate cast bars are not shipped. The Target Frame does not add a full-frame threat flash; the Threat Bar is a bubble tab on the circular portrait. Details! still parks the threat chart.
+Nameplate replacement, objective tracker, bag-slot icons on the Micro Cluster, combined inventory and bank (Bags files stay parked), and unit-frame replacement are not in scope. ShadowUI parks and darkens Blizzard Player and Target frames and paints Meter Fill on their health, power, and Name Background. It does not replace those frames. Nameplates stay Blizzard frames; Meter Fill paints their health and power bars. Target of Target stays on the Blizzard default `BOTTOMRIGHT` (−35, −10) on the Target Frame. The player Cast Bar stays the ShadowUI combat meter. Target and focus cast bars stay the Blizzard spell bars (Classic Era 1.15 Show Enemy Cast Bar). The Target Frame spell bar sits 2px above Name Background at mana width. Spell name sits on the left. Remaining / duration sits on the right. Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit. Target of Target auras sit 2px to the right of Target of Target in a horizontal row. Party and nameplate cast bars are not shipped. The Target Frame does not add a full-frame threat flash; the Threat Bar is a bubble tab on the circular portrait. Details! still parks the threat chart.
 
-The Warrior Action Deck places catalog macros onto Action Slots (`/shadowui deck`, out of combat). It checks each required Warrior body marker before it changes a slot, so an account-wide short name cannot select another class's macro. It creates each missing match on the General tab. It then clears only its fixed utility row, three stance pages, and fixed stance buttons (slots 1–12 and 73–111) before placement, so stale actions cannot survive in an empty deck position. Other classes stay catalog-only. [docs/macros/](macros/) is the catalog. **WoW Macro Cursor** (`macro-cursor/`) is a Vite sidecar that loads that catalog by class group. The Characters view lists every Classic Era WTF toon folder with class and level. A loadout drop, Copy bars, or Copy to other pages on a managed Action Deck slot writes the Class Lua Action Deck for that Variant. Spells and unmanaged slots stay in `docs/macros/actions.json`. Live WTF sync is off (`LIVE_SYNC` in `macro-cursor/src/main.ts`). The sync code stays: it can read live `macros-cache.txt`, keep in-game extras, and heal empty caches from `.old` or the class core group when enabled. It writes heals only when the client is closed. Copy a body into `/macro`, or export `macros-cache.txt` while the game is closed. Default path: `/Applications/World of Warcraft/_classic_era_`. Override with `WOW_CLASSIC_ERA`.
+The Action Deck places catalog macros and spells onto Action Slots (`/shadowui deck`, out of combat). It validates every required body marker before it changes live data. It then deletes both macro tabs, recreates only the unique resolved loadout macros on the General tab, and leaves the character tab empty. Rebuilding before index lookup prevents a deleted stale macro from shifting an unrelated macro, such as Power Infusion, onto a Warrior slot. It clears every slot the merged deck owns before placement, so stale actions cannot survive in an empty deck position. Warrior Variants tombstone the mouse stance slots (109–111). Apply, later `PLAYER_ENTERING_WORLD`, and `SPELLS_CHANGED` clear those tombstones so Battle, Defensive, and Berserker Stance cannot return on `bar8` after a reload. PlaceDeck applies that merged deck so in-game slots match the Macro Cursor HUD. Loadout Class still includes the active Variant; a missing Variant uses the first shipped Variant so apply cannot write the class skeleton. `/shadowui` Loadout chooses Class, Variant, or Character (`placeDeckFrom`). Classic Era picks up abilities by name; `C_Spell.PickupSpell` uses the spell id when present. Live Keybind and Action Deck overlays live in AceDB SavedVariables. Macro Cursor writes those files only when the client is closed. First GET migrates leftover `docs/macros/keybinds.json` and `actions.json` into Account SavedVariables, then stops serving them as live stores. Save as default and managed deck bake still write shipped `defaults/*.lua` for git. [docs/macros/](macros/) is the catalog. **WoW Macro Cursor** (`macro-cursor/`) is a Vite sidecar that loads that catalog by class group. The Characters view lists every Classic Era WTF toon folder with class and level. A loadout drop, Copy bars, or Copy to other pages on a managed Action Deck slot writes the selected Layer in SavedVariables. Managed Action Deck macros also bake into the Class Lua Action Deck for that Variant. On startup the sidecar diffs live `macros-cache.txt` into the library. It writes cache heals and SavedVariables only when the client is closed. Copy a body into `/macro`, or export `macros-cache.txt` while the game is closed. Default path: `/Applications/World of Warcraft/_classic_era_`. Override with `WOW_CLASSIC_ERA`.

@@ -1,8 +1,8 @@
 # Classic Era keybind maps
 
-Parked notes for class maps. Spell names are Classic Era. Base Keybinds live in `defaults/base.lua`. Warrior Variant Action Deck entries in `defaults/classes/WARRIOR.lua` follow the Warrior section. Other classes stay docs only; ShadowUI does not load those maps.
+Parked notes for class maps. Spell names on the Era maps are Classic Era. TBC catalog groups live in the class files under `docs/macros/` and show in Macro Cursor when Version is TBC. Base Keybinds live in `defaults/base.lua`. Warrior Variant Action Deck entries in `defaults/classes/WARRIOR.lua` follow the Warrior section. Other classes stay notes plus Macro Cursor loadouts; `/shadowui deck` does not place them.
 
-Layer the same way as Layout: **Base** (physical keys + interface) → **Class** (shared jobs + class core) → **Variant** (talent-tree swaps). Macro ids match [docs/macros/](macros/README.md). A name with no id has no catalog body yet.
+Layer the same way as Layout: **Base** (physical keys + interface) → **Class** (shared jobs + class core) → **Variant** (talent-tree swaps) → **Character** (sparse toon overlay). Macro ids match [docs/macros/](macros/README.md). A name with no id has no catalog body yet. Live loadouts sit in AceDB SavedVariables. `/shadowui deck` places the merged Action Deck.
 
 ## Scope
 
@@ -88,7 +88,7 @@ Place these before spec fillers.
 - **Trinket / burst** → `T` (`shared-t13` or a class burst macro). `SHIFT-T` may be a second bind.
 - **Mount** → `F1`. Paladin: `p-mount`.
 - **Auto Run** → `F2`
-- **Pet attack** → backtick (`h-pa` / `l-pa`). Follow is `SHIFT-`` ` `` (`h-pf` / `l-pf`).
+- **Pet attack** → backtick (`shared-pa`). Follow is `SHIFT-`` ` `` (`shared-pf`).
 - **Warrior stances** → `BUTTON3` Battle (`w-b`), `BUTTON4` Defensive (`w-d-def`), `BUTTON5` Berserker (`w-bs`).
 
 If a class has no kick, `F` holds the highest-priority **instant** that must fire while moving.
@@ -121,7 +121,7 @@ Live WARKEYS habits. Not combat.
 ## Map rule
 
 1. Bind reserved keys and shared jobs.
-2. Put spec identity (every GCD) on leftover S: `1` then `2` then `E` then `R` then `Q`.
+2. Put spec identity on bar1 from the left. Position 1 (`Q`) is the best Action Slot. Then `E` then `R`. Number-row `1` `2` `3` are high-use partners. Warrior keeps its shipped Action Deck.
 3. Put rotation partners on adjacent keys.
 4. Put movement instants on `Q` or `BUTTON4`.
 5. `4` is only high-frequency or fail-cheap. Not Cold Snap, Combustion, Arcane Power, Lay on Hands, Tranquility, Evocation, Elemental Mastery, Adrenaline Rush, Rapid Fire, Moonkin, Divine Favor.
@@ -216,11 +216,12 @@ Each row lists Battle / Defensive / Berserker Action Slots.
 | 82 / 94 / 106 | `Z` | Retaliation / Shield Wall / Recklessness | same | same |
 | 83 / 95 / 107 | `X` | Mocking Blow / Taunt / Challenging Shout | same | same |
 
-The Action Deck owns slots 1–12 and 73–111. `/shadowui deck` clears and replaces
-only those slots. Slots 13–72 and 112–120 stay unchanged. Missing macros are
-created on the General tab before any slot changes. Every entry must match its
-Warrior body marker. For example, account macros named `c` for Cannibalize or Cone of
-Cold cannot fill the Cleave entry.
+The Action Deck owns slots 1–12 and 73–111 plus each slot in the selected
+loadout. `/shadowui deck` validates every entry, replaces both macro tabs with
+only the unique resolved deck macros on the General tab, and then clears and
+replaces those slots. Other Action Slots stay unchanged. Every entry must match
+its Warrior body marker. A stale Priest Power Infusion macro cannot shift onto
+a Warrior slot.
 
 No talent points means Class jobs only. In that state, deck placement leaves
 slots 8, 73, 85, and 97 clear because there is no Variant ability for `T` or
@@ -246,61 +247,57 @@ All: filler bolt, Fire Blast, Counterspell, Frost Nova, Blink, Polymorph, Ice Bl
 - `F` Counterspell (`m-cs`)
 - `X` Polymorph (`m-sheep`)
 - `Z` Ice Block (`m-ib`)
-- `V` Blink (`m-blink`) — Mage dispel is rare; Blink takes `V`
+- `V` Blink — Mage dispel is rare; Blink takes `V`
 - `G` healing potion (item)
 - `SHIFT-G` mana potion (item)
 - `H` Remove Lesser Curse (`m-decurse`)
 
 ### Frost
 
-- `1` Frostbolt (`m-fb`)
-- `2` Ice Barrier (`m-barrier`)
-- `3` Arcane Explosion (`m-ae`)
-- `4` Wards (`m-ward`) — refresh, low miss cost
+- `Q` Frostbolt (`m-fb`) — bar1 position 1
 - `E` Fire Blast (`m-blast`)
-- `Q` Cone of Cold (`m-cone`)
 - `R` Frost Nova (`m-nova`)
 - `F` Counterspell (`m-cs`)
+- `T` `shared-t13`
 - `C` Blizzard (`m-blizz`)
 - `X` Polymorph (`m-sheep`)
 - `Z` Ice Block (`m-ib`)
 - `SHIFT-Z` Cold Snap (`m-csnap`) — pairs with Ice Block; not on `4`
-- `V` Blink (`m-blink`)
+- `V` Blink
+- `B` Evocation — long channel; not on `4` or next to mash keys
+- `H` Remove Lesser Curse (`m-decurse`)
+- `1` Ice Barrier (`m-barrier`)
+- `2` Arcane Explosion (`m-ae`)
+- `3` Cone of Cold (`m-cone`)
+- `4` Wards (`m-ward`) — refresh, low miss cost
 - `5` Mana Shield (`m-ms`)
-- `6` Mana gem (`m-gem`)
+- `6` Conjure Mana Ruby
 - `7` Dampen / Amplify (`m-dampen`)
-- `T` PoM + Frostbolt (`m-pomfb`)
-- `B` Evocation (`m-evo`) — long channel; not on `4` or `6` next to mash keys
-- `Y` Shoot (`m-shoot`)
-- `N` Slow Fall (`m-slowfall`)
+- `N` Shoot (`m-shoot`)
+- `SHIFT-T` Pyroblast (`m-pyro`)
+- `8` Slow Fall (`m-slowfall`)
 - `BUTTON4` Fire Blast (`m-blast`) — weave while WASD chord
 - `BUTTON5` Frost Nova (`m-nova`)
 - `G` healing potion (item)
-- `H` `m-decurse`
 
 ### Fire
 
 Same as Frost except:
 
-- `1` Fireball (`m-fireball`)
-- `2` Scorch (`m-scorch`)
-- `4` Wards (`m-ward`)
-- `6` Combustion (`m-comb`) — not on `4`
-- `Q` Flamestrike (`m-fs`)
+- `Q` Fireball (`m-fireball`)
+- `1` Scorch (`m-scorch`)
+- `2` Flamestrike (`m-fs`)
 - `C` Arcane Explosion (`m-ae`)
 - `T` PoM Pyroblast (`m-pyro`)
 - `7` Blast Wave + holy water (`m-nef`)
-- Ice Barrier / Cold Snap / Blizzard / Cone off the bar unless you keep Frost talent leftovers on `Y` / `N`
+- Ice Barrier / Cold Snap / Blizzard / Cone off the bar unless you keep Frost talent leftovers on `N`
 
 ### Arcane
 
 Same as Frost except:
 
-- `1` Frostbolt (`m-fb`) — Era raid filler
-- `2` Arcane Missiles (`m-am`)
-- `4` Wards (`m-ward`)
-- `6` Arcane Power (`m-ap`) — not on `4`
-- `T` AP + PoM (`m-appom`)
+- `Q` Frostbolt (`m-fb`) — Era raid filler
+- `1` Arcane Missiles (`m-am`)
 - `C` Arcane Explosion (`m-ae`)
 - Keep Ice Barrier / Nova / Cone / Ice Block / Blink / CS / sheep on the Frost job keys if talented
 - `SHIFT-Z` still Cold Snap if you have it
@@ -329,53 +326,49 @@ Holy / Disc: Flash Heal, Greater Heal, Renew, PW:Shield, Prayer of Healing, Disp
 
 ### Holy
 
-- `1` Flash Heal (`pr-fh`)
-- `2` Renew (`pr-renew`)
-- `3` Greater Heal (`pr-gh`)
-- `E` Abolish Disease (`pr-abolish`)
-- `Q` Inner Fire (`pr-if`)
-- `R` Prayer of Healing (`pr-poh`)
+- `Q` Flash Heal (`pr-fh`) — bar1 position 1
+- `E` Renew (`pr-renew`)
+- `R` Greater Heal (`pr-gh`)
 - `F` PW:Shield (`pr-pws`) — no kick; shield is the moving instant
+- `T` `shared-t13`
 - `C` `pr-scream`
+- `V` `pr-dispel`
+- `B` Fort (`pr-fort`)
 - `X` `pr-shackle`
 - `Z` `pr-fade`
-- `V` `pr-dispel`
+- `H` Abolish Disease (`pr-abolish`)
+- `1` Mind Flay (`pr-mf`)
+- `2` Shadow Word: Pain (`pr-swp`)
+- `3` Mind Blast (`pr-mb`)
 - `4` Shoot (`pr-wand`) — fail-cheap
-- `5` Fear Ward (`pr-fw`)
+- `5` Inner Fire (`pr-if`)
 - `6` Holy Nova (`pr-nova`) — not on `E`
 - `7` Resurrection (`pr-rez`)
-- `T` `shared-t13`
-- `B` Fort (`pr-fort`)
-- `Y` Prayer of Fortitude (`pr-pof`)
-- `N` Prayer of Spirit (`pr-spirit`)
+- `N` Prayer of Fortitude (`pr-pof`)
+- `SHIFT-T` Power Infusion (`pr-pi`)
+- `SHIFT-Z` Shadowform (`pr-sf`)
+- `8` Fear Ward (`pr-fw`)
+- `9` Prayer of Spirit (`pr-spirit`)
+- `BUTTON4` SW:P (`pr-swp`) — apply while moving
 - `G` healing potion (item)
 
 ### Discipline
 
 Same as Holy except:
 
-- `2` PW:Shield (`pr-pws`)
+- `E` PW:Shield (`pr-pws`)
 - `F` Power Infusion (`pr-pi`)
-- `E` Renew (`pr-renew`)
 
 ### Shadow
 
-- `1` Mind Flay (`pr-mf`)
-- `2` Shadow Word: Pain (`pr-swp`)
-- `3` Mind Blast (`pr-mb`)
-- `E` Vampiric Embrace (`pr-ve`)
-- `Q` Shadowform (`pr-sf`)
-- `R` Drop form + Flash Heal (`pr-healform`)
+Same as Holy except:
+
+- `Q` Mind Flay (`pr-mf`)
+- `E` Shadow Word: Pain (`pr-swp`)
+- `R` Mind Blast (`pr-mb`)
 - `F` Silence (`pr-silence`)
-- `C` `pr-scream`
-- `X` `pr-shackle`
-- `Z` `pr-fade`
-- `V` `pr-dispel`
-- `4` Shoot (`pr-wand`)
+- `1` Flash Heal (`pr-fh`)
 - `5` PW:Shield (`pr-pws`)
-- `T` `shared-t13`
-- `G` healing potion (item)
-- `BUTTON4` SW:P (`pr-swp`) — apply while moving
 
 ---
 
@@ -400,45 +393,42 @@ All: Kick, Gouge, Kidney Shot, Stealth, Sprint, Evasion, Vanish, Blind, Sap.
 
 ### Combat
 
-- `1` Sinister Strike (`r-ss`)
-- `2` Slice and Dice (`r-snd`)
-- `3` Eviscerate (`r-evis`)
-- `4` Rupture (`r-rup`) — rotation, not a long CD
-- `E` Stealth (`r-stealth`) — fails cheap in combat
-- `Q` Sap / Pick Pocket (`r-sap`)
-- `R` Cheap Shot (`r-cheap`) — opener; also on `BUTTON4`
+- `Q` Sinister Strike (`r-ss`) — bar1 position 1
+- `E` Slice and Dice (`r-snd`)
+- `R` Eviscerate (`r-evis`)
 - `F` Kick (`r-kick`)
+- `T` Blade Flurry + trinket (`r-bf`)
 - `C` Kidney Shot (`r-ks`)
+- `V` Blind (`r-blind`)
+- `B` Vanish (`r-vanish`)
 - `X` Gouge (`r-gouge`)
 - `Z` Evasion (`r-eva`)
-- `V` Blind (`r-blind`)
+- `H` Sprint (`r-sprint`)
+- `1` Rupture (`r-rup`) — rotation, not a long CD
+- `2` Stealth (`r-stealth`) — fails cheap in combat
+- `3` Cold Blood + Eviscerate (`r-cb`)
 - `5` Ambush (`r-ambush`)
 - `6` Adrenaline Rush (`r-ar`) — not on `E`
-- `7` Sprint (`r-sprint`)
-- `T` Blade Flurry + trinket (`r-bf`)
-- `B` Vanish (`r-vanish`)
-- `BUTTON4` Cheap Shot (`r-cheap`)
-- `BUTTON5` Vanish (`r-vanish`)
+- `7` Sap / Pick Pocket (`r-sap`)
 - `G` healing potion (item)
+
+Stealth page (bar1, slots 73–84): `Q` Cheap Shot (`r-cheap`), `E` Ambush (`r-ambush`), `H` Sap (`r-sap`). Shared jobs stay on `F` `C` `X` `Z` `V`.
 
 ### Assassination
 
 Same as Combat except:
 
-- `1` Sinister Strike (`r-ss`) — Backstab if daggers (no catalog id); then SS on `4`
-- `2` Rupture (`r-rup`)
-- `3` Cold Blood + Eviscerate (`r-cb`)
-- `E` Ambush (`r-ambush`) — fails cheap in combat
-- `T` `shared-t13`
-- `6` Slice and Dice (`r-snd`)
-- `7` Adrenaline Rush (`r-ar`) if you take it; else Sprint (`r-sprint`)
+- `Q` Sinister Strike (`r-ss`) — Backstab if daggers (no catalog id); then SS on `1`
+- `E` Rupture (`r-rup`)
+- `R` Cold Blood + Eviscerate (`r-cb`)
+- `2` Ambush (`r-ambush`) — fails cheap in combat
 
 ### Subtlety
 
 Same as Combat except:
 
-- `1` Sinister Strike (`r-ss`) — Hemorrhage if talented (no catalog id)
-- `E` Ambush (`r-ambush`) — fails cheap in combat
+- `Q` Sinister Strike (`r-ss`) — Hemorrhage if talented (no catalog id)
+- `2` Ambush (`r-ambush`) — fails cheap in combat
 - Premeditation / Ghostly Strike (no catalog id) on `6` / `7`, not on `4`
 
 ---
@@ -457,35 +447,35 @@ All: Hunter's Mark, Aimed Shot, Multi-Shot, Arcane Shot, Serpent Sting, Concussi
 ### Class jobs
 
 - `F` Tranquilizing Shot (`h-tranq`)
-- `C` Intimidation (no catalog id); else Concussive (`h-conc`)
+- `C` Concussive (`h-conc`)
 - `X` Freezing Trap (`h-trap`)
 - `Z` Feign Death (`h-fd`)
 - `V` Aspect (`h-aspect`) — Shift = Monkey
-- `` ` `` pet attack (`h-pa`); `SHIFT-`` ` `` follow (`h-pf`)
+- `` ` `` pet attack (`shared-pa`); `SHIFT-`` ` `` follow (`shared-pf`)
 - `G` healing potion (item)
 - `SHIFT-G` mana potion (item)
 
 ### Marksmanship
 
-- `1` Aimed Shot (`h-aimed`)
-- `2` Multi-Shot (`h-multi`)
-- `3` Arcane Shot (`h-arcane`)
-- `4` Serpent Sting (`h-sting`) — high frequency
-- `E` Concussive Shot (`h-conc`)
-- `Q` Wing Clip (`h-clip`)
-- `R` Hunter's Mark (`h-mark`)
+- `Q` Aimed Shot (`h-aimed`) — bar1 position 1
+- `E` Arcane Shot (`h-arcane`)
+- `R` Multi-Shot (`h-multi`)
 - `F` `h-tranq`
-- `C` Intimidation (no catalog id)
+- `T` Rapid Fire (`h-rapid`) — includes `/use 13`; not on `4` or `5`
+- `C` Concussive (`h-conc`)
 - `X` `h-trap`
 - `Z` `h-fd`
 - `V` `h-aspect`
-- `5` Mend Pet (`h-mend`)
-- `6` Call Pet (`h-call`)
-- `7` Cheetah (`h-cheetah`)
-- `T` Rapid Fire (`h-rapid`) — includes `/use 13`; not on `4` or `5`
 - `B` `shared-t14`
-- `Y` unused / second aspect
-- `` ` `` `h-pa`
+- `H` Mend Pet (`h-mend`)
+- `1` Hunter's Mark (`h-mark`)
+- `2` Serpent Sting (`h-sting`)
+- `3` Wing Clip (`h-clip`)
+- `4` Auto Shot — fail-cheap
+- `5` Cheetah (`h-cheetah`)
+- `6` Call Pet (`h-call`)
+- `7` Bestial Wrath (`h-bw`)
+- `` ` `` `shared-pa`
 - `BUTTON4` Wing Clip (`h-clip`)
 - `BUTTON5` Feign Death (`h-fd`)
 - `G` healing potion (item)
@@ -494,17 +484,15 @@ All: Hunter's Mark, Aimed Shot, Multi-Shot, Arcane Shot, Serpent Sting, Concussi
 
 Same as MM except:
 
-- `1` Arcane Shot (`h-arcane`) if you skip Aimed
-- `6` Bestial Wrath (`h-bw`) — not on `5`
+- `Q` Arcane Shot (`h-arcane`) if you skip Aimed
+- `7` Bestial Wrath (`h-bw`)
 - `T` Rapid Fire (`h-rapid`)
-- `C` Intimidation (no catalog id)
 
 ### Survival
 
 Same as MM except:
 
-- `1` Arcane Shot (`h-arcane`)
-- `2` Multi-Shot (`h-multi`)
+- `Q` Arcane Shot (`h-arcane`)
 - `E` Freezing Trap (`h-trap`) — traps more central; then `X` Frost Trap / Immolation Trap (no catalog id)
 - `4` Counterattack (no catalog id)
 - `B` Deterrence (no catalog id)
@@ -539,23 +527,24 @@ Cancel bubble (`p-cancel-ds`) → `SHIFT-Z`.
 
 ### Retribution
 
-- `1` Seal (`p-seal`)
-- `2` Judgement (`p-judge`)
-- `3` Consecration (`p-cons`)
-- `4` Hammer of Wrath (`p-how`)
-- `E` Exorcism (`p-exo`) — fails cheap on living targets
-- `Q` Flash of Light (`p-fol`)
-- `R` Blessing (`p-might`)
+- `Q` Judgement (`p-judge`) — bar1 position 1
+- `E` Seal (`p-seal`)
+- `R` Consecration (`p-cons`)
 - `F` `p-bop`
+- `T` `shared-t13`
 - `C` `p-hoj`
+- `V` `p-cleanse`
+- `B` Righteous Fury (`p-rf`)
 - `X` `p-rep`
 - `Z` `p-bubble`
-- `V` `p-cleanse`
-- `5` Aura (`p-aura`)
+- `H` Flash of Light (`p-fol`)
+- `1` Hammer of Wrath (`p-how`)
+- `2` Exorcism (`p-exo`) — fails cheap on living targets
+- `3` Blessing (`p-might`)
+- `4` Aura (`p-aura`)
+- `5` Holy Light (`p-hl`)
 - `6` Lay on Hands (`p-loh`) — not on `4`
 - `7` Divine Intervention (`p-di`)
-- `T` `shared-t13`
-- `B` Righteous Fury off (`p-rf` only if you tank)
 - `SHIFT-Z` `p-cancel-ds`
 - `BUTTON4` Judgement (`p-judge`)
 - `G` healing potion (item)
@@ -563,45 +552,23 @@ Cancel bubble (`p-cancel-ds`) → `SHIFT-Z`.
 
 ### Holy
 
-- `1` Flash of Light (`p-fol`)
-- `2` Holy Light (`p-hl`)
-- `3` Holy Shock (`p-shock`)
-- `E` Seal Light / Wisdom (`p-seal-h`) — refresh, low miss cost
-- `Q` Blessing (`p-might`)
-- `R` Aura (`p-aura`)
-- `F` `p-bop`
-- `C` `p-hoj`
-- `Z` `p-bubble`
-- `V` `p-cleanse`
-- `4` Judgement (`p-judge`) — high frequency
+Same as Retribution except:
+
+- `Q` Flash of Light (`p-fol`)
+- `E` Holy Light (`p-hl`)
+- `R` Holy Shock (`p-shock`)
+- `1` Judgement (`p-judge`) — high frequency
+- `2` Seal Light / Wisdom (`p-seal-h`)
 - `5` Consecration (`p-cons`)
 - `6` Divine Favor + FoL (`p-df`) — not on `E`
 - `7` Lay on Hands (`p-loh`) — not on `4`
-- `T` `shared-t13`
-- `SHIFT-Z` `p-cancel-ds`
-- `G` healing potion (item)
-- `F1` `p-mount`
 
 ### Protection
 
-- `1` Consecration (`p-cons`)
-- `2` Judgement (`p-judge`)
-- `3` Seal (`p-seal`)
-- `4` Hammer of Wrath (`p-how`) — fail-cheap if the target is above 20%
-- `E` Blessing (`p-might`)
-- `Q` Flash of Light (`p-fol`)
-- `R` Aura (`p-aura`)
-- `F` `p-bop`
-- `C` `p-hoj`
-- `Z` `p-bubble`
-- `V` `p-cleanse`
-- `5` unused / second blessing
-- `6` Lay on Hands (`p-loh`)
+Same as Retribution except:
+
+- `Q` Consecration (`p-cons`)
 - `7` Righteous Fury (`p-rf`) — not on `E`
-- `T` `shared-t13`
-- `SHIFT-Z` `p-cancel-ds`
-- `G` healing potion (item)
-- `F1` `p-mount`
 
 `p-hs` (Holy Shield) stays unused in Era.
 
@@ -631,59 +598,51 @@ All: Earth Shock, Lightning Shield, Ghost Wolf, Grounding / Windfury Totem, Trem
 
 ### Enhancement
 
-- `1` Stormstrike (`s-ss`)
-- `2` Flame / Frost Shock (`s-shock`)
-- `3` Lightning Bolt (`s-lb`)
-- `4` Lightning Shield (`s-ls`) — high frequency
-- `E` Lesser Healing Wave (`s-lhw`)
-- `Q` Strength of Earth (`s-str`)
-- `R` Mana Spring (`s-mana`)
+- `Q` Stormstrike (`s-ss`) — bar1 position 1
+- `E` Flame / Frost Shock (`s-shock`)
+- `R` Lightning Bolt (`s-lb`)
 - `F` Earth Shock (`s-es`)
+- `T` `shared-t13`
 - `C` Grounding / Windfury Totem (`s-ground`)
+- `V` `s-purge`
+- `B` Mana Tide (`s-tide`) if you have the talent
 - `X` Cure Poison (`s-cure`)
 - `Z` `s-ns`
-- `V` `s-purge`
+- `H` Lesser Healing Wave (`s-lhw`)
+- `1` Lightning Shield (`s-ls`) — high frequency
+- `2` Chain Lightning (`s-cl`)
+- `3` Chain Heal
+- `4` Strength of Earth (`s-str`)
 - `5` Tremor (`s-tremor`)
 - `6` Healing Wave (`s-hw`)
 - `7` Windfury Weapon (`s-wf`) — imbue; not on `E`
-- `T` `shared-t13`
-- `B` Mana Tide (`s-tide`) if you have the talent
-- `Y` Ghost Wolf (`s-wolf`) — not next to mash keys
-- `BUTTON4` Stormstrike (`s-ss`)
+- `N` Ghost Wolf (`s-wolf`) — not next to mash keys
+- `SHIFT-R` Mana Spring (`s-mana`)
 - `G` healing potion (item)
 
 ### Elemental
 
 Same as Enhancement except:
 
-- `1` Lightning Bolt (`s-lb`)
-- `2` Chain Lightning (`s-cl`)
-- `3` Flame / Frost Shock (`s-shock`)
-- `4` Lightning Shield (`s-ls`) — not Elemental Mastery
-- `E` Lesser Healing Wave (`s-lhw`)
-- `R` Mana Spring (`s-mana`)
+- `Q` Lightning Bolt (`s-lb`)
+- `E` Chain Lightning (`s-cl`)
+- `R` Flame / Frost Shock (`s-shock`)
+- `1` Lightning Shield (`s-ls`) — not Elemental Mastery
 - `6` Elemental Mastery (no catalog id)
-- `T` `shared-t13`
 
 ### Restoration
 
-- `1` Lesser Healing Wave (`s-lhw`)
-- `2` Healing Wave (`s-hw`)
-- `3` Chain Heal (no catalog id)
-- `E` Cure Poison (`s-cure`)
-- `Q` Lightning Shield (`s-ls`)
-- `R` Mana Spring (`s-mana`)
-- `F` Earth Shock (`s-es`)
+Same as Enhancement except:
+
+- `Q` Lesser Healing Wave (`s-lhw`)
+- `E` Healing Wave (`s-hw`)
+- `R` Chain Heal
+- `H` Cure Poison (`s-cure`)
+- `1` Lightning Shield (`s-ls`)
 - `C` Tremor (`s-tremor`)
 - `X` Ghost Wolf (`s-wolf`)
-- `Z` `s-ns`
-- `V` `s-purge`
-- `4` Strength of Earth (`s-str`) — totem drop, low miss cost
-- `5` Grounding (`s-ground`)
 - `6` Mana Tide (`s-tide`) — not on `R`
 - `7` Flame / Frost Shock (`s-shock`)
-- `T` `shared-t13`
-- `G` healing potion (item)
 
 ---
 
@@ -693,7 +652,7 @@ Same as Enhancement except:
 
 All: Shadow Bolt, Life Tap, Spell Lock, Fear, Banish, Death Coil, Healthstone, pet, Demon Armor, wand.
 
-- Affliction: Corruption, Curse of Agony / Elements, Drain Soul / Drain Life (Drain Life: no catalog id).
+- Affliction: Corruption, Curse of Agony / Elements, Drain Soul / Drain Life.
 - Destruction: Immolate, Shadowburn, Conflagrate (no catalog id), Searing Pain (no catalog id).
 - Demonology: Sacrifice, Felhunter / Succubus, Soulstone, Ritual of Summoning.
 
@@ -702,34 +661,35 @@ All: Shadow Bolt, Life Tap, Spell Lock, Fear, Banish, Death Coil, Healthstone, p
 - `F` Spell Lock (`l-lock`)
 - `C` Fear (`l-fear`)
 - `X` Banish (`l-banish`)
-- `Z` Death Coil (`l-coil`) — Demo panic is Sacrifice instead
+- `Z` Death Coil (`l-coil`) — Demo panic is Sacrifice (`SHIFT-Z`, `l-sac`)
 - `V` Drain Soul (`l-drain`) — no magic dispel
-- `` ` `` pet attack (`l-pa`); `SHIFT-`` ` `` follow (`l-pf`)
+- `` ` `` pet attack (`shared-pa`); `SHIFT-`` ` `` follow (`shared-pf`)
 - `G` healing potion (item)
 - `SHIFT-G` mana potion (item)
 
 ### Affliction
 
-- `1` Shadow Bolt (`l-sb`)
-- `2` Corruption (`l-corr`)
-- `3` Curse of Agony / Elements (`l-coa`)
-- `4` Life Tap (`l-tap`) — high frequency
-- `E` Immolate (`l-imm`)
-- `Q` Drain Life (no catalog id)
-- `R` Demon Armor (`l-armor`)
+- `Q` Shadow Bolt (`l-sb`) — bar1 position 1
+- `E` Corruption (`l-corr`)
+- `R` Curse of Agony / Elements (`l-coa`)
 - `F` Spell Lock (`l-lock`)
+- `T` `shared-t13`
 - `C` Fear (`l-fear`)
+- `V` Drain Soul (`l-drain`)
+- `B` Howl of Terror
 - `X` Banish (`l-banish`)
 - `Z` Death Coil (`l-coil`)
-- `V` Drain Soul (`l-drain`)
-- `5` Shoot (`l-wand`)
-- `6` Healthstone (item)
-- `7` Soulstone (`l-ss`)
-- `T` `shared-t13`
-- `B` Howl of Terror (no catalog id)
-- `Y` Ritual of Summoning (`l-sum`)
-- `N` Pet swap (`l-fel`)
-- `` ` `` pet attack
+- `H` Demon Armor (`l-armor`)
+- `1` Life Tap (`l-tap`) — high frequency
+- `2` Immolate (`l-imm`)
+- `3` Shadowburn (`l-shadowburn`)
+- `4` Shoot (`l-wand`)
+- `5` Drain Life
+- `6` Soulstone (`l-ss`)
+- `7` Pet swap (`l-fel`)
+- `` ` `` `shared-pa`
+- `N` Ritual of Summoning (`l-sum`)
+- `SHIFT-Z` Sacrifice (`l-sac`)
 - `BUTTON4` Life Tap (`l-tap`)
 - `G` healing potion (item)
 
@@ -737,13 +697,9 @@ All: Shadow Bolt, Life Tap, Spell Lock, Fear, Banish, Death Coil, Healthstone, p
 
 Same as Affliction except:
 
-- `1` Shadow Bolt (`l-sb`)
-- `2` Immolate (`l-imm`)
-- `3` Shadowburn (`l-shadowburn`)
-- `4` Life Tap (`l-tap`) — keep the frequent tap on `4`
-- `E` Conflagrate (no catalog id)
-- `Q` Searing Pain (no catalog id)
-- `5` Corruption (`l-corr`)
+- `E` Immolate (`l-imm`)
+- `R` Shadowburn (`l-shadowburn`)
+- `2` Corruption (`l-corr`)
 
 ### Demonology
 
@@ -751,9 +707,6 @@ Same as Affliction except:
 
 - `Z` Sacrifice (`l-sac`)
 - `B` Death Coil (`l-coil`)
-- `7` Pet swap (`l-fel`)
-- `Y` `l-sum`
-- `N` Soulstone (`l-ss`)
 
 ---
 
@@ -771,100 +724,78 @@ Feral Cat and Feral Bear are two Variants. Form bars stay separate. Typical Era 
 ### Class jobs
 
 - `F` Cat = Faerie Fire (`d-ff`); Bear = Bash (`d-bash`); caster = Faerie Fire (`d-ff`)
-- `C` unused in caster (no scream). Bear Growl is not CC — Growl on `5`
-- `X` Entangling Roots (`d-roots`) / Hibernate (no catalog id)
-- `Z` Cat / Balance = Barkskin (no catalog id); Bear = Frenzied Regen (`d-fr`); Resto = NS+HT (`d-ns`)
-- `V` caster / resto: Abolish Poison / Remove Curse (no catalog id). Cat / Bear: form swap
+- `C` caster Hibernate; Cat Pounce; Bear Challenging Roar
+- `X` Entangling Roots (`d-roots`) / Hibernate
+- `Z` Cat / Balance = Barkskin; Bear = Frenzied Regen (`d-fr`); Resto = NS+HT (`d-ns`)
+- `V` caster / resto: Abolish Poison. Cat / Bear: form swap (`d-cat`)
 - `G` healing potion (item)
 - `SHIFT-G` mana potion (item)
 - `T` Innervate (`d-inn`)
 
-### Cat
+bar1 pages Caster (slots 1–12), Cat (73–84), Prowl (85–96), and Bear (97–108). Number-row keys stay shared.
 
-- `1` Shred (`d-shred`)
-- `2` Rake (`d-rake`)
-- `3` Rip (`d-rip`)
-- `4` Ferocious Bite (`d-fb`) — rotation dump, like Execute
-- `E` Tiger's Fury (no catalog id)
-- `Q` Dash (`d-dash`)
-- `R` Prowl (`d-prowl`) — not on `E`
+### Caster / Balance
+
+- `Q` Wrath (`d-wrath`) — bar1 position 1
+- `E` Starfire (`d-star`)
+- `R` Moonfire (`d-mf`)
 - `F` Faerie Fire (`d-ff`)
-- `C` Pounce (no catalog id)
-- `X` `d-roots` (cancelform)
-- `Z` Barkskin (no catalog id)
-- `V` Cat Form / Travel (`d-cat`)
-- `5` Dire Bear (`d-bear`)
-- `6` Rebirth (`d-reb`)
-- `7` Healing Touch (`d-ht`)
 - `T` Innervate (`d-inn`)
+- `C` Hibernate
+- `V` Abolish Poison
 - `B` MotW (`d-motw`)
-- `BUTTON4` Dash (`d-dash`)
+- `X` Roots (`d-roots`)
+- `Z` Barkskin
+- `H` Rejuvenation (`d-rejuv`)
+- `1` Healing Touch (`d-ht`)
+- `2` Swiftmend (`d-swift`)
+- `3` Rebirth (`d-reb`)
+- `4` Moonkin (`d-moonkin`) — not on `Q`
+- `5` Dire Bear (`d-bear`)
+- `6` Cat Form (`d-cat`)
+- `7` NS + Healing Touch (`d-ns`)
+- `8` Remove Curse
+- `9` Tranquility — long channel; not on `4`
 - `G` healing potion (item)
 
-Claw (no catalog id) replaces Shred if you have no positional opener.
+### Cat
+
+- `Q` Shred (`d-shred`) — bar1 position 1
+- `E` Rake (`d-rake`)
+- `R` Rip (`d-rip`)
+- `F` Faerie Fire (`d-ff`)
+- `T` Innervate (`d-inn`)
+- `C` Pounce
+- `V` Cat Form / Travel (`d-cat`)
+- `B` MotW (`d-motw`)
+- `X` Dash (`d-dash`)
+- `Z` Barkskin
+- `H` Ferocious Bite (`d-fb`) — rotation dump, like Execute
+
+Prowl page: `Q` Pounce, `C` Prowl (`d-prowl`). Claw replaces Shred if you have no positional opener.
 
 ### Bear
 
-- `1` Maul (`d-maul`)
-- `2` Swipe (no catalog id)
-- `3` Demo Roar (no catalog id)
-- `4` Enrage (no catalog id)
-- `E` Feral Charge (`d-charge`)
-- `Q` Dash does not work in bear — Faerie Fire (`d-ff`) if `F` is Bash
-- `R` Dire Bear (`d-bear`)
+- `Q` Maul (`d-maul`) — bar1 position 1
+- `E` Swipe
+- `R` Demo Roar
 - `F` Bash (`d-bash`)
-- `C` Challenging Roar (no catalog id)
-- `X` Hibernate (no catalog id)
-- `Z` Frenzied Regeneration (`d-fr`)
+- `T` Feral Charge (`d-charge`)
+- `C` Challenging Roar
 - `V` Cat Form (`d-cat`)
-- `5` Growl (`d-growl`)
-- `6` Rebirth (`d-reb`)
-- `7` Healing Touch (`d-ht`)
-- `T` Innervate (`d-inn`)
-- `BUTTON4` Growl (`d-growl`)
-- `G` healing potion (item)
-
-### Balance
-
-- `1` Wrath (`d-wrath`)
-- `2` Starfire (`d-star`)
-- `3` Moonfire (`d-mf`)
-- `4` Healing Touch (`d-ht`) — fail-cheap vs dropping form
-- `E` Rejuvenation (`d-rejuv`)
-- `Q` Faerie Fire (`d-ff`) if you want `F` free — else keep `F` = `d-ff`
-- `R` MotW (`d-motw`)
-- `F` Faerie Fire (`d-ff`)
-- `C` Hibernate (no catalog id)
-- `X` Roots (`d-roots`)
-- `Z` Barkskin (no catalog id)
-- `V` Abolish Poison / Remove Curse (no catalog id)
-- `5` Swiftmend (`d-swift`)
-- `6` Moonkin (`d-moonkin`) — not on `4`
-- `7` Hurricane (no catalog id) — not on `E`
-- `T` Innervate (`d-inn`)
-- `B` Rebirth (`d-reb`)
-- `G` healing potion (item)
+- `B` Enrage
+- `X` Hibernate
+- `Z` Frenzied Regeneration (`d-fr`)
+- `H` Growl (`d-growl`)
 
 ### Restoration
 
-- `1` Rejuvenation (`d-rejuv`)
-- `2` Healing Touch (`d-ht`)
-- `3` Regrowth (no catalog id)
-- `E` Swiftmend (`d-swift`)
-- `Q` Moonfire (`d-mf`) — filler while moving
-- `R` unused / extra heal
-- `F` Faerie Fire (`d-ff`)
-- `C` Hibernate (no catalog id)
-- `X` Roots (`d-roots`)
+Same as Caster except:
+
+- `Q` Rejuvenation (`d-rejuv`)
+- `E` Healing Touch (`d-ht`)
 - `Z` NS + Healing Touch (`d-ns`)
-- `V` Abolish Poison / Remove Curse (no catalog id)
-- `4` Mark of the Wild (`d-motw`) — refresh, low miss cost
-- `5` Cat Form (`d-cat`)
-- `6` Rebirth (`d-reb`)
-- `7` Dire Bear (`d-bear`)
-- `T` Innervate (`d-inn`)
-- `Y` Tranquility (no catalog id) — long channel; not on `4`
-- `G` healing potion (item)
+- `1` Moonfire (`d-mf`) — filler while moving
 
 ---
 
@@ -878,7 +809,7 @@ Live physical grid to keep: `1`–`7`, `Q E R F G C V T B N M Y`, `Z` `X`, `F1`,
 
 Proposed job moves (adopt or reject each):
 
-- **Do** put Counterspell on `F`, Ice Block on `Z`, Polymorph on `X`, Blink on `V`, Fire Blast on `E`, Frostbolt on `1`. If live already matches, keep it.
+- **Do** put Counterspell on `F`, Ice Block on `Z`, Polymorph on `X`, Blink on `V`, Fire Blast on `E`, Frostbolt on `Q` (bar1 position 1). If live already matches, keep it.
 - **Do not** put Cold Snap, Evocation, or Combustion on `1`–`4`. Cold Snap is `SHIFT-Z`. Evocation is `B`.
 - **Keep** live `SHIFT-F` as ACTIONBUTTON9. Shift is a legal bind. Counterspell (`m-cs`) does not test `[mod:shift]`.
 - **Drop** `8` as a combat bind (C-tier). Move that slot to `H` / `N` / a bag bar.
@@ -888,21 +819,15 @@ Proposed job moves (adopt or reject each):
 
 ### Warrior mouse stances
 
-Shipped on Warrior only. These fixed slots stay separate from the three main
-stance pages:
-
-- Slot 109 `BUTTON3` Battle (`w-b`)
-- Slot 110 `BUTTON4` Defensive (`w-d-def`)
-- Slot 111 `BUTTON5` Berserker (`w-bs`)
-
-The smart interrupt (`w-interrupt`) uses Shield Bash with a shield. In the other
-case, it enters Berserker Stance and uses Pummel on `F` (slot 4).
+Mouse keys stay on slots 109–111. Arms, Fury, and Protection tombstone the
+stance macros. The Blizzard Stance Bar is the stance selector. Apply keeps
+those Action Slots empty after reload.
 
 Do not also bind `w-b` / `w-d-def` / `w-bs` on letter keys.
 
 ### Other classes
 
-Class default Lua files except Mage and Warrior have empty `keybinds`. These maps are greenfield on the shared grid.
+Class default Lua files except Warrior hold Class Keybinds. Live loadouts sit in Account and Character SavedVariables. Warrior Action Slot assignment stays locked.
 
 ## Catalog extras
 

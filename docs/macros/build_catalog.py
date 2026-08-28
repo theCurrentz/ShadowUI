@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -51,6 +52,8 @@ RECOMMENDED_KEYS = {
     "w-sh-qs": "unbound",
     "w-shh": "unbound",
     "w-sd-item": "unbound",
+    "shared-pa": "`",
+    "shared-pf": "SHIFT-`",
 }
 
 
@@ -99,6 +102,7 @@ def M(
     raw: str,
     notes: str = "",
     toon: str = "",
+    gameVersion: str = "",
 ) -> dict:
     body, dropped = labeled(scope, cls, spec, raw, toon, RECOMMENDED_KEYS.get(id, ""))
     rec = {
@@ -118,6 +122,10 @@ def M(
         rec["character"] = toon
     if notes:
         rec["notes"] = notes
+    if gameVersion:
+        if gameVersion not in {"ERA", "TBC"}:
+            raise SystemExit(f"bad gameVersion for {id}")
+        rec["gameVersion"] = gameVersion
     if dropped:
         rec["labelDropped"] = True
         rec["notes"] = (notes + " " if notes else "") + "Label omitted: body at 255."
@@ -133,6 +141,10 @@ groups: list[dict] = []
 
 
 def add(group: dict, items: list[dict]) -> None:
+    gv = group.get("gameVersion")
+    if gv in {"ERA", "TBC"}:
+        for m in items:
+            m.setdefault("gameVersion", gv)
     scopes = [m["scope"] for m in items]
     toons = [m["character"] for m in items if m.get("character")]
     if "scope" not in group:
@@ -158,7 +170,7 @@ add(
         "class": "ALL",
         "spec": "all",
         "tab": "account",
-        "description": "General-tab utilities that need a macro: assist, focus, trinket slots, and cursor items. Put potions, the hearthstone, and racials on the bar. Class spells stay in class groups.",
+        "description": "General-tab utilities that need a macro: assist, focus, trinket slots, pet attack / follow, and cursor items. Put potions, the hearthstone, and racials on the bar. Class spells stay in class groups.",
     },
     [
         M("shared-assist", "assist", "global", "ALL", "all", "account", "ability_hunter_snipershot", "shared-core", "plan",
@@ -182,6 +194,10 @@ add(
           "Self-cast bandage. A plain bandage on the bar still targets the current unit."),
         M("shared-cc", "cc", "global", "ALL", "all", "account", "inv_misc_gem_diamond_02", "shared-core", "existing",
           "/use [@cursor] Crystal Charge"),
+        M("shared-pa", "pa", "global", "ALL", "all", "account", "ability_druid_bash", "shared-core", "existing",
+          "/petattack", "Hunter, Warlock, and any other pet class. One General-tab body."),
+        M("shared-pf", "pf", "global", "ALL", "all", "account", "ability_tracking", "shared-core", "existing",
+          "/petfollow", "Shift-backtick. Split from pet attack so Shift is a bind, not a modifier."),
     ],
 )
 
@@ -235,7 +251,7 @@ add(
           "Uses a hostile living mouseover, then the current target. Useful for multi-target tanking."),
         M("w-slam", "sl", "class", "WARRIOR", "all", "account", "ability_warrior_decisivestrike", "warrior-core", "plan",
           "#showtooltip Slam\n/cast [stance:2] Battle Stance\n/startattack\n/cast Slam",
-          "Slam is trainer-taught, not an Arms talent."),
+          "Trainer-taught filler. TBC uses it on the baseline bar. Leaves Defensive Stance.", gameVersion="TBC"),
         M("w-interrupt", "wkick", "class", "WARRIOR", "all", "account", "inv_gauntlets_04", "warrior-core", "plan",
           "#showtooltip [stance:3] Pummel; [equipped:Shields] Shield Bash; Pummel\n/stopcasting\n/startattack\n/cast [noequipped:Shields,nostance:3] Berserker Stance\n/cast [stance:3] Pummel; [equipped:Shields] Shield Bash",
           "One interrupt replaces separate Pummel and Shield Bash copies. It uses Shield Bash with a shield; otherwise it enters Berserker and uses Pummel."),
@@ -663,10 +679,6 @@ add(
           "#showtooltip Rapid Fire\n/use 13\n/cast Rapid Fire"),
         M("h-tranq", "tq", "class", "HUNTER", "all", "character", "spell_nature_drowsy", "hunter-core", "plan",
           "#showtooltip Tranquilizing Shot\n/cast Tranquilizing Shot"),
-        M("h-pa", "hpa", "class", "HUNTER", "beast-mastery", "character", "ability_druid_bash", "hunter-core", "existing",
-          "/petattack"),
-        M("h-pf", "hpf", "class", "HUNTER", "beast-mastery", "character", "ability_tracking", "hunter-core", "existing",
-          "/petfollow"),
         M("h-mend", "mp", "class", "HUNTER", "beast-mastery", "character", "ability_hunter_mendpet", "hunter-core", "plan",
           "#showtooltip Mend Pet\n/cast Mend Pet"),
         M("h-call", "pet", "class", "HUNTER", "beast-mastery", "character", "ability_hunter_beastcall", "hunter-core", "plan",
@@ -907,10 +919,6 @@ add(
           "#showtooltip\n/stopcasting\n/cast [mod:shift] Fear(Rank 1); Fear"),
         M("l-lock", "lock", "class", "WARLOCK", "demonology", "character", "spell_shadow_mindrot", "warlock-core", "plan",
           "#showtooltip Spell Lock\n/stopcasting\n/cast Spell Lock"),
-        M("l-pa", "lpa", "class", "WARLOCK", "demonology", "character", "ability_druid_bash", "warlock-core", "plan",
-          "/petattack"),
-        M("l-pf", "lpf", "class", "WARLOCK", "demonology", "character", "ability_tracking", "warlock-core", "plan",
-          "/petfollow"),
         M("l-sum", "sum", "class", "WARLOCK", "all", "account", "spell_shadow_twilight", "warlock-core", "existing",
           "/ra Summoning %t\n/rw Summoning %t, click!\n/cast Ritual of Summoning"),
         M("l-ss", "soulstone", "class", "WARLOCK", "all", "character", "inv_misc_orb_04", "warlock-core", "plan",
@@ -1015,12 +1023,631 @@ add(
     ],
 )
 
+# ---------------------------------------------------------------------------
+# TBC
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "shared-tbc",
+        "title": "Shared TBC",
+        "class": "ALL",
+        "spec": "all",
+        "tab": "account",
+        "gameVersion": "TBC",
+        "description": "TBC racial wrappers that need a modifier or stopcasting. Blood Elf and Draenei passives stay on the bar. Mana Tap is a plain racial.",
+    },
+    [
+        M("shared-gotn", "gotn", "global", "ALL", "all", "account", "spell_holy_holyprotection", "shared-tbc", "plan",
+          "#showtooltip Gift of the Naaru\n/cast [mod:alt,target=player] Gift of the Naaru; Gift of the Naaru",
+          "Draenei heal. Alt self."),
+        M("shared-at", "atorrent", "global", "ALL", "all", "account", "spell_shadow_teleport", "shared-tbc", "plan",
+          "#showtooltip Arcane Torrent\n/stopcasting\n/cast Arcane Torrent",
+          "Blood Elf interrupt. Stops a queued spell first."),
+    ],
+)
+
+add(
+    {
+        "id": "warrior-tbc",
+        "title": "Warrior TBC",
+        "class": "WARRIOR",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passive.",
+    },
+    [
+        M("w-cshout", "cshout", "class", "WARRIOR", "all", "character", "ability_warrior_rallyingcry", "warrior-tbc", "plan",
+          "#showtooltip Commanding Shout\n/cast Commanding Shout\n/startattack",
+          "Health shout. Battle Shout stays on `w-shout`."),
+        M("w-intervene", "interv", "class", "WARRIOR", "all", "character", "ability_warrior_victoryrush", "warrior-tbc", "plan",
+          "#showtooltip Intervene\n/cast [nostance:2] Defensive Stance\n/cast [target=mouseover,help,nodead][] Intervene",
+          "Enters Defensive Stance. Uses a friendly living mouseover, then the current target."),
+        M("w-reflect", "reflect", "class", "WARRIOR", "all", "character", "ability_warrior_shieldreflection", "warrior-tbc", "plan",
+          "#showtooltip Spell Reflection\n/stopcasting\n/cast [nostance:2] Defensive Stance\n/cast Spell Reflection",
+          "Requires an equipped shield. Enters Defensive Stance."),
+        M("w-vrush", "vrush", "class", "WARRIOR", "all", "character", "ability_warrior_devastate", "warrior-tbc", "plan",
+          "#showtooltip Victory Rush\n/cast [stance:2] Battle Stance\n/cast Victory Rush\n/startattack",
+          "Leaves Defensive Stance. Usable after a killing blow."),
+    ],
+)
+
+add(
+    {
+        "id": "paladin-tbc",
+        "title": "Paladin TBC",
+        "class": "PALADIN",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays on `p-seal`.",
+    },
+    [
+        M("p-cstrike", "cstrike", "class", "PALADIN", "retribution", "character", "spell_holy_crusaderstrike", "paladin-tbc", "plan",
+          "#showtooltip Crusader Strike\n/startattack\n/cast Crusader Strike"),
+        M("p-aw", "aw", "class", "PALADIN", "all", "character", "spell_holy_avenginewrath", "paladin-tbc", "plan",
+          "#showtooltip Avenging Wrath\n/use 13\n/cast Avenging Wrath"),
+        M("p-rdef", "rdef", "class", "PALADIN", "all", "character", "inv_shoulder_37", "paladin-tbc", "plan",
+          "#showtooltip Righteous Defense\n/cast [target=mouseover,help,nodead][] Righteous Defense",
+          "Taunt the mobs on a friendly mouseover, then the current target."),
+        M("p-ashield", "ashield", "class", "PALADIN", "protection", "character", "spell_holy_avengersshield", "paladin-tbc", "plan",
+          "#showtooltip Avenger's Shield\n/startattack\n/cast Avenger's Shield"),
+        M("p-sealtbc", "sealtbc", "class", "PALADIN", "retribution", "character", "spell_holy_sealofblood", "paladin-tbc", "plan",
+          "#showtooltip\n/cast Seal of Blood\n/cast Seal of Vengeance\n/cast Seal of the Martyr\n/cast Seal of Corruption",
+          "Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins."),
+        M("p-turne", "turne", "class", "PALADIN", "all", "character", "spell_holy_turnundead", "paladin-tbc", "plan",
+          "#showtooltip Turn Evil\n/stopcasting\n/cast Turn Evil"),
+        M("p-caura", "caura", "class", "PALADIN", "all", "character", "spell_holy_crusaderaura", "paladin-tbc", "plan",
+          "#showtooltip Crusader Aura\n/cast Crusader Aura"),
+    ],
+)
+
+add(
+    {
+        "id": "hunter-tbc",
+        "title": "Hunter TBC",
+        "class": "HUNTER",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wrath stays in Hunter core.",
+    },
+    [
+        M("h-steady", "steady", "class", "HUNTER", "all", "character", "ability_hunter_steadyshot", "hunter-tbc", "plan",
+          "#showtooltip Steady Shot\n/cast Steady Shot"),
+        M("h-kc", "kc", "class", "HUNTER", "beast-mastery", "character", "ability_hunter_killcommand", "hunter-tbc", "plan",
+          "#showtooltip Kill Command\n/petattack\n/cast Kill Command"),
+        M("h-md", "md", "class", "HUNTER", "all", "character", "ability_hunter_misdirection", "hunter-tbc", "plan",
+          "#showtooltip Misdirection\n/cast [target=mouseover,help,nodead] Misdirection; [target=pet,exists] Misdirection; Misdirection",
+          "Friendly mouseover, then pet, then current target."),
+        M("h-snake", "snake", "class", "HUNTER", "all", "character", "ability_hunter_snaketrap", "hunter-tbc", "plan",
+          "#showtooltip Snake Trap\n/cast Snake Trap"),
+        M("h-aspv", "aspv", "class", "HUNTER", "all", "character", "ability_hunter_aspectoftheviper", "hunter-tbc", "plan",
+          "#showtooltip\n/cast [mod:shift] Aspect of the Viper; [mod:ctrl] Aspect of the Monkey; Aspect of the Hawk",
+          "Hawk normally. Shift is Viper. Ctrl is Monkey. Era `asp` has no Viper line."),
+    ],
+)
+
+add(
+    {
+        "id": "rogue-tbc",
+        "title": "Rogue TBC",
+        "class": "ROGUE",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; drag it to the bar.",
+    },
+    [
+        M("r-cloak", "cloak", "class", "ROGUE", "all", "character", "spell_shadow_nethercloak", "rogue-tbc", "plan",
+          "#showtooltip Cloak of Shadows\n/stopcasting\n/cast Cloak of Shadows"),
+        M("r-dthrow", "dthrow", "class", "ROGUE", "all", "character", "inv_throwingknife_06", "rogue-tbc", "plan",
+          "#showtooltip Deadly Throw\n/cast Deadly Throw"),
+        M("r-shiv", "shiv", "class", "ROGUE", "all", "character", "inv_throwingknife_04", "rogue-tbc", "plan",
+          "#showtooltip Shiv\n/startattack\n/cast Shiv"),
+        M("r-env", "env", "class", "ROGUE", "assassination", "character", "ability_rogue_disembowel", "rogue-tbc", "plan",
+          "#showtooltip Envenom\n/cast Envenom"),
+        M("r-step", "step", "class", "ROGUE", "subtlety", "character", "ability_rogue_shadowstep", "rogue-tbc", "plan",
+          "#showtooltip Shadowstep\n/cast Shadowstep"),
+        M("r-mut", "mut", "class", "ROGUE", "assassination", "character", "ability_rogue_shadowstrikes", "rogue-tbc", "plan",
+          "#showtooltip Mutilate\n/startattack\n/cast Mutilate"),
+    ],
+)
+
+add(
+    {
+        "id": "priest-tbc",
+        "title": "Priest TBC",
+        "class": "PRIEST",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and Draenei/Dwarf Chastise stay here because they need stopcasting.",
+    },
+    [
+        M("pr-swd", "swd", "class", "PRIEST", "all", "character", "spell_shadow_demonicfortitude", "priest-tbc", "plan",
+          "#showtooltip Shadow Word: Death\n/cast Shadow Word: Death"),
+        M("pr-pom", "pom", "class", "PRIEST", "holy", "character", "spell_holy_prayerofmendingtga", "priest-tbc", "plan",
+          "#showtooltip Prayer of Mending\n/cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending"),
+        M("pr-coh", "coh", "class", "PRIEST", "holy", "character", "spell_holy_circleofrenewal", "priest-tbc", "plan",
+          "#showtooltip Circle of Healing\n/cast [mod:alt,target=player] Circle of Healing; Circle of Healing"),
+        M("pr-psup", "psup", "class", "PRIEST", "discipline", "character", "spell_holy_painsupression", "priest-tbc", "plan",
+          "#showtooltip Pain Suppression\n/raid Pain Suppression on %t\n/cast [mod:alt,target=player] Pain Suppression; Pain Suppression"),
+        M("pr-mdisp", "mdisp", "class", "PRIEST", "all", "character", "spell_arcane_massdispel", "priest-tbc", "plan",
+          "#showtooltip Mass Dispel\n/stopcasting\n/cast Mass Dispel"),
+        M("pr-sfiend", "sfiend", "class", "PRIEST", "all", "character", "spell_shadow_shadowfiend", "priest-tbc", "plan",
+          "#showtooltip Shadowfiend\n/cast Shadowfiend"),
+        M("pr-bheal", "bheal", "class", "PRIEST", "holy", "character", "spell_holy_blindingheal", "priest-tbc", "plan",
+          "#showtooltip Binding Heal\n/cast Binding Heal"),
+        M("pr-vt", "vt", "class", "PRIEST", "shadow", "character", "spell_holy_stoicism", "priest-tbc", "plan",
+          "#showtooltip Vampiric Touch\n/cast Vampiric Touch"),
+        M("pr-cmagic", "cmagic", "class", "PRIEST", "all", "character", "spell_arcane_studentofmagic", "priest-tbc", "plan",
+          "#showtooltip Consume Magic\n/stopcasting\n/cast Consume Magic",
+          "Blood Elf priest racial."),
+        M("pr-chast", "chast", "class", "PRIEST", "all", "character", "spell_holy_chastise", "priest-tbc", "plan",
+          "#showtooltip Chastise\n/stopcasting\n/cast Chastise",
+          "Dwarf and Draenei priest racial."),
+    ],
+)
+
+add(
+    {
+        "id": "shaman-tbc",
+        "title": "Shaman TBC",
+        "class": "SHAMAN",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Shaman Enhancement.",
+    },
+    [
+        M("s-bl", "bl", "class", "SHAMAN", "enhancement", "character", "spell_nature_bloodlust", "shaman-tbc", "plan",
+          "#showtooltip\n/cast Bloodlust\n/cast Heroism",
+          "Horde Bloodlust. Alliance Heroism. First learned spell wins."),
+        M("s-wshield", "wshield", "class", "SHAMAN", "all", "character", "ability_shaman_watershield", "shaman-tbc", "plan",
+          "#showtooltip\n/cast [mod:shift] Lightning Shield; Water Shield"),
+        M("s-eshield", "eshield", "class", "SHAMAN", "restoration", "character", "spell_nature_skinofearth", "shaman-tbc", "plan",
+          "#showtooltip Earth Shield\n/cast [mod:alt,target=player] Earth Shield; Earth Shield"),
+        M("s-srage", "srage", "class", "SHAMAN", "enhancement", "character", "spell_nature_shamanrage", "shaman-tbc", "plan",
+          "#showtooltip Shamanistic Rage\n/cast Shamanistic Rage"),
+        M("s-woa", "woa", "class", "SHAMAN", "all", "character", "spell_nature_slowingtotem", "shaman-tbc", "plan",
+          "#showtooltip Wrath of Air Totem\n/cast Wrath of Air Totem"),
+        M("s-towrath", "towrath", "class", "SHAMAN", "elemental", "character", "spell_fire_totemofwrath", "shaman-tbc", "plan",
+          "#showtooltip Totem of Wrath\n/cast Totem of Wrath"),
+        M("s-eet", "eet", "class", "SHAMAN", "all", "character", "spell_nature_earthelemental_totem", "shaman-tbc", "plan",
+          "#showtooltip Earth Elemental Totem\n/cast Earth Elemental Totem"),
+        M("s-fet", "fet", "class", "SHAMAN", "all", "character", "spell_fire_elemental_totem", "shaman-tbc", "plan",
+          "#showtooltip Fire Elemental Totem\n/cast Fire Elemental Totem"),
+        M("s-tcall", "tcall", "class", "SHAMAN", "all", "character", "spell_unused", "shaman-tbc", "plan",
+          "#showtooltip Totemic Call\n/cast Totemic Call"),
+    ],
+)
+
+add(
+    {
+        "id": "mage-tbc",
+        "title": "Mage TBC",
+        "class": "MAGE",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on the city macros. Ice Block stays in Mage control.",
+    },
+    [
+        M("m-ilance", "ilance", "class", "MAGE", "frost", "character", "spell_frost_frostblast", "mage-tbc", "plan",
+          "#showtooltip Ice Lance\n/cast Ice Lance"),
+        M("m-steal", "steal", "class", "MAGE", "all", "character", "spell_arcane_arcane02", "mage-tbc", "plan",
+          "#showtooltip Spellsteal\n/stopcasting\n/cast Spellsteal"),
+        M("m-invis", "invis", "class", "MAGE", "all", "character", "ability_mage_invisibility", "mage-tbc", "plan",
+          "#showtooltip Invisibility\n/stopcasting\n/cast Invisibility"),
+        M("m-molten", "molten", "class", "MAGE", "all", "character", "ability_mage_moltenarmor", "mage-tbc", "plan",
+          "#showtooltip Molten Armor\n/cast Molten Armor"),
+        M("m-ablast", "ablast", "class", "MAGE", "arcane", "character", "spell_arcane_blast", "mage-tbc", "plan",
+          "#showtooltip Arcane Blast\n/cqs\n/cast Arcane Blast"),
+        M("m-slow", "mslow", "class", "MAGE", "arcane", "character", "spell_nature_slow", "mage-tbc", "plan",
+          "#showtooltip Slow\n/cast Slow"),
+        M("m-dbreath", "dbreath", "class", "MAGE", "fire", "character", "inv_misc_head_dragon_01", "mage-tbc", "plan",
+          "#showtooltip Dragon's Breath\n/cast Dragon's Breath"),
+        M("m-welem", "welem", "class", "MAGE", "frost", "character", "spell_frost_summonwaterelemental_2", "mage-tbc", "plan",
+          "#showtooltip Summon Water Elemental\n/cast Summon Water Elemental"),
+        M("m-table", "mtable", "class", "MAGE", "all", "character", "spell_arcane_massdispel", "mage-tbc", "plan",
+          "#showtooltip Ritual of Refreshment\n/cast Ritual of Refreshment"),
+        M("m-gemtbc", "gemtbc", "class", "MAGE", "all", "character", "inv_misc_gem_stone_01", "mage-tbc", "plan",
+          "#showtooltip Conjure Mana Emerald\n/cast Conjure Mana Emerald"),
+        M("m-exodar", "exodar", "class", "MAGE", "all", "character", "spell_arcane_portalexodar", "mage-tbc", "plan",
+          "#showtooltip\n/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar;"),
+        M("m-slvr", "slvr", "class", "MAGE", "all", "character", "spell_arcane_portalsilvermoon", "mage-tbc", "plan",
+          "#showtooltip\n/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon;"),
+        M("m-shat", "shat", "class", "MAGE", "all", "character", "spell_arcane_portalshattrath", "mage-tbc", "plan",
+          "#showtooltip\n/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath;"),
+        M("m-thera", "thera", "class", "MAGE", "all", "character", "spell_arcane_portaltheramore", "mage-tbc", "plan",
+          "#showtooltip\n/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore;"),
+        M("m-stonard", "stonard", "class", "MAGE", "all", "character", "spell_arcane_portalstonard", "mage-tbc", "plan",
+          "#showtooltip\n/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard;"),
+    ],
+)
+
+add(
+    {
+        "id": "warlock-tbc",
+        "title": "Warlock TBC",
+        "class": "WARLOCK",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on the TBC trainer list; the soulstone macro still uses the item.",
+    },
+    [
+        M("l-incin", "incin", "class", "WARLOCK", "destruction", "character", "spell_fire_burnout", "warlock-tbc", "plan",
+          "#showtooltip Incinerate\n/cast Incinerate"),
+        M("l-felarm", "felarm", "class", "WARLOCK", "all", "character", "spell_shadow_felarmour", "warlock-tbc", "plan",
+          "#showtooltip\n/cast [mod:shift] Demon Armor; Fel Armor"),
+        M("l-shatter", "shatter", "class", "WARLOCK", "all", "character", "spell_arcane_arcane01", "warlock-tbc", "plan",
+          "#showtooltip Soulshatter\n/cast Soulshatter"),
+        M("l-souls", "souls", "class", "WARLOCK", "all", "character", "spell_shadow_shadesofdarkness", "warlock-tbc", "plan",
+          "#showtooltip Ritual of Souls\n/cast Ritual of Souls"),
+        M("l-seed", "seed", "class", "WARLOCK", "affliction", "character", "spell_shadow_seedofdestruction", "warlock-tbc", "plan",
+          "#showtooltip Seed of Corruption\n/cast Seed of Corruption"),
+        M("l-ua", "ua", "class", "WARLOCK", "affliction", "character", "spell_shadow_unstableaffliction_3", "warlock-tbc", "plan",
+          "#showtooltip Unstable Affliction\n/cast Unstable Affliction"),
+        M("l-sfury", "sfury", "class", "WARLOCK", "destruction", "character", "spell_shadow_shadowfury", "warlock-tbc", "plan",
+          "#showtooltip Shadowfury\n/stopcasting\n/cast Shadowfury"),
+        M("l-fguard", "fguard", "class", "WARLOCK", "demonology", "character", "spell_shadow_summonfelguard", "warlock-tbc", "plan",
+          "#showtooltip Summon Felguard\n/cast Summon Felguard"),
+    ],
+)
+
+add(
+    {
+        "id": "druid-tbc",
+        "title": "Druid TBC",
+        "class": "DRUID",
+        "spec": "all",
+        "tab": "character",
+        "gameVersion": "TBC",
+        "description": "TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight Form is Restoration.",
+    },
+    [
+        M("d-mangle", "mangle", "class", "DRUID", "feral", "character", "ability_druid_mangle2", "druid-tbc", "plan",
+          "#showtooltip\n/startattack\n/cast [form:3] Mangle (Cat); Mangle (Bear)"),
+        M("d-lbloom", "lbloom", "class", "DRUID", "restoration", "character", "inv_misc_herb_felblossom", "druid-tbc", "plan",
+          "#showtooltip Lifebloom\n/cancelform\n/cast [mod:alt,target=player] Lifebloom; Lifebloom"),
+        M("d-cyc", "cyc", "class", "DRUID", "balance", "character", "spell_nature_earthbind", "druid-tbc", "plan",
+          "#showtooltip Cyclone\n/stopcasting\n/cast Cyclone"),
+        M("d-flight", "flight", "class", "DRUID", "all", "character", "ability_druid_flightform", "druid-tbc", "plan",
+          "#showtooltip\n/cast [mod:shift] Swift Flight Form; Flight Form"),
+        M("d-lac", "lac", "class", "DRUID", "feral", "character", "ability_druid_lacerate", "druid-tbc", "plan",
+          "#showtooltip Lacerate\n/startattack\n/cast Lacerate"),
+        M("d-maim", "maim", "class", "DRUID", "feral", "character", "ability_druid_mangle-tga", "druid-tbc", "plan",
+          "#showtooltip Maim\n/cast Maim"),
+        M("d-tree", "tree", "class", "DRUID", "restoration", "character", "ability_druid_treeoflife", "druid-tbc", "plan",
+          "#showtooltip Tree of Life\n/cast Tree of Life"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Paladin ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "paladin-ranks",
+        "title": "Paladin ranks",
+        "class": "PALADIN",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("p-gbom", "gbom", "class", "PALADIN", "all", "account", "spell_holy_greaterblessingofkings", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Greater Blessing of Might;[mod:shift]Greater Blessing of Might(Rank 1)"),
+        M("p-crus", "crus", "class", "PALADIN", "all", "account", "spell_holy_holysmite", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Seal of the Crusader;[mod:shift]Seal of the Crusader(Rank 1)"),
+        M("p-bosac", "bosac", "class", "PALADIN", "all", "account", "spell_holy_sealofsacrifice", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Blessing of Sacrifice;[mod:shift]Blessing of Sacrifice(Rank 1)"),
+        M("p-dprot", "dprot", "class", "PALADIN", "all", "account", "spell_holy_restoration", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Divine Protection;[mod:shift]Divine Protection(Rank 1)"),
+        M("p-fraura", "fraura", "class", "PALADIN", "all", "account", "spell_fire_sealoffire", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Fire Resistance Aura;[mod:shift]Fire Resistance Aura(Rank 1)"),
+        M("p-rfaura", "rfaura", "class", "PALADIN", "all", "account", "spell_frost_wizardmark", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Frost Resistance Aura;[mod:shift]Frost Resistance Aura(Rank 1)"),
+        M("p-sraura", "sraura", "class", "PALADIN", "all", "account", "spell_shadow_sealofkings", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Shadow Resistance Aura;[mod:shift]Shadow Resistance Aura(Rank 1)"),
+        M("p-bolight", "bolight", "class", "PALADIN", "all", "account", "spell_holy_prayerofhealing02", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Blessing of Light;[mod:shift]Blessing of Light(Rank 1)"),
+        M("p-gbow", "gbow", "class", "PALADIN", "all", "account", "spell_holy_greaterblessingofwisdom", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Greater Blessing of Wisdom;[mod:shift]Greater Blessing of Wisdom(Rank 1)"),
+        M("p-hwath", "hwath", "class", "PALADIN", "all", "account", "spell_holy_excorcism", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Holy Wrath;[mod:shift]Holy Wrath(Rank 1)"),
+        M("p-redeem", "redeem", "class", "PALADIN", "all", "account", "spell_holy_resurrection", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Redemption;[mod:shift]Redemption(Rank 1)"),
+        M("p-turnu", "turnu", "class", "PALADIN", "all", "account", "spell_holy_turnundead", "paladin-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Turn Undead;[mod:shift]Turn Undead(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Hunter ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "hunter-ranks",
+        "title": "Hunter ranks",
+        "class": "HUNTER",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("h-wild", "wild", "class", "HUNTER", "all", "account", "spell_nature_protectionformnature", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Aspect of the Wild;[mod:shift]Aspect of the Wild(Rank 1)"),
+        M("h-scare", "scare", "class", "HUNTER", "all", "account", "ability_druid_cower", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Scare Beast;[mod:shift]Scare Beast(Rank 1)"),
+        M("h-dshot", "dshot", "class", "HUNTER", "all", "account", "spell_arcane_blink", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Distracting Shot;[mod:shift]Distracting Shot(Rank 1)"),
+        M("h-scorpid", "scorpid", "class", "HUNTER", "all", "account", "ability_hunter_criticalshot", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Scorpid Sting;[mod:shift]Scorpid Sting(Rank 1)"),
+        M("h-viper", "viper", "class", "HUNTER", "all", "account", "ability_hunter_aimedshot", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Viper Sting;[mod:shift]Viper Sting(Rank 1)"),
+        M("h-volley", "volley", "class", "HUNTER", "all", "account", "ability_marksmanship", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Volley;[mod:shift]Volley(Rank 1)"),
+        M("h-diseng", "diseng", "class", "HUNTER", "all", "account", "ability_rogue_feint", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Disengage;[mod:shift]Disengage(Rank 1)"),
+        M("h-etrap", "etrap", "class", "HUNTER", "all", "account", "spell_fire_selfdestruct", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Explosive Trap;[mod:shift]Explosive Trap(Rank 1)"),
+        M("h-itrap", "itrap", "class", "HUNTER", "all", "account", "spell_fire_flameshock", "hunter-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Immolation Trap;[mod:shift]Immolation Trap(Rank 1)"),
+        M("h-mongo", "mongo", "class", "HUNTER", "all", "account", "ability_hunter_swiftstrike", "hunter-ranks", "plan",
+          "#showtooltip\n/startattack\n/cast [nomod]Mongoose Bite;[mod:shift]Mongoose Bite(Rank 1)"),
+        M("h-raptor", "raptor", "class", "HUNTER", "all", "account", "ability_meleedamage", "hunter-ranks", "plan",
+          "#showtooltip\n/startattack\n/cast [nomod]Raptor Strike;[mod:shift]Raptor Strike(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Rogue ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "rogue-ranks",
+        "title": "Rogue ranks",
+        "class": "ROGUE",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("r-expose", "expose", "class", "ROGUE", "all", "account", "ability_warrior_riposte", "rogue-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)"),
+        M("r-garrote", "garrote", "class", "ROGUE", "all", "account", "ability_rogue_garrote", "rogue-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)"),
+        M("r-bstab", "bstab", "class", "ROGUE", "all", "account", "ability_backstab", "rogue-ranks", "plan",
+          "#showtooltip\n/startattack\n/cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)"),
+        M("r-feint", "feint", "class", "ROGUE", "all", "account", "ability_rogue_feint", "rogue-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Feint;[mod:shift]Feint(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Priest ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "priest-ranks",
+        "title": "Priest ranks",
+        "class": "PRIEST",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("pr-egrace", "egrace", "class", "PRIEST", "all", "account", "spell_holy_elunesgrace", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)"),
+        M("pr-fback", "fback", "class", "PRIEST", "all", "account", "spell_shadow_ritualofsacrifice", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)"),
+        M("pr-mburn", "mburn", "class", "PRIEST", "all", "account", "spell_shadow_manaburn", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)"),
+        M("pr-shards", "shards", "class", "PRIEST", "all", "account", "spell_arcane_starfire", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)"),
+        M("pr-dpray", "dpray", "class", "PRIEST", "all", "account", "spell_holy_restoration", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)"),
+        M("pr-heal", "heal", "class", "PRIEST", "all", "account", "spell_holy_heal02", "priest-ranks", "plan",
+          "#showtooltip\n/cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal"),
+        M("pr-hfire", "hfire", "class", "PRIEST", "all", "account", "spell_holy_searinglight", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)"),
+        M("pr-lheal", "lheal", "class", "PRIEST", "all", "account", "spell_holy_lesserheal", "priest-ranks", "plan",
+          "#showtooltip\n/cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal"),
+        M("pr-smite", "smite", "class", "PRIEST", "all", "account", "spell_holy_holysmite", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Smite;[mod:shift]Smite(Rank 1)"),
+        M("pr-dplague", "dplague", "class", "PRIEST", "all", "account", "spell_shadow_blackplague", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)"),
+        M("pr-hexw", "hexw", "class", "PRIEST", "all", "account", "spell_shadow_fingerofdeath", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)"),
+        M("pr-mc", "mc", "class", "PRIEST", "all", "account", "spell_shadow_shadowworddominate", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)"),
+        M("pr-msoothe", "msoothe", "class", "PRIEST", "all", "account", "spell_holy_mindsooth", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)"),
+        M("pr-mvis", "mvis", "class", "PRIEST", "all", "account", "spell_holy_mindvision", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)"),
+        M("pr-sprot", "sprot", "class", "PRIEST", "all", "account", "spell_shadow_antishadow", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)"),
+        M("pr-sguard", "sguard", "class", "PRIEST", "all", "account", "spell_nature_lightningshield", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)"),
+        M("pr-tow", "tow", "class", "PRIEST", "all", "account", "spell_shadow_deadofnight", "priest-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Shaman ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "shaman-ranks",
+        "title": "Shaman ranks",
+        "class": "SHAMAN",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("s-fnt", "fnt", "class", "SHAMAN", "all", "account", "spell_fire_sealoffire", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Fire Nova Totem;[mod:shift]Fire Nova Totem(Rank 1)"),
+        M("s-magma", "magma", "class", "SHAMAN", "all", "account", "spell_fire_selfdestruct", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Magma Totem;[mod:shift]Magma Totem(Rank 1)"),
+        M("s-sear", "sear", "class", "SHAMAN", "all", "account", "spell_fire_searingtotem", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Searing Totem;[mod:shift]Searing Totem(Rank 1)"),
+        M("s-sclaw", "sclaw", "class", "SHAMAN", "all", "account", "spell_nature_stoneclawtotem", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Stoneclaw Totem;[mod:shift]Stoneclaw Totem(Rank 1)"),
+        M("s-frtot", "frtot", "class", "SHAMAN", "all", "account", "spell_fireresistancetotem_01", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Fire Resistance Totem;[mod:shift]Fire Resistance Totem(Rank 1)"),
+        M("s-fttot", "fttot", "class", "SHAMAN", "all", "account", "spell_nature_guardianward", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Flametongue Totem;[mod:shift]Flametongue Totem(Rank 1)"),
+        M("s-rftot", "rftot", "class", "SHAMAN", "all", "account", "spell_frostresistancetotem_01", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Frost Resistance Totem;[mod:shift]Frost Resistance Totem(Rank 1)"),
+        M("s-fbrand", "fbrand", "class", "SHAMAN", "all", "account", "spell_frost_frostbrand", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Frostbrand Weapon;[mod:shift]Frostbrand Weapon(Rank 1)"),
+        M("s-goa", "goa", "class", "SHAMAN", "all", "account", "spell_nature_invisibilitytotem", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Grace of Air Totem;[mod:shift]Grace of Air Totem(Rank 1)"),
+        M("s-nrtot", "nrtot", "class", "SHAMAN", "all", "account", "spell_nature_natureresistancetotem", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Nature Resistance Totem;[mod:shift]Nature Resistance Totem(Rank 1)"),
+        M("s-rbit", "rbit", "class", "SHAMAN", "all", "account", "spell_nature_rockbiter", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Rockbiter Weapon;[mod:shift]Rockbiter Weapon(Rank 1)"),
+        M("s-sskin", "sskin", "class", "SHAMAN", "all", "account", "spell_nature_stoneskintotem", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Stoneskin Totem;[mod:shift]Stoneskin Totem(Rank 1)"),
+        M("s-wwall", "wwall", "class", "SHAMAN", "all", "account", "spell_nature_earthbind", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Windwall Totem;[mod:shift]Windwall Totem(Rank 1)"),
+        M("s-aspirit", "aspirit", "class", "SHAMAN", "all", "account", "spell_nature_regenerate", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Ancestral Spirit;[mod:shift]Ancestral Spirit(Rank 1)"),
+        M("s-cheal", "cheal", "class", "SHAMAN", "all", "account", "spell_nature_healingwavegreater", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [mod:alt,target=player] Chain Heal; [mod:shift] Chain Heal(Rank 1); Chain Heal"),
+        M("s-hstot", "hstot", "class", "SHAMAN", "all", "account", "inv_spear_04", "shaman-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Healing Stream Totem;[mod:shift]Healing Stream Totem(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Mage ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "mage-ranks",
+        "title": "Mage ranks",
+        "class": "MAGE",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("m-ai", "ai", "class", "MAGE", "all", "account", "spell_holy_magicalsentry", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Arcane Intellect;[mod:shift]Arcane Intellect(Rank 1)"),
+        M("m-cf", "cf", "class", "MAGE", "all", "account", "inv_misc_food_73cinnamonroll", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Conjure Food;[mod:shift]Conjure Food(Rank 1)"),
+        M("m-cw", "cw", "class", "MAGE", "all", "account", "inv_drink_18", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Conjure Water;[mod:shift]Conjure Water(Rank 1)"),
+        M("m-ma", "ma", "class", "MAGE", "all", "account", "spell_magearmor", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Mage Armor;[mod:shift]Mage Armor(Rank 1)"),
+        M("m-farmor", "farmor", "class", "MAGE", "all", "account", "spell_frost_frostarmor02", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Frost Armor;[mod:shift]Frost Armor(Rank 1)"),
+        M("m-ia", "ia", "class", "MAGE", "all", "account", "spell_frost_frostarmor02", "mage-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Ice Armor;[mod:shift]Ice Armor(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Warlock ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "warlock-ranks",
+        "title": "Warlock ranks",
+        "class": "WARLOCK",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("l-cor", "cor", "class", "WARLOCK", "all", "account", "spell_shadow_unholystrength", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Curse of Recklessness;[mod:shift]Curse of Recklessness(Rank 1)"),
+        M("l-cosh", "cosh", "class", "WARLOCK", "all", "account", "spell_shadow_curseofachimonde", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Curse of Shadow;[mod:shift]Curse of Shadow(Rank 1)"),
+        M("l-cot", "cot", "class", "WARLOCK", "all", "account", "spell_shadow_curseoftounges", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Curse of Tongues;[mod:shift]Curse of Tongues(Rank 1)"),
+        M("l-cowk", "cowk", "class", "WARLOCK", "all", "account", "spell_shadow_curseofmannoroth", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Curse of Weakness;[mod:shift]Curse of Weakness(Rank 1)"),
+        M("l-dlife", "dlife", "class", "WARLOCK", "all", "account", "spell_shadow_lifedrain02", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Drain Life;[mod:shift]Drain Life(Rank 1)"),
+        M("l-dmana", "dmana", "class", "WARLOCK", "all", "account", "spell_shadow_siphonmana", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Drain Mana;[mod:shift]Drain Mana(Rank 1)"),
+        M("l-howl", "howl", "class", "WARLOCK", "all", "account", "spell_shadow_deathscream", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Howl of Terror;[mod:shift]Howl of Terror(Rank 1)"),
+        M("l-dskin", "dskin", "class", "WARLOCK", "all", "account", "spell_shadow_ragingscream", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Demon Skin;[mod:shift]Demon Skin(Rank 1)"),
+        M("l-hfunnel", "hfunnel", "class", "WARLOCK", "all", "account", "spell_shadow_lifedrain", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Health Funnel;[mod:shift]Health Funnel(Rank 1)"),
+        M("l-sward", "sward", "class", "WARLOCK", "all", "account", "spell_shadow_antishadow", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Shadow Ward;[mod:shift]Shadow Ward(Rank 1)"),
+        M("l-subj", "subj", "class", "WARLOCK", "all", "account", "spell_shadow_enslavedemon", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Subjugate Demon;[mod:shift]Subjugate Demon(Rank 1)"),
+        M("l-hell", "hell", "class", "WARLOCK", "all", "account", "spell_fire_incinerate", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Hellfire;[mod:shift]Hellfire(Rank 1)"),
+        M("l-rof", "rof", "class", "WARLOCK", "all", "account", "spell_shadow_rainoffire", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Rain of Fire;[mod:shift]Rain of Fire(Rank 1)"),
+        M("l-spain", "spain", "class", "WARLOCK", "all", "account", "spell_fire_soulburn", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Searing Pain;[mod:shift]Searing Pain(Rank 1)"),
+        M("l-sfire", "sfire", "class", "WARLOCK", "all", "account", "spell_fire_fireball02", "warlock-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Soul Fire;[mod:shift]Soul Fire(Rank 1)"),
+    ],
+)
+
+# ---------------------------------------------------------------------------
+# Druid ranks
+# ---------------------------------------------------------------------------
+add(
+    {
+        "id": "druid-ranks",
+        "title": "Druid ranks",
+        "class": "DRUID",
+        "spec": "all",
+        "tab": "account",
+        "description": "Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.",
+    },
+    [
+        M("d-hib", "hib", "class", "DRUID", "all", "account", "spell_nature_sleep", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)"),
+        M("d-cane", "cane", "class", "DRUID", "all", "account", "spell_nature_cyclone", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)"),
+        M("d-soothe", "soothe", "class", "DRUID", "all", "account", "ability_hunter_beastsoothe", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)"),
+        M("d-thorns", "thorns", "class", "DRUID", "all", "account", "spell_nature_thorns", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)"),
+        M("d-claw", "claw", "class", "DRUID", "all", "account", "ability_druid_rake", "druid-ranks", "plan",
+          "#showtooltip\n/startattack\n/cast [nomod]Claw;[mod:shift]Claw(Rank 1)"),
+        M("d-cower", "cower", "class", "DRUID", "all", "account", "ability_druid_cower", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Cower;[mod:shift]Cower(Rank 1)"),
+        M("d-dmr", "dmr", "class", "DRUID", "all", "account", "classic_ability_druid_demoralizingroar", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)"),
+        M("d-pounce", "pounce", "class", "DRUID", "all", "account", "ability_druid_supriseattack", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)"),
+        M("d-ravage", "ravage", "class", "DRUID", "all", "account", "ability_druid_ravage", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)"),
+        M("d-swipe", "swipe", "class", "DRUID", "all", "account", "inv_misc_monsterclaw_03", "druid-ranks", "plan",
+          "#showtooltip\n/startattack\n/cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)"),
+        M("d-tfury", "tfury", "class", "DRUID", "all", "account", "ability_mount_jungletiger", "druid-ranks", "plan",
+          "#showtooltip\n/cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)"),
+        M("d-gotw", "gotw", "class", "DRUID", "all", "account", "spell_nature_regeneration", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)"),
+        M("d-rgw", "rgw", "class", "DRUID", "all", "account", "spell_nature_resistnature", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth"),
+        M("d-tranq", "tranq", "class", "DRUID", "all", "account", "spell_nature_tranquility", "druid-ranks", "plan",
+          "#showtooltip\n/cancelform\n/cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)"),
+    ],
+)
 
 def emit_md(catalog: dict) -> str:
     lines = [
-        "# Classic Era macro catalog",
+        "# Macro catalog",
         "",
-        "Source of truth: [catalog.json](catalog.json). WoW Macro Cursor loads that file.",
+        "Source of truth: [catalog.json](catalog.json). WoW Macro Cursor loads that file. Groups with `gameVersion` TBC show only on Version TBC.",
         "",
         "Each body starts with `# <global|class-specific|character-specific> <CLASS> <spec> [Toon]` after `#showtooltip` when the 255 cap allows.",
         "",
@@ -1030,12 +1657,12 @@ def emit_md(catalog: dict) -> str:
         "",
         "## Groups",
         "",
-        "| Group | Scope | Character | Class | Spec | Tab | Count |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Group | Version | Scope | Character | Class | Spec | Tab | Count |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for g in catalog["groups"]:
         lines.append(
-            f"| [{g['id']}](#{g['id']}) | {g.get('scope', '')} | {g.get('character', '') or '—'} | {g['class']} | {g['spec']} | {g['tab']} | {g['count']} |"
+            f"| [{g['id']}](#{g['id']}) | {g.get('gameVersion', 'both')} | {g.get('scope', '')} | {g.get('character', '') or '—'} | {g['class']} | {g['spec']} | {g['tab']} | {g['count']} |"
         )
     lines += ["", "## Records", ""]
     by_id = {m["id"]: m for m in catalog["macros"]}
@@ -1061,6 +1688,8 @@ def emit_md(catalog: dict) -> str:
                 f"- source: {m['source']}",
                 f"- chars: {m['chars']}",
             ]
+            if m.get("gameVersion"):
+                lines.append(f"- version: {m['gameVersion']}")
             if m.get("notes"):
                 lines.append(f"- notes: {m['notes']}")
             lines += ["", "```", m["body"], "```", ""]
@@ -1078,7 +1707,8 @@ def emit_class_md(cls: str, catalog: dict) -> str:
             "warrior-arms": 1,
             "warrior-fury": 2,
             "warrior-prot": 3,
-            "warrior-gear": 4,
+            "warrior-tbc": 4,
+            "warrior-gear": 5,
         }
         gset.sort(key=lambda g: order.get(g["id"], 99))
     by_id = {m["id"]: m for m in catalog["macros"]}
@@ -1112,16 +1742,29 @@ def emit_class_md(cls: str, catalog: dict) -> str:
             "Catalog bodies stay stance-aware so they also work outside the Action Deck. On a matching stance page, the stance line is a no-op.",
             "Charge / Intercept share `E`; Shield Bash / Pummel share `F`; the three major stance cooldowns share `Z`.",
             "A stance change can require a second key press after the stance cooldown. Shield Slam and Shield Wall require an equipped shield.",
+            "On TBC, load Warrior TBC for Commanding Shout, Intervene, Spell Reflection, and Victory Rush. Slam is in Warrior core on that Version.",
+            "",
+        ]
+    if cls == "PALADIN":
+        lines += [
+            "Era Paladin is Alliance only. TBC Paladin is both factions. Load Paladin TBC for Crusader Strike, Avenging Wrath, and Blood / Vengeance seals.",
+            "",
+        ]
+    if cls == "SHAMAN":
+        lines += [
+            "Era Shaman is Horde only. TBC Shaman is both factions. Load Shaman TBC for Bloodlust / Heroism and Water Shield.",
             "",
         ]
     if cls == "MAGE":
         lines += [
             "Existing Currentz style: `/cqs`, `[nomod]` max rank, `[mod:shift]` Rank 1, `@cursor` ground spells, Ice Block toggle.",
+            "TBC adds Outland city ports plus Theramore and Stonard. Shift still opens a portal.",
             "",
         ]
     if cls == "DRUID":
         lines += [
             "**Forms (typical Era index):** `1` Bear, `2` Aquatic, `3` Cat, `4` Travel. Test `form:N` if a macro misses.",
+            "TBC adds Flight Form. Swift Flight Form is a Restoration talent. Tree of Life is Restoration.",
             "",
         ]
     for g in gset:
@@ -1134,6 +1777,8 @@ def emit_class_md(cls: str, catalog: dict) -> str:
             heading = f"{g['title']} — global"
         else:
             heading = f"{g['title']} — class-specific"
+        if g.get("gameVersion") == "TBC":
+            heading = f"{heading} — TBC"
         lines += [f"## {heading}", "", f"{g['description']}", ""]
         for mid in g["macroIds"]:
             m = by_id[mid]
@@ -1158,68 +1803,178 @@ catalog = {
     "macros": macros,
 }
 
-ids = [m["id"] for m in macros]
-if len(ids) != len(set(ids)):
-    raise SystemExit("duplicate macro id")
 
-PRUNE_PATH = ROOT / "pruned.json"
-if PRUNE_PATH.exists():
-    drop = set(json.loads(PRUNE_PATH.read_text()).get("ids", []))
-    if drop:
-        macros[:] = [m for m in macros if m["id"] not in drop]
-        kept = []
-        for g in groups:
-            gids = [i for i in g["macroIds"] if i not in drop]
-            if gids:
-                kept.append({**g, "macroIds": gids, "count": len(gids)})
-        groups[:] = kept
+def merge_custom() -> None:
+    path = ROOT / "custom.json"
+    if not path.exists():
+        return
+    data = json.loads(path.read_text())
+    if not isinstance(data, dict):
+        raise SystemExit("bad custom.json")
+    groups_by_id = {g["id"]: g for g in groups}
+    for raw in data.get("groups") or []:
+        if not isinstance(raw, dict):
+            continue
+        gid = raw.get("id")
+        if not isinstance(gid, str) or not gid.strip() or gid in groups_by_id:
+            continue
+        rec = {
+            "id": gid,
+            "title": raw.get("title") or gid,
+            "class": raw.get("class") or "ALL",
+            "spec": raw.get("spec") or "all",
+            "tab": raw.get("tab") or "account",
+            "scope": raw.get("scope") or "class",
+            "description": raw.get("description") or "",
+            "macroIds": [],
+            "count": 0,
+        }
+        if raw.get("character"):
+            rec["character"] = raw["character"]
+        if raw.get("gameVersion") in {"ERA", "TBC"}:
+            rec["gameVersion"] = raw["gameVersion"]
+        groups.append(rec)
+        groups_by_id[gid] = rec
+    seen = {m["id"] for m in macros}
+    for raw in data.get("macros") or []:
+        if not isinstance(raw, dict):
+            continue
+        mid = raw.get("id")
+        gid = raw.get("group")
+        if not isinstance(mid, str) or not mid.strip() or mid in seen:
+            continue
+        if not isinstance(gid, str) or gid not in groups_by_id:
+            continue
+        group = groups_by_id[gid]
+        name = raw.get("name") or "New"
+        if not isinstance(name, str) or not name.strip() or len(name) > 16:
+            raise SystemExit(f"bad custom name for {mid}")
+        body = raw.get("body") if isinstance(raw.get("body"), str) else "#showtooltip"
+        body = body.replace("\r\n", "\n")
+        if len(body) > LIMIT:
+            raise SystemExit(f"body too long: {mid}")
+        rec = {
+            "id": mid,
+            "name": name,
+            "scope": raw.get("scope") or group["scope"],
+            "class": raw.get("class") or group["class"],
+            "spec": raw.get("spec") or group["spec"],
+            "tab": raw.get("tab") or group["tab"],
+            "icon": raw.get("icon") or "inv_misc_questionmark",
+            "group": gid,
+            "source": "plan",
+            "body": body,
+            "chars": len(body),
+        }
+        character = raw.get("character") or group.get("character")
+        if character:
+            rec["character"] = character
+        if raw.get("notes"):
+            rec["notes"] = raw["notes"]
+        if raw.get("gameVersion") in {"ERA", "TBC"}:
+            rec["gameVersion"] = raw["gameVersion"]
+        elif group.get("gameVersion"):
+            rec["gameVersion"] = group["gameVersion"]
+        macros.append(rec)
+        seen.add(mid)
+        group["macroIds"].append(mid)
+        group["count"] = len(group["macroIds"])
 
-RENAME_PATH = ROOT / "renames.json"
-if RENAME_PATH.exists():
-    by_id = json.loads(RENAME_PATH.read_text()).get("byId", {})
-    if isinstance(by_id, dict):
-        for m in macros:
-            nxt = by_id.get(m["id"])
-            if not nxt:
-                continue
-            if not isinstance(nxt, str) or not nxt.strip():
-                raise SystemExit(f"bad rename for {m['id']}")
-            if len(nxt) > 16:
-                raise SystemExit(f"name too long: {nxt}")
-            m["name"] = nxt
 
-BODIES_PATH = ROOT / "bodies.json"
-if BODIES_PATH.exists():
-    by_id = json.loads(BODIES_PATH.read_text()).get("byId", {})
-    if isinstance(by_id, dict):
-        for m in macros:
-            nxt = by_id.get(m["id"])
-            if nxt is None:
-                continue
-            if not isinstance(nxt, str):
-                raise SystemExit(f"bad body for {m['id']}")
-            nxt = nxt.replace("\r\n", "\n")
-            if len(nxt) > LIMIT:
-                raise SystemExit(f"body too long: {m['id']}")
-            m["body"] = nxt
-            m["chars"] = len(nxt)
+def apply_overlays() -> None:
+    merge_custom()
+    ids = [m["id"] for m in macros]
+    if len(ids) != len(set(ids)):
+        raise SystemExit("duplicate macro id")
 
-seen_names: dict[str, str] = {}
-for m in macros:
-    n = m["name"]
-    if n in seen_names:
-        raise SystemExit(f"duplicate name {n!r}: {seen_names[n]} and {m['id']}")
-    seen_names[n] = m["id"]
+    prune_path = ROOT / "pruned.json"
+    if prune_path.exists():
+        drop = set(json.loads(prune_path.read_text()).get("ids", []))
+        if drop:
+            macros[:] = [m for m in macros if m["id"] not in drop]
+            kept = []
+            for g in groups:
+                gids = [i for i in g["macroIds"] if i not in drop]
+                if gids:
+                    kept.append({**g, "macroIds": gids, "count": len(gids)})
+            groups[:] = kept
 
-(ROOT / "catalog.json").write_text(json.dumps(catalog, indent=2) + "\n")
-(ROOT / "catalog.md").write_text(emit_md(catalog))
+    rename_path = ROOT / "renames.json"
+    if rename_path.exists():
+        by_id = json.loads(rename_path.read_text()).get("byId", {})
+        if isinstance(by_id, dict):
+            for m in macros:
+                nxt = by_id.get(m["id"])
+                if not nxt:
+                    continue
+                if not isinstance(nxt, str) or not nxt.strip():
+                    raise SystemExit(f"bad rename for {m['id']}")
+                if len(nxt) > 16:
+                    raise SystemExit(f"name too long: {nxt}")
+                m["name"] = nxt
+
+    bodies_path = ROOT / "bodies.json"
+    if bodies_path.exists():
+        by_id = json.loads(bodies_path.read_text()).get("byId", {})
+        if isinstance(by_id, dict):
+            for m in macros:
+                nxt = by_id.get(m["id"])
+                if nxt is None:
+                    continue
+                if not isinstance(nxt, str):
+                    raise SystemExit(f"bad body for {m['id']}")
+                nxt = nxt.replace("\r\n", "\n")
+                if len(nxt) > LIMIT:
+                    raise SystemExit(f"body too long: {m['id']}")
+                m["body"] = nxt
+                m["chars"] = len(nxt)
+
+    assert_unique_names(macros)
+
+
+def assert_unique_names(items: list[dict]) -> None:
+    seen_names: dict[str, str] = {}
+    for m in items:
+        n = m["name"]
+        if n in seen_names:
+            raise SystemExit(f"duplicate name {n!r}: {seen_names[n]} and {m['id']}")
+        seen_names[n] = m["id"]
+
+
+def emit_artifacts(catalog_obj: dict, *, write_json: bool) -> None:
+    assert_unique_names(catalog_obj["macros"])
+    if write_json:
+        (ROOT / "catalog.json").write_text(json.dumps(catalog_obj, indent=2) + "\n")
+    (ROOT / "catalog.md").write_text(emit_md(catalog_obj))
+    (ROOT.parents[1] / "defaults" / "catalog.lua").write_text(emit_deck_catalog(catalog_obj))
+    class_files = {
+        "ALL": "shared.md",
+        "WARRIOR": "warrior.md",
+        "PALADIN": "paladin.md",
+        "HUNTER": "hunter.md",
+        "ROGUE": "rogue.md",
+        "PRIEST": "priest.md",
+        "SHAMAN": "shaman.md",
+        "MAGE": "mage.md",
+        "WARLOCK": "warlock.md",
+        "DRUID": "druid.md",
+    }
+    for cls, fname in class_files.items():
+        (ROOT / fname).write_text(emit_class_md(cls, catalog_obj))
+    records = catalog_obj["macros"]
+    over = [m for m in records if m["chars"] > LIMIT]
+    print(f"wrote {len(records)} macros in {len(catalog_obj['groups'])} groups")
+    print("label dropped:", sum(1 for m in records if m.get("labelDropped")))
+    if over:
+        raise SystemExit(over)
+
 
 DECK_IDS = [
     "w-hm", "w-charge", "w-c", "w-interrupt", "w-bloodrage", "w-intimid", "w-disarm",
     "w-br", "w-shout", "w-o", "w-h", "w-ex", "w-rend", "w-tc", "w-ds",
     "w-major-cd", "w-mock", "w-revenge", "w-s", "w-sblock", "w-taunt", "w-ww",
     "w-chall", "w-b", "w-d-def", "w-bs", "w-sweep", "w-ms", "w-slam",
-    "w-deathwish", "w-bt", "w-ls", "w-sslam", "w-concussion", "w-retal",
+    "w-deathwish", "w-bt", "w-ls", "w-sslam", "w-concussion", "w-retal", "w-reck",
 ]
 
 
@@ -1228,10 +1983,9 @@ def lua_str(s: str) -> str:
 
 
 def emit_deck_catalog(catalog_obj: dict) -> str:
-    by_id = {m["id"]: m for m in catalog_obj["macros"]}
     lines = [
         "--[[",
-        "  Purpose: Catalog macros used by the Warrior Action Deck (CreateMacro if missing).",
+        "  Purpose: Catalog macros used by the Action Deck (CreateMacro if missing).",
         "  Deps: ShadowUI addon table",
         "  Public: populates ShadowUI.Defaults.catalog",
         "  Notes: Bodies copy docs/macros/catalog.json. Rebuild with build_catalog.py.",
@@ -1242,14 +1996,15 @@ def emit_deck_catalog(catalog_obj: dict) -> str:
         "local C = Addon.Defaults.catalog",
         "",
     ]
-    for mid in DECK_IDS:
-        m = by_id.get(mid)
-        if not m:
+    for m in catalog_obj.get("macros") or []:
+        mid = m.get("id") if isinstance(m, dict) else None
+        if not isinstance(mid, str) or not m.get("name") or not m.get("body"):
             continue
+        icon = m.get("icon") if isinstance(m.get("icon"), str) and m.get("icon") else "inv_misc_questionmark"
         lines += [
             f"C[{lua_str(mid)}] = {{",
             f"  name = {lua_str(m['name'])},",
-            f"  icon = {lua_str(m['icon'])},",
+            f"  icon = {lua_str(icon)},",
             f"  body = {lua_str(m['body'])},",
             "}",
             "",
@@ -1257,25 +2012,10 @@ def emit_deck_catalog(catalog_obj: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-(ROOT.parents[1] / "defaults" / "catalog.lua").write_text(emit_deck_catalog(catalog))
-
-class_files = {
-    "ALL": "shared.md",
-    "WARRIOR": "warrior.md",
-    "PALADIN": "paladin.md",
-    "HUNTER": "hunter.md",
-    "ROGUE": "rogue.md",
-    "PRIEST": "priest.md",
-    "SHAMAN": "shaman.md",
-    "MAGE": "mage.md",
-    "WARLOCK": "warlock.md",
-    "DRUID": "druid.md",
-}
-for cls, fname in class_files.items():
-    (ROOT / fname).write_text(emit_class_md(cls, catalog))
-
-over = [m for m in macros if m["chars"] > LIMIT]
-print(f"wrote {len(macros)} macros in {len(groups)} groups")
-print("label dropped:", sum(1 for m in macros if m.get("labelDropped")))
-if over:
-    raise SystemExit(over)
+if __name__ == "__main__":
+    if "--from-source" in sys.argv:
+        apply_overlays()
+        emit_artifacts(catalog, write_json=True)
+    else:
+        catalog_obj = json.loads((ROOT / "catalog.json").read_text())
+        emit_artifacts(catalog_obj, write_json=False)

@@ -60,8 +60,8 @@ ShadowUI/
     chat.lua                    -- semi-transparent black chat
     micro.lua                   -- micro + backpack on ShadowUIMicroCluster, native art, flush bottom-right
     minimap.lua                 -- large square blackened minimap
-    rainbow.lua                 -- Rainbow Organizer category order, layout, and glow
-    bagnon.lua                  -- Bagnon inventory and bank Darken, Outer Edge, Rainbow Organizer
+    rainbow.lua                 -- Rainbow Organizer (parked; TOC does not load)
+    bags.lua                    -- combined inventory and bank (parked; TOC does not load)
   edit/
     mode.lua                    -- Layout Edit Mode, grid snap, bar and unit-frame drag
     frames.lua                  -- Player Frame and Target Frame HUD hosts
@@ -148,10 +148,10 @@ Minimal per-character state only:
 
 ### Visual button rules
 
-- Action Slot Lock: click uses the action. Shift-drag moves a spell or item and does not use the action. `/shadowui` hard lock blocks that move.
+- Action Slot Lock: click uses the action. Shift-drag moves a spell or item and does not use the action. `/shadowui` hard lock blocks that move. A pickup shows every standard Bar and empty Action Slot as a drop target, including each Keybind label.
 - Square ability icons with a 2px Lorti-dark inset (chrome 0.05, 0.05, 0.05) and a 4px black outer edge
 - No margin between buttons (button frames abut; icons do not)
-- Bar backdrop: none. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label.
+- Bar backdrop: none. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label, except during Keybind Edit Mode or a pickup (slots and Keybind labels both show).
 
 ### Defaults
 
@@ -171,12 +171,12 @@ Minimal per-character state only:
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels; 4px black outer edge on bound slots; Cooldown Count for cooldowns of 2s or more |
+| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; Cooldown Count for cooldowns of 2s or more |
 | Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame keeps native Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar bubble tab on the portrait |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
-| Bagnon inventory and bank | Darken fill, Outer Edge, search, sort; Rainbow Organizer groups by category with a coloured glow in addition to quality chrome; bag breaks stay off |
+| Bags | Parked. Files stay. Blizzard bag and bank windows stay. Darken still tints those windows. |
 | XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
-| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player buffs 4px below the top of the screen and 4px left of the square minimap; debuff type colour stays native; Target Frame auras show remaining time |
+| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player BuffFrame and DebuffFrame keep Blizzard Edit Mode place; debuff type colour stays native; Target Frame auras sit 2px to the right at 32px and show remaining time |
 | Tooltips | Dark backdrop border |
 | Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Time is Blizzard TimeManagerClockButton under the map (hover Time Info, click Stopwatch), mouse-wheel zoom and 5s auto zoom-out, Outer Edge; cluster icons on the square path 10px outside the map and draggable |
 | Chat | Black, semi-transparent |

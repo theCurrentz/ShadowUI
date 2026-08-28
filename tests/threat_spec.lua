@@ -20,6 +20,10 @@ function Addon:ApplyStatusBarGradient(texture, orientation, from, to)
   texture.orientation = orientation
   texture.from = from
   texture.to = to
+  -- Classic SetGradient keeps RGB and drops ColorMixin alpha.
+  if texture.SetVertexColor then
+    texture:SetVertexColor(to[1], to[2], to[3], 1)
+  end
 end
 function Addon:ApplyOuterChrome(host)
   if not host or host.shadowUIOuter then
@@ -49,6 +53,8 @@ _G.CreateFrame = function(_, _, parent)
   function frame:SetFrameLevel() end
   function frame:GetFrameLevel() return 5 end
   function frame:SetScript() end
+  function frame:SetAlpha(a) frame.alpha = a end
+  function frame:EnableMouse() end
   function frame:Show() frame.shown = true end
   function frame:Hide() frame.shown = false end
   function frame:CreateTexture()
@@ -58,6 +64,7 @@ _G.CreateFrame = function(_, _, parent)
     function tex:SetVertexColor(r, g, b, a)
       tex.r, tex.g, tex.b, tex.a = r, g, b, a
     end
+    function tex:SetAlpha(a) tex.alpha = a end
     function tex:SetSize(w, h) tex.w, tex.h = w, h end
     function tex:SetPoint(...) tex.points[#tex.points + 1] = { ... } end
     function tex:ClearAllPoints() tex.points = {} end
@@ -130,12 +137,12 @@ assert(Addon:ThreatBarColor(118) == Addon:ThreatBarColor(100),
   "over-pull stays on the full-threat hue")
 
 local from41, to41 = Addon:ThreatBarGradient(41)
-assert(near(from41[1], 0) and near(from41[4], 0.58), "low threat is dark glass")
-assert(to41[4] > from41[4], "low threat stays more opaque at the light end")
+assert(near(from41[1], 0) and near(from41[4], 1), "low threat is dark glass")
+assert(near(to41[4], 1), "gradient colour alpha stays full so the fill host is the glass")
 local from72, to72 = Addon:ThreatBarGradient(72)
 assert(to72[2] > from72[2], "70-88% runs yellow at the light end to orange at the dark end")
-assert(near(to72[4], 0.84) and near(from72[4], 0.76),
-  "threat fill is slightly transparent")
+assert(near(to72[4], 1) and near(from72[4], 1),
+  "gradient colour alpha stays full so the fill host is the glass")
 local from90, to90 = Addon:ThreatBarGradient(90)
 assert(from90[1] < to90[1] and from90[2] < to90[2],
   "88-99% runs orange at the light end to deep orange at the dark end")
@@ -159,8 +166,13 @@ assert(tab.fill.w == 26 and tab.fill.h == 26, "fill sits inside the stroke")
 assert(tab.rim.path == "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
   "stroke is the portrait circle")
 assert(tab.rim.w == 32 and tab.rim.h == 32, "stroke matches the bubble")
-assert(near(tab.rim.r, 0.05) and near(tab.rim.a, 0.84),
-  "stroke matches Darken chrome at 84% opacity")
+assert(near(tab.rim.r, 0.05) and near(tab.rim.a, 1), "stroke matches Darken chrome")
+assert(not tab.rim.alpha or near(tab.rim.alpha, 1), "stroke stays opaque")
+assert(tab.fillHost, "inner fill sits on a glass host")
+assert(near(tab.fillHost.alpha, 0.5),
+  "inner fill host is 50% glass so Classic SetGradient cannot hide the portrait")
+assert(not tab.fill.alpha or near(tab.fill.alpha, 1),
+  "fill texture alpha stays full so only the host fades")
 assert(not tab.inner or tab.inner.shown == false, "nested inner disc stays hidden")
 assert(not tab.drop or tab.drop.shown == false, "offset drop disc stays hidden")
 assert(not tab.shadowUIOuter or tab.shadowUIOuter.shown == false,

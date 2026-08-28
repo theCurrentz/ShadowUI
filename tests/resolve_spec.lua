@@ -144,4 +144,30 @@ stubTalents({
 })
 assert(Addon:GetActiveVariantName("WARRIOR") == "Fury", "shipped talent tree selects Variant with empty account variants")
 
+-- Character Layer is a sparse last overlay. through Variant skips it.
+reset()
+char.layout = { bar1 = { scale = 1.5 } }
+char.keybinds = { ["CLICK ShadowUIActionButton1:Keybind"] = "F1" }
+account.classes.DRUID.variants.Feral.keybinds = {
+  ["CLICK ShadowUIActionButton1:Keybind"] = "1",
+}
+local withChar = Addon:ResolveEffective("DRUID", "Feral")
+assert(withChar.layout.bar1.scale == 1.5, "Character Layout wins over Variant")
+assert(withChar.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "F1",
+  "Character Keybind wins over Variant")
+local throughVariant = Addon:ResolveEffective("DRUID", "Feral", "variant")
+assert(throughVariant.layout.bar1.scale == 1.2, "through Variant skips Character")
+assert(throughVariant.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "1",
+  "through Variant keeps Variant Keybind")
+
+reset()
+Addon:WriteLayerDelta("character", "layout", "bar1", { x = 11 })
+assert(char.layout.bar1.x == 11, "character Layout patch writes CharDB")
+assert(account.base.layout.bar1.x == nil, "character Layout does not write Account")
+Addon:WriteLayerDelta("character", "keybinds", "CLICK ShadowUIActionButton2:Keybind", "E")
+assert(char.keybinds["CLICK ShadowUIActionButton2:Keybind"] == "E",
+  "character Keybind writes CharDB")
+Addon:WriteLayerDelta("character", "actions", 13, { id = "frostbolt", name = "Frostbolt" })
+assert(char.actions[13].id == "frostbolt", "character Action Deck writes CharDB")
+
 print("resolve_spec OK")

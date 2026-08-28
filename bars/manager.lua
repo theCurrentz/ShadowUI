@@ -3,9 +3,10 @@
            Layout Edit Mode creates Special Bar previews for pet and possess.
            The Blizzard Stance Bar stays shown and parks on UIParent.
   Deps: ShadowUI:CreateBar(), ShadowUI:CreateSpecialBar(), ShadowUI:UpdateBarLayout(),
-        ShadowUI:ApplyActionSlotLock(), ShadowUI:ParkFrame()
+        ShadowUI:ApplyActionSlotLock(), ShadowUI:ParkFrame(),
+        ShadowUI:ShowBarsForActionPlacement()
   Public: ShadowUI:ApplyBars(), ShadowUI:HideBlizzardBars(),
-          ShadowUI:ParkBlizzardStanceBar()
+          ShadowUI:ParkBlizzardStanceBar(), ShadowUI:ShowBarsForActionPlacement()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -310,6 +311,21 @@ function Addon:HideBlizzardBars()
   self:ParkBlizzardStanceBar()
 end
 
+function Addon:ShowBarsForActionPlacement(show)
+  if InCombatLockdown() then
+    return
+  end
+  for _, bar in pairs(self.bars or {}) do
+    if not bar.specialId then
+      if show or bar.configEnabled then
+        bar:Show()
+      else
+        bar:Hide()
+      end
+    end
+  end
+end
+
 function Addon:ApplyBars(cfg)
   if InCombatLockdown() then
     self.pendingApplyAll = true
@@ -325,18 +341,29 @@ function Addon:ApplyBars(cfg)
       local standard = barId:match("^bar%d+$") ~= nil
       local supported = standard or supportsSpecialBar(barId, classFile)
       local enabled = barCfg.enabled ~= false and (supported or (preview and isSpecialBar(barId)))
+      local create = standard or enabled or (preview and isSpecialBar(barId))
+      local pickup = standard
+        and self.ShouldShowEmptyActionSlots
+        and self:ShouldShowEmptyActionSlots()
       local bar = self.bars[barId]
 
-      if enabled then
+      if create then
         if not bar then
           bar = standard
             and self:CreateBar(barId, barCfg)
             or self:CreateSpecialBar(barId, barCfg)
           self.bars[barId] = bar
         end
-        bar.configEnabled = true
+        bar.configEnabled = enabled
         self:UpdateBarLayout(bar, barCfg)
-        bar:Show()
+        if enabled or pickup then
+          bar:Show()
+        else
+          bar:Hide()
+          if self.UpdateBarDragOverlay then
+            self:UpdateBarDragOverlay(bar, false)
+          end
+        end
       elseif bar then
         bar.configEnabled = false
         bar:Hide()

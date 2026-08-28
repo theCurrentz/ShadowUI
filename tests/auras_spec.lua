@@ -1,7 +1,12 @@
 -- Buff and debuff icons get the same 0.05 chrome as the player frame, plus
--- a 4px Lorti outer edge. Unused slots stay empty. Player buffs sit 4px below
--- the top of the screen and 4px left of the square minimap. Debuff type colour
--- on the Blizzard border stays native.
+-- a 4px Lorti outer edge. Unused slots stay empty. Player BuffFrame and
+-- DebuffFrame keep Blizzard Edit Mode place. Debuff type colour on the
+-- Blizzard border stays native. Target of Target auras sit 2px to the right
+-- of Target of Target in a horizontal row. Target auras sit 2px to the right
+-- of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit.
+-- Blizzard enemy-with-no-debuffs layout starts buffs on top of the frame.
+-- Classic copies TargetFrameMixin.UpdateAuras onto TargetFrame, so the
+-- instance method must keep that right-side place.
 -- Run: lua tests/auras_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local unpack = unpack or table.unpack
@@ -9,7 +14,28 @@ local Addon = {}
 _G.LibStub = function()
   return { GetAddon = function() return Addon end }
 end
-_G.hooksecurefunc = function() end
+_G.hooksecurefunc = function(object, method, fn)
+  if type(object) == "string" then
+    fn = method
+    local orig = _G[object]
+    if type(orig) ~= "function" then
+      return
+    end
+    _G[object] = function(...)
+      orig(...)
+      fn(...)
+    end
+    return
+  end
+  local orig = object[method]
+  if type(orig) ~= "function" then
+    return
+  end
+  object[method] = function(self, ...)
+    orig(self, ...)
+    fn(self, ...)
+  end
+end
 _G.CreateFrame = function(_, _, parent, template)
   local frame = { points = {}, parent = parent, template = template }
   function frame:ClearAllPoints() self.points = {} end
@@ -65,8 +91,14 @@ local function fakeButton(name, borderColor)
   return button, icon, border
 end
 
-_G.UIParent = {}
+_G.UIParent = { name = "UIParent" }
 _G.ShadowUIMinimapHolder = { name = "ShadowUIMinimapHolder" }
+_G.EditModeSystemMixin = {
+  ApplySystemAnchor = function(self)
+    self:ClearAllPoints()
+    self:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 80, -40)
+  end,
+}
 local buff, buffIcon = fakeButton("BuffButton1")
 local _, _, debuffBorder = fakeButton("DebuffButton1", { 1, 0, 0 })
 local unusedDebuff, unusedIcon = fakeButton("DebuffButton2")
@@ -101,19 +133,91 @@ end
 function privateAnchor:GetFrameLevel() return 4 end
 function privateAnchor:SetFrameLevel() end
 function privateAnchor:IsShown() return true end
-_G.BuffFrame = { auraFrames = { modernBuff }, points = {} }
-function _G.BuffFrame:ClearAllPoints() self.points = {} end
-function _G.BuffFrame:SetPoint(...) self.points[#self.points + 1] = { ... } end
-function _G.BuffFrame:IsMovable() return true end
-function _G.BuffFrame:IsResizable() return false end
-function _G.BuffFrame:SetUserPlaced()
-  error("BuffFrame:SetUserPlaced(): Frame is not movable or resizable")
+local function fakeAuraHost(auraFrames)
+  local frame = { auraFrames = auraFrames, points = {} }
+  function frame:ClearAllPoints() self.points = {} end
+  function frame:SetPointBase(point, relative, relativePoint, x, y)
+    self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
+  end
+  function frame:ClearAllPointsBase()
+    self.points = {}
+  end
+  function frame:SetPoint(...)
+    self:SetPointBase(...)
+  end
+  function frame:IsMovable() return true end
+  function frame:IsResizable() return false end
+  function frame:SetUserPlaced()
+    error("BuffFrame:SetUserPlaced(): Frame is not movable or resizable")
+  end
+  return frame
 end
-_G.DebuffFrame = { auraFrames = { modernDebuff, privateAnchor }, points = {} }
-function _G.DebuffFrame:ClearAllPoints() self.points = {} end
-function _G.DebuffFrame:SetPoint(...) self.points[#self.points + 1] = { ... } end
-function _G.DebuffFrame:IsMovable() return false end
-function _G.DebuffFrame:IsResizable() return false end
+local function fakePlaceButton(name, borderColor)
+  local button = fakeButton(name, borderColor)
+  button.points = {}
+  button.w = 21
+  button.h = 21
+  function button:ClearAllPoints()
+    self.points = {}
+  end
+  function button:SetPoint(...)
+    self.points[#self.points + 1] = { ... }
+  end
+  function button:SetSize(w, h)
+    self.w, self.h = w, h
+  end
+  function button:SetWidth(w)
+    self.w = w
+  end
+  function button:SetHeight(h)
+    self.h = h
+  end
+  function button:GetWidth()
+    return self.w
+  end
+  function button:GetHeight()
+    return self.h
+  end
+  function button:IsShown()
+    return true
+  end
+  return button
+end
+
+_G.TargetFrameToT = { name = "TargetFrameToT" }
+function _G.TargetFrameToT:GetName()
+  return "TargetFrameToT"
+end
+function _G.TargetFrameToT:IsShown()
+  return true
+end
+_G.TargetFrame = { name = "TargetFrame", totFrame = _G.TargetFrameToT, unit = "target" }
+function _G.TargetFrame:GetName()
+  return "TargetFrame"
+end
+function _G.TargetFrame:IsShown()
+  return true
+end
+local totDebuff1 = fakePlaceButton("TargetFrameToTDebuff1", { 1, 0, 0 })
+local totDebuff2 = fakePlaceButton("TargetFrameToTDebuff2", { 1, 0, 0 })
+local targetBuff1 = fakePlaceButton("TargetFrameBuff1")
+local targetBuff2 = fakePlaceButton("TargetFrameBuff2")
+
+local function blizzardPlaceOnTop()
+  targetBuff1:ClearAllPoints()
+  targetBuff1:SetPoint("TOPLEFT", _G.TargetFrame, "BOTTOMLEFT", 5, 32)
+  targetBuff1:SetSize(21, 21)
+  targetBuff2:ClearAllPoints()
+  targetBuff2:SetPoint("TOPLEFT", targetBuff1, "TOPRIGHT", 3, 0)
+  targetBuff2:SetSize(21, 21)
+end
+_G.TargetFrameMixin = { UpdateAuras = blizzardPlaceOnTop }
+_G.TargetFrame.UpdateAuras = blizzardPlaceOnTop
+
+_G.BuffFrame = fakeAuraHost({ modernBuff })
+_G.DebuffFrame = fakeAuraHost({ modernDebuff, privateAnchor })
+_G.BuffFrame:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 80, -40)
+_G.DebuffFrame:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 80, -120)
 
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/darken.lua"))()
@@ -150,17 +254,112 @@ assert(not privateAnchor.chrome or privateAnchor.chrome.shown == false,
   "private aura anchors do not keep Darken chrome")
 assert(not privateAnchor.shadowUIOuter or privateAnchor.shadowUIOuter.shown == false,
   "private aura anchors do not keep an Outer Edge")
-assert(_G.BuffFrame.points[1][1] == "TOPRIGHT"
-    and _G.BuffFrame.points[1][2] == _G.ShadowUIMinimapHolder
-    and _G.BuffFrame.points[1][3] == "TOPLEFT"
-    and _G.BuffFrame.points[1][4] == -4
-    and _G.BuffFrame.points[1][5] == -4,
-  "player buffs sit 4px left of the square minimap and 4px below the top")
-assert(_G.DebuffFrame.points[1][1] == "TOPRIGHT"
-    and _G.DebuffFrame.points[1][2] == _G.BuffFrame
-    and _G.DebuffFrame.points[1][3] == "BOTTOMRIGHT"
-    and _G.DebuffFrame.points[1][4] == -13
-    and _G.DebuffFrame.points[1][5] == -5,
-  "player debuffs sit under the player buffs")
+local function last(frame)
+  return frame.points[#frame.points]
+end
+assert(last(_G.BuffFrame)[4] == 80 and last(_G.BuffFrame)[5] == -40,
+  "SkinAuras keeps the Blizzard BuffFrame place")
+assert(last(_G.DebuffFrame)[4] == 80 and last(_G.DebuffFrame)[5] == -120,
+  "SkinAuras keeps the Blizzard DebuffFrame place")
+
+_G.BuffFrame:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", 24, 64)
+_G.DebuffFrame:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", 24, 24)
+assert(last(_G.BuffFrame)[4] == 24 and last(_G.BuffFrame)[5] == 64,
+  "Blizzard Edit Mode can keep a new BuffFrame place")
+assert(last(_G.DebuffFrame)[4] == 24 and last(_G.DebuffFrame)[5] == 24,
+  "Blizzard Edit Mode can keep a new DebuffFrame place")
+
+Addon:SkinAuras()
+assert(last(_G.BuffFrame)[4] == 24 and last(_G.BuffFrame)[5] == 64,
+  "later SkinAuras must keep the Edit Mode BuffFrame place")
+assert(last(_G.DebuffFrame)[4] == 24 and last(_G.DebuffFrame)[5] == 24,
+  "later SkinAuras must keep the Edit Mode DebuffFrame place")
+
+_G.EditModeSystemMixin.ApplySystemAnchor(_G.BuffFrame)
+assert(last(_G.BuffFrame)[4] == 80 and last(_G.BuffFrame)[5] == -40,
+  "Edit Mode ApplySystemAnchor can keep the BuffFrame place")
+_G.EditModeSystemMixin.ApplySystemAnchor(_G.DebuffFrame)
+assert(last(_G.DebuffFrame)[4] == 80 and last(_G.DebuffFrame)[5] == -40,
+  "Edit Mode ApplySystemAnchor can keep the DebuffFrame place")
+
+assert(totDebuff1.points[1][1] == "TOPLEFT" and totDebuff1.points[1][2] == _G.TargetFrameToT
+    and totDebuff1.points[1][3] == "TOPRIGHT" and totDebuff1.points[1][4] == 2
+    and totDebuff1.points[1][5] == 0,
+  "target of target auras sit 2px to the right of Target of Target")
+assert(totDebuff2.points[1][1] == "TOPLEFT" and totDebuff2.points[1][2] == totDebuff1
+    and totDebuff2.points[1][3] == "TOPRIGHT" and totDebuff2.points[1][4] == 3
+    and totDebuff2.points[1][5] == 0,
+  "target of target auras stay in a horizontal row")
+assert(targetBuff1.points[1][1] == "TOPLEFT" and targetBuff1.points[1][2] == _G.TargetFrame
+    and targetBuff1.points[1][3] == "TOPRIGHT" and targetBuff1.points[1][4] == 2
+    and targetBuff1.points[1][5] == 0,
+  "target auras sit 2px to the right of the Target Frame")
+assert(targetBuff2.points[1][1] == "TOPLEFT" and targetBuff2.points[1][2] == targetBuff1
+    and targetBuff2.points[1][3] == "TOPRIGHT" and targetBuff2.points[1][4] == 3
+    and targetBuff2.points[1][5] == 0,
+  "target auras stay in a horizontal row")
+assert(targetBuff1.w == 32 and targetBuff1.h == 32,
+  "target auras are 32px so Aura Duration numbers fit")
+assert(targetBuff2.w == 32 and targetBuff2.h == 32,
+  "each target aura is 32px")
+assert(totDebuff1.w == 21 and totDebuff1.h == 21,
+  "target of target auras keep native size")
+
+_G.TargetFrame:UpdateAuras()
+assert(targetBuff1.points[1][1] == "TOPLEFT" and targetBuff1.points[1][2] == _G.TargetFrame
+    and targetBuff1.points[1][3] == "TOPRIGHT" and targetBuff1.points[1][4] == 2
+    and targetBuff1.points[1][5] == 0,
+  "TargetFrame:UpdateAuras cannot keep auras on top of the Target Frame")
+assert(targetBuff1.w == 32 and targetBuff1.h == 32,
+  "TargetFrame:UpdateAuras cannot keep Blizzard 21px target auras")
+
+function targetBuff1:IsShown() return false end
+function targetBuff2:IsShown() return false end
+local poolBuff1 = fakePlaceButton("PoolAura1")
+local poolBuff2 = fakePlaceButton("PoolAura2")
+poolBuff1.Icon = _G.PoolAura1Icon
+poolBuff2.Icon = _G.PoolAura2Icon
+poolBuff1.unit = "target"
+poolBuff2.unit = "target"
+poolBuff1.auraInstanceID = 1
+poolBuff2.auraInstanceID = 2
+poolBuff1:ClearAllPoints()
+poolBuff1:SetPoint("TOPLEFT", _G.TargetFrame, "BOTTOMLEFT", 5, 32)
+poolBuff1:SetSize(21, 21)
+poolBuff2:ClearAllPoints()
+poolBuff2:SetPoint("TOPLEFT", poolBuff1, "TOPRIGHT", 3, 0)
+poolBuff2:SetSize(21, 21)
+local function iterate(items)
+  local i = 0
+  return function()
+    i = i + 1
+    return items[i]
+  end
+end
+_G.TargetFrame.auraPools = {
+  GetPool = function(_, template)
+    if template == "TargetBuffFrameTemplate" then
+      return {
+        EnumerateActive = function()
+          return iterate({ poolBuff1, poolBuff2 })
+        end,
+      }
+    end
+    return {
+      EnumerateActive = function()
+        return iterate({})
+      end,
+    }
+  end,
+}
+Addon:SkinAuras()
+assert(poolBuff1.points[1][1] == "TOPLEFT" and poolBuff1.points[1][2] == _G.TargetFrame
+    and poolBuff1.points[1][3] == "TOPRIGHT" and poolBuff1.points[1][4] == 2
+    and poolBuff1.points[1][5] == 0,
+  "1.15.9 auraPools target auras sit 2px to the right of the Target Frame")
+assert(poolBuff2.points[1][2] == poolBuff1 and poolBuff2.points[1][3] == "TOPRIGHT",
+  "1.15.9 auraPools target auras stay in a horizontal row")
+assert(poolBuff1.w == 32 and poolBuff1.h == 32,
+  "1.15.9 auraPools target auras are 32px")
 
 print("auras_spec OK")

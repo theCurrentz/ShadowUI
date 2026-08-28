@@ -15,6 +15,16 @@ for _, class in ipairs({
   assert(loadfile(root .. "defaults/classes/" .. class .. ".lua"))()
 end
 
+for class, data in pairs(Addon.Defaults.classes) do
+  local n = 0
+  for _, entry in pairs(data.actions or {}) do
+    n = n + 1
+    assert(type(entry) == "table" and type(entry.id) == "string" and type(entry.name) == "string",
+      class .. " Action Deck entries need id and name from act()")
+  end
+  assert(n > 0, class .. " Action Deck must load")
+end
+
 local LIMIT = 360
 local CAST = { name = "castbar", point = "CENTER", left = -150, right = 144, top = -118, bottom = -146 }
 

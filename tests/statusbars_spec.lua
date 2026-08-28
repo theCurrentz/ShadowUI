@@ -88,6 +88,7 @@ local function fakeBar(name, r, g, b)
   return bar
 end
 
+assert(loadfile(root .. "skin/portrait.lua"))()
 assert(loadfile(root .. "skin/statusbars.lua"))()
 
 local fromG, toG = Addon:LightingGradient(0, 1, 0, 1)
@@ -178,6 +179,32 @@ assert(health.shadowUIMeter.from[1] < health.shadowUIMeter.to[1],
 nameBg:SetVertexColor(0, 0, 1, 1)
 assert(nameBg.shadowUIMeter.from[3] < nameBg.shadowUIMeter.to[3],
   "friendly Name Background overlay climbs from dark blue")
+
+_G.RAID_CLASS_COLORS = { SHAMAN = { r = 0.96, g = 0.55, b = 0.73 } }
+_G.UnitClass = function(unit)
+  if unit == "target" then
+    return "Shaman", "SHAMAN"
+  end
+end
+_G.UnitIsPlayer = function(unit)
+  return unit == "target"
+end
+nameBg:SetVertexColor(1, 0, 0, 1)
+Addon:SkinStatusBarGradients()
+local shamanFrom, shamanTo = Addon:LightingGradient(0.96, 0.55, 0.73, 1)
+assert(near(nameBg.shadowUIMeter.to[1], shamanTo[1])
+    and near(nameBg.shadowUIMeter.to[2], shamanTo[2])
+    and near(nameBg.shadowUIMeter.to[3], shamanTo[3]),
+  "player Name Background uses class colour, not reaction red")
+assert(near(nameBg.shadowUIMeter.from[1], shamanFrom[1])
+    and nameBg.shadowUIMeter.from[1] < nameBg.shadowUIMeter.to[1],
+  "shaman Name Background keeps Meter Fill lighting")
+
+_G.UnitIsPlayer = function() return false end
+nameBg:SetVertexColor(1, 0, 0, 1)
+Addon:SkinStatusBarGradients()
+assert(near(nameBg.shadowUIMeter.to[1], 1) and near(nameBg.shadowUIMeter.to[2], 0),
+  "NPC Name Background keeps hostile red")
 
 Addon:OnNamePlateUnitAdded("NAME_PLATE_UNIT_ADDED", "nameplate1")
 assert(plateHealth.shadowUIMeter.orientation == "HORIZONTAL", "a new nameplate still gets Meter Fill")

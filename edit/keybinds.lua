@@ -72,6 +72,11 @@ function Addon:CreateKeybindBinder()
     Addon:CaptureKeybind(key)
   end
   binder:SetScript("OnKeyDown", capture)
+  binder:SetScript("OnKeyUp", function(_, key)
+    if key == "ESCAPE" then
+      Addon:CaptureKeybind(key)
+    end
+  end)
   binder:SetScript("OnClick", function(_, mouse)
     Addon:CaptureKeybind(mouse)
   end)

@@ -1,10 +1,10 @@
 # Classic Era macro index
 
-Parked notes plus the Warrior Action Deck. `/shadowui deck` clears and replaces the managed Warrior Action Slots. Other classes stay notes only.
+Parked notes plus class Action Decks. `/shadowui deck` places the merged Action Deck (macros and spells). Live Keybind and Action Deck overlays live in AceDB SavedVariables, not in sidecar JSON.
 
-The sidecar **WoW Macro Cursor** (`macro-cursor/`) reads [catalog.json](catalog.json) and shows the same groups as a rolodex. Load a group without wiping groups already on that tab. Replace is an explicit action. Live WTF sync is **off** (the code stays). Turn `LIVE_SYNC` on in `macro-cursor/src/main.ts` to merge in-game caches.
+The sidecar **WoW Macro Cursor** (sibling repo `../MacroCursor`) reads and writes [catalog.json](catalog.json). That file is the Macro Library. The header **Version** chip selects Era or TBC. TBC reads `_anniversary_` WTF and, when present, [spells-tbc.json](spells-tbc.json). Load a group without wiping groups already on that tab. Replace is an explicit action. On startup the sidecar diffs live `macros-cache.txt` into the library. Catalog bodies win on a name match. Delete in Macro Cursor removes the record from the live cache. A macro removed in the game is unloaded and stays in the library.
 
-Scope: **Classic Era** (client 1.13+ conditionals). TBC / Wrath / Retail syntax is out of scope.
+Scope: **Classic Era** macros (client 1.13+ conditionals) are the catalog default. Groups tagged `gameVersion: TBC` show only on Version TBC. TBC / Wrath / Retail syntax beyond those tagged groups stays out of the catalog. Version TBC also reads `_anniversary_` WTF and [spells-tbc.json](spells-tbc.json).
 
 Key ranks and class/Variant binds: [classic-keymaps.md](../classic-keymaps.md).
 
@@ -14,13 +14,13 @@ Key ranks and class/Variant binds: [classic-keymaps.md](../classic-keymaps.md).
 | --- | --- |
 | [inventory.md](inventory.md) | Dump of every Classic Era `macros-cache.txt` and the triage |
 | [catalog.md](catalog.md) | Full text database (see counts in that file) |
-| [catalog.json](catalog.json) | Machine source. The sidecar loads this file |
-| [pruned.json](pruned.json) | Ids removed by Macro Cursor **Delete**. Rebuild skips them |
-| [renames.json](renames.json) | Names changed by Macro Cursor inspector edits. Rebuild applies them |
-| [bodies.json](bodies.json) | Bodies changed by Macro Cursor inspector edits. Rebuild applies them |
-| [keybinds.json](keybinds.json) | Overlay Keybinds from Macro Cursor **Keybind edit**. `base` applies to every class. `classes` overlays one class |
-| [actions.json](actions.json) | Action Slot overlays from Macro Cursor drag-and-drop. Per Class and Variant. Managed Action Deck macros also write the Class Lua Action Deck |
-| [spells.json](spells.json) | Classic Era class, racial, and profession abilities for the sidecar Spellbook, including max-rank descriptions for Action Bar tooltips |
+| [catalog.json](catalog.json) | Macro Library. The sidecar reads and writes this file |
+| [actions.json](actions.json) | Leftover Action Slot overlay. First GET with the client closed migrates it into Account SavedVariables, then clears the file |
+| [keybinds.json](keybinds.json) | Leftover Keybind overlay. Same migrate-then-clear path |
+| [loaded.json](loaded.json) | Last loaded tab ids plus last-seen live names for delete sync |
+| [pruned.json](pruned.json) | Names waiting to leave the live cache while WoW is open. The sidecar deletes this file after it writes WTF |
+| [spells.json](spells.json) | Classic Era class, general, racial, and profession abilities for the sidecar Spellbook, including max-rank descriptions for Action Bar tooltips |
+| [spells-tbc.json](spells-tbc.json) | TBC Spellbook from Wowhead `/tbc`, including Jewelcrafting and Blood Elf / Draenei racials |
 | [rules.md](rules.md) | Engine limits, modifiers, condensed ranks, stopcasting |
 | [shared.md](shared.md) | General-tab extras that need a macro: assist, focus, trinket slots, cursor items. No potion, hearth, or racial wrappers |
 | [warrior.md](warrior.md) | Warrior Action Deck macros plus optional Tazzy gear macros |
@@ -33,16 +33,18 @@ Key ranks and class/Variant binds: [classic-keymaps.md](../classic-keymaps.md).
 | [warlock.md](warlock.md) | Life Tap, curses, pets, Spell Lock, summon |
 | [druid.md](druid.md) | Form cancel, feral interrupt, Innervate, rez |
 
-Rebuild class files and `defaults/catalog.lua` from the Python list: `python3 docs/macros/build_catalog.py`. Rebuild the sidecar spellbook (class, racial, profession tabs) from Wowhead: `python3 docs/macros/build_spells.py`. Add `--shared-only` to refresh racial and profession tabs without refetching class abilities. Add `--descriptions` to fill max-rank ability text on the current `spells.json` without rebuilding the list.
+Rebuild class files and `defaults/catalog.lua` from the Macro Library: `python3 docs/macros/build_catalog.py`. That command reads [catalog.json](catalog.json). Use `--from-source` only to rebuild the library from `build_catalog.py` plus leftover overlay files. Rebuild the sidecar spellbook (class, general, racial, profession tabs) from Wowhead: `python3 docs/macros/build_spells.py`. Add `--version TBC` to write `spells-tbc.json`. Add `--shared-only` to refresh general, racial, and profession tabs without refetching class abilities. Add `--general-only` to refresh the General tab only. Add `--descriptions` to fill max-rank ability text on the current `spells.json` without rebuilding the list.
 
 ## Reconcile rule
 
 Existing bodies remain as catalog records. Every Warrior Action Deck entry
 requires its Warrior body marker, not only a matching name. Catalog names are
-unique across the library. The deck uses collision-safe
-create names when needed. In particular, macro name `c` must match Cleave;
-Cannibalize and Cone of Cold cannot satisfy that deck entry.
-Social / RXP / Decursive stubs stay out of the catalog.
+unique across the library. Place Action Deck validates the selected resolved
+deck, replaces both in-game macro tabs, loads only its unique macros on the
+General tab, and leaves the character tab empty. This rebuild keeps macro
+indexes stable. In particular, a Priest macro cannot shift onto a Warrior
+Action Slot.
+Social / RXP / Decursive stubs stay out of the authored class files. They may sit in Other when they exist in the live cache.
 
 Label in every body (after `#showtooltip` when that line exists):
 
@@ -80,11 +82,19 @@ Named weapon and shield swaps stay in **warrior-gear**.
 8. **Self modifier** — Alt-self heal or buff without losing target.
 9. **Stance / form / aura** — change stance when one physical key must work from another stance page.
 10. **Downrank** — `[nomod]` max rank, `[mod:shift]` cheap rank, `[mod:ctrl]` Rank 1 when needed.
-11. **Pet** — attack, follow, Spell Lock, Sacrifice.
+11. **Pet** — attack (`shared-pa`), follow (`shared-pf`), Spell Lock, Sacrifice.
 12. **Travel** — teleport vs portal (Shift = portal), Ghost Wolf, Travel Form, mount.
 
-## Faction locks (Classic Era)
+## Faction locks
+
+Era:
 
 - Paladin is Alliance only. Shaman is Horde only.
 - Mage ports: Alliance Stormwind, Ironforge, Darnassus. Horde Orgrimmar, Undercity, Thunder Bluff.
 - Priest racials differ. See [priest.md](priest.md).
+
+TBC:
+
+- Paladin and Shaman are both factions. Blood Elf Paladin. Draenei Shaman.
+- Mage ports add Exodar, Silvermoon, Shattrath, Theramore, and Stonard.
+- Blood Elf Arcane Torrent and Draenei Gift of the Naaru sit in Shared TBC. Priest Consume Magic and Chastise sit in Priest TBC.

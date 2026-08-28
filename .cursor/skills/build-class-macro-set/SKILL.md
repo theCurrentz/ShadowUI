@@ -138,8 +138,7 @@ Run:
 
 ```bash
 python3 docs/macros/build_catalog.py
-pnpm --dir macro-cursor test
-pnpm --dir macro-cursor build
+cd ../MacroCursor && pnpm test && pnpm build
 ```
 
 Run relevant Lua tests when addon defaults or an Action Deck changed.

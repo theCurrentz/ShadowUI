@@ -1,8 +1,8 @@
 --[[
   Purpose: AceAddon bootstrap, combat-safe apply lifecycle, and regen flush.
   Deps: AceAddon-3.0, AceEvent-3.0, AceConsole-3.0; modules loaded later by TOC
-  Public: ShadowUI addon table, ShadowUI:GetPlayerClass(), ShadowUI:ApplyAll(),
-          ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled()
+  Public: ShadowUI addon table, ShadowUI:GetVersion(), ShadowUI:GetPlayerClass(),
+          ShadowUI:ApplyAll(), ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
@@ -11,10 +11,14 @@ local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceC
 -- of an unknown event raises an error, so each one is registered defensively.
 local EVENTS = {
   { "PLAYER_ENTERING_WORLD", "OnPlayerReady" },
+  { "SPELLS_CHANGED", "OnSpellsChanged" },
   { "PLAYER_REGEN_ENABLED", "OnRegenEnabled" },
   { "PLAYER_REGEN_DISABLED", "OnRegenDisabled" },
   { "PLAYER_TALENT_UPDATE", "OnTalentUpdate" },
   { "CHARACTER_POINTS_CHANGED", "OnTalentUpdate" },
+  { "ACTIONBAR_SHOWGRID", "OnActionBarShowGrid" },
+  { "ACTIONBAR_HIDEGRID", "OnActionBarHideGrid" },
+  { "CURSOR_CHANGED", "OnCursorChanged" },
 }
 
 function Addon:OnInitialize()
@@ -34,12 +38,39 @@ function Addon:GetPlayerClass()
   return classFile
 end
 
+function Addon:GetVersion()
+  if type(GetBuildInfo) == "function" then
+    local ok, interface = pcall(function()
+      return select(4, GetBuildInfo())
+    end)
+    if ok and type(interface) == "number" then
+      if interface >= 20000 and interface < 30000 then
+        return "TBC"
+      end
+      if interface >= 10000 and interface < 20000 then
+        return "ERA"
+      end
+    end
+  end
+  local project = _G.WOW_PROJECT_ID
+  local tbc = _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+  if project and tbc and project == tbc then
+    return "TBC"
+  end
+  return "ERA"
+end
+
 function Addon:OnPlayerReady()
-  if self._appliedOnce then
+  if not self._appliedOnce then
+    self._appliedOnce = true
+    self:ApplyAll()
     return
   end
-  self._appliedOnce = true
-  self:ApplyAll()
+  self:ClearTombstonedDeckSlots()
+end
+
+function Addon:OnSpellsChanged()
+  self:ClearTombstonedDeckSlots()
 end
 
 function Addon:ApplyAll()
@@ -56,6 +87,7 @@ function Addon:ApplyAll()
     end
   end
   step("bars", self.ApplyBars)
+  step("deck slots", self.ClearTombstonedDeckSlots)
   step("keybinds", self.ApplyKeybinds)
   step("auto loot", self.ApplyAutoLoot)
   step("skins", self.ApplySkins)
@@ -70,6 +102,9 @@ function Addon:OnRegenEnabled()
   if self.pendingApplyAll then
     self:ApplyAll()
     return
+  end
+  if self.pendingTombstoneClear then
+    self:ClearTombstonedDeckSlots()
   end
   self:FlushPendingKeybinds()
   self:FlushPendingSpecialBars()
@@ -89,12 +124,14 @@ function Addon:SlashCommand(input)
     self:ToggleKeybindMode()
   elseif cmd == "deck" or cmd == "place" then
     self:PlaceDeck()
+  elseif cmd == "prune" or cmd == "shift" then
+    self:ShiftAndPruneBars()
   elseif cmd == "layer" then
     self:SetEditLayer(rest)
   elseif cmd == "variant" then
     self:HandleVariantCommand(rest)
   else
-    self:Print("Usage: /shadowui [edit|binds|deck|layer|variant]")
+    self:Print("Usage: /shadowui [edit|binds|deck|prune|layer|variant]")
   end
 end
 
@@ -106,10 +143,23 @@ function Addon:ApplyAutoLoot()
   end
 end
 function Addon:ApplyActionSlotLock() end
+function Addon:ShouldShowEmptyActionSlots() return false end
+function Addon:PaintEmptySlotVisibility() end
+function Addon:RefreshActionPlacement() end
+function Addon:OnActionBarShowGrid() end
+function Addon:OnActionBarHideGrid() end
+function Addon:OnCursorChanged() end
+function Addon:ShowBarsForActionPlacement() end
 function Addon:LockBarButton(button) end
 function Addon:SetActionSlotHardLock(locked) end
 function Addon:ApplyKeybinds(cfg) end
 function Addon:PlaceDeck() end
+function Addon:ShiftAndPruneBars() end
+function Addon:InsertBarSlot() end
+function Addon:HookButtonForSlotShift() end
+function Addon:ClearSlotShiftFrom() end
+function Addon:ResolveDeckTombstones() return {} end
+function Addon:ClearTombstonedDeckSlots() end
 function Addon:RefreshActionDeckButtons() end
 function Addon:ApplyBarChrome(bar) end
 function Addon:ApplyOuterChrome(host) end

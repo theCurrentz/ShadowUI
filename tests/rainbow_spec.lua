@@ -1,5 +1,6 @@
 -- Rainbow Organizer groups bag items by category, not by bag. Glow sits
--- outside Bagnon quality chrome. Empty slots follow junk.
+-- outside item quality chrome. Empty slots follow junk.
+-- Parked: TOC does not load skin/rainbow.lua. These specs still load the file.
 -- Run: lua tests/rainbow_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -136,11 +137,26 @@ assert(sameA.points[4] == 0 and sameB.points[4] == 40,
   "same category stays on one row until the column count fills")
 assert(sameA.points[5] == sameB.points[5], "same category does not insert bag padding")
 
+-- ContainerFrameItemButtonTemplate anchors BOTTOMRIGHT. A second TOPLEFT
+-- without a clear stretches the slot across the item group.
+local stretched = fakeButton({ itemID = 6948, quality = 1, classID = 15, subclassID = 4, name = "Hearthstone" }, 0)
+stretched.points = { { "BOTTOMRIGHT", group, "BOTTOMRIGHT", 0, 0 } }
+stretched.width, stretched.height = 200, 400
+function stretched:ClearAllPoints() self.points = {} end
+function stretched:SetPoint(...) self.points[#self.points + 1] = { ... } end
+function stretched:SetSize(width, height)
+  self.width, self.height = width, height
+end
+Addon:PlaceRainbowButtons(group, { stretched }, { columns = 10, scale = 1, size = 40 })
+assert(#stretched.points == 1, "a bag slot cannot keep the template BOTTOMRIGHT stretch")
+assert(stretched.points[1][1] == "TOPLEFT", "a bag slot sits on TOPLEFT of the item group")
+assert(stretched.width == 40 and stretched.height == 40, "a bag slot keeps the grid size")
+
 local quality = { r = 0.64, g = 0.21, b = 0.93, a = 0.5 }
 local iconGlow = { r = quality.r, g = quality.g, b = quality.b, a = quality.a }
 local iconBorder = { r = quality.r, g = quality.g, b = quality.b }
-function iconGlow:SetVertexColor() error("must not overwrite Bagnon quality glow") end
-function iconBorder:SetVertexColor() error("must not overwrite Bagnon quality border") end
+function iconGlow:SetVertexColor() error("must not overwrite quality glow") end
+function iconBorder:SetVertexColor() error("must not overwrite quality border") end
 function iconGlow:SetShown() end
 function iconBorder:SetShown() end
 local epic = fakeButton({ itemID = 19862, quality = 4, classID = 4, subclassID = 4 }, 0)
@@ -152,8 +168,8 @@ assert(ring, "Rainbow Organizer paints a category ring")
 assert(ring.template == "BackdropTemplate", "category ring uses a backdrop edge")
 assert(ring.border and ring.border[3] == 1, "gear ring is steel blue")
 assert(ring.glow and ring.glow.blend == "ADD", "category ring also glows")
-assert(iconGlow.r == 0.64 and iconGlow.b == 0.93, "Bagnon quality glow stays")
-assert(iconBorder.r == 0.64, "Bagnon quality border stays")
+assert(iconGlow.r == 0.64 and iconGlow.b == 0.93, "quality glow stays")
+assert(iconBorder.r == 0.64, "quality border stays")
 
 Addon:PaintRainbowGlow(empty)
 assert(not empty.shadowUIRainbow or empty.shadowUIRainbow.shown == false,

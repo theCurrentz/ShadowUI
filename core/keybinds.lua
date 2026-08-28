@@ -58,6 +58,13 @@ function Addon:MergeBindingTables(client, profile)
     end
   end
 
+  local function dropSlot(slot)
+    local name = bySlot[slot]
+    if name then
+      dropName(name)
+    end
+  end
+
   local function set(name, key)
     dropName(name)
     local priorKey = byKey[key]
@@ -83,7 +90,12 @@ function Addon:MergeBindingTables(client, profile)
   end
   for name, key in pairs(profile or {}) do
     if key == false or key == "" then
-      dropName(name)
+      local slot = self:SlotFromBindingName(name)
+      if slot then
+        dropSlot(slot)
+      else
+        dropName(name)
+      end
     elseif key then
       set(name, key)
     end
@@ -273,7 +285,9 @@ function Addon:PaintButtonHotkeys(binds)
           hotkey:SetText("")
         end
         local filled = not button.HasAction or button:HasAction()
-        if button.shadowUIHotkey and (filled or self.keybindMode) then
+        local showEmpty = self.ShouldShowEmptyActionSlots and self:ShouldShowEmptyActionSlots()
+          or self.keybindMode
+        if button.shadowUIHotkey and (filled or showEmpty) then
           hotkey:Show()
         elseif hotkey.Hide then
           hotkey:Hide()

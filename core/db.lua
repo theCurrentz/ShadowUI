@@ -11,6 +11,7 @@ local ACCOUNT_DEFAULTS = {
     base = {
       layout = {},
       keybinds = {},
+      actions = {},
     },
     classes = {},
   },
@@ -24,6 +25,10 @@ local CHAR_DEFAULTS = {
     hardLockActionSlots = false,
     useShadowUIMenu = true,
     minimapIcons = {},
+    layout = {},
+    keybinds = {},
+    actions = {},
+    placeDeckFrom = "character",
   },
 }
 

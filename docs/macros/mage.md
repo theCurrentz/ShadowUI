@@ -4,81 +4,7 @@ Generated from `build_catalog.py`.
 Full records: [catalog.md](catalog.md).
 
 Existing Currentz style: `/cqs`, `[nomod]` max rank, `[mod:shift]` Rank 1, `@cursor` ground spells, Ice Block toggle.
-
-## Mage burst — class-specific
-
-Existing SpellQueueWindow + trinket + PoM set. Do not shorten.
-
-### ap + PoM — `m-appom`
-
-```
-# class-specific MAGE arcane
-/run local _,_,lagHome = GetNetStats() s = lagHome * 2
-/console SpellQueueWindow s
-/cast !Presence of Mind
-/use [mod:shift]Zandalarian Hero Charm
-/use [mod:shift]Talisman of Ephemeral Power
-/cast !Arcane Power
-/cast Frostbolt
-```
-
-### PoM + fb — `m-pomfb`
-
-```
-# class-specific MAGE frost
-/run local _,_,lagHome = GetNetStats() s = lagHome * 2
-/console SpellQueueWindow s
-/cast !Presence of Mind
-/use [mod:shift]Zandalarian Hero Charm
-/use [mod:shift]Talisman of Ephemeral Power
-/cast Frostbolt
-```
-
-### mqg — `m-mqg`
-
-```
-# class-specific MAGE frost
-/run local _,_,lagHome = GetNetStats() s = lagHome * 2
-/console SpellQueueWindow s
-/use Mind Quickening Gem
-/cast Frostbolt
-```
-
-### toep +fb — `m-toep`
-
-```
-# class-specific MAGE frost
-/run local _,_,lagHome = GetNetStats() s = lagHome * 2
-/console SpellQueueWindow s
-/use Talisman of Ephemeral Power
-/cast Frostbolt;[mod:shift]
-```
-
-### zhc — `m-zhc`
-
-```
-# class-specific MAGE frost
-/run local _,_,lagHome = GetNetStats() s = lagHome * 2
-/console SpellQueueWindow s
-/use item:19950
-/cast Frostbolt;[mod:shift]
-```
-
-### ap — `m-ap`
-
-```
-#showtooltip Arcane Power
-# class-specific MAGE arcane
-/cast Arcane Power
-```
-
-### comb — `m-comb`
-
-```
-#showtooltip Combustion
-# class-specific MAGE fire
-/cast Combustion
-```
+TBC adds Outland city ports plus Theramore and Stonard. Shift still opens a portal.
 
 ## Mage control — class-specific
 
@@ -110,8 +36,6 @@ Mouseover stays commented, as on disk.
 ```
 #showtooltip
 # class-specific MAGE all
-/ra SHEEPING %t
-/y SHEEPING %t
 /cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)
 ```
 
@@ -147,24 +71,8 @@ Mouseover stays commented, as on disk.
 
 ```
 #showtooltip Frost Nova
-# class-specific MAGE frost
-/cast Frost Nova
-```
-
-### blink — `m-blink`
-
-```
-#showtooltip Blink
-# class-specific MAGE all
-/cast Blink
-```
-
-### evo — `m-evo`
-
-```
-#showtooltip Evocation
-# class-specific MAGE all
-/cast Evocation
+# class-specific MAGE frost | key (V / ALT-SHIFT-Q)
+/cast [mod:shift] Frost Nova;Frost Nova (rank 1)
 ```
 
 ### iba — `m-barrier`
@@ -178,8 +86,8 @@ Mouseover stays commented, as on disk.
 ### ward — `m-ward`
 
 ```
-#showtooltip
-# class-specific MAGE all
+#showtooltip [mod:shift] Fire Ward; Frost Ward
+# class-specific MAGE all | key (BUTTON3)
 /cast [mod:shift] Fire Ward; Frost Ward
 ```
 
@@ -187,8 +95,8 @@ Mouseover stays commented, as on disk.
 
 ```
 #showtooltip Slow Fall
-# class-specific MAGE all
-/cast [mod:alt,target=player] Slow Fall; Slow Fall
+# class-specific MAGE all | key (8)
+/cast Slow Fall
 ```
 
 ### dm — `m-dampen`
@@ -232,7 +140,7 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 
 ```
 #showtooltip Fireball
-# class-specific MAGE fire
+# class-specific MAGE fire | key (2)
 /cqs
 /cast [mod:shift] Combustion
 /use [mod:shift] Mind Quickening Gem
@@ -297,7 +205,6 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 ```
 #showtooltip Scorch
 # class-specific MAGE fire
-/cqs
 /cast Scorch
 ```
 
@@ -308,14 +215,6 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 # class-specific MAGE fire
 /cast Presence of Mind
 /cast Pyroblast
-```
-
-### shoot — `m-shoot`
-
-```
-#showtooltip Shoot
-# class-specific MAGE all
-/cast Shoot
 ```
 
 ## Mage ports Alliance — class-specific
@@ -346,38 +245,6 @@ Existing Currentz IF/SW plus Darnassus from the plan. Shift = portal.
 /cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus;
 ```
 
-### water — `m-water`
-
-```
-#showtooltip Conjure Water
-# class-specific MAGE all
-/cast Conjure Water
-```
-
-### food — `m-food`
-
-```
-#showtooltip Conjure Food
-# class-specific MAGE all
-/cast Conjure Food
-```
-
-### gem — `m-gem`
-
-```
-#showtooltip Mana Ruby
-# class-specific MAGE all
-/use Mana Ruby
-```
-
-### arm — `m-armor`
-
-```
-#showtooltip
-# class-specific MAGE all
-/cast [mod:shift] Mage Armor; Ice Armor
-```
-
 ## Mage ports Horde — class-specific
 
 Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
@@ -403,6 +270,177 @@ Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
 /cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff;
 ```
 
+## Mage ranks — class-specific
+
+Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.
+
+### ai — `m-ai`
+
+```
+#showtooltip
+# class-specific MAGE all | key (ALT-SHIFT-3)
+/cast Arcane Intellect;
+```
+
+### cf — `m-cf`
+
+```
+#showtooltip
+# class-specific MAGE all | key (ALT-6)
+/cast Conjure Food
+```
+
+### cw — `m-cw`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast Conjure Water
+```
+
+### ma — `m-ma`
+
+```
+#showtooltip
+# class-specific MAGE all | key (ALT-Q)
+/cast Mage Armor;
+```
+
+### ia — `m-ia`
+
+```
+#showtooltip
+# class-specific MAGE all | key (ALT-SHIFT-1)
+/cast Ice Armor;
+```
+
+## Mage TBC — class-specific — TBC
+
+TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on the city macros. Ice Block stays in Mage control.
+
+### ilance — `m-ilance`
+
+```
+#showtooltip Ice Lance
+# class-specific MAGE frost
+/cast Ice Lance
+```
+
+### steal — `m-steal`
+
+```
+#showtooltip Spellsteal
+# class-specific MAGE all
+/stopcasting
+/cast Spellsteal
+```
+
+### invis — `m-invis`
+
+```
+#showtooltip Invisibility
+# class-specific MAGE all
+/stopcasting
+/cast Invisibility
+```
+
+### molten — `m-molten`
+
+```
+#showtooltip Molten Armor
+# class-specific MAGE all
+/cast Molten Armor
+```
+
+### ablast — `m-ablast`
+
+```
+#showtooltip Arcane Blast
+# class-specific MAGE arcane
+/cqs
+/cast Arcane Blast
+```
+
+### mslow — `m-slow`
+
+```
+#showtooltip Slow
+# class-specific MAGE arcane
+/cast Slow
+```
+
+### dbreath — `m-dbreath`
+
+```
+#showtooltip Dragon's Breath
+# class-specific MAGE fire
+/cast Dragon's Breath
+```
+
+### welem — `m-welem`
+
+```
+#showtooltip Summon Water Elemental
+# class-specific MAGE frost
+/cast Summon Water Elemental
+```
+
+### mtable — `m-table`
+
+```
+#showtooltip Ritual of Refreshment
+# class-specific MAGE all
+/cast Ritual of Refreshment
+```
+
+### gemtbc — `m-gemtbc`
+
+```
+#showtooltip Conjure Mana Emerald
+# class-specific MAGE all
+/cast Conjure Mana Emerald
+```
+
+### exodar — `m-exodar`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar;
+```
+
+### slvr — `m-slvr`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon;
+```
+
+### shat — `m-shat`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath;
+```
+
+### thera — `m-thera`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore;
+```
+
+### stonard — `m-stonard`
+
+```
+#showtooltip
+# class-specific MAGE all
+/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard;
+```
+
 ## Currentz kit — character-specific Currentz
 
 Character-specific Currentz. Touch of Chaos wand and named Naxx shells. Generic Shoot stays in mage-filler.
@@ -414,15 +452,4 @@ Character-specific Currentz. Touch of Chaos wand and named Naxx shells. Generic 
 # character-specific MAGE all Currentz
 /equip Touch of Chaos
 /cast shoot
-```
-
-### prot — `m-prot`
-
-Named items. Edit names if another toon uses different shells.
-
-```
-#showtooltip
-# character-specific MAGE all Currentz
-/use The Burrower's Shell
-/use Loatheb's Reflection
 ```

@@ -8,8 +8,8 @@
   in that ToT family. WatchBlizzardUnitEdit wraps FocusFrame.SetSmallSize (the
   XML mixin copy) so FocusFrame cannot stay snapped to FocusFrameToT.
   Target of Target stays on the Blizzard default BOTTOMRIGHT offset.
-  The Target Frame spell bar sits flush under the mana bar at mana width and
-  shows remaining / duration.
+  The Target Frame spell bar sits 2px above Name Background at mana width.
+  Spell name sits on the left. Remaining / duration sits on the right.
   Deps: ShadowUI:LockVertex(), ShadowUI:DarkenNamed(), ShadowUI:DarkenFrameRegions()
   Public: ShadowUI:RareEliteTexture(), ShadowUI:SkinRareElite(),
           ShadowUI:SpellBarTimerCaption(), ShadowUI:PaintSpellBarTimer(),
@@ -153,6 +153,8 @@ local UNIT_PARK = {
 local TOT_X, TOT_Y = -35, -10
 local TOT_SMALL_X, TOT_SMALL_Y = -13, -17
 local MANA_WIDTH = 119
+local SPELL_GAP = 2
+local SPELL_CAPTION_PAD = 4
 
 local function unitLayout(self, id)
   local shipped = UNIT_PARK[id]
@@ -304,10 +306,76 @@ local function ensureSpellTimer(bar)
   return fs
 end
 
+local function nameStripOf(frame)
+  if not frame then
+    return nil
+  end
+  if frame.NameBackground then
+    return frame.NameBackground
+  end
+  if frame.nameBackground then
+    return frame.nameBackground
+  end
+  local name = frame.GetName and frame:GetName()
+  return name and _G[name .. "NameBackground"]
+end
+
+local function spellBarText(bar)
+  if not bar then
+    return nil
+  end
+  if bar.Text then
+    return bar.Text
+  end
+  if bar.text then
+    return bar.text
+  end
+  local name = bar.GetName and bar:GetName()
+  return name and _G[name .. "Text"]
+end
+
+local function layoutSpellBarCaption(bar)
+  if not bar then
+    return
+  end
+  local time = ensureSpellTimer(bar)
+  if time then
+    if time.ClearAllPoints then
+      time:ClearAllPoints()
+    end
+    if time.SetJustifyH then
+      time:SetJustifyH("RIGHT")
+    end
+    if time.SetPoint then
+      time:SetPoint("RIGHT", bar, "RIGHT", -SPELL_CAPTION_PAD, 0)
+    end
+  end
+  local name = spellBarText(bar)
+  if not name or not name.SetPoint then
+    return
+  end
+  if name.ClearAllPoints then
+    name:ClearAllPoints()
+  end
+  if name.SetJustifyH then
+    name:SetJustifyH("LEFT")
+  end
+  if name.SetWordWrap then
+    name:SetWordWrap(false)
+  end
+  name:SetPoint("LEFT", bar, "LEFT", SPELL_CAPTION_PAD, 0)
+  if time then
+    name:SetPoint("RIGHT", time, "LEFT", -SPELL_CAPTION_PAD, 0)
+  else
+    name:SetPoint("RIGHT", bar, "RIGHT", -SPELL_CAPTION_PAD, 0)
+  end
+end
+
 function Addon:PaintSpellBarTimer(bar)
   if not bar then
     return
   end
+  layoutSpellBarCaption(bar)
   local fs = ensureSpellTimer(bar)
   if not fs then
     return
@@ -347,7 +415,7 @@ end
 
 local function placeSpellBar(bar, frame)
   local mana = manaBarOf(frame)
-  if not bar or not mana or not bar.SetPoint then
+  if not bar or not frame or not bar.SetPoint then
     return
   end
   if bar._shadowUISpellNest then
@@ -357,11 +425,16 @@ local function placeSpellBar(bar, frame)
   if bar.ClearAllPoints then
     bar:ClearAllPoints()
   end
-  bar:SetPoint("TOPLEFT", mana, "BOTTOMLEFT", 0, 0)
-  local width = (mana.GetWidth and mana:GetWidth()) or MANA_WIDTH
-  if bar.SetWidth then
-    bar:SetWidth(width)
+  if mana then
+    bar:SetPoint("LEFT", mana, "LEFT", 0, 0)
+    local width = (mana.GetWidth and mana:GetWidth()) or MANA_WIDTH
+    if bar.SetWidth then
+      bar:SetWidth(width)
+    end
   end
+  local top = nameStripOf(frame) or frame
+  bar:SetPoint("BOTTOM", top, "TOP", 0, SPELL_GAP)
+  layoutSpellBarCaption(bar)
   bar._shadowUISpellNest = nil
 end
 

@@ -81,15 +81,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 /cast [mod:alt,target=player] Fear Ward; Fear Ward
 ```
 
-### pi — `pr-pi`
-
-```
-#showtooltip Power Infusion
-# class-specific PRIEST discipline
-/raid PI on %t
-/cast [mod:alt,target=player] Power Infusion; Power Infusion
-```
-
 ### fort — `pr-fort`
 
 ```
@@ -152,6 +143,146 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 #showtooltip Prayer of Spirit
 # class-specific PRIEST discipline
 /cast Prayer of Spirit
+```
+
+## Priest ranks — class-specific
+
+Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.
+
+### egrace — `pr-egrace`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)
+```
+
+### fback — `pr-fback`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)
+```
+
+### mburn — `pr-mburn`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)
+```
+
+### shards — `pr-shards`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)
+```
+
+### dpray — `pr-dpray`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)
+```
+
+### heal — `pr-heal`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal
+```
+
+### hfire — `pr-hfire`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)
+```
+
+### lheal — `pr-lheal`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal
+```
+
+### smite — `pr-smite`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Smite;[mod:shift]Smite(Rank 1)
+```
+
+### dplague — `pr-dplague`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)
+```
+
+### hexw — `pr-hexw`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)
+```
+
+### mc — `pr-mc`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)
+```
+
+### msoothe — `pr-msoothe`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)
+```
+
+### mvis — `pr-mvis`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)
+```
+
+### sprot — `pr-sprot`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)
+```
+
+### sguard — `pr-sguard`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)
+```
+
+### tow — `pr-tow`
+
+```
+#showtooltip
+# class-specific PRIEST all
+/cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)
 ```
 
 ## Priest Shadow — class-specific
@@ -223,4 +354,96 @@ Dots and form. Cancel form to heal.
 # class-specific PRIEST shadow
 /cancelaura Shadowform
 /cast [mod:alt,target=player] Flash Heal; Flash Heal
+```
+
+## Priest TBC — class-specific — TBC
+
+TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and Draenei/Dwarf Chastise stay here because they need stopcasting.
+
+### swd — `pr-swd`
+
+```
+#showtooltip Shadow Word: Death
+# class-specific PRIEST all
+/cast Shadow Word: Death
+```
+
+### pom — `pr-pom`
+
+```
+#showtooltip Prayer of Mending
+# class-specific PRIEST holy
+/cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending
+```
+
+### coh — `pr-coh`
+
+```
+#showtooltip Circle of Healing
+# class-specific PRIEST holy
+/cast [mod:alt,target=player] Circle of Healing; Circle of Healing
+```
+
+### psup — `pr-psup`
+
+```
+#showtooltip Pain Suppression
+# class-specific PRIEST discipline
+/raid Pain Suppression on %t
+/cast [mod:alt,target=player] Pain Suppression; Pain Suppression
+```
+
+### mdisp — `pr-mdisp`
+
+```
+#showtooltip Mass Dispel
+# class-specific PRIEST all
+/stopcasting
+/cast Mass Dispel
+```
+
+### sfiend — `pr-sfiend`
+
+```
+#showtooltip Shadowfiend
+# class-specific PRIEST all
+/cast Shadowfiend
+```
+
+### bheal — `pr-bheal`
+
+```
+#showtooltip Binding Heal
+# class-specific PRIEST holy
+/cast Binding Heal
+```
+
+### vt — `pr-vt`
+
+```
+#showtooltip Vampiric Touch
+# class-specific PRIEST shadow
+/cast Vampiric Touch
+```
+
+### cmagic — `pr-cmagic`
+
+Blood Elf priest racial.
+
+```
+#showtooltip Consume Magic
+# class-specific PRIEST all
+/stopcasting
+/cast Consume Magic
+```
+
+### chast — `pr-chast`
+
+Dwarf and Draenei priest racial.
+
+```
+#showtooltip Chastise
+# class-specific PRIEST all
+/stopcasting
+/cast Chastise
 ```

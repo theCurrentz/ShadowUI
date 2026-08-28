@@ -59,7 +59,13 @@ local function fakeTex()
 end
 
 local function fakeButton(name)
-  local button = { name = name, NormalTexture = fakeTex() }
+  local button = {
+    name = name,
+    NormalTexture = fakeTex(),
+    Border = fakeTex(),
+    IconBorder = fakeTex(),
+    SlotBackground = fakeTex(),
+  }
   local icon = fakeTex()
   function button:GetName() return name end
   function button:CreateTexture()
@@ -97,6 +103,8 @@ assert(wornIcon.crop[1] == 0.07 and wornIcon.crop[3] == 0.07,
   "ItemRack icon crop matches action icons")
 assert(worn.NormalTexture.hidden or worn.NormalTexture.a == 0,
   "ItemRack silver slot art stays hidden")
+assert(worn.IconBorder.hidden or worn.IconBorder.a == 0,
+  "ItemRack icon border stays hidden")
 local outer = worn.shadowUIOuter
 assert(outer, "ItemRack button keeps a Lorti Outer Edge")
 assert(outer.backdrop.edgeFile:find("outer_shadow", 1, true),

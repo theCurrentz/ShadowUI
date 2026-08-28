@@ -28,4 +28,13 @@ assert(placed == 1, "/shadowui deck places the Action Deck")
 Addon:SlashCommand("place")
 assert(placed == 2, "/shadowui place is the same command")
 
+local pruned = 0
+function Addon:ShiftAndPruneBars()
+  pruned = pruned + 1
+end
+Addon:SlashCommand("prune")
+assert(pruned == 1, "/shadowui prune packs Keybinds left")
+Addon:SlashCommand("shift")
+assert(pruned == 2, "/shadowui shift is the same command")
+
 print("slash_spec OK")

@@ -1,7 +1,8 @@
 --[[
   Purpose: Rainbow Organizer — group bag items by category with a coloured
-           glow that sits outside Bagnon quality chrome. Categories are not bags.
-  Deps: ShadowUI chrome; optional Bagnon item buttons
+           glow that sits outside item quality chrome. Categories are not bags.
+  Parked: ShadowUI.toc does not load this file. It loads only with bags.lua.
+  Deps: ShadowUI chrome
   Public: ShadowUI:ClassifyBagItem(), ShadowUI:RainbowCategoryOrder(),
           ShadowUI:RainbowCategoryColor(), ShadowUI:SortRainbowButtons(),
           ShadowUI:PlaceRainbowButtons(), ShadowUI:LayoutRainbowGroup(),
@@ -200,6 +201,7 @@ function Addon:PlaceRainbowButtons(group, buttons, traits)
   local columns = traits.columns or 10
   local scale = traits.scale or 1
   local size = traits.size or 39
+  local slot = traits.slot or size
   local transposed = traits.transposed
   local x, y = 0, 0
   local prev
@@ -209,6 +211,12 @@ function Addon:PlaceRainbowButtons(group, buttons, traits)
       x, y = 0, y + 1 + GAP
     elseif x == columns then
       x, y = 0, y + 1
+    end
+    if button.ClearAllPoints then
+      button:ClearAllPoints()
+    end
+    if button.SetSize then
+      button:SetSize(slot, slot)
     end
     if button.SetPoint then
       local px, py = size * x, -size * y
@@ -252,6 +260,7 @@ function Addon:LayoutRainbowGroup(group)
     columns = columns,
     scale = scale,
     size = size,
+    slot = group.slotSize or size,
     transposed = transposed,
   })
   for _, button in ipairs(buttons) do

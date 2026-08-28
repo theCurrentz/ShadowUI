@@ -1,10 +1,10 @@
 --[[
-  Purpose: Merge shipped defaults with account Base → Class → Variant into effective config.
+  Purpose: Merge shipped defaults with Account Base → Class → Variant then Character.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
   Public: DeepCopy, SparseMerge, ShippedClass, ResolveEffective, GetActiveVariantName,
           WriteLayerDelta, TalentPointsFromTabInfo, GetPrimaryTalentTree
   Notes: ResolveEffective(classFile?, variantName?, through?) stops the merge after
-         through (base, class, or variant). Omit through for the full merge.
+         through (base, class, variant, or character). Omit through for the full merge.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -97,12 +97,13 @@ end
 function Addon:ResolveEffective(classFile, variantName, through)
   classFile = classFile or self:GetPlayerClass()
   variantName = variantName or self:GetActiveVariantName(classFile)
-  if through ~= "base" and through ~= "class" then
-    through = "variant"
+  if through ~= "base" and through ~= "class" and through ~= "variant" then
+    through = "character"
   end
 
   local shipped = self.Defaults or { base = { layout = {}, keybinds = {} }, classes = {} }
   local account = self:GetDB()
+  local char = self:GetCharDB()
 
   local function layerFields(src)
     if type(src) ~= "table" then
@@ -112,7 +113,8 @@ function Addon:ResolveEffective(classFile, variantName, through)
   end
 
   local includeClass = through ~= "base"
-  local includeVariant = through == "variant"
+  local includeVariant = through == "variant" or through == "character"
+  local includeCharacter = through == "character"
 
   local eff = { layout = {}, keybinds = {} }
   self:SparseMerge(eff, shipped.base or {})
@@ -135,20 +137,27 @@ function Addon:ResolveEffective(classFile, variantName, through)
       self:SparseMerge(eff, layerFields(variant))
     end
   end
+  if includeCharacter then
+    self:SparseMerge(eff, layerFields(char))
+  end
   return eff
 end
 
 function Addon:WriteLayerDelta(layer, section, key, patch)
   local classFile = self:GetPlayerClass()
   local db = self:GetDB()
-  layer = layer or self:GetCharDB().editLayer or "variant"
+  local char = self:GetCharDB()
+  layer = layer or char.editLayer or "variant"
 
   local store
-  if layer == "base" then
+  if layer == "character" then
+    char[section] = char[section] or {}
+    store = char[section]
+  elseif layer == "base" then
     db.base[section] = db.base[section] or {}
     store = db.base[section]
   else
-    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
+    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, actions = {}, variants = {} }
     local classAcc = db.classes[classFile]
     if layer == "class" then
       classAcc[section] = classAcc[section] or {}
@@ -156,7 +165,7 @@ function Addon:WriteLayerDelta(layer, section, key, patch)
     else
       local name = self:GetActiveVariantName(classFile) or "Default"
       classAcc.variants = classAcc.variants or {}
-      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
+      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {}, actions = {} }
       local variant = classAcc.variants[name]
       variant[section] = variant[section] or {}
       store = variant[section]

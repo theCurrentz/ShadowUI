@@ -14,7 +14,7 @@ end
 local function classData()
   local db = Addon:GetDB()
   local class = Addon:GetPlayerClass()
-  db.classes[class] = db.classes[class] or { layout = {}, keybinds = {}, variants = {} }
+  db.classes[class] = db.classes[class] or { layout = {}, keybinds = {}, actions = {}, variants = {} }
   return db.classes[class]
 end
 local function activeName()
@@ -118,6 +118,15 @@ end
 local options = {
   type = "group", name = "ShadowUI",
   args = {
+    version = {
+      type = "description", name = function()
+        local version = Addon.GetVersion and Addon:GetVersion() or "ERA"
+        if version == "TBC" then
+          return "Version: TBC"
+        end
+        return "Version: Era"
+      end, order = 1,
+    },
     variants = {
       type = "group", name = "Variants", order = 10, inline = true,
       args = {
@@ -165,7 +174,7 @@ local options = {
     },
     hardLockActionSlots = {
       type = "toggle", name = "Hard lock action slots", order = 15,
-      desc = "Block Shift-drag between Action Slots. A click still uses the action. Without this, bars stay locked: a click uses the action, and Shift-drag moves a spell or item.",
+      desc = "Block Shift-drag and Shift+Alt insert between Action Slots. A click still uses the action. Without this, bars stay locked: a click uses the action, Shift-drag moves a spell or item, and Shift+Alt drag inserts.",
       get = function() return Addon:GetCharDB().hardLockActionSlots == true end,
       set = function(_, value) Addon:SetActionSlotHardLock(value) end,
     },
@@ -180,8 +189,8 @@ local options = {
     },
     layer = {
       type = "select", name = "Current edit layer", order = 17,
-      desc = "Writes and Action bar toggles use this Layer: Base, Class, or Variant.",
-      values = { base = "Base", class = "Class", variant = "Variant" },
+      desc = "Writes and Action bar toggles use this Layer: Base, Class, Variant, or Character.",
+      values = { base = "Base", class = "Class", variant = "Variant", character = "Character" },
       get = function() return Addon:GetCharDB().editLayer or "variant" end,
       set = function(_, value) Addon:SetEditLayer(value) end,
     },
@@ -205,13 +214,37 @@ local options = {
         Addon:ToggleKeybindMode()
       end,
     },
-    placeDeck = {
-      type = "execute", name = "Place Action Deck", order = 23,
-      desc = "Overwrite Action Slots for this Class and Variant with catalog macros. Out of combat only. Creates missing macros on the General tab. After Macro Cursor loadout save, /reload then place. Does not change Keybinds.",
+    shiftAndPrune = {
+      type = "execute", name = "Shift and Prune", order = 22.5,
+      desc = "Pack Keybinds left and drop gaps with no Keybind. Actions on those Keybinds move with them. The pack wraps to the next row and continues onto the next Bar. Writes go to the selected Layer. Out of combat only.",
       confirm = true,
       func = function()
-        Addon:PlaceDeck()
+        Addon:ShiftAndPruneBars()
       end,
+    },
+    deck = {
+      type = "group", name = "Action Deck", order = 23, inline = true,
+      args = {
+        from = {
+          type = "select", name = "Loadout", order = 10,
+          desc = "Class still includes the active Variant, matching the Macro Cursor Action Bars. Variant skips Character. Character is this toon on top.",
+          values = { class = "Class", variant = "Variant", character = "Character" },
+          get = function()
+            return Addon:GetCharDB().placeDeckFrom or "character"
+          end,
+          set = function(_, value)
+            Addon:GetCharDB().placeDeckFrom = value
+          end,
+        },
+        place = {
+          type = "execute", name = "Place Action Deck", order = 20,
+          desc = "Replace the General and character macro tabs with the selected loadout macros, then overwrite its Action Slots. Out of combat only. Does not change Keybinds.",
+          confirm = true,
+          func = function()
+            Addon:PlaceDeck()
+          end,
+        },
+      },
     },
     resetLayer = {
       type = "execute", name = "Reset selected layer deltas", order = 30,

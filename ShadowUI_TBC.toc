@@ -1,6 +1,6 @@
-## Interface: 11509
+## Interface: 20506
 ## Title: ShadowUI
-## Notes: Opinionated Classic Era bars, chrome, and cast bar. Version Era. Class-profiled Base → Class → Variant layouts.
+## Notes: Opinionated TBC bars, chrome, and cast bar. Version TBC. Class-profiled Base → Class → Variant layouts.
 ## Author: Parker Westfall
 ## Version: 0.1.0
 ## SavedVariables: ShadowUIDB

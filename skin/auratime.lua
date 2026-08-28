@@ -1,6 +1,7 @@
 --[[
   Purpose: Show remaining time on Target Frame and Focus Frame auras.
-  Classic 1.15 UnitAura already returns duration. Player BuffFrame keeps Blizzard text.
+  Classic 1.15 UnitAura already returns duration. Native Duration text stays hidden.
+  Player BuffFrame keeps Blizzard text.
   Deps: C_UnitAuras or UnitAura, ShadowUI:SkinAuraButton()
   Public: ShadowUI:AuraDurationState(), ShadowUI:FormatShortDuration(),
           ShadowUI:SkinAuraDuration()
@@ -92,6 +93,12 @@ local function readDuration(button, name, unit)
   if type(button.duration) == "number" and type(button.expirationTime) == "number" then
     return button.duration, button.expirationTime
   end
+  if button.auraInstanceID and C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID then
+    local data = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, button.auraInstanceID)
+    if data then
+      return auraTimes(data.duration, data.expirationTime)
+    end
+  end
   local index = auraIndex(name, button)
   if not index then
     return nil
@@ -112,6 +119,20 @@ local function readDuration(button, name, unit)
   return auraTimes(duration, expirationTime, expirationTime, rankExpiration)
 end
 
+local function hideNativeCount(region)
+  if region and region.SetHideCountdownNumbers then
+    region:SetHideCountdownNumbers(true)
+  end
+end
+
+local function hideNativeDuration(button, name)
+  local nativeTime = button.Duration or (name and _G[name .. "Duration"])
+  if nativeTime and nativeTime.Hide then
+    nativeTime:Hide()
+  end
+  hideNativeCount(button.Cooldown or button.cooldown or (name and _G[name .. "Cooldown"]))
+end
+
 function Addon:SkinAuraDuration(button)
   if not button then
     return
@@ -121,6 +142,7 @@ function Addon:SkinAuraDuration(button)
   if not unit then
     return
   end
+  hideNativeDuration(button, name)
   local now = GetTime and GetTime() or 0
   local state = self:AuraDurationState(now, readDuration(button, name, unit))
   local icon = auraIcon(button, name)
@@ -147,6 +169,7 @@ function Addon:SkinAuraDuration(button)
       cooldown:SetDrawEdge(false)
     end
   end
+  hideNativeCount(cooldown)
   if cooldown then
     if cooldown.SetCooldown then
       cooldown:SetCooldown(state.startTime, state.duration)
@@ -157,12 +180,9 @@ function Addon:SkinAuraDuration(button)
       cooldown:Show()
     end
   end
-  if button.Duration then
-    return
-  end
   local fs = button.shadowUIAuraTime
   if not fs and button.CreateFontString then
-    fs = button:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    fs = button:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
     button.shadowUIAuraTime = fs
     if fs.SetPoint then
       fs:SetPoint("CENTER", icon or button, "CENTER", 0, 0)

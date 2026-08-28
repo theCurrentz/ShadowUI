@@ -1,12 +1,12 @@
 --[[
-  Purpose: Select the account layer receiving Layout and Keybind edits.
+  Purpose: Select the Layer receiving Layout, Keybind, and Action Deck edits.
   Deps: ShadowUI character DB
   Public: ShadowUI:SetEditLayer(), ShadowUI:ShowLayerPicker()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local LAYERS = { "base", "class", "variant" }
-local VALID = { base = true, class = true, variant = true }
+local LAYERS = { "base", "class", "variant", "character" }
+local VALID = { base = true, class = true, variant = true, character = true }
 
 local function updateButtons(picker, selected)
   for layer, button in pairs(picker.buttons) do
@@ -18,7 +18,7 @@ end
 
 function Addon:CreateLayerPicker()
   local picker = CreateFrame("Frame", "ShadowUILayerPicker", UIParent, "BackdropTemplate")
-  picker:SetSize(360, 108)
+  picker:SetSize(500, 108)
   picker:SetPoint("TOP", UIParent, "TOP", 0, -24)
   picker:SetFrameStrata("FULLSCREEN_DIALOG")
   picker:SetFrameLevel(500)
@@ -40,8 +40,8 @@ function Addon:CreateLayerPicker()
 
   for index, layer in ipairs(LAYERS) do
     local button = CreateFrame("Button", nil, picker, "BackdropTemplate")
-    button:SetSize(100, 24)
-    button:SetPoint("TOPLEFT", 20 + (index - 1) * 110, -42)
+    button:SetSize(108, 24)
+    button:SetPoint("TOPLEFT", 16 + (index - 1) * 112, -42)
     button:SetBackdrop({
       bgFile = "Interface\\Buttons\\WHITE8X8",
       edgeFile = "Interface\\Buttons\\WHITE8X8",
@@ -128,7 +128,7 @@ end
 function Addon:SetEditLayer(layer)
   layer = type(layer) == "string" and layer:match("^%s*(.-)%s*$"):lower() or ""
   if not VALID[layer] then
-    self:Print("Layer must be base, class, or variant.")
+    self:Print("Layer must be base, class, variant, or character.")
     return false
   end
   self:GetCharDB().editLayer = layer

@@ -76,4 +76,37 @@ for _, event in ipairs(events) do
   end
 end
 assert(hidBar2, "disabled Bar hides")
+
+Addon:ApplyBars({
+  layout = {
+    bar9 = { enabled = false, buttons = 12 },
+  },
+})
+assert(Addon.bars.bar9, "disabled standard Bar is still created")
+assert(Addon.bars.bar9.configEnabled == false, "disabled standard Bar stays off")
+
+local shown = false
+local hidden = false
+local extra = {
+  specialId = nil,
+  configEnabled = false,
+  Show = function() shown = true end,
+  Hide = function() hidden = true end,
+}
+Addon.bars.bar10 = extra
+Addon:ShowBarsForActionPlacement(true)
+assert(shown, "a pickup shows a disabled standard Bar")
+Addon:ShowBarsForActionPlacement(false)
+assert(hidden, "ending a pickup hides a disabled standard Bar")
+
+local petShown = false
+Addon.bars.pet = {
+  specialId = "pet",
+  configEnabled = false,
+  Show = function() petShown = true end,
+  Hide = function() end,
+}
+Addon:ShowBarsForActionPlacement(true)
+assert(not petShown, "a pickup does not show a Special Bar that is off")
+
 print("apply_bars_spec OK")

@@ -4,6 +4,7 @@ Generated from `build_catalog.py`.
 Full records: [catalog.md](catalog.md).
 
 **Forms (typical Era index):** `1` Bear, `2` Aquatic, `3` Cat, `4` Travel. Test `form:N` if a macro misses.
+TBC adds Flight Form. Swift Flight Form is a Restoration talent. Tree of Life is Restoration.
 
 ## Druid Balance / Resto extras — class-specific
 
@@ -236,4 +237,192 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 # class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
+```
+
+## Druid ranks — class-specific
+
+Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.
+
+### hib — `d-hib`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)
+```
+
+### cane — `d-cane`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)
+```
+
+### soothe — `d-soothe`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)
+```
+
+### thorns — `d-thorns`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)
+```
+
+### claw — `d-claw`
+
+```
+#showtooltip
+# class-specific DRUID all
+/startattack
+/cast [nomod]Claw;[mod:shift]Claw(Rank 1)
+```
+
+### cower — `d-cower`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Cower;[mod:shift]Cower(Rank 1)
+```
+
+### dmr — `d-dmr`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)
+```
+
+### pounce — `d-pounce`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)
+```
+
+### ravage — `d-ravage`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)
+```
+
+### swipe — `d-swipe`
+
+```
+#showtooltip
+# class-specific DRUID all
+/startattack
+/cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)
+```
+
+### tfury — `d-tfury`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)
+```
+
+### gotw — `d-gotw`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)
+```
+
+### rgw — `d-rgw`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth
+```
+
+### tranq — `d-tranq`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cancelform
+/cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)
+```
+
+## Druid TBC — class-specific — TBC
+
+TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight Form is Restoration.
+
+### mangle — `d-mangle`
+
+```
+#showtooltip
+# class-specific DRUID feral
+/startattack
+/cast [form:3] Mangle (Cat); Mangle (Bear)
+```
+
+### lbloom — `d-lbloom`
+
+```
+#showtooltip Lifebloom
+# class-specific DRUID restoration
+/cancelform
+/cast [mod:alt,target=player] Lifebloom; Lifebloom
+```
+
+### cyc — `d-cyc`
+
+```
+#showtooltip Cyclone
+# class-specific DRUID balance
+/stopcasting
+/cast Cyclone
+```
+
+### flight — `d-flight`
+
+```
+#showtooltip
+# class-specific DRUID all
+/cast [mod:shift] Swift Flight Form; Flight Form
+```
+
+### lac — `d-lac`
+
+```
+#showtooltip Lacerate
+# class-specific DRUID feral
+/startattack
+/cast Lacerate
+```
+
+### maim — `d-maim`
+
+```
+#showtooltip Maim
+# class-specific DRUID feral
+/cast Maim
+```
+
+### tree — `d-tree`
+
+```
+#showtooltip Tree of Life
+# class-specific DRUID restoration
+/cast Tree of Life
 ```

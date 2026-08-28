@@ -1,7 +1,10 @@
 --[[
   Purpose: Paint the Threat Bar as a bubble tab on the Target Frame portrait.
   The bubble is one circle that floats on the 45-degree (top-right) portrait edge.
-  Fill is one vertical lighting gradient of the threat colour at 84% opacity.
+  Fill is one vertical lighting gradient of the threat colour. The fill host
+  sits at 50% opacity so the portrait shows through. Classic SetGradient keeps
+  ColorMixin RGB and drops texture alpha, so the fill frame is the glass. The
+  Darken stroke stays opaque.
   Colour bands: dark glass below 70%, yellow-to-orange at 70-88%,
   orange-to-deep-orange at 88-99%, red-to-deep-red at 100% and above. Percent
   can exceed 100.
@@ -36,11 +39,8 @@ local DEEP_ORANGE = { 0.78, 0.22, 0.00 }
 local RED = { 0.95, 0.10, 0.08 }
 local DEEP_RED = { 0.45, 0.00, 0.00 }
 local BLOOD = { 0.75, 0.0, 0.0 }
-local DARKEN = { 0.05, 0.05, 0.05, 0.84 }
-local LIGHT_A = 0.84
-local DARK_A = 0.76
-local DARK_LIGHT_A = 0.68
-local DARK_DARK_A = 0.58
+local DARKEN = { 0.05, 0.05, 0.05, 1 }
+local TAB_ALPHA = 0.5
 local GLOW_ALPHA = 0.4
 local GLOW_FLASH = "Interface\\TargetingFrame\\UI-TargetingFrame-Flash"
 local GLOW_MINUS = "Interface\\TargetingFrame\\UI-TargetingFrame-Minus-Flash"
@@ -81,18 +81,18 @@ end
 function Addon:ThreatBarGradient(percent)
   local p = percent or 0
   if p >= FULL then
-    return { DEEP_RED[1], DEEP_RED[2], DEEP_RED[3], DARK_A },
-      { RED[1], RED[2], RED[3], LIGHT_A }
+    return { DEEP_RED[1], DEEP_RED[2], DEEP_RED[3], 1 },
+      { RED[1], RED[2], RED[3], 1 }
   end
   if p >= HIGH then
-    return { DEEP_ORANGE[1], DEEP_ORANGE[2], DEEP_ORANGE[3], DARK_A },
-      { ORANGE[1], ORANGE[2], ORANGE[3], LIGHT_A }
+    return { DEEP_ORANGE[1], DEEP_ORANGE[2], DEEP_ORANGE[3], 1 },
+      { ORANGE[1], ORANGE[2], ORANGE[3], 1 }
   end
   if p >= WARN then
-    return { ORANGE[1], ORANGE[2], ORANGE[3], DARK_A },
-      { YELLOW[1], YELLOW[2], YELLOW[3], LIGHT_A }
+    return { ORANGE[1], ORANGE[2], ORANGE[3], 1 },
+      { YELLOW[1], YELLOW[2], YELLOW[3], 1 }
   end
-  return { 0, 0, 0, DARK_DARK_A }, { 0.08, 0.08, 0.08, DARK_LIGHT_A }
+  return { 0, 0, 0, 1 }, { 0.08, 0.08, 0.08, 1 }
 end
 
 local function threatPercent(unit)
@@ -198,6 +198,9 @@ local function paintCircle(tex, host, size, r, g, b, a)
   if tex.SetVertexColor then
     tex:SetVertexColor(r, g, b, a)
   end
+  if tex.SetAlpha then
+    tex:SetAlpha(1)
+  end
   if tex.Show then
     tex:Show()
   end
@@ -236,6 +239,44 @@ local function layoutText(fs, tab)
   end
 end
 
+local function layerFrame(tab, key, extraLevel)
+  local layer = tab[key]
+  if layer then
+    return layer
+  end
+  if not CreateFrame then
+    return nil
+  end
+  layer = CreateFrame("Frame", nil, tab)
+  if layer.SetFrameLevel and tab.GetFrameLevel then
+    layer:SetFrameLevel(tab:GetFrameLevel() + extraLevel)
+  end
+  if layer.EnableMouse then
+    layer:EnableMouse(false)
+  end
+  tab[key] = layer
+  return layer
+end
+
+local function ensureText(tab, textHost)
+  if tab.text or tab.font then
+    return tab.text or tab.font
+  end
+  if not textHost or not textHost.CreateFontString then
+    return nil
+  end
+  local fs = textHost:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  if fs.SetJustifyH then
+    fs:SetJustifyH("CENTER")
+  end
+  if fs.SetJustifyV then
+    fs:SetJustifyV("MIDDLE")
+  end
+  tab.text = fs
+  tab.font = fs
+  return fs
+end
+
 local function ensureLayers(tab)
   hideLayer(tab.shadowUIOuter)
   hideLayer(tab.drop)
@@ -243,12 +284,36 @@ local function ensureLayers(tab)
   if not tab.rim then
     tab.rim = circle(tab, "BACKGROUND", 0)
   end
+  local fillHost = layerFrame(tab, "fillHost", 0)
+  if fillHost then
+    if fillHost.SetSize then
+      fillHost:SetSize(FILL, FILL)
+    end
+    if fillHost.ClearAllPoints then
+      fillHost:ClearAllPoints()
+    end
+    if fillHost.SetPoint then
+      fillHost:SetPoint("CENTER", tab, "CENTER", 0, 0)
+    end
+    if fillHost.SetAlpha then
+      fillHost:SetAlpha(TAB_ALPHA)
+    end
+  end
   if not tab.fill then
-    tab.fill = circle(tab, "ARTWORK", 0)
+    tab.fill = circle(fillHost or tab, "ARTWORK", 0)
+  end
+  local textHost = layerFrame(tab, "textHost", 2)
+  if textHost then
+    if textHost.SetAllPoints then
+      textHost:SetAllPoints(tab)
+    end
+    if textHost.SetAlpha then
+      textHost:SetAlpha(1)
+    end
   end
   paintCircle(tab.rim, tab, SIZE, DARKEN[1], DARKEN[2], DARKEN[3], DARKEN[4])
-  paintCircle(tab.fill, tab, FILL, DARKEN[1], DARKEN[2], DARKEN[3], DARKEN[4])
-  layoutText(tab.text or tab.font, tab)
+  paintCircle(tab.fill, fillHost or tab, FILL, DARKEN[1], DARKEN[2], DARKEN[3], DARKEN[4])
+  layoutText(ensureText(tab, textHost or tab), tab)
 end
 
 local function host(frame)
@@ -271,15 +336,6 @@ local function host(frame)
   if tab.SetFrameLevel and frame.GetFrameLevel then
     tab:SetFrameLevel(frame:GetFrameLevel() + 8)
   end
-  local fs = tab:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-  if fs.SetJustifyH then
-    fs:SetJustifyH("CENTER")
-  end
-  if fs.SetJustifyV then
-    fs:SetJustifyV("MIDDLE")
-  end
-  tab.text = fs
-  tab.font = fs
   if tab.SetScript then
     tab:SetScript("OnUpdate", function()
       Addon:SkinTargetThreat()
@@ -328,6 +384,12 @@ local function paintFill(tab, percent)
     Addon:ApplyStatusBarGradient(fill, "VERTICAL", from, to)
   elseif fill.SetVertexColor then
     fill:SetVertexColor(to[1], to[2], to[3], to[4])
+  end
+  if fill.SetAlpha then
+    fill:SetAlpha(1)
+  end
+  if tab.fillHost and tab.fillHost.SetAlpha then
+    tab.fillHost:SetAlpha(TAB_ALPHA)
   end
 end
 

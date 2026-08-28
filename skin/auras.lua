@@ -1,9 +1,12 @@
 --[[
   Purpose: Darken buff and debuff icon chrome the Lorti way, including the outer edge.
-  Unused slots stay empty. Player buffs sit 4px below the top of the screen
-  and 4px left of the square minimap.
-  Deps: ShadowUI:LockVertex(), ShadowUI:ApplyOuterChrome(), ShadowUI:ParkFrame()
-  Public: ShadowUI:SkinAuraButton(), ShadowUI:SkinAuras()
+  Unused slots stay empty. Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place.
+  Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px.
+  Classic copies TargetFrameMixin.UpdateAuras onto TargetFrame; the instance hook
+  keeps that place. 1.15.9 Target Frame auras come from auraPools when present.
+  Target of Target auras sit 2px to the right of Target of Target in a horizontal row.
+  Deps: ShadowUI:LockVertex(), ShadowUI:ApplyOuterChrome()
+  Public: ShadowUI:SkinAuraButton(), ShadowUI:PlaceTargetAuras(), ShadowUI:SkinAuras()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -11,16 +14,21 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 function Addon:SkinAuraDuration(button) end
 local INSET = 2
 local OUTER_PAD = 4
-local SCREEN_GAP = 4
 local GROUPS = {
   { "BuffButton", 32 },
   { "DebuffButton", 16 },
   { "TempEnchant", 3 },
   { "TargetFrameBuff", 32 },
   { "TargetFrameDebuff", 16 },
+  { "TargetFrameToTBuff", 4 },
+  { "TargetFrameToTDebuff", 4 },
   { "FocusFrameBuff", 32 },
   { "FocusFrameDebuff", 16 },
 }
+local AURA_GAP = 2
+local AURA_SPACE = 3
+local TARGET_AURA_SIZE = 32
+local AURA_ROW_WIDTH = TARGET_AURA_SIZE * 4 + AURA_SPACE * 3
 
 local function inset(region)
   if not region then
@@ -147,20 +155,155 @@ local function skinPool(frame)
   end
 end
 
-function Addon:SkinAuras()
-  local holder = _G.ShadowUIMinimapHolder
-  if self.ParkFrame then
-    local relative = holder or _G.UIParent
-    local relativePoint = holder and "TOPLEFT" or "TOPRIGHT"
-    if _G.BuffFrame then
-      self:ParkFrame(_G.BuffFrame, "TOPRIGHT", -SCREEN_GAP, -SCREEN_GAP, nil, nil,
-        relative, relativePoint)
-    end
-    if _G.DebuffFrame then
-      self:ParkFrame(_G.DebuffFrame, "TOPRIGHT", -13, -5, nil, nil,
-        _G.BuffFrame or relative, _G.BuffFrame and "BOTTOMRIGHT" or relativePoint)
+local function collectShown(prefix, count)
+  local list = {}
+  for i = 1, count do
+    local button = _G[prefix .. i]
+    if button and button.SetPoint and auraIsActive(button, prefix .. i) then
+      list[#list + 1] = button
     end
   end
+  return list
+end
+
+local function collectPool(frame, template)
+  local list = {}
+  if not frame or not frame.auraPools or not frame.auraPools.GetPool then
+    return list
+  end
+  local pool = frame.auraPools:GetPool(template)
+  if not pool or not pool.EnumerateActive then
+    return list
+  end
+  for button in pool:EnumerateActive() do
+    local name = button.GetName and button:GetName()
+    if button and button.SetPoint and auraIsActive(button, name) then
+      if template:find("Debuff", 1, true) and not button.auraType then
+        button.auraType = "Debuff"
+      end
+      list[#list + 1] = button
+    end
+  end
+  table.sort(list, function(a, b)
+    local ay = a.GetTop and a:GetTop()
+    local by = b.GetTop and b:GetTop()
+    if ay and by and ay ~= by then
+      return ay > by
+    end
+    local ax = a.GetLeft and a:GetLeft()
+    local bx = b.GetLeft and b:GetLeft()
+    if ax and bx then
+      return ax < bx
+    end
+    return (a.auraInstanceID or 0) < (b.auraInstanceID or 0)
+  end)
+  return list
+end
+
+local function collectFrameAuras(frame, prefix, count, template)
+  local fromPool = collectPool(frame, template)
+  if #fromPool > 0 then
+    return fromPool
+  end
+  return collectShown(prefix, count)
+end
+
+local function skinTargetPools(frame)
+  if not frame or not frame.auraPools or not frame.auraPools.GetPool then
+    return
+  end
+  for _, template in ipairs({ "TargetBuffFrameTemplate", "TargetDebuffFrameTemplate" }) do
+    for _, button in ipairs(collectPool(frame, template)) do
+      Addon:SkinAuraButton(button)
+    end
+  end
+end
+
+local function sizeAura(button, size)
+  if not button or not size then
+    return
+  end
+  if button.SetSize then
+    button:SetSize(size, size)
+  else
+    if button.SetWidth then
+      button:SetWidth(size)
+    end
+    if button.SetHeight then
+      button:SetHeight(size)
+    end
+  end
+end
+
+local function placeAuraRow(buttons, relative, relPoint, x, y, wrap, size)
+  if not relative or #buttons == 0 then
+    return
+  end
+  local rowStart, lastInRow, rowWidth
+  for _, button in ipairs(buttons) do
+    sizeAura(button, size)
+    local w = (button.GetWidth and button:GetWidth()) or size or 21
+    if button.ClearAllPoints then
+      button:ClearAllPoints()
+    end
+    if not rowStart then
+      button:SetPoint("TOPLEFT", relative, relPoint, x, y)
+      rowStart = button
+      lastInRow = button
+      rowWidth = w
+    elseif wrap and rowWidth + AURA_SPACE + w > AURA_ROW_WIDTH then
+      button:SetPoint("TOPLEFT", rowStart, "BOTTOMLEFT", 0, -AURA_SPACE)
+      rowStart = button
+      lastInRow = button
+      rowWidth = w
+    else
+      button:SetPoint("TOPLEFT", lastInRow, "TOPRIGHT", AURA_SPACE, 0)
+      lastInRow = button
+      rowWidth = rowWidth + AURA_SPACE + w
+    end
+  end
+  return rowStart
+end
+
+local function placeAuraGroups(relative, first, second, wrap, size)
+  local lowest = placeAuraRow(first, relative, "TOPRIGHT", AURA_GAP, 0, wrap, size)
+  if #second == 0 then
+    return
+  end
+  if lowest then
+    placeAuraRow(second, lowest, "BOTTOMLEFT", 0, -AURA_SPACE, wrap, size)
+  else
+    placeAuraRow(second, relative, "TOPRIGHT", AURA_GAP, 0, wrap, size)
+  end
+end
+
+function Addon:PlaceTargetAuras()
+  if self._shadowUIAuraPlace then
+    return
+  end
+  self._shadowUIAuraPlace = true
+  local frame = _G.TargetFrame
+  local tot = (frame and frame.totFrame) or _G.TargetFrameToT
+  if frame and (not frame.IsShown or frame:IsShown()) then
+    local buffs = collectFrameAuras(frame, "TargetFrameBuff", 32, "TargetBuffFrameTemplate")
+    local debuffs = collectFrameAuras(frame, "TargetFrameDebuff", 16, "TargetDebuffFrameTemplate")
+    local unit = frame.unit or "target"
+    local friendly = UnitIsFriend and UnitIsFriend("player", unit)
+    if friendly then
+      placeAuraGroups(frame, buffs, debuffs, true, TARGET_AURA_SIZE)
+    else
+      placeAuraGroups(frame, debuffs, buffs, true, TARGET_AURA_SIZE)
+    end
+  end
+  if tot and (not tot.IsShown or tot:IsShown()) then
+    local totBuffs = collectShown("TargetFrameToTBuff", 4)
+    local totDebuffs = collectShown("TargetFrameToTDebuff", 4)
+    placeAuraGroups(tot, totDebuffs, totBuffs, false)
+  end
+  self._shadowUIAuraPlace = nil
+end
+
+function Addon:SkinAuras()
   for _, group in ipairs(GROUPS) do
     local prefix, count = group[1], group[2]
     for i = 1, count do
@@ -174,10 +317,28 @@ function Addon:SkinAuras()
   end
   skinPool(_G.BuffFrame)
   skinPool(_G.DebuffFrame)
+  skinTargetPools(_G.TargetFrame)
+  skinTargetPools(_G.FocusFrame)
+  self:PlaceTargetAuras()
 end
 
 local function restyle()
   Addon:SkinAuras()
+end
+
+local function replaceTarget()
+  Addon:PlaceTargetAuras()
+end
+
+local function watchFrameAuras(frame)
+  if not frame or frame._shadowUIAuraHook or not hooksecurefunc then
+    return
+  end
+  if not frame.UpdateAuras then
+    return
+  end
+  frame._shadowUIAuraHook = true
+  hooksecurefunc(frame, "UpdateAuras", restyle)
 end
 
 if hooksecurefunc then
@@ -189,6 +350,28 @@ if hooksecurefunc then
   end
   if TargetFrame_UpdateAuras then
     hooksecurefunc("TargetFrame_UpdateAuras", restyle)
+  end
+  if TargetFrameMixin and TargetFrameMixin.UpdateAuras then
+    hooksecurefunc(TargetFrameMixin, "UpdateAuras", restyle)
+  end
+  if TargetFrame_UpdateAuraPositions then
+    hooksecurefunc("TargetFrame_UpdateAuraPositions", replaceTarget)
+  end
+  if TargetFrame_UpdateBuffAnchor then
+    hooksecurefunc("TargetFrame_UpdateBuffAnchor", replaceTarget)
+  end
+  if TargetFrame_UpdateDebuffAnchor then
+    hooksecurefunc("TargetFrame_UpdateDebuffAnchor", replaceTarget)
+  end
+  watchFrameAuras(_G.TargetFrame)
+  watchFrameAuras(_G.FocusFrame)
+  if RefreshDebuffs then
+    hooksecurefunc("RefreshDebuffs", function(frame)
+      local tot = (_G.TargetFrame and _G.TargetFrame.totFrame) or _G.TargetFrameToT
+      if frame == tot or frame == _G.TargetFrameToT then
+        Addon:PlaceTargetAuras()
+      end
+    end)
   end
   if AuraFrameMixin and AuraFrameMixin.UpdateAuraButtons then
     hooksecurefunc(AuraFrameMixin, "UpdateAuraButtons", restyle)

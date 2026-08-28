@@ -159,3 +159,95 @@ Openers, Kick, finishers. /startattack on builders.
 /cast Cold Blood
 /cast Eviscerate
 ```
+
+## Rogue ranks — class-specific
+
+Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1. Talent-granted rank macros stay here and stay off the Class Action Bar.
+
+### expose — `r-expose`
+
+```
+#showtooltip
+# class-specific ROGUE all
+/cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)
+```
+
+### garrote — `r-garrote`
+
+```
+#showtooltip
+# class-specific ROGUE all
+/cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)
+```
+
+### bstab — `r-bstab`
+
+```
+#showtooltip
+# class-specific ROGUE all
+/startattack
+/cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)
+```
+
+### feint — `r-feint`
+
+```
+#showtooltip
+# class-specific ROGUE all
+/cast [nomod]Feint;[mod:shift]Feint(Rank 1)
+```
+
+## Rogue TBC — class-specific — TBC
+
+TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; drag it to the bar.
+
+### cloak — `r-cloak`
+
+```
+#showtooltip Cloak of Shadows
+# class-specific ROGUE all
+/stopcasting
+/cast Cloak of Shadows
+```
+
+### dthrow — `r-dthrow`
+
+```
+#showtooltip Deadly Throw
+# class-specific ROGUE all
+/cast Deadly Throw
+```
+
+### shiv — `r-shiv`
+
+```
+#showtooltip Shiv
+# class-specific ROGUE all
+/startattack
+/cast Shiv
+```
+
+### env — `r-env`
+
+```
+#showtooltip Envenom
+# class-specific ROGUE assassination
+/cast Envenom
+```
+
+### step — `r-step`
+
+```
+#showtooltip Shadowstep
+# class-specific ROGUE subtlety
+/cast Shadowstep
+```
+
+### mut — `r-mut`
+
+```
+#showtooltip Mutilate
+# class-specific ROGUE assassination
+/startattack
+/cast Mutilate
+```

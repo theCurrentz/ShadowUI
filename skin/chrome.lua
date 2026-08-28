@@ -1,6 +1,6 @@
 --[[
   Purpose: Apply Lorti outer chrome to ShadowUI hosts. Action Bars have no matte fill
-           so empty Action Slots stay hidden. ApplySkins also skins Bagnon and the Stance Bar.
+           so empty Action Slots stay hidden. ApplySkins also skins the Stance Bar.
   Deps: ShadowUI bars, media/outer_shadow.tga
   Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:PaintOuterChrome(),
           ShadowUI:ApplyBarChrome(), ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
@@ -162,7 +162,7 @@ end
 
 function Addon:SkinDetails() end
 function Addon:SkinItemRack() end
-function Addon:SkinBagnon() end
+function Addon:SkinBags() end -- parked: skin/bags.lua is not in the TOC
 function Addon:SkinStanceBar() end
 function Addon:SkinTime() end
 
@@ -200,6 +200,5 @@ function Addon:ApplySkins()
   self:SkinPortraitRings()
   self:SkinDetails()
   self:SkinItemRack()
-  self:SkinBagnon()
   self:SkinStanceBar()
 end

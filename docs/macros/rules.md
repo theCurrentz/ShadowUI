@@ -1,4 +1,6 @@
-# Macro engine rules (Classic Era)
+# Macro engine rules (Classic Era and TBC)
+
+TBC uses the same 1.13+ conditionals as Era. Version TBC groups live in `build_catalog.py` with `gameVersion: TBC`. Do not mix Era-only racial wrappers onto those groups.
 
 ## Limits
 
@@ -152,4 +154,4 @@ A line that starts with `#` is a comment, except `#showtooltip`. Put the label o
 - Do not rely on `[btn:2]` for a keybind. Right-click tests are for mouse clicks on the button.
 - Do not stack five spells with no conditions. The client casts the first one that is usable, which is easy to misread.
 - Do not ship these as ShadowUI defaults. They stay in `docs/macros/` and in WoW Macro Cursor.
-- Do not write `macros-cache.txt` while the client is open. Macro Cursor heals empty or damaged caches only when the client is closed.
+- Do not write `macros-cache.txt` while the client is open. Macro Cursor heals empty or damaged caches only when the client is closed. `scripts/apply-macro-cache.sh` copies an Export cache file onto WTF and exits without write if World of Warcraft Classic is open.

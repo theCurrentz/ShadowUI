@@ -1,6 +1,7 @@
--- Target Frame spell bar sits flush under the mana bar at mana width, with a
--- remaining / duration count. Target of Target stays on the Blizzard default
--- BOTTOMRIGHT offset. Run: lua tests/target_spellbar_spec.lua
+-- Target Frame spell bar sits 2px above Name Background at mana width.
+-- Spell name sits on the left. Remaining / duration sits on the right.
+-- Target of Target stays on the Blizzard default BOTTOMRIGHT offset.
+-- Run: lua tests/target_spellbar_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
 _G.LibStub = function()
@@ -93,6 +94,9 @@ local function fakeFrame(name, parent)
     function fs:SetFont(path, size, flags)
       fs.fontPath, fs.fontSize, fs.fontFlags = path, size, flags
     end
+    function fs:SetWordWrap(on)
+      fs.wrap = on
+    end
     frame.font = fs
     return fs
   end
@@ -110,11 +114,32 @@ _G.TargetFrame = fakeFrame("TargetFrame")
 _G.TargetFrameManaBar = fakeFrame("TargetFrameManaBar", _G.TargetFrame)
 _G.TargetFrameManaBar.w = 119
 _G.TargetFrame.manabar = _G.TargetFrameManaBar
+_G.TargetFrameNameBackground = fakeFrame("TargetFrameNameBackground", _G.TargetFrame)
+_G.TargetFrame.NameBackground = _G.TargetFrameNameBackground
 _G.TargetFrameSpellBar = fakeFrame("TargetFrameSpellBar", _G.TargetFrame)
 _G.TargetFrame.spellbar = _G.TargetFrameSpellBar
 _G.TargetFrameSpellBar.casting = true
 _G.TargetFrameSpellBar.startTime = 10
 _G.TargetFrameSpellBar.endTime = 12.5
+local spellName = {
+  points = {},
+  text = "Fireball",
+  justifyH = "CENTER",
+}
+function spellName:ClearAllPoints()
+  self.points = {}
+end
+function spellName:SetPoint(...)
+  self.points[#self.points + 1] = { ... }
+end
+function spellName:SetJustifyH(h)
+  self.justifyH = h
+end
+function spellName:SetWordWrap(on)
+  self.wrap = on
+end
+_G.TargetFrameSpellBar.Text = spellName
+_G.TargetFrameSpellBarText = spellName
 _G.TargetFrameToT = fakeFrame("TargetFrameToT", _G.UIParent)
 _G.TargetFrame.totFrame = _G.TargetFrameToT
 _G.TargetFrameToT:SetPoint("TOPLEFT", _G.TargetFrame, "TOPRIGHT", 4, 0)
@@ -147,14 +172,27 @@ assert(tot[1] == "BOTTOMRIGHT" and tot[2] == _G.TargetFrame and tot[3] == "BOTTO
 assert(_G.TargetFrameToT.parent == _G.TargetFrame, "target of target stays a Target Frame child")
 
 local bar = _G.TargetFrameSpellBar
-local place = bar.points[1]
-assert(place[1] == "TOPLEFT" and place[2] == _G.TargetFrameManaBar
-    and place[3] == "BOTTOMLEFT" and place[4] == 0 and place[5] == 0,
-  "target spell bar nests under the mana bar")
+assert(bar.points[1][1] == "LEFT" and bar.points[1][2] == _G.TargetFrameManaBar
+    and bar.points[1][3] == "LEFT" and bar.points[1][4] == 0 and bar.points[1][5] == 0,
+  "target spell bar keeps mana bar left")
+assert(bar.points[2][1] == "BOTTOM" and bar.points[2][2] == _G.TargetFrameNameBackground
+    and bar.points[2][3] == "TOP" and bar.points[2][4] == 0 and bar.points[2][5] == 2,
+  "target spell bar sits 2px above Name Background")
 assert(bar.w == 119, "target spell bar matches mana bar width")
+assert(spellName.justifyH == "LEFT", "spell name sits on the left")
+assert(spellName.wrap == false, "spell name does not wrap onto the countdown")
+assert(spellName.points[1][1] == "LEFT" and spellName.points[1][2] == bar
+    and spellName.points[1][4] == 4,
+  "spell name starts on the left of the bar")
+assert(spellName.points[2][1] == "RIGHT" and spellName.points[2][2] == bar.font
+    and spellName.points[2][3] == "LEFT" and spellName.points[2][4] == -4,
+  "spell name stops before the countdown")
 assert(bar.font and bar.font.text == "1.3 / 2.5",
   "target spell bar shows remaining over duration")
 assert(bar.font.justifyH == "RIGHT", "cast count sits on the right of the bar")
+assert(bar.font.points[1][1] == "RIGHT" and bar.font.points[1][2] == bar
+    and bar.font.points[1][4] == -4,
+  "cast count sits on the right of the bar")
 
 bar.casting = false
 bar.channeling = false

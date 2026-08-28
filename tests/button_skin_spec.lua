@@ -1,7 +1,8 @@
 -- Action-button chrome is a 0.05 fill with a 2px icon inset, a 0.07 crop,
 -- hover/press darken, a GCD clock swipe, and a 4px Lorti outer edge.
 -- The icon must not fill the whole button or the chrome is covered.
--- An Action Slot with no spell, macro, or item stays hidden, including its Keybind.
+-- An Action Slot with no spell, macro, or item stays hidden, including its Keybind,
+-- except during Keybind Edit Mode or a pickup.
 -- Run: lua tests/button_skin_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -177,6 +178,7 @@ assert(outer.border[1] == 0 and outer.border[4] == 0.9,
 function button:HasAction()
   return false
 end
+button.shadowUIHotkey = "1"
 button.shown = true
 function button:Hide()
   self.shown = false
@@ -191,7 +193,30 @@ assert(button.shadowUIOuter.shown == false, "an empty Action Slot does not keep 
 Addon.keybindMode = true
 Addon:SkinBarButton(button)
 assert(button.alpha == 1, "Keybind Edit Mode shows empty Action Slots")
+assert(not button.chrome.hidden, "Keybind Edit Mode paints empty Action Slot chrome")
+assert(button.HotKey.shown == true, "Keybind Edit Mode shows the Keybind on an empty Action Slot")
 Addon.keybindMode = false
+
+_G.GetCursorInfo = function()
+  return "spell"
+end
+Addon:SkinBarButton(button)
+assert(button.alpha == 1, "a pickup shows empty Action Slots")
+assert(not button.chrome.hidden, "a pickup paints empty Action Slot chrome")
+assert(button.shadowUIOuter.shown, "a pickup paints empty Action Slot Outer Edge")
+assert(button.HotKey.shown == true, "a pickup shows the Keybind on an empty Action Slot")
+_G.GetCursorInfo = function() end
+Addon:SkinBarButton(button)
+assert(button.alpha == 0, "clearing the cursor hides empty Action Slots again")
+assert(button.HotKey.shown == false, "clearing the cursor hides empty Action Slot Keybinds")
+
+Addon.actionBarGridCount = 1
+Addon:SkinBarButton(button)
+assert(button.alpha == 1, "ACTIONBAR_SHOWGRID shows empty Action Slots")
+assert(button.HotKey.shown == true, "ACTIONBAR_SHOWGRID shows the Keybind on an empty Action Slot")
+Addon.bars = { bar1 = { buttons = { button } } }
+Addon:OnActionBarHideGrid()
+assert(button.alpha == 0, "ACTIONBAR_HIDEGRID hides empty Action Slots again")
 
 function button:HasAction()
   return true

@@ -12,6 +12,7 @@ For Fury, load Warrior core + Warrior Fury. For Fury/Protection, add Last Stand 
 Catalog bodies stay stance-aware so they also work outside the Action Deck. On a matching stance page, the stance line is a no-op.
 Charge / Intercept share `E`; Shield Bash / Pummel share `F`; the three major stance cooldowns share `Z`.
 A stance change can require a second key press after the stance cooldown. Shield Slam and Shield Wall require an equipped shield.
+On TBC, load Warrior TBC for Commanding Shout, Intervene, Spell Reflection, and Victory Rush. Slam is in Warrior core on that Version.
 
 ## Warrior core — class-specific
 
@@ -138,7 +139,7 @@ Leaves Berserker Stance because Rend requires Battle or Defensive Stance.
 
 ```
 #showtooltip Rend
-# class-specific WARRIOR all | key (6)
+# class-specific WARRIOR all | key (H)
 /cast [stance:3] Battle Stance
 /cast Rend
 /startattack
@@ -153,6 +154,18 @@ Uses a hostile living mouseover, then the current target. Useful for multi-targe
 # class-specific WARRIOR all | key (Q)
 /startattack
 /cast [target=mouseover,harm,nodead][] Sunder Armor
+```
+
+### sl — `w-slam`
+
+Trainer-taught filler. TBC uses it on the baseline bar. Leaves Defensive Stance.
+
+```
+#showtooltip Slam
+# class-specific WARRIOR all | key (L)
+/cast [stance:2] Battle Stance
+/startattack
+/cast Slam
 ```
 
 ### wkick — `w-interrupt`
@@ -205,7 +218,7 @@ Dedicated Action Deck copy; `w-shout` also provides Demoralizing Shout on Shift.
 
 ```
 #showtooltip Demoralizing Shout
-# class-specific WARRIOR all | key (Shift-V)
+# class-specific WARRIOR all | key (SHIFT-B)
 /cast Demoralizing Shout
 /startattack
 ```
@@ -379,22 +392,54 @@ Stops a cast or queued spell so the emergency defensive can fire immediately.
 /cast Last Stand
 ```
 
-### cb — `w-concussion`
+## Warrior TBC — class-specific — TBC
+
+TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passive.
+
+### cshout — `w-cshout`
+
+Health shout. Battle Shout stays on `w-shout`.
 
 ```
-#showtooltip Concussion Blow
-# class-specific WARRIOR protection | key (7)
+#showtooltip Commanding Shout
+# class-specific WARRIOR all
+/cast Commanding Shout
 /startattack
-/cast Concussion Blow
 ```
 
-### ssl — `w-sslam`
+### interv — `w-intervene`
+
+Enters Defensive Stance. Uses a friendly living mouseover, then the current target.
 
 ```
-#showtooltip Shield Slam
-# class-specific WARRIOR protection | key (1)
+#showtooltip Intervene
+# class-specific WARRIOR all
+/cast [nostance:2] Defensive Stance
+/cast [target=mouseover,help,nodead][] Intervene
+```
+
+### reflect — `w-reflect`
+
+Requires an equipped shield. Enters Defensive Stance.
+
+```
+#showtooltip Spell Reflection
+# class-specific WARRIOR all
+/stopcasting
+/cast [nostance:2] Defensive Stance
+/cast Spell Reflection
+```
+
+### vrush — `w-vrush`
+
+Leaves Defensive Stance. Usable after a killing blow.
+
+```
+#showtooltip Victory Rush
+# class-specific WARRIOR all
+/cast [stance:2] Battle Stance
+/cast Victory Rush
 /startattack
-/cast Shield Slam
 ```
 
 ## Tazzy gear kit — character-specific Tazzy
@@ -456,4 +501,19 @@ Cancels a queued attack, equips the mitigation set, enters Defensive Stance, the
 /equipslot 17 The Immovable Object
 /cast [nostance:2] Defensive Stance
 /cast Shield Wall
+```
+
+## Warrior other — class-specific
+
+In-game macros with no catalog group. Auto-heal keeps them for Export.
+
+### shout — `ingame-other-WARRIOR-shout`
+
+Imported from in-game macros-cache.txt.
+
+```
+#showtooltip Battle Shout
+# class-specific WARRIOR all | key (B)
+/cast Battle Shout
+/startattack
 ```
