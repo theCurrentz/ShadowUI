@@ -1,6 +1,6 @@
 --[[
   Purpose: Paint remaining cooldown seconds on ShadowUI action buttons (OmniCC gap).
-  The GCD swipe stays. Counts hide below 2s so GCD has no number.
+  Text is yellow with an outline. The GCD swipe stays. Counts hide below 2s so GCD has no number.
   Deps: LibActionButton cooldown region
   Public: ShadowUI:FormatCooldownCount(), ShadowUI:CooldownCountState(),
           ShadowUI:SkinCooldownCount()
@@ -71,6 +71,25 @@ function Addon:SkinCooldownCount(button)
     button.shadowUICooldownCount = fs
     if fs.SetPoint then
       fs:SetPoint("CENTER", cooldown, "CENTER", 0, 0)
+    end
+  end
+  local fs = button.shadowUICooldownCount
+  if fs then
+    local path = _G.STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"
+    if fs.GetFont then
+      path = fs:GetFont() or path
+    end
+    if fs.SetFont and path then
+      fs:SetFont(path, 14, "OUTLINE")
+    end
+    if fs.SetTextColor then
+      fs:SetTextColor(1, 0.82, 0, 1)
+    end
+    if fs.SetShadowOffset then
+      fs:SetShadowOffset(1, -1)
+    end
+    if fs.SetShadowColor then
+      fs:SetShadowColor(0, 0, 0, 1)
     end
   end
   if cooldown.shadowUICountHooked then

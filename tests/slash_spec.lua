@@ -18,23 +18,28 @@ Addon:OnInitialize()
 assert(registered.shadowui == "SlashCommand", "/shadowui opens options")
 assert(registered.sui == "SlashCommand", "/sui is a short form of /shadowui")
 
-local placed = 0
-function Addon:PlaceDeck()
-  placed = placed + 1
-end
 function Addon:Print() end
-Addon:SlashCommand("deck")
-assert(placed == 1, "/shadowui deck places the Action Deck")
-Addon:SlashCommand("place")
-assert(placed == 2, "/shadowui place is the same command")
-
-local pruned = 0
-function Addon:ShiftAndPruneBars()
-  pruned = pruned + 1
+local prunedGroup
+function Addon:ShiftAndPruneBars(groupName)
+  prunedGroup = groupName
 end
-Addon:SlashCommand("prune")
-assert(pruned == 1, "/shadowui prune packs Keybinds left")
-Addon:SlashCommand("shift")
-assert(pruned == 2, "/shadowui shift is the same command")
+Addon:SlashCommand("prune Main")
+assert(prunedGroup == "Main", "/shadowui prune packs Keybinds in that Bar Group")
+Addon:SlashCommand("shift Side")
+assert(prunedGroup == "Side", "/shadowui shift is the same command")
+
+local loadoutRest
+function Addon:HandleLoadoutCommand(rest)
+  loadoutRest = rest
+end
+Addon:SlashCommand("loadout preview Tazzy")
+assert(loadoutRest == "preview Tazzy", "/shadowui loadout delegates its subcommand")
+
+local dumped = 0
+function Addon:DumpXPStack()
+  dumped = dumped + 1
+end
+Addon:SlashCommand("xpstack")
+assert(dumped == 1, "/shadowui xpstack dumps the live Tracking XP host")
 
 print("slash_spec OK")

@@ -1,5 +1,5 @@
 --[[
-  Purpose: Select the Layer receiving Layout, Keybind, and Action Deck edits.
+  Purpose: Select the Layer receiving Layout and Keybind edits.
   Deps: ShadowUI character DB
   Public: ShadowUI:SetEditLayer(), ShadowUI:ShowLayerPicker()
 ]]

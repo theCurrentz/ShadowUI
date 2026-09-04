@@ -31,6 +31,10 @@ _G.InCombatLockdown = function() return false end
 _G.UIParent = { name = "UIParent", width = 1920, height = 1080, level = 0, strata = "MEDIUM" }
 function _G.UIParent:GetWidth() return self.width end
 function _G.UIParent:GetHeight() return self.height end
+function _G.UIParent:GetEffectiveScale() return 1 end
+local cursor = { x = 0, y = 0 }
+_G.GetCursorPosition = function() return cursor.x, cursor.y end
+_G.IsShiftKeyDown = function() return false end
 
 local function fakeTex(parent)
   local tex = { parent = parent, points = {}, shown = true }
@@ -224,6 +228,48 @@ assert(stanceOverlay.shown == false, "a hidden Blizzard Stance Bar has no edit o
 _G.StanceBarFrame.shown = true
 Addon:RefreshUnitDragOverlays()
 assert(stanceOverlay.shown == true, "a shown Blizzard Stance Bar keeps the edit overlay")
+
+_G.StanceBarFrame.shown = false
+_G.StanceBar = fakeUnit("StanceBar", 36, 36)
+_G.StanceBar.left, _G.StanceBar.bottom = 40, 20
+Addon:RefreshUnitDragOverlays()
+assert(stanceOverlay.host == _G.StanceBar, "1.15 StanceBar is the Layout Edit Mode host")
+assert(stanceOverlay.shown == true, "a shown StanceBar keeps the edit overlay")
+
+_G.IsShiftKeyDown = function() return true end
+cursor.x, cursor.y = 120, 60
+stanceOverlay.script_OnMouseDown(stanceOverlay, "LeftButton")
+cursor.x, cursor.y = 160, 90
+if stanceOverlay.script_OnUpdate then
+  stanceOverlay.script_OnUpdate()
+end
+assert(_G.StanceBar.left == 80 and _G.StanceBar.bottom == 50,
+  "Layout Edit Mode drags the Stance Bar with the cursor")
+stanceOverlay.script_OnMouseUp(stanceOverlay, "LeftButton")
+assert(account.classes.MAGE.layout.stance, "stance persist writes Layout")
+assert(account.classes.MAGE.layout.stance.point == "BOTTOMLEFT", "stance persist uses the grid origin")
+assert(account.classes.MAGE.layout.stance.x == 80, "stance persist keeps Shift-skip x")
+assert(account.classes.MAGE.layout.stance.y == 50, "stance persist keeps Shift-skip y")
+
+_G.StanceBar.width, _G.StanceBar.height = 0, 0
+local stealth = fakeUnit("StanceButton1", 30, 30)
+stealth.left, stealth.bottom = 40, 20
+Addon:RefreshUnitDragOverlays()
+assert(stanceOverlay.width >= 30 and stanceOverlay.height >= 30,
+  "a Stance Bar with no size still has a drag overlay over the stealth button")
+assert(stanceOverlay.mouse == true, "the stealth overlay receives the drag")
+
+_G.PlayerPortrait = fakeUnit("PlayerPortrait", 64, 64)
+_G.PlayerPortrait.left, _G.PlayerPortrait.bottom = 110, 70
+_G.PlayerFrameHealthBar = fakeUnit("PlayerFrameHealthBar", 119, 12)
+_G.PlayerFrameHealthBar.left, _G.PlayerFrameHealthBar.bottom = 174, 90
+_G.PlayerFrame.left, _G.PlayerFrame.bottom = 100, 50
+local visLeft, visBottom, visWidth, visHeight = Addon:HostVisualRect(_G.PlayerFrame, "player")
+assert(visLeft == 110 and visBottom == 70, "player visual origin is the portrait, not the empty pad")
+assert(visWidth == 183 and visHeight == 64, "player visual size unions portrait and health")
+Addon:RefreshUnitDragOverlays()
+assert(playerOverlay.width == 183 and playerOverlay.height == 64,
+  "Player HUD overlay matches the chrome, not the 232x100 hit box")
 
 Addon:SetEditSession(nil)
 Addon:ApplyEditSession(false)

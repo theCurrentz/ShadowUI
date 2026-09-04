@@ -14,7 +14,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip
-# class-specific DRUID balance
 /cast [mod:shift] Moonfire(Rank 1); Moonfire
 ```
 
@@ -22,7 +21,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip Wrath
-# class-specific DRUID balance
 /cast Wrath
 ```
 
@@ -30,7 +28,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip Starfire
-# class-specific DRUID balance
 /cast Starfire
 ```
 
@@ -38,7 +35,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip Moonkin Form
-# class-specific DRUID balance
 /cast Moonkin Form
 ```
 
@@ -46,7 +42,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip
-# class-specific DRUID balance
 /cancelform
 /cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots
 ```
@@ -55,7 +50,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation
 ```
@@ -64,7 +58,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip Swiftmend
-# class-specific DRUID restoration
 /cancelform
 /cast Swiftmend
 ```
@@ -73,7 +66,6 @@ Moonkin and healer extras.
 
 ```
 #showtooltip Healing Touch
-# class-specific DRUID restoration
 /cancelform
 /cast Nature's Swiftness
 /cast Healing Touch
@@ -87,7 +79,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Shred
-# class-specific DRUID feral
 /startattack
 /cast Shred
 ```
@@ -96,7 +87,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite
 ```
 
@@ -104,7 +94,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Rip
-# class-specific DRUID feral
 /cast Rip
 ```
 
@@ -112,7 +101,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Rake
-# class-specific DRUID feral
 /startattack
 /cast Rake
 ```
@@ -121,7 +109,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Prowl
-# class-specific DRUID feral
 /cast [noform:3] Cat Form
 /cast Prowl
 ```
@@ -130,7 +117,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Maul
-# class-specific DRUID feral
 /startattack
 /cast Maul
 ```
@@ -139,7 +125,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Growl
-# class-specific DRUID feral
 /cast [noform:1] Dire Bear Form
 /cast Growl
 ```
@@ -148,7 +133,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Bash
-# class-specific DRUID feral
 /stopcasting
 /cast Bash
 ```
@@ -157,7 +141,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [form:1/3] Faerie Fire (Feral); Faerie Fire
 ```
 
@@ -165,7 +148,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Feral Charge
-# class-specific DRUID feral
 /cast Feral Charge
 ```
 
@@ -173,7 +155,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Frenzied Regeneration
-# class-specific DRUID feral
 /cast Frenzied Regeneration
 ```
 
@@ -181,7 +162,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Dash
-# class-specific DRUID feral
 /cast Dash
 ```
 
@@ -189,7 +169,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /cast [mod:shift] Travel Form; Cat Form
 ```
 
@@ -197,7 +176,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Dire Bear Form
-# class-specific DRUID feral
 /cast Dire Bear Form
 ```
 
@@ -205,7 +183,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch
 ```
@@ -214,7 +191,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Innervate
-# class-specific DRUID restoration
 /cancelform
 /raid Innervate on %t
 /cast [mod:alt,target=player] Innervate; Innervate
@@ -224,7 +200,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Rebirth
-# class-specific DRUID restoration
 /cancelform
 /raid {rt8} Rebirth on %t {rt8}
 /cast Rebirth
@@ -234,7 +209,6 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 
 ```
 #showtooltip Mark of the Wild
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
 ```
@@ -247,7 +221,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)
 ```
@@ -256,7 +229,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)
 ```
 
@@ -264,7 +236,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)
 ```
@@ -273,7 +244,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)
 ```
@@ -282,7 +252,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /startattack
 /cast [nomod]Claw;[mod:shift]Claw(Rank 1)
 ```
@@ -291,7 +260,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Cower;[mod:shift]Cower(Rank 1)
 ```
 
@@ -299,7 +267,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)
 ```
 
@@ -307,7 +274,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)
 ```
 
@@ -315,7 +281,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)
 ```
 
@@ -323,7 +288,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /startattack
 /cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)
 ```
@@ -332,7 +296,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)
 ```
 
@@ -340,7 +303,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)
 ```
@@ -349,7 +311,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth
 ```
@@ -358,7 +319,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)
 ```
@@ -371,7 +331,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /startattack
 /cast [form:3] Mangle (Cat); Mangle (Bear)
 ```
@@ -380,7 +339,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip Lifebloom
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Lifebloom; Lifebloom
 ```
@@ -389,7 +347,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip Cyclone
-# class-specific DRUID balance
 /stopcasting
 /cast Cyclone
 ```
@@ -398,7 +355,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [mod:shift] Swift Flight Form; Flight Form
 ```
 
@@ -406,7 +362,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip Lacerate
-# class-specific DRUID feral
 /startattack
 /cast Lacerate
 ```
@@ -415,7 +370,6 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip Maim
-# class-specific DRUID feral
 /cast Maim
 ```
 
@@ -423,6 +377,5 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 
 ```
 #showtooltip Tree of Life
-# class-specific DRUID restoration
 /cast Tree of Life
 ```

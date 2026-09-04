@@ -101,6 +101,44 @@ assert(cascaded[1].key == "1" and cascaded[2].key == "3", "pack continues onto t
 assert(cascaded[2].action.id == "c", "the next-Bar action moves with the Keybind")
 assert(cascaded[3].key == "" and cascaded[3].action == nil, "the source Bar slot is empty")
 
+function Addon:FirstActionSlot(barId)
+  local page = tonumber((barId or ""):match("^bar(%d+)$"))
+  return (page - 1) * 12 + 1
+end
+function Addon:SlotFromBindingName(name)
+  return tonumber((name or ""):match("ShadowUIActionButton(%d+)"))
+end
+Addon.bars = {
+  {
+    barId = "bar1",
+    configEnabled = true,
+    buttons = { { _state_action = 1 }, { _state_action = 2 } },
+  },
+  {
+    barId = "bar2",
+    configEnabled = true,
+    buttons = { { _state_action = 13 }, { _state_action = 14 } },
+  },
+}
+function Addon:ResolveEffective()
+  return {
+    layout = {
+      bar1 = { group = "Main" },
+      bar2 = { group = "Side" },
+    },
+    keybinds = {
+      ["CLICK ShadowUIActionButton1:Keybind"] = "1",
+      ["CLICK ShadowUIActionButton13:Keybind"] = "3",
+    },
+  }
+end
+local mainHud = Addon:CollectHudButtons("Main")
+assert(#mainHud == 2, "CollectHudButtons keeps Bars in that Bar Group")
+assert(mainHud[1].barId == "bar1" and mainHud[2].barId == "bar1",
+  "CollectHudButtons drops Bars outside that Bar Group")
+local allHud = Addon:CollectHudButtons()
+assert(#allHud == 4, "CollectHudButtons with no Bar Group keeps every Bar")
+
 local row = {
   hud("bar1", 0, 1, 1, "1", "a"),
   hud("bar1", 1, 2, 2, "2", nil),
@@ -147,11 +185,12 @@ function Addon:Print(msg)
   messages[#messages + 1] = msg
 end
 function Addon:ResolveEffective()
-  return { keybinds = {} }
+  return { keybinds = {}, layout = { barGroups = { Main = {} } } }
 end
 function Addon:ApplyKeybinds() end
-function Addon:RefreshActionDeckButtons() end
-function Addon:CollectHudButtons()
+local collectedGroup
+function Addon:CollectHudButtons(groupName)
+  collectedGroup = groupName
   return gapped
 end
 _G.GetCursorInfo = function() return cursor end
@@ -176,7 +215,15 @@ _G.PickupMacro = function(index)
   cursor = "macro:" .. tostring(index)
 end
 
-assert(Addon:ShiftAndPruneBars() == true, "Shift and Prune runs out of combat")
+assert(Addon:ShiftAndPruneBars() == false, "Shift and Prune needs a Bar Group")
+assert(messages[#messages] == "Name a Bar Group to prune.",
+  "missing Bar Group explains the skip")
+messages = {}
+assert(Addon:ShiftAndPruneBars("Side") == false, "an unknown Bar Group does not prune")
+assert(messages[#messages] == "Unknown Bar Group.", "unknown Bar Group explains the skip")
+messages = {}
+assert(Addon:ShiftAndPruneBars("Main") == true, "Shift and Prune runs out of combat")
+assert(collectedGroup == "Main", "Shift and Prune collects only that Bar Group")
 assert(messages[#messages] == "Shifted keybinds left and pruned gaps.",
   "Shift and Prune reports success")
 local bindWrite, actionWrite = 0, 0
@@ -189,19 +236,19 @@ for _, write in ipairs(writes) do
   end
 end
 assert(bindWrite == 3, "Shift and Prune writes each Keybind in the pack")
-assert(actionWrite == 3, "Shift and Prune writes each Action Slot in the pack")
+assert(actionWrite == 0, "Shift and Prune does not write an Action Deck overlay")
 assert(#placed >= 1, "Shift and Prune places live Action Slots")
 
 function Addon.CollectHudButtons()
   return packed
 end
 messages = {}
-assert(Addon:ShiftAndPruneBars() == false, "a packed layout does not prune")
+assert(Addon:ShiftAndPruneBars("Main") == false, "a packed layout does not prune")
 assert(messages[#messages] == "No keybind gaps to prune.", "packed layout explains the skip")
 
 _G.InCombatLockdown = function() return true end
 messages = {}
-assert(Addon:ShiftAndPruneBars() == false, "combat blocks Shift and Prune")
+assert(Addon:ShiftAndPruneBars("Main") == false, "combat blocks Shift and Prune")
 assert(messages[#messages]:find("combat", 1, true), "combat prints a leave-combat note")
 _G.InCombatLockdown = function() return false end
 
@@ -213,12 +260,25 @@ assert(initSrc:find('cmd == "prune"') or initSrc:find('cmd == "shift"'),
   "/shadowui prune runs Shift and Prune")
 
 local configSrc = assert(io.open(root .. "options/config.lua", "r")):read("*a")
-assert(configSrc:find("ShiftAndPruneBars"), "options expose Shift and Prune")
+assert(configSrc:find("ShiftAndPruneBars(groupName)", 1, true),
+  "options run Shift and Prune on that Bar Group")
 assert(configSrc:find("Shift and Prune"), "options use the Shift and Prune name")
 
 local toc = assert(io.open(root .. "ShadowUI.toc", "r")):read("*a")
 assert(toc:find("bars\\slotshift.lua", 1, true), "Era TOC loads slotshift")
 local tocTbc = assert(io.open(root .. "ShadowUI_TBC.toc", "r")):read("*a")
 assert(tocTbc:find("bars\\slotshift.lua", 1, true), "TBC TOC loads slotshift")
+
+local lockValue = "1"
+_G.GetCVar = function() return lockValue end
+_G.SetCVar = function(_, value) lockValue = value end
+local unlockedOk = pcall(function()
+  Addon:WithUnlockedActionBars(function()
+    assert(lockValue == "0", "action bars unlock during the callback")
+    error("callback failed")
+  end)
+end)
+assert(unlockedOk == false, "action-bar callback errors are preserved")
+assert(lockValue == "1", "action-bar lock is restored after a callback error")
 
 print("slotshift_spec OK")

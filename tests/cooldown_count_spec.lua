@@ -53,17 +53,39 @@ function cooldown:GetParent()
 end
 button = { cooldown = cooldown }
 function button:CreateFontString()
-  count = {}
+  count = {
+    shown = false,
+    text = "",
+    r = 1, g = 1, b = 1,
+    flags = "",
+    shadowX = 0, shadowY = 0,
+  }
   function count:SetPoint() end
   function count:SetText(text) count.text = text end
   function count:Show() count.shown = true end
   function count:Hide() count.shown = false end
+  function count:SetTextColor(r, g, b, a)
+    count.r, count.g, count.b, count.a = r, g, b, a
+  end
+  function count:GetFont() return "Fonts\\FRIZQT__.TTF", 12, "" end
+  function count:SetFont(path, size, flags)
+    count.path, count.size, count.flags = path, size, flags
+  end
+  function count:SetShadowOffset(x, y)
+    count.shadowX, count.shadowY = x, y
+  end
+  function count:SetShadowColor(r, g, b, a)
+    count.shadow = { r, g, b, a }
+  end
   return count
 end
 function button:GetFrameLevel() return 4 end
 
 Addon:SkinCooldownCount(button)
 assert(cooldown.nativeHidden == true, "native cooldown numbers stay off")
+assert(count.r == 1 and math.abs(count.g - 0.82) < 0.01, "cooldown count is yellow")
+assert(count.flags == "OUTLINE", "cooldown count uses an outline")
+assert(count.shadowX == 1 and count.shadowY == -1, "cooldown count uses a drop shadow")
 cooldown:SetCooldown(10, 30)
 cooldown.scripts.OnUpdate(cooldown)
 assert(count.text == "28", "action button paints remaining cooldown seconds")

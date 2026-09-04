@@ -100,11 +100,11 @@ maps Bartender and Blizzard binding names onto ShadowUI action slots.
 `deck_replace_spec` reproduces stale macro-index shifts and asserts that a Warrior Class apply places the Macro Cursor HUD (not the Variant-less skeleton), cannot place Power Infusion, and drops unrelated General or character macros.
 `deck_overlay_spec` covers Account and Character Action Deck merge, `false` tombstones, PlaceDeck spell pickup, and `through` Class / Variant / Character.
 `layer_spec` covers the in-game Layer picker: Base, Class, Variant, and Character.
-`edit_session_spec` covers Layout Edit Mode vs Keybind Edit Mode, Layer writes, and key tombstones.
-`edit_hud_spec` covers the DIALOG HUD overlay, magenta centre guides, Bar resize grip, and combat close.
+`edit_session_spec` covers Layout Edit Mode vs Keybind Edit Mode, Layer writes, key tombstones, and persist of the nearest UIParent point.
+`edit_hud_spec` covers the DIALOG HUD overlay, magenta true-centre guides, centre snap within one grid cell, Bar resize grip, and combat close.
+`edit_meters_spec` covers Cast Bar drag and resize, Range Display drag, Range snap to screen centre, and the live x/y size readout.
 `edit_bars_spec` covers secure Warrior stance paging and Bar resize by columns and rows: 12-slot grids, Special Bar slot-count grids, and persist without writing scale.
 `edit_unit_spec` covers Player Frame, Target Frame, and Stance Bar HUD hosts and the snap-back from Blizzard Edit Mode.
-`edit_meters_spec` covers Cast Bar drag and resize and Range Display drag in Layout Edit Mode.
 `apply_bars_spec` asserts ShadowUI bars are created before Blizzard bars are hidden, that a disabled standard Bar is still created, and that a pickup shows that Bar.
 `special_preview_spec` asserts Layout Edit Mode previews pet and possess for every class and does not create stance, aura, or form bars.
 `button_create_spec` asserts Classic LAB create sets `MasqueSkinned` and pcalls click registration.
@@ -171,7 +171,7 @@ Manual in-game verification (Classic Era):
 
 - Possess relies on `/click PossessButtonN` and needs in-game validation; LibActionButton has no possess action type.
 - Profile keybinds use `SetOverrideBindingClick` on ShadowUI buttons and paint hotkey labels from those binds.
-- `/shadowui deck` places macros and abilities from the selected loadout (Class, Variant, or Character). It validates the catalog, replaces both macro tabs with only the unique resolved deck macros on the General tab, and then clears owned Warrior slots 1–12 and 73–111 plus every loadout slot. Fury, Arms, and Protection leave 109–111 empty unless the loadout writes them. Apply keeps tombstoned slots empty after reload. Every macro entry must match its required body marker. Classic Era picks up abilities by spell name. Clients with `C_Spell.PickupSpell` use the spell id.
+- `/shadowui deck` places macros and abilities from the selected loadout (Class, Variant, or Character). It validates the catalog, replaces both macro tabs with only the unique resolved deck macros on the General tab, and then clears owned Warrior slots 1–12 and 73–111 plus every loadout slot. Fury, Arms, and Protection leave 109–111 empty unless the loadout writes them. Apply keeps tombstoned slots empty after reload. Every macro entry must match its catalog name and body. Classic Era picks up abilities by spell name. Clients with `C_Spell.PickupSpell` use the spell id.
 - Micro and bag buttons are docked flush to the screen bottom-right in one row (single backpack button, native Blizzard art, no Shop).
 - Vendored libraries in `libs/` are not pinned to upstream revisions.
 

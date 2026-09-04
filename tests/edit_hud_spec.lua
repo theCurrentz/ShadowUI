@@ -213,20 +213,29 @@ assert(grid.shown == true, "grid shows in Layout Edit Mode")
 assert(grid.vCenter and grid.hCenter, "grid paints centre guides")
 assert(grid.vCenter.r > 0.7 and grid.vCenter.b > 0.7 and grid.vCenter.g < 0.5,
   "centre guides are magenta")
--- 1920×1080: pixel centre is 960×540. Nearest 32.4 snap is 972 and 550.8.
-assert(grid.vCenter.points[1][4] == 972, "vertical centre sits on the snap grid")
-assert(grid.hCenter.points[1][5] == 550.8, "horizontal centre sits on the snap grid")
-local vOnGrid, hOnGrid
-for _, line in ipairs(grid.lines) do
-  if line.points[1] and line.points[1][4] == 972 then
-    vOnGrid = true
-  end
-  if line.points[1] and line.points[1][5] == 550.8 then
-    hOnGrid = true
-  end
-end
-assert(vOnGrid, "a white vertical line shares the centre x")
-assert(hOnGrid, "a white horizontal line shares the centre y")
+-- 1920×1080: pixel centre is 960×540. Magenta marks that centre, not the 32.4 grid.
+assert(grid.vCenter.points[1][4] == 960, "vertical centre sits on the screen midline")
+assert(grid.hCenter.points[1][5] == 540, "horizontal centre sits on the screen midline")
+
+local near = CreateFrame("Frame", "ShadowUICenterSnap", UIParent)
+near:SetSize(200, 80)
+near.left, near.bottom = 856, 50
+Addon:SnapFrameToGrid(near)
+assert(math.abs(near.points[#near.points][4] - 860) < 0.01,
+  "a host near the midline snaps so its visual centre hits screen centre")
+assert(math.abs(near.points[#near.points][5] - 64.8) < 0.01,
+  "off-centre y still uses the 32.4 grid")
+
+local onGrid = CreateFrame("Frame", "ShadowUIGridThenCenter", UIParent)
+onGrid:SetSize(200, 80)
+onGrid.left, onGrid.bottom = 874.8, 50
+Addon:SnapFrameToGrid(onGrid)
+assert(math.abs(onGrid.points[#onGrid.points][4] - 860) < 0.01,
+  "within one grid cell of the midline, centre wins over the 32.4 line")
+
+assert(Addon:FormatEditReadout("Range", "CENTER", 0, -96, 112, 36)
+    == "Range\nCENTER 0, -96\n112 × 36",
+  "drag readout shows point, x/y, and frame size")
 
 local picker = Addon.layerPicker
 assert(picker, "layer picker shows in Layout Edit Mode")

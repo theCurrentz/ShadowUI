@@ -16,13 +16,8 @@ for _, class in ipairs({
 end
 
 for class, data in pairs(Addon.Defaults.classes) do
-  local n = 0
-  for _, entry in pairs(data.actions or {}) do
-    n = n + 1
-    assert(type(entry) == "table" and type(entry.id) == "string" and type(entry.name) == "string",
-      class .. " Action Deck entries need id and name from act()")
-  end
-  assert(n > 0, class .. " Action Deck must load")
+  assert(type(data.layout) == "table", class .. " must ship Layout")
+  assert(data.actions == nil, class .. " must not ship an Action Deck")
 end
 
 local LIMIT = 360
@@ -31,8 +26,10 @@ local CAST = { name = "castbar", point = "CENTER", left = -150, right = 144, top
 local function rect(id, cfg)
   local size = cfg.buttonSize or 36
   local columns = math.max(1, math.min(cfg.columns or cfg.buttons, cfg.buttons))
-  local width = columns * size
-  local height = math.ceil(cfg.buttons / columns) * size
+  local gap = cfg.gap or 0
+  local rows = math.ceil(cfg.buttons / columns)
+  local width = columns * size + (columns - 1) * gap
+  local height = rows * size + (rows - 1) * gap
   local point = cfg.point or "CENTER"
   if point == "BOTTOM" then
     return {
@@ -104,14 +101,33 @@ end
 local base = Addon.Defaults.base.layout
 local enabled = 0
 for _, cfg in pairs(base) do
-  if cfg.enabled ~= false then enabled = enabled + 1 end
+  if cfg.buttons and cfg.enabled ~= false then enabled = enabled + 1 end
 end
 assert(enabled == 12, "expected 6 rows, two 3x4 sides, bar9, bar10, pet, and possess, got " .. enabled)
+assert(base.cooldown and base.cooldown.enabled ~= false, "Cooldown Manager ships enabled")
+assert(base.cooldown.point == "CENTER", "Cooldown Manager sits at centre")
+assert(base.cooldown.buttons == nil, "Cooldown Manager is not a Bar")
+assert(base.cooldown.direction == "right", "Cooldown Manager ships Direction Right")
+assert(base.cooldown.max == 8, "Cooldown Manager ships a max of 8")
+assert(base.cooldown.columns == 8, "Cooldown Manager ships one row")
+assert(base.global and base.global.gap == 0, "Global gap ships 0")
+assert(base.global.iconShape == "square", "Global shape ships square")
+assert(base.global.buttons == nil, "Global is not a Bar")
+assert(base.barGroups == nil, "Base ships no Bar Groups")
 for i = 1, 6 do
   local cfg = base["bar" .. i]
   assert(cfg.enabled ~= false, "bar" .. i .. " must ship enabled")
   assert(cfg.point == "BOTTOM", "bar" .. i .. " must sit on the bottom edge")
   assert(cfg.columns == 12, "bar" .. i .. " must be a horizontal row")
+  assert(cfg.scale == nil, "bar" .. i .. " inherits scale")
+  assert(cfg.gap == nil, "bar" .. i .. " inherits gap")
+  assert(cfg.fadeIdle == nil, "bar" .. i .. " inherits fade idle")
+  assert(cfg.iconShape == nil, "bar" .. i .. " inherits shape")
+  local visual = Addon:ResolveBarVisual(base, "bar" .. i, cfg)
+  assert(visual.scale == 1, "bar" .. i .. " effective scale is 1")
+  assert(visual.gap == 0, "bar" .. i .. " effective gap is 0")
+  assert(visual.fadeIdle == 1, "bar" .. i .. " effective fade idle is 1")
+  assert(visual.iconShape == "square", "bar" .. i .. " effective shape is square")
 end
 assert(base.bar7.columns == 3 and base.bar8.columns == 3, "bar7 and bar8 must be 3x4")
 assert(base.bar7.x < 0 and base.bar8.x > 0, "bar7 left, bar8 right")
@@ -133,24 +149,11 @@ assert(mageLayout.bar4.firstSlot == 25, "mage bar4 shows old bar3 slots")
 assert(mageLayout.bar5.firstSlot == 37, "mage bar5 shows old bar4 slots")
 assert(mageLayout.bar6.firstSlot == 49, "mage bar6 shows old bar5 slots")
 local warriorLayout = Addon.Defaults.classes.WARRIOR.layout
-assert(warriorLayout.bar1.stancePages[1] == 73, "warrior bar1 Battle page starts at slot 73")
-assert(warriorLayout.bar1.stancePages[2] == 85, "warrior bar1 Defensive page starts at slot 85")
-assert(warriorLayout.bar1.stancePages[3] == 97, "warrior bar1 Berserker page starts at slot 97")
-assert(warriorLayout.bar2.firstSlot == 1, "warrior bar2 keeps the first fixed page")
-assert(warriorLayout.bar7.firstSlot == 61, "warrior bar7 keeps the last fixed base page")
-assert(warriorLayout.bar8.firstSlot == 109, "warrior bar8 holds fixed stance buttons")
-assert(warriorLayout.bar9.enabled == false and warriorLayout.bar10.enabled == false,
-  "warrior hides bars that would duplicate stance pages")
+assert(next(warriorLayout) == nil, "warrior inherits the fixed Base Bar layout")
 local druidLayout = Addon.Defaults.classes.DRUID.layout
-assert(druidLayout.bar1.stancePages[1] == 1, "druid bar1 Caster page starts at slot 1")
-assert(druidLayout.bar1.stancePages[2] == 73, "druid bar1 Cat page starts at slot 73")
-assert(druidLayout.bar1.stancePages[4] == 97, "druid bar1 Bear page starts at slot 97")
-assert(druidLayout.bar7.enabled == false and druidLayout.bar9.enabled == false,
-  "druid hides bars that would duplicate form pages")
+assert(next(druidLayout) == nil, "druid inherits the fixed Base Bar layout")
 local rogueLayout = Addon.Defaults.classes.ROGUE.layout
-assert(rogueLayout.bar1.stancePages[1] == 1, "rogue bar1 Open page starts at slot 1")
-assert(rogueLayout.bar1.stancePages[2] == 73, "rogue bar1 Stealth page starts at slot 73")
-assert(rogueLayout.bar7.enabled == false, "rogue hides the bar that would duplicate Stealth")
+assert(next(rogueLayout) == nil, "rogue inherits the fixed Base Bar layout")
 
 print("base: " .. check("base", { base }) .. " rects clear")
 for class, data in pairs(Addon.Defaults.classes) do

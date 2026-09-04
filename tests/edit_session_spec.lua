@@ -10,6 +10,9 @@ assert(loadfile(root .. "core/resolve.lua"))()
 assert(loadfile(root .. "core/keybinds.lua"))()
 
 _G.InCombatLockdown = function() return false end
+_G.UIParent = { name = "UIParent", width = 1920, height = 1080 }
+function _G.UIParent:GetWidth() return self.width end
+function _G.UIParent:GetHeight() return self.height end
 
 local account = {
   base = { layout = {}, keybinds = {} },
@@ -78,7 +81,7 @@ local persisted = {
   end,
 }
 Addon:PersistBarPosition(persisted)
-assert(account.classes.MAGE.layout.bar1.point == "BOTTOMLEFT", "persist stores the grid origin")
+assert(account.classes.MAGE.layout.bar1.point == "BOTTOMLEFT", "a host near the origin stores BOTTOMLEFT")
 assert(account.classes.MAGE.layout.bar1.x == 32.4, "layout persist snaps to the 32.4 grid")
 assert(account.classes.MAGE.layout.bar1.y == 64.8, "layout persist snaps y")
 
@@ -89,5 +92,38 @@ persisted.left, persisted.bottom = 100, 50
 Addon:PersistBarPosition(persisted)
 assert(account.classes.MAGE.layout.bar1.x == 100, "Shift persist keeps x off the snap grid")
 assert(account.classes.MAGE.layout.bar1.y == 50, "Shift persist keeps y off the snap grid")
+
+local function host(id, left, bottom, width, height)
+  return {
+    barId = id,
+    left = left,
+    bottom = bottom,
+    width = width,
+    height = height,
+    GetLeft = function(self) return self.left end,
+    GetBottom = function(self) return self.bottom end,
+    GetWidth = function(self) return self.width end,
+    GetHeight = function(self) return self.height end,
+    ClearAllPoints = function() end,
+    SetPoint = function(self, _, _, _, x, y)
+      self.left, self.bottom = x, y
+    end,
+  }
+end
+
+-- 12-slot row at the bottom centre: 388.8px wide on a 1920 screen.
+Addon:PersistBarPosition(host("bar6", 765.6, 0, 388.8, 32.4))
+assert(account.classes.MAGE.layout.bar6.point == "BOTTOM", "a bottom-centre Bar stores BOTTOM")
+assert(account.classes.MAGE.layout.bar6.relativePoint == "BOTTOM", "BOTTOM parks on UIParent BOTTOM")
+assert(math.abs(account.classes.MAGE.layout.bar6.x) < 0.01, "bottom-centre x stays on the vertical midline")
+assert(account.classes.MAGE.layout.bar6.y == 0, "bottom-centre y stays on the screen edge")
+
+-- 20px inset from the right on 1920 stays 20px inset on a wider screen.
+Addon:PersistBarPosition(host("bar8", 1700, 40, 200, 80))
+local right = account.classes.MAGE.layout.bar8
+assert(right.point == "BOTTOMRIGHT", "a host near the right edge stores BOTTOMRIGHT")
+assert(right.x == -20 and right.y == 40, "BOTTOMRIGHT stores the inset from that corner")
+local leftOnWide = 2560 + right.x - 200
+assert(2560 - (leftOnWide + 200) == 20, "the same inset holds when the screen grows")
 
 print("edit_session_spec OK")

@@ -2,7 +2,8 @@
   Purpose: AceAddon bootstrap, combat-safe apply lifecycle, and regen flush.
   Deps: AceAddon-3.0, AceEvent-3.0, AceConsole-3.0; modules loaded later by TOC
   Public: ShadowUI addon table, ShadowUI:GetVersion(), ShadowUI:GetPlayerClass(),
-          ShadowUI:ApplyAll(), ShadowUI:ApplyAutoLoot(), ShadowUI:OnRegenEnabled()
+          ShadowUI:ApplyAll(), ShadowUI:ApplyAutoLoot(), ShadowUI:ApplyCooldownManager(),
+          ShadowUI:OnRegenEnabled(), ShadowUI:OnPressCastEvent()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
@@ -11,7 +12,6 @@ local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceC
 -- of an unknown event raises an error, so each one is registered defensively.
 local EVENTS = {
   { "PLAYER_ENTERING_WORLD", "OnPlayerReady" },
-  { "SPELLS_CHANGED", "OnSpellsChanged" },
   { "PLAYER_REGEN_ENABLED", "OnRegenEnabled" },
   { "PLAYER_REGEN_DISABLED", "OnRegenDisabled" },
   { "PLAYER_TALENT_UPDATE", "OnTalentUpdate" },
@@ -19,6 +19,13 @@ local EVENTS = {
   { "ACTIONBAR_SHOWGRID", "OnActionBarShowGrid" },
   { "ACTIONBAR_HIDEGRID", "OnActionBarHideGrid" },
   { "CURSOR_CHANGED", "OnCursorChanged" },
+  { "UNIT_SPELLCAST_START", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_STOP", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_FAILED", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_INTERRUPTED", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_SUCCEEDED", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_CHANNEL_START", "OnPressCastEvent" },
+  { "UNIT_SPELLCAST_CHANNEL_STOP", "OnPressCastEvent" },
 }
 
 function Addon:OnInitialize()
@@ -64,13 +71,7 @@ function Addon:OnPlayerReady()
   if not self._appliedOnce then
     self._appliedOnce = true
     self:ApplyAll()
-    return
   end
-  self:ClearTombstonedDeckSlots()
-end
-
-function Addon:OnSpellsChanged()
-  self:ClearTombstonedDeckSlots()
 end
 
 function Addon:ApplyAll()
@@ -87,7 +88,6 @@ function Addon:ApplyAll()
     end
   end
   step("bars", self.ApplyBars)
-  step("deck slots", self.ClearTombstonedDeckSlots)
   step("keybinds", self.ApplyKeybinds)
   step("auto loot", self.ApplyAutoLoot)
   step("skins", self.ApplySkins)
@@ -96,15 +96,13 @@ function Addon:ApplyAll()
   step("swing timer", self.ApplySwingTimer)
   step("range display", self.ApplyRangeDisplay)
   step("shields", self.ApplyShields)
+  step("cooldown manager", self.ApplyCooldownManager)
 end
 
 function Addon:OnRegenEnabled()
   if self.pendingApplyAll then
     self:ApplyAll()
     return
-  end
-  if self.pendingTombstoneClear then
-    self:ClearTombstonedDeckSlots()
   end
   self:FlushPendingKeybinds()
   self:FlushPendingSpecialBars()
@@ -122,16 +120,18 @@ function Addon:SlashCommand(input)
     self:ToggleEditMode()
   elseif cmd == "binds" or cmd == "bind" or cmd == "keybind" then
     self:ToggleKeybindMode()
-  elseif cmd == "deck" or cmd == "place" then
-    self:PlaceDeck()
   elseif cmd == "prune" or cmd == "shift" then
-    self:ShiftAndPruneBars()
+    self:ShiftAndPruneBars(rest)
   elseif cmd == "layer" then
     self:SetEditLayer(rest)
   elseif cmd == "variant" then
     self:HandleVariantCommand(rest)
+  elseif cmd == "loadout" then
+    self:HandleLoadoutCommand(rest)
+  elseif cmd == "xpstack" then
+    self:DumpXPStack()
   else
-    self:Print("Usage: /shadowui [edit|binds|deck|prune|layer|variant]")
+    self:Print("Usage: /shadowui [edit|binds|prune <group>|layer|variant|loadout|xpstack]")
   end
 end
 
@@ -153,14 +153,10 @@ function Addon:ShowBarsForActionPlacement() end
 function Addon:LockBarButton(button) end
 function Addon:SetActionSlotHardLock(locked) end
 function Addon:ApplyKeybinds(cfg) end
-function Addon:PlaceDeck() end
-function Addon:ShiftAndPruneBars() end
+function Addon:ShiftAndPruneBars(groupName) end
 function Addon:InsertBarSlot() end
 function Addon:HookButtonForSlotShift() end
 function Addon:ClearSlotShiftFrom() end
-function Addon:ResolveDeckTombstones() return {} end
-function Addon:ClearTombstonedDeckSlots() end
-function Addon:RefreshActionDeckButtons() end
 function Addon:ApplyBarChrome(bar) end
 function Addon:ApplyOuterChrome(host) end
 function Addon:PaintOuterChrome(outer) end
@@ -170,7 +166,9 @@ function Addon:ApplyManaTicker() end
 function Addon:ApplySwingTimer() end
 function Addon:ApplyRangeDisplay() end
 function Addon:ApplyShields() end
+function Addon:ApplyCooldownManager() end
 function Addon:SkinTrackingBars() end
+function Addon:DumpXPStack() end
 function Addon:FlushPendingKeybinds() end
 function Addon:FlushPendingSpecialBars() end
 function Addon:OnTalentUpdate() end
@@ -182,3 +180,4 @@ function Addon:HookButtonForKeybinds(button) end
 function Addon:OnRegenDisabled() end
 function Addon:SetEditLayer(layer) end
 function Addon:HandleVariantCommand(rest) end
+function Addon:HandleLoadoutCommand(rest) end

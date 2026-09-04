@@ -1,8 +1,8 @@
 # Classic Era keybind maps
 
-Parked notes for class maps. Spell names on the Era maps are Classic Era. TBC catalog groups live in the class files under `docs/macros/` and show in Macro Cursor when Version is TBC. Base Keybinds live in `defaults/base.lua`. Warrior Variant Action Deck entries in `defaults/classes/WARRIOR.lua` follow the Warrior section. Other classes stay notes plus Macro Cursor loadouts; `/shadowui deck` does not place them.
+Parked notes for class maps. Spell names on the Era maps are Classic Era. TBC catalog groups live in the class files under `docs/macros/` and show in Macro Cursor when Version is TBC. Base Keybinds live in `defaults/base.lua`. Warrior Class Keybinds in `defaults/classes/WARRIOR.lua` follow the Warrior section. Other classes stay notes plus Macro Cursor loadouts.
 
-Layer the same way as Layout: **Base** (physical keys + interface) → **Class** (shared jobs + class core) → **Variant** (talent-tree swaps) → **Character** (sparse toon overlay). Macro ids match [docs/macros/](macros/README.md). A name with no id has no catalog body yet. Live loadouts sit in AceDB SavedVariables. `/shadowui deck` places the merged Action Deck.
+Layer the same way as Layout: **Base** (physical keys + interface) → **Class** (shared jobs + class core) → **Variant** (talent-tree swaps) → **Character** (sparse toon overlay). Macro ids match [docs/macros/](macros/README.md). A name with no id has no catalog body yet. Live Keybinds sit in AceDB SavedVariables.
 
 ## Scope
 
@@ -121,7 +121,7 @@ Live WARKEYS habits. Not combat.
 ## Map rule
 
 1. Bind reserved keys and shared jobs.
-2. Put spec identity on bar1 from the left. Position 1 (`Q`) is the best Action Slot. Then `E` then `R`. Number-row `1` `2` `3` are high-use partners. Warrior keeps its shipped Action Deck.
+2. Put spec identity on bar1 from the left. Position 1 (`Q`) is the best Action Slot. Then `E` then `R`. Number-row `1` `2` `3` are high-use partners.
 3. Put rotation partners on adjacent keys.
 4. Put movement instants on `Q` or `BUTTON4`.
 5. `4` is only high-frequency or fail-cheap. Not Cold Snap, Combustion, Arcane Power, Lay on Hands, Tranquility, Evocation, Elemental Mastery, Adrenaline Rush, Rapid Fire, Moonkin, Divine Favor.
@@ -162,12 +162,14 @@ The fixed utility row stays available in every stance:
 | `Y` | 10 | `w-shout` | Battle Shout; Shift = Demoralizing Shout |
 
 Slots 11 and 12 are clear by design.
-The unbound page positions are also clear: 80, 81, 84, 92, 93, 96, 104, 105,
+The unbound positions are also clear: 80, 81, 84, 92, 93, 96, 104, 105,
 and 108.
 
-The main Bar keeps one physical job map across all three stance pages:
+The old stance-page placement can stay in three fixed Bars. A single key cannot
+trigger all three slots. Assign unique keys to the extra Bars, or put a
+stance-aware macro on one fixed Bar.
 
-| Key | Battle | Defensive | Berserker |
+| Position | Slots 73–84 | Slots 85–96 | Slots 97–108 |
 | --- | --- | --- | --- |
 | `1` | Variant attack | Variant attack | Variant attack |
 | `2` | Overpower | Revenge | Whirlwind |
@@ -216,16 +218,7 @@ Each row lists Battle / Defensive / Berserker Action Slots.
 | 82 / 94 / 106 | `Z` | Retaliation / Shield Wall / Recklessness | same | same |
 | 83 / 95 / 107 | `X` | Mocking Blow / Taunt / Challenging Shout | same | same |
 
-The Action Deck owns slots 1–12 and 73–111 plus each slot in the selected
-loadout. `/shadowui deck` validates every entry, replaces both macro tabs with
-only the unique resolved deck macros on the General tab, and then clears and
-replaces those slots. Other Action Slots stay unchanged. Every entry must match
-its Warrior body marker. A stale Priest Power Infusion macro cannot shift onto
-a Warrior slot.
-
-No talent points means Class jobs only. In that state, deck placement leaves
-slots 8, 73, 85, and 97 clear because there is no Variant ability for `T` or
-`1`. `/shadowui variant Fury` locks a Variant. The talent tab with the most
+No talent points means Class jobs only. `/shadowui variant Fury` locks a Variant. The talent tab with the most
 points selects Arms, Fury, or Protection unless Manual Override is on.
 
 ---
@@ -412,7 +405,7 @@ All: Kick, Gouge, Kidney Shot, Stealth, Sprint, Evasion, Vanish, Blind, Sap.
 - `7` Sap / Pick Pocket (`r-sap`)
 - `G` healing potion (item)
 
-Stealth page (bar1, slots 73–84): `Q` Cheap Shot (`r-cheap`), `E` Ambush (`r-ambush`), `H` Sap (`r-sap`). Shared jobs stay on `F` `C` `X` `Z` `V`.
+Stealth actions stay on fixed slots 73–84. Stealth does not replace bar1.
 
 ### Assassination
 
@@ -732,7 +725,8 @@ Feral Cat and Feral Bear are two Variants. Form bars stay separate. Typical Era 
 - `SHIFT-G` mana potion (item)
 - `T` Innervate (`d-inn`)
 
-bar1 pages Caster (slots 1–12), Cat (73–84), Prowl (85–96), and Bear (97–108). Number-row keys stay shared.
+Caster (slots 1–12), Cat (73–84), Prowl (85–96), and Bear (97–108) stay on
+separate fixed Bars. A form change does not replace bar1.
 
 ### Caster / Balance
 
@@ -819,15 +813,15 @@ Proposed job moves (adopt or reject each):
 
 ### Warrior mouse stances
 
-Mouse keys stay on slots 109–111. Arms, Fury, and Protection tombstone the
-stance macros. The Blizzard Stance Bar is the stance selector. Apply keeps
-those Action Slots empty after reload.
+Warrior Class mouse keys stay on fixed slots 61–63. The Blizzard Stance Bar is
+the stance selector. These keys do not cause action-bar paging.
 
 Do not also bind `w-b` / `w-d-def` / `w-bs` on letter keys.
 
 ### Other classes
 
-Class default Lua files except Warrior hold Class Keybinds. Live loadouts sit in Account and Character SavedVariables. Warrior Action Slot assignment stays locked.
+Class default Lua files can hold fixed-slot Class Keybinds. Live loadouts sit
+in Account and Character SavedVariables.
 
 ## Catalog extras
 

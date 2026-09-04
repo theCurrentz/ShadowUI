@@ -73,7 +73,7 @@ For Fury/Protection, load `warrior-core` and `warrior-fury`, then copy Last
 Stand separately when the actual build has it. Do not load Concussion Blow or
 Shield Slam for a build that does not unlock them.
 
-For Fury/Protection hybrid tanking, keep the Fury Action Deck because
+For Fury/Protection hybrid tanking, keep the Fury catalog group because
 Bloodthirst is the primary attack. Add Last Stand separately when the chosen
 talents unlock it. Do not use Shield Slam or Concussion Blow unless the actual
 talent build unlocks them. For the practical `31 Fury / 20 Protection`
@@ -232,27 +232,23 @@ local Classic Era `macros-cache.txt` files dated 2026-08-21, plus planned
 records. [Repository: `docs/macros/inventory.md:1-9`,
 `docs/macros/build_catalog.py:135-332`.]
 
-The Warrior Action Deck uses body markers, not names alone. It owns action
-slots `1-12` and `73-111` plus each selected loadout slot. Out of combat, apply
-replaces both macro tabs with only its unique General-tab macros before it
-places the Action Slots. [Repository: `defaults/classes/WARRIOR.lua`;
-`core/deck.lua`; `docs/architecture.md`.]
+Warrior catalog macros match on name and body, not names alone.
+[Repository: `docs/macros/catalog.json`; `docs/architecture.md`.]
 
-The Action Deck already gives the Fury Variant Bloodthirst and Death Wish.
-The Protection Variant gives Last Stand, Shield Slam, and Concussion Blow.
+The Fury catalog group already includes Bloodthirst and Death Wish.
+The Protection group includes Last Stand, Shield Slam, and Concussion Blow.
 It cannot combine a dominant Fury tree with a secondary Protection unlock,
-because one active Variant supplies one set of action overrides.
-[Repository: `defaults/classes/WARRIOR.lua:170-217`;
-`CONTEXT.md:18-20,32-34`.]
+because one active Variant supplies one set of Keybind overlays.
+[Repository: `defaults/classes/WARRIOR.lua`;
+`CONTEXT.md`.]
 
 ### Duplicate and overlap audit
 
 **Remove or archive when the catalog is next revised:**
 
 - `w-bt-acc` duplicates the job of `w-bt`. The different macro tab does not
-  justify two catalog bodies when the deck creates its required copy.
-  [Repository: `docs/macros/build_catalog.py:170-173,224-225`;
-  `core/deck.lua:88-109`.]
+  justify two catalog bodies.
+  [Repository: `docs/macros/build_catalog.py:170-173,224-225`.]
 - `w-ex-acc` is the legacy, less capable Execute body. `w-ex` also leaves
   Defensive Stance. [Repository: `docs/macros/build_catalog.py:174-176,
   226-228`.]
@@ -337,9 +333,8 @@ Keep this concise baseline:
 | Stances | `w-b`, `w-d-def`, `w-bs` |
 | Optional Fury talent | Piercing Howl as the spell itself |
 
-The first ten rows already exist in the Action Deck or catalog.
-[Repository: `defaults/classes/WARRIOR.lua:77-196`;
-`docs/macros/catalog.json:27-117`.] Piercing Howl is the one active Fury
+The first ten rows already exist in the catalog.
+[Repository: `docs/macros/catalog.json:27-117`.] Piercing Howl is the one active Fury
 talent missing from the catalog. [Primary game data: Fury `Talent` row `160`
 above.] A plain Piercing Howl wrapper adds no value, so YAGNI says to drag the
 spell unless a tested modifier or stance need appears.
@@ -366,7 +361,7 @@ These tank actions, except Last Stand, are class-core even when they are
 mostly used for tanking. [Primary game data: Warrior `Talent` tables above.]
 The current class deck already places Revenge, Shield Block, Taunt, Sunder
 Armor, Shield Wall, Challenging Shout, Thunder Clap, Mocking Blow, and
-Demoralizing Shout on stance pages or the utility row.
+Demoralizing Shout on fixed Bars or the utility row.
 [Repository: `defaults/classes/WARRIOR.lua:101-168`.]
 
 For a Fury/Protection hybrid, place Last Stand and Piercing Howl in an
@@ -404,8 +399,8 @@ These variants solve different practical needs:
 - **Smart interrupt or dedicated interrupts:** `w-interrupt` saves a key.
   The direct Pummel or Shield Bash spell gives clearer control without a
   duplicate generic macro.
-- **Stance-aware or stance-local:** a stance-aware macro works from another
-  page. A direct spell is shorter when the stance page already guarantees the
+- **Stance-aware or stance-local:** a stance-aware macro can change stance from
+  any fixed Bar. A direct spell is shorter when the player already has the
   correct stance.
 - **Combined or dedicated major cooldown:** `w-major-cd` follows the current
   stance. A dedicated Shield Wall button is safer when the player needs one
@@ -436,9 +431,7 @@ useful gameplay variant.
   `SecureTemplates.lua:113-132,334-455`; generated
   [`UIMacrosDocumentation.lua`](https://raw.githubusercontent.com/Gethe/wow-ui-source/7285babcfa6931f7c4265ce8672fa6d99c7bcaf1/Interface/AddOns/Blizzard_APIDocumentationGenerated/UIMacrosDocumentation.lua),
   accessed 2026-08-22.]
-- ShadowUI refuses to create or place the Action Deck during combat. It
-  creates every required macro before it clears any managed action slot.
-  [Repository: `core/deck.lua:112-147`.]
+- ShadowUI does not place catalog macros onto Action Slots.
 - The project records the Classic limits as 120 General macros, 18 character
   macros, 255 body characters, and 16 name characters.
   [Repository: `docs/macros/catalog.json:1-8`;

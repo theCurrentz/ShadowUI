@@ -5,7 +5,6 @@
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local act = Addon.Defaults.act
 
 -- Spells stay in action slots 1-120. Mage rotates bars 2-6 so old bar6
 -- (slots 61-72) sits on bar2; old 2→3, 3→4, 4→5, 5→6.
@@ -102,78 +101,5 @@ Addon.Defaults.classes.MAGE = {
     ["CLICK ShadowUIActionButton82:Keybind"] = "ALT-SHIFT-R",
     ["CLICK ShadowUIActionButton83:Keybind"] = "ALT-SHIFT-F",
     ["CLICK ShadowUIActionButton84:Keybind"] = "ALT-SHIFT-C",
-  },
-  actions = {
-    [1] = act("m-ae", "ae", { match = "ae" }),
-    [2] = act("m-blast", "'", { match = "'" }),
-    [3] = act("m-blizz", "Blizz", { match = "Blizz" }),
-    [4] = act("spell:1953", "Blink", {
-      kind = "spell",
-      spellId = 1953,
-    }),
-    [5] = act("m-fs", "fs", { match = "fs" }),
-    [6] = act("m-cs", "CS", { match = CS }),
-    [7] = act("m-cone", "cone", { match = "cone" }),
-    [8] = act("m-nova", "fn", { match = "Frost Nova" }),
-    [9] = act("m-ib", "ib", { match = "Ice block" }),
-    [12] = act("spell:12051", "Evocation", {
-      kind = "spell",
-      spellId = 12051,
-    }),
-    [13] = act("m-decurse", "decurse", { match = "Remove Lesser Curse" }),
-    [14] = act("m-am", "am", { match = "Arcane Missiles" }),
-    [15] = act("spell:28612", "Conjure Food", {
-      kind = "spell",
-      spellId = 28612,
-    }),
-    [16] = act("spell:759", "Conjure Mana Agate", {
-      kind = "spell",
-      spellId = 759,
-    }),
-    [17] = act("m-ma", "ma", { match = "ma" }),
-    [18] = act("spell:10053", "Conjure Mana Citrine", {
-      kind = "spell",
-      spellId = 10053,
-    }),
-    [19] = act("spell:3552", "Conjure Mana Jade", {
-      kind = "spell",
-      spellId = 3552,
-    }),
-    [20] = act("spell:10054", "Conjure Mana Ruby", {
-      kind = "spell",
-      spellId = 10054,
-    }),
-    [22] = act("m-pyro", "py", { match = "Pyroblast" }),
-    [23] = act("spell:10140", "Conjure Water", {
-      kind = "spell",
-      spellId = 10140,
-    }),
-    [24] = act("spell:2855", "Detect Magic", {
-      kind = "spell",
-      spellId = 2855,
-    }),
-    [25] = act("m-slowfall", "slowfall", { match = "Slow Fall" }),
-    [26] = act("m-ai", "ai", { match = "ai" }),
-    [27] = act("m-ia", "ia", { match = "ia" }),
-    [28] = act("m-dampen", "dm", { match = "dm" }),
-    [30] = act("m-sw", "portsw", { match = "portsw" }),
-    [31] = act("m-if", "if", { match = "if" }),
-    [32] = act("m-dar", "dar", { match = "dar" }),
-    [35] = act("m-cf", "cf", { match = "cf" }),
-    [61] = act("m-fb", "f", { match = "f" }),
-    [62] = act("m-fireball", "fb", { match = "Fireball" }),
-    [63] = act("m-scorch", "sc", { match = "Scorch" }),
-    [64] = act("m-blast", "'", { match = "'" }),
-    [65] = act("m-sheep", "sheep", { match = "sheep" }),
-    [66] = act("spell:5019", "Shoot", {
-      kind = "spell",
-      spellId = 5019,
-    }),
-    [69] = act("shared-t13", "t13", { match = "t13" }),
-    [70] = act("shared-t14", "t14", { match = "t14" }),
-    [72] = act("m-csnap", "snap", { match = "Cold Snap" }),
-    [73] = act("m-barrier", "iba", { match = "Ice Barrier" }),
-    [74] = act("m-ward", "ward", { match = "[mod:shift] Fire Ward; Frost Ward" }),
-    [75] = act("m-ms", "MS", { match = MS }),
   },
 }

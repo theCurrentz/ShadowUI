@@ -4,13 +4,22 @@
   Notes: MergeBindingTables — profile wins by key and by Action Slot.
   Public: SlotFromBindingName, MergeBindingTables, CanonicalBindName,
           NormalizeBindingKey, BindButtonKey, ClearButtonBinds,
-          CollectClientActionBinds, ApplyKeybinds, FlushPendingKeybinds
+          CollectClientActionBinds, OverrideClickTarget, ApplyKeybinds,
+          FlushPendingKeybinds, ShortHotkey, FormatTooltipKeybind,
+          AppendActionTooltipKeybind
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
--- Blizzard extra-bar slot bases (Classic): BL, BR, Right, Left.
+-- Blizzard extra-bar slot bases: BL, BR, Right, Left. Used to read client binds.
 local MULTI_BAR_FIRST_SLOT = { 61, 49, 25, 37 }
+
+function Addon:OverrideClickTarget(slot)
+  if type(slot) ~= "number" then
+    return nil
+  end
+  return "ShadowUIActionButton" .. slot, "Keybind"
+end
 
 function Addon:SlotFromBindingName(name)
   if type(name) ~= "string" then
@@ -30,12 +39,51 @@ function Addon:SlotFromBindingName(name)
   return nil
 end
 
+function Addon:FormatTooltipKeybind(key)
+  if type(key) ~= "string" or key == "" then
+    return nil
+  end
+  if type(GetBindingText) == "function" then
+    local text = GetBindingText(key)
+    if type(text) == "string" and text ~= "" then
+      return text
+    end
+  end
+  return key
+end
+
+function Addon:AppendActionTooltipKeybind(button)
+  local tip = _G.GameTooltip
+  if not button or not tip or not tip.AddLine then
+    return
+  end
+  if tip.IsForbidden and tip:IsForbidden() then
+    return
+  end
+  local text = self:FormatTooltipKeybind(button.shadowUIBindingKey)
+  if not text then
+    return
+  end
+  tip:AddLine(text, 0.6, 0.6, 0.6)
+  if tip.Show then
+    tip:Show()
+  end
+end
+
 function Addon:ShortHotkey(key)
   if type(key) ~= "string" then
     return key
   end
-  return (key:gsub("SHIFT%-", "S-"):gsub("CTRL%-", "C-"):gsub("ALT%-", "A-")
-    :gsub("BUTTON3", "M3"):gsub("BUTTON4", "M4"):gsub("BUTTON5", "M5"))
+  local ctrl = key:find("CTRL-", 1, true) or key:find("CONTROL-", 1, true)
+  local alt = key:find("ALT-", 1, true)
+  local shift = key:find("SHIFT-", 1, true)
+  local rest = key:gsub("CONTROL%-", ""):gsub("CTRL%-", ""):gsub("ALT%-", ""):gsub("SHIFT%-", "")
+  rest = rest:gsub("BUTTON", "M"):gsub("MOUSEWHEELUP", "WU"):gsub("MOUSEWHEELDOWN", "WD")
+  if not ctrl and not alt and not shift then
+    return rest:upper()
+  end
+  local prefix = (ctrl and "C" or "") .. (alt and "A" or "") .. (shift and "S" or "")
+  return (prefix .. rest):upper()
 end
 
 function Addon:MergeBindingTables(client, profile)
@@ -173,6 +221,9 @@ function Addon:BindingSlotFromButton(button)
       return slot
     end
   end
+  if type(button.shadowUIActionSlot) == "number" then
+    return button.shadowUIActionSlot
+  end
   local slot = button._state_action
   if type(slot) == "number" then
     return slot
@@ -248,7 +299,7 @@ function Addon:CollectClientActionBinds()
   for i = 1, 12 do
     take("ACTIONBUTTON" .. i)
   end
-  for bar = 1, 4 do
+  for bar = 1, 7 do
     for i = 1, 12 do
       take("MULTIACTIONBAR" .. bar .. "BUTTON" .. i)
     end
@@ -270,32 +321,40 @@ end
 function Addon:PaintButtonHotkeys(binds)
   local bySlot = self:HotkeysBySlot(binds)
   local byName = binds or {}
+  local function paint(button)
+    local slot = self:BindingSlotFromButton(button)
+    local name = self:CanonicalBindName(button)
+    local key = (slot and binds and (
+      binds["CLICK ShadowUIActionButton" .. slot .. ":Keybind"]
+        or binds["ACTIONBUTTON" .. slot]
+    )) or (name and byName[name])
+    button.shadowUIBindingKey = (type(key) == "string" and key ~= "" and key) or nil
+    button.shadowUIHotkey = (slot and bySlot[slot])
+      or (button.shadowUIBindingKey and self:ShortHotkey(button.shadowUIBindingKey))
+      or nil
+    local hotkey = button.HotKey
+    if hotkey then
+      if button.shadowUIHotkey then
+        hotkey:SetText(button.shadowUIHotkey)
+      else
+        hotkey:SetText("")
+      end
+      local filled = not button.HasAction or button:HasAction()
+      local showEmpty = self.ShouldShowEmptyActionSlots and self:ShouldShowEmptyActionSlots()
+        or self.keybindMode
+      if button.shadowUIHotkey and (filled or showEmpty) then
+        hotkey:Show()
+      elseif hotkey.Hide then
+        hotkey:Hide()
+      end
+    end
+    if self.PaintEmptySlotVisibility then
+      self:PaintEmptySlotVisibility(button)
+    end
+  end
   for _, bar in pairs(self.bars or {}) do
     for _, button in ipairs(bar.buttons or {}) do
-      local slot = self:BindingSlotFromButton(button)
-      local name = self:CanonicalBindName(button)
-      button.shadowUIHotkey = (slot and bySlot[slot])
-        or (name and byName[name] and self:ShortHotkey(byName[name]))
-        or nil
-      local hotkey = button.HotKey
-      if hotkey then
-        if button.shadowUIHotkey then
-          hotkey:SetText(button.shadowUIHotkey)
-        else
-          hotkey:SetText("")
-        end
-        local filled = not button.HasAction or button:HasAction()
-        local showEmpty = self.ShouldShowEmptyActionSlots and self:ShouldShowEmptyActionSlots()
-          or self.keybindMode
-        if button.shadowUIHotkey and (filled or showEmpty) then
-          hotkey:Show()
-        elseif hotkey.Hide then
-          hotkey:Hide()
-        end
-      end
-      if self.PaintEmptySlotVisibility then
-        self:PaintEmptySlotVisibility(button)
-      end
+      paint(button)
     end
   end
 end
@@ -320,9 +379,8 @@ function Addon:FlushPendingKeybinds()
     if key and key ~= "" then
       local slot = self:SlotFromBindingName(name)
       if slot then
-        SetOverrideBindingClick(
-          owner, true, key, "ShadowUIActionButton" .. slot, "Keybind"
-        )
+        local clickName, clickButton = self:OverrideClickTarget(slot)
+        SetOverrideBindingClick(owner, true, key, clickName, clickButton)
       else
         SetOverrideBinding(owner, true, key, name)
       end

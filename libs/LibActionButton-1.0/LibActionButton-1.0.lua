@@ -2142,6 +2142,11 @@ function UpdateTooltip(self)
 	end
 	if self:SetTooltip() then
 		self.UpdateTooltip = UpdateTooltip
+		local addon = LibStub("AceAddon-3.0", true)
+		addon = addon and addon.GetAddon and addon:GetAddon("ShadowUI", true)
+		if addon and addon.AppendActionTooltipKeybind then
+			addon:AppendActionTooltipKeybind(self)
+		end
 	else
 		self.UpdateTooltip = nil
 	end

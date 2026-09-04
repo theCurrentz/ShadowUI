@@ -13,9 +13,12 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 local PET_CLASSES = { HUNTER = true, WARLOCK = true }
 local SPECIAL_IDS = { "pet", "possess" }
 local DROPPED_SPECIAL = { stance = true, aura = true, form = true }
-local HOST_LAYOUT = { player = true, target = true, cast = true, range = true, stance = true }
+local HOST_LAYOUT = {
+  player = true, target = true, cast = true, range = true, stance = true, cooldown = true,
+  global = true, barGroups = true,
+}
 local STANCE_PARK = { point = "CENTER", x = 0, y = -84 }
-local STANCE_FRAMES = { "StanceBarFrame", "ShapeshiftBarFrame" }
+local STANCE_FRAMES = { "StanceBar", "StanceBarFrame", "ShapeshiftBarFrame" }
 local ART = {
   "MainMenuBarArtFrame",
   "MainMenuBarLeftEndCap",
@@ -30,15 +33,17 @@ local ART = {
 }
 local BLIZZARD_BARS = {
   "MainMenuBarOverlayFrame",
-  "MainMenuBarMaxLevelBar", "MultiBarBottomLeft", "MultiBarBottomRight",
+  "MainMenuBarMaxLevelBar", "MainActionBar",
+  "MultiBarBottomLeft", "MultiBarBottomRight",
   "MultiBarLeft", "MultiBarRight", "MultiBar5", "MultiBar6", "MultiBar7",
   "PetActionBarFrame",
-  "BonusActionBarFrame", "ExtraActionBarFrame", "OverrideActionBar",
+  "BonusActionBarFrame", "OverrideActionBar",
 }
 local BUTTON_PREFIXES = {
   "ActionButton", "BonusActionButton",
   "MultiBarBottomLeftButton", "MultiBarBottomRightButton",
   "MultiBarLeftButton", "MultiBarRightButton",
+  "MultiBar5Button", "MultiBar6Button", "MultiBar7Button",
 }
 local OFFSCREEN = -1500
 
@@ -187,7 +192,7 @@ local function hookStanceParent(frame)
 end
 
 local function parkStanceFrame(frame, point, x, y, relativeTo, relativePoint)
-  if not frame then
+  if not frame or frame._shadowUIDragging then
     return
   end
   frame._shadowUIReparenting = true
@@ -348,14 +353,18 @@ function Addon:ApplyBars(cfg)
       local bar = self.bars[barId]
 
       if create then
+        local applyCfg = barCfg
+        if self.BarLayoutForApply then
+          applyCfg = self:BarLayoutForApply(layout, barId, barCfg)
+        end
         if not bar then
           bar = standard
-            and self:CreateBar(barId, barCfg)
-            or self:CreateSpecialBar(barId, barCfg)
+            and self:CreateBar(barId, applyCfg)
+            or self:CreateSpecialBar(barId, applyCfg)
           self.bars[barId] = bar
         end
         bar.configEnabled = enabled
-        self:UpdateBarLayout(bar, barCfg)
+        self:UpdateBarLayout(bar, applyCfg)
         if enabled or pickup then
           bar:Show()
         else
@@ -390,4 +399,7 @@ function Addon:ApplyBars(cfg)
   self:HideBlizzardBars()
   self:StartSpecialBarUpdates()
   self:RefreshSpecialBars()
+  if self.ApplyBarFades then
+    self:ApplyBarFades(cfg)
+  end
 end

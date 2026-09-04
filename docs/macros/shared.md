@@ -26,7 +26,6 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 
 ```
 #showtooltip
-# global ALL all
 /use 13
 ```
 
@@ -34,7 +33,6 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 
 ```
 #showtooltip
-# global ALL all
 /use 14
 ```
 
@@ -43,7 +41,6 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 Hunter, Warlock, and any other pet class. One General-tab body.
 
 ```
-# global ALL all | key (`)
 /petattack
 ```
 
@@ -52,7 +49,6 @@ Hunter, Warlock, and any other pet class. One General-tab body.
 Shift-backtick. Split from pet attack so Shift is a bind, not a modifier.
 
 ```
-# global ALL all | key (SHIFT-`)
 /petfollow
 ```
 
@@ -66,7 +62,6 @@ Draenei heal. Alt self.
 
 ```
 #showtooltip Gift of the Naaru
-# global ALL all
 /cast [mod:alt,target=player] Gift of the Naaru; Gift of the Naaru
 ```
 
@@ -76,7 +71,6 @@ Blood Elf interrupt. Stops a queued spell first.
 
 ```
 #showtooltip Arcane Torrent
-# global ALL all
 /stopcasting
 /cast Arcane Torrent
 ```

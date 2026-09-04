@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 LIMIT = 255
+SCOPE_LINE = re.compile(r"^\s*#\s*(global|class-specific|character-specific)\b", re.I)
 RECOMMENDED_KEYS = {
     "w-hm": "Q",
     "w-charge": "E",
@@ -57,15 +59,10 @@ RECOMMENDED_KEYS = {
 }
 
 
-def scope_tag(scope: str, cls: str, spec: str, toon: str = "", key: str = "") -> str:
-    if scope == "character":
-        extra = f" {toon}" if toon else ""
-        label = f"# character-specific {cls} {spec}{extra}"
-    elif scope == "class":
-        label = f"# class-specific {cls} {spec}"
-    else:
-        label = f"# global {cls} {spec}"
-    return f"{label} | key ({key})" if key else label
+def strip_scope_comments(body: str) -> str:
+    return "\n".join(
+        line for line in body.replace("\r\n", "\n").split("\n") if not SCOPE_LINE.match(line)
+    )
 
 
 def labeled(
@@ -76,17 +73,9 @@ def labeled(
     toon: str = "",
     key: str = "",
 ) -> tuple[str, bool]:
-    """Insert the scope label after #showtooltip. Drop the label if over 255."""
-    body = raw.strip("\n")
-    label = scope_tag(scope, cls, spec, toon, key)
-    lines = body.split("\n")
-    if lines and lines[0].startswith("#showtooltip"):
-        out = "\n".join([lines[0], label, *lines[1:]])
-    else:
-        out = label + "\n" + body
-    if len(out) <= LIMIT:
-        return out, False
-    return body, True
+    """Keep the authored body. Scope lives on the catalog record, not in the macro text."""
+    _ = (scope, cls, spec, toon, key)
+    return strip_scope_comments(raw.strip("\n")), False
 
 
 def M(
@@ -266,7 +255,7 @@ add(
           "Battle Shout normally. Shift uses Demoralizing Shout."),
         M("w-ds", "ds", "class", "WARRIOR", "all", "account", "ability_warrior_warcry", "warrior-core", "existing",
           "#showtooltip Demoralizing Shout\n/cast Demoralizing Shout\n/startattack",
-          "Dedicated Action Deck copy; `w-shout` also provides Demoralizing Shout on Shift."),
+          "Dedicated Demoralizing Shout copy; `w-shout` also provides Demoralizing Shout on Shift."),
         M("w-hm", "hm", "class", "WARRIOR", "all", "account", "ability_shockwave", "warrior-core", "hybrid",
           "#showtooltip Hamstring\n/cast [stance:2] Battle Stance\n/cast Hamstring\n/startattack",
           "Leaves Defensive Stance because Hamstring requires Battle or Berserker Stance."),
@@ -406,21 +395,21 @@ add(
     },
     [
         M("m-fb", "f", "class", "MAGE", "frost", "account", "spell_frost_frostbolt02", "mage-filler", "existing",
-          "#showtooltip\n/cqs\n/cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)"),
+          "#showtooltip [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)\n/cqs\n/cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)"),
         M("m-fireball", "fb", "class", "MAGE", "fire", "account", "spell_fire_flamebolt", "mage-filler", "existing",
-          "#showtooltip Fireball\n/cqs\n/cast [mod:shift] Combustion\n/use [mod:shift] Mind Quickening Gem\n/use [mod:shift] Talisman of Ephemeral Power\n/use [mod:shift] Zandalarian Hero Charm\n/cast Fireball;"),
+          "#showtooltip [mod:shift] Combustion; Fireball\n/cqs\n/cast [mod:shift] Combustion\n/use [mod:shift] Mind Quickening Gem\n/use [mod:shift] Talisman of Ephemeral Power\n/use [mod:shift] Zandalarian Hero Charm\n/cast Fireball;"),
         M("m-blast", "'", "class", "MAGE", "fire", "account", "spell_fire_fireball", "mage-filler", "existing",
-          "#showtooltip\n/cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)"),
+          "#showtooltip [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)\n/cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)"),
         M("m-ae", "ae", "class", "MAGE", "arcane", "account", "spell_nature_wispsplode", "mage-filler", "existing",
-          "#showtooltip\n/cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)"),
+          "#showtooltip [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)\n/cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)"),
         M("m-am", "am", "class", "MAGE", "arcane", "account", "spell_nature_starfall", "mage-filler", "existing",
           "#showtooltip Arcane Missiles\n/cast [nochanneling:Arcane Missiles] Arcane Missiles"),
         M("m-blizz", "Blizz", "class", "MAGE", "frost", "account", "spell_frost_icestorm", "mage-filler", "existing",
-          "#showtooltip\n/cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)"),
+          "#showtooltip [nomod]Blizzard;[mod:shift]Blizzard(rank 1)\n/cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)"),
         M("m-cone", "cone", "class", "MAGE", "frost", "account", "spell_frost_glacier", "mage-filler", "existing",
-          "#showtooltip\n/cast [nomod]Cone of Cold; [mod:shift] Cone of Cold(rank 1)"),
+          "#showtooltip [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)\n/cast [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)"),
         M("m-fs", "fs", "class", "MAGE", "fire", "account", "spell_fire_selfdestruct", "mage-filler", "existing",
-          "#showtooltip\n/use [mod:alt] Talisman of Ephemeral Power\n/use [mod:alt] Zandalarian Hero Charm\n/cast [mod:alt] Arcane Power\n/cast [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike"),
+          "#showtooltip [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike\n/use [mod:alt] Talisman of Ephemeral Power\n/use [mod:alt] Zandalarian Hero Charm\n/cast [mod:alt] Arcane Power\n/cast [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike"),
         M("m-scorch", "sc", "class", "MAGE", "fire", "account", "spell_fire_soulburn", "mage-filler", "plan",
           "#showtooltip Scorch\n/cqs\n/cast Scorch"),
         M("m-pyro", "py", "class", "MAGE", "fire", "account", "spell_fire_fireball02", "mage-filler", "plan",
@@ -466,7 +455,7 @@ add(
         M("m-cs-focus", "CSf", "class", "MAGE", "all", "account", "spell_frost_iceshock", "mage-control", "plan",
           "#showtooltip Counterspell\n/stopcasting\n/cast [target=focus,harm,nodead] Counterspell; Counterspell"),
         M("m-sheep", "sheep", "class", "MAGE", "all", "account", "spell_nature_polymorph", "mage-control", "existing",
-          "#showtooltip\n/ra SHEEPING %t\n/y SHEEPING %t\n/cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)"),
+          "#showtooltip [nomod]Polymorph;[mod:shift]Polymorph(rank 1)\n/cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)"),
         M("m-decurse", "decurse", "class", "MAGE", "all", "account", "spell_nature_removecurse", "mage-control", "existing",
           "#showtooltip Remove Lesser Curse\n/cast [target=mouseover,exists] Remove Lesser Curse\n/cast Remove Lesser Curse"),
         M("m-ib", "ib", "class", "MAGE", "frost", "account", "spell_frost_frost", "mage-control", "existing",
@@ -474,7 +463,7 @@ add(
         M("m-ms", "MS", "class", "MAGE", "all", "account", "spell_shadow_detectlesserinvisibility", "mage-control", "existing",
           "#showtooltip\n/stopcasting\n/cast mana shield"),
         M("m-nova", "fn", "class", "MAGE", "frost", "account", "spell_frost_frostnova", "mage-control", "plan",
-          "#showtooltip Frost Nova\n/cast Frost Nova"),
+          "#showtooltip [mod:shift] Frost Nova; Frost Nova(rank 1)\n/cast [mod:shift] Frost Nova; Frost Nova(rank 1)"),
         M("m-blink", "blink", "class", "MAGE", "all", "account", "spell_arcane_blink", "mage-control", "plan",
           "#showtooltip Blink\n/cast Blink"),
         M("m-evo", "evo", "class", "MAGE", "all", "account", "spell_nature_purge", "mage-control", "plan",
@@ -482,11 +471,11 @@ add(
         M("m-barrier", "iba", "class", "MAGE", "frost", "account", "spell_ice_lament", "mage-control", "plan",
           "#showtooltip Ice Barrier\n/cast Ice Barrier"),
         M("m-ward", "ward", "class", "MAGE", "all", "account", "spell_frost_frostward", "mage-control", "plan",
-          "#showtooltip\n/cast [mod:shift] Fire Ward; Frost Ward"),
+          "#showtooltip [mod:shift] Fire Ward; Frost Ward\n/cast [mod:shift] Fire Ward; Frost Ward"),
         M("m-slowfall", "slowfall", "class", "MAGE", "all", "account", "spell_magic_featherfall", "mage-control", "plan",
           "#showtooltip Slow Fall\n/cast [mod:alt,target=player] Slow Fall; Slow Fall"),
         M("m-dampen", "dm", "class", "MAGE", "all", "account", "spell_nature_abolishmagic", "mage-control", "plan",
-          "#showtooltip\n/cast [mod:shift] Amplify Magic; Dampen Magic"),
+          "#showtooltip [mod:shift] Amplify Magic; Dampen Magic\n/cast [mod:shift] Amplify Magic; Dampen Magic"),
         M("m-csnap", "snap", "class", "MAGE", "frost", "account", "spell_frost_wizardmark", "mage-control", "plan",
           "#showtooltip Cold Snap\n/cast Cold Snap"),
         M("m-nef", "nef", "class", "MAGE", "fire", "account", "spell_holy_excorcism_02", "mage-control", "existing",
@@ -532,11 +521,11 @@ add(
     },
     [
         M("m-sw", "portsw", "class", "MAGE", "all", "character", "spell_arcane_teleportstormwind", "mage-ports-alliance", "existing",
-          "#showtooltip\n/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind;"),
+          "#showtooltip [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind\n/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind"),
         M("m-if", "if", "class", "MAGE", "all", "character", "spell_arcane_teleportironforge", "mage-ports-alliance", "existing",
-          "#showtooltip\n/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge;"),
+          "#showtooltip [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge\n/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge"),
         M("m-dar", "dar", "class", "MAGE", "all", "character", "spell_arcane_teleportdarnassus", "mage-ports-alliance", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus;"),
+          "#showtooltip [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus\n/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus"),
         M("m-water", "water", "class", "MAGE", "all", "character", "inv_drink_18", "mage-ports-alliance", "plan",
           "#showtooltip Conjure Water\n/cast Conjure Water"),
         M("m-food", "food", "class", "MAGE", "all", "character", "inv_misc_food_73cinnamonroll", "mage-ports-alliance", "plan",
@@ -559,11 +548,11 @@ add(
     },
     [
         M("m-org", "org", "class", "MAGE", "all", "account", "spell_arcane_teleportorgrimmar", "mage-ports-horde", "existing",
-          "/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar;"),
+          "#showtooltip [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar\n/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar"),
         M("m-uc", "uc", "class", "MAGE", "all", "account", "spell_arcane_teleportundercity", "mage-ports-horde", "existing",
-          "/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity;"),
+          "#showtooltip [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity\n/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity"),
         M("m-tb", "tb", "class", "MAGE", "all", "account", "spell_arcane_teleportthunderbluff", "mage-ports-horde", "existing",
-          "/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff;"),
+          "#showtooltip [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff\n/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff"),
     ],
 )
 
@@ -1255,15 +1244,15 @@ add(
         M("m-gemtbc", "gemtbc", "class", "MAGE", "all", "character", "inv_misc_gem_stone_01", "mage-tbc", "plan",
           "#showtooltip Conjure Mana Emerald\n/cast Conjure Mana Emerald"),
         M("m-exodar", "exodar", "class", "MAGE", "all", "character", "spell_arcane_portalexodar", "mage-tbc", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar;"),
+          "#showtooltip [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar\n/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar"),
         M("m-slvr", "slvr", "class", "MAGE", "all", "character", "spell_arcane_portalsilvermoon", "mage-tbc", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon;"),
+          "#showtooltip [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon\n/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon"),
         M("m-shat", "shat", "class", "MAGE", "all", "character", "spell_arcane_portalshattrath", "mage-tbc", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath;"),
+          "#showtooltip [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath\n/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath"),
         M("m-thera", "thera", "class", "MAGE", "all", "character", "spell_arcane_portaltheramore", "mage-tbc", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore;"),
+          "#showtooltip [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore\n/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore"),
         M("m-stonard", "stonard", "class", "MAGE", "all", "character", "spell_arcane_portalstonard", "mage-tbc", "plan",
-          "#showtooltip\n/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard;"),
+          "#showtooltip [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard\n/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard"),
     ],
 )
 
@@ -1649,7 +1638,7 @@ def emit_md(catalog: dict) -> str:
         "",
         "Source of truth: [catalog.json](catalog.json). WoW Macro Cursor loads that file. Groups with `gameVersion` TBC show only on Version TBC.",
         "",
-        "Each body starts with `# <global|class-specific|character-specific> <CLASS> <spec> [Toon]` after `#showtooltip` when the 255 cap allows.",
+        "Scope, class, and spec live on the catalog record. Do not put `# class-specific` comments in the body.",
         "",
         f"- Macros: **{len(catalog['macros'])}**",
         f"- Groups: **{len(catalog['groups'])}**",
@@ -1739,7 +1728,7 @@ def emit_class_md(cls: str, catalog: dict) -> str:
             "Piercing Howl needs no macro logic, so drag the spell itself to an unmanaged slot.",
             "For Fury, load Warrior core + Warrior Fury. For Fury/Protection, add Last Stand separately if learned; do not add Concussion Blow or Shield Slam unless the build unlocks them.",
             "",
-            "Catalog bodies stay stance-aware so they also work outside the Action Deck. On a matching stance page, the stance line is a no-op.",
+            "Catalog bodies stay stance-aware. On a matching stance page, the stance line is a no-op.",
             "Charge / Intercept share `E`; Shield Bash / Pummel share `F`; the three major stance cooldowns share `Z`.",
             "A stance change can require a second key press after the stance cooldown. Shield Slam and Shield Wall require an equipped shield.",
             "On TBC, load Warrior TBC for Commanding Shout, Intervene, Spell Reflection, and Victory Rush. Slam is in Warrior core on that Version.",
@@ -1757,7 +1746,7 @@ def emit_class_md(cls: str, catalog: dict) -> str:
         ]
     if cls == "MAGE":
         lines += [
-            "Existing Currentz style: `/cqs`, `[nomod]` max rank, `[mod:shift]` Rank 1, `@cursor` ground spells, Ice Block toggle.",
+            "Existing Currentz style: `/cqs`, `[nomod]` max rank, `[mod:shift]` Rank 1, `#showtooltip` copies those conditions, `(rank 1)` has no space, `@cursor` ground spells, Ice Block toggle.",
             "TBC adds Outland city ports plus Theramore and Stonard. Shift still opens a portal.",
             "",
         ]
@@ -1942,6 +1931,11 @@ def assert_unique_names(items: list[dict]) -> None:
 
 
 def emit_artifacts(catalog_obj: dict, *, write_json: bool) -> None:
+    for m in catalog_obj["macros"]:
+        body = strip_scope_comments(m["body"])
+        m["body"] = body
+        m["chars"] = len(body)
+        m.pop("labelDropped", None)
     assert_unique_names(catalog_obj["macros"])
     if write_json:
         (ROOT / "catalog.json").write_text(json.dumps(catalog_obj, indent=2) + "\n")
@@ -1985,7 +1979,7 @@ def lua_str(s: str) -> str:
 def emit_deck_catalog(catalog_obj: dict) -> str:
     lines = [
         "--[[",
-        "  Purpose: Catalog macros used by the Action Deck (CreateMacro if missing).",
+        "  Purpose: Catalog macros for the Macro Library.",
         "  Deps: ShadowUI addon table",
         "  Public: populates ShadowUI.Defaults.catalog",
         "  Notes: Bodies copy docs/macros/catalog.json. Rebuild with build_catalog.py.",
@@ -2018,4 +2012,4 @@ if __name__ == "__main__":
         emit_artifacts(catalog, write_json=True)
     else:
         catalog_obj = json.loads((ROOT / "catalog.json").read_text())
-        emit_artifacts(catalog_obj, write_json=False)
+        emit_artifacts(catalog_obj, write_json=True)

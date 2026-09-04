@@ -584,7 +584,7 @@ Create LAB buttons with no normal texture / pushed / checked border padding. Str
 - Soft shadow: child texture or second backdrop frame offset +2,+2 with low alpha black
 - Buttons packed in row-major grid: `columns`, `buttons`, `buttonSize`, gap `0`
 - Drag header enabled only when edit mode flag `ShadowUI.editMode` is true
-- Map standard Bars to fixed 12-slot ranges. Warrior `bar1` is the exception: a secure stance state driver selects Battle 73–84, Defensive 85–96, or Berserker 97–108 while the physical button names stay at 73–84.
+- Map every standard Bar to one fixed 12-slot range. Class states do not change bar1.
 
 - [ ] **Step 3: Commit**
 

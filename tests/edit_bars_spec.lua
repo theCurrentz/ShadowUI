@@ -1,4 +1,4 @@
--- Secure Warrior stance paging and Layout Edit Mode Bar resizing.
+-- Fixed Action Slots and Layout Edit Mode Bar resizing.
 -- Run: lua tests/edit_bars_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -12,6 +12,8 @@ local twelve = Addon:ColumnChoices(12)
 assert(twelve[1] == 12 and twelve[2] == 6 and twelve[3] == 4, "12-slot Action Bar uses 12, 6, 4 columns")
 assert(twelve[4] == 3 and twelve[5] == 2 and twelve[6] == 1, "12-slot Action Bar also uses 3, 2, 1 columns")
 assert(#twelve == 6, "12-slot Action Bar has six grids")
+assert(Addon:SnapBarColumns(12, 5) == 6, "a 5-column size snaps to 6 so 12 slots still fill")
+assert(Addon:SnapBarColumns(12, 12) == 12, "a full row stays 12 columns")
 
 local pet = Addon:ColumnChoices(10)
 assert(pet[1] == 10 and pet[2] == 5 and pet[3] == 2 and pet[4] == 1, "Pet Bar grids fill 10 slots")
@@ -24,9 +26,28 @@ assert(row.columns == 12 and row.rows == 1, "12 columns is one row")
 assert(row.width == 432 and row.height == 36, "12x1 size is 12 buttons wide")
 assert(row.scale == nil, "grid layout does not set scale")
 
+local gappedRow = Addon:LayoutForColumns(12, 12, 36, 2)
+assert(gappedRow.width == 12 * 36 + 11 * 2, "12x1 with 2px gap is 12 buttons plus 11 gaps")
+assert(gappedRow.height == 36, "one row has no vertical gap")
+
 local side = Addon:LayoutForColumns(12, 3, 36)
 assert(side.columns == 3 and side.rows == 4, "3 columns is a 3x4 grid")
 assert(side.width == 108 and side.height == 144, "3x4 size is 3 buttons wide")
+
+local gappedSide = Addon:LayoutForColumns(12, 3, 36, 2)
+assert(gappedSide.width == 3 * 36 + 2 * 2, "3-column grid grows by 2 horizontal gaps")
+assert(gappedSide.height == 4 * 36 + 3 * 2, "4-row grid grows by 3 vertical gaps")
+
+local paddedRow = Addon:LayoutForColumns(12, 12, 36, 0, { { above = 4, below = 8 } })
+assert(paddedRow.height == 36, "row pads do not grow the Bar")
+assert(paddedRow.width == 432, "row pads do not change width")
+
+local paddedGrid = Addon:LayoutForColumns(12, 6, 36, 2, {
+  { above = 0, below = 10 },
+  { above = 2, below = 0 },
+})
+assert(paddedGrid.rows == 2, "6 columns is two rows")
+assert(paddedGrid.height == 2 * 36 + 2, "row pads leave Gap between as the only extra height")
 
 local nearestRow = Addon:NearestBarLayout(12, 36, 432, 36)
 assert(nearestRow.columns == 12 and nearestRow.rows == 1, "a wide drag stays a 12-slot row")
@@ -154,34 +175,52 @@ assert(grip, "Bar overlay has a resize grip")
 assert(grip.shown == false, "resize grip stays hidden in play mode")
 assert(grip.mouse == false, "resize grip does not eat clicks in play mode")
 
-local paged = Addon:CreateBar("bar2", {
+local fixed = Addon:CreateBar("bar2", {
   buttons = 12, buttonSize = 36, columns = 12, scale = 1, x = 0, y = 36, point = "CENTER",
   stancePages = { 73, 85, 97 },
 })
-assert(paged.buttons[1].name == "ShadowUIActionButton73", "paged Bar keeps Battle slot button names")
-assert(paged.buttons[1].states[1].action == 73, "Battle state starts at slot 73")
-assert(paged.buttons[1].states[2].action == 85, "Defensive state starts at slot 85")
-assert(paged.buttons[1].states[3].action == 97, "Berserker state starts at slot 97")
-assert(paged.buttons[12].states[3].action == 108, "Berserker state ends at slot 108")
-assert(paged.stateDriver.driver == "[bonusbar:3] 3; [bonusbar:2] 2; [bonusbar:1] 1; 1",
-  "bonus-bar driver pages Warrior stances")
-assert(paged.attributes["_onstate-page"]:find("ChildUpdate", 1, true), "state driver updates every button")
+assert(fixed.buttons[1].name == "ShadowUIActionButton13", "bar2 starts at fixed slot 13")
+assert(fixed.buttons[1].initialAction == 13, "legacy paging data does not change bar2")
+assert(fixed.buttons[12].initialAction == 24, "bar2 ends at fixed slot 24")
+assert(fixed.stateDriver == nil, "standard Bars do not register a paging driver")
 
-local formBar = Addon:CreateBar("bar3", {
-  buttons = 12, buttonSize = 36, columns = 12, scale = 1, x = 0, y = 72, point = "CENTER",
-  stancePages = { 1, 73, 85, 97 },
+Addon:UpdateBarLayout(bar, {
+  buttons = 12, buttonSize = 36, columns = 12, gap = 2, scale = 1, x = 0, y = 0,
 })
-assert(formBar.stateDriver.driver == "[bonusbar:3] 4; [bonusbar:2] 3; [bonusbar:1] 2; 1",
-  "Druid driver keeps Caster when no bonus bar")
-assert(formBar.buttons[1].states[1].action == 1, "Caster state starts at slot 1")
-assert(formBar.buttons[1].states[2].action == 73, "Cat state starts at slot 73")
+assert(bar.gap == 2, "layout stores Gap between")
+assert(bar.width == 12 * 36 + 11 * 2, "12-slot row grows by 11 gaps")
+assert(bar.height == 36, "one row stays one button tall")
+assert(bar.buttons[2].points[#bar.buttons[2].points][4] == 38,
+  "second Action Slot sits 2px after the first")
+Addon:UpdateBarLayout(bar, {
+  buttons = 12, buttonSize = 36, columns = 3, gap = 2, scale = 1, x = 0, y = 0,
+})
+assert(bar.width == 3 * 36 + 2 * 2, "3-column Bar grows by 2 horizontal gaps")
+assert(bar.height == 4 * 36 + 3 * 2, "4-row Bar grows by 3 vertical gaps")
+assert(bar.buttons[12].points[#bar.buttons[12].points][4] == 2 * 38,
+  "last Action Slot sits in column 3 with gap")
+assert(bar.buttons[12].points[#bar.buttons[12].points][5] == -3 * 38,
+  "last Action Slot sits in row 4 with gap")
 
-local stealthBar = Addon:CreateBar("bar4", {
-  buttons = 12, buttonSize = 36, columns = 12, scale = 1, x = 0, y = 108, point = "CENTER",
-  stancePages = { 1, 73 },
+Addon:UpdateBarLayout(bar, {
+  buttons = 12, buttonSize = 36, columns = 12, gap = 0, scale = 1, x = 0, y = 0,
+  rowGaps = { { above = 4, below = 8 } },
 })
-assert(stealthBar.stateDriver.driver == "[bonusbar:1] 2; 1",
-  "Rogue driver pages Stealth onto bonus bar 1")
+assert(bar.height == 36, "row pads do not grow a one-row Bar")
+assert(bar.buttons[1].width == 24 and bar.buttons[1].height == 24,
+  "row pads shrink the Action Slot icon")
+assert(bar.buttons[1].points[#bar.buttons[1].points][5] == -4,
+  "icon sits below gap above")
+assert(bar.buttons[1].points[#bar.buttons[1].points][4] == 6,
+  "a smaller icon stays centred in the slot")
+Addon:UpdateBarLayout(bar, {
+  buttons = 12, buttonSize = 36, columns = 6, gap = 2, scale = 1, x = 0, y = 0,
+  rowGaps = { { above = 4, below = 8 }, { above = 4, below = 8 } },
+})
+assert(bar.height == 2 * 36 + 2, "two-grid-line Bar height stays slot grid plus Gap between")
+assert(bar.buttons[7].width == 24, "the same Bar pads shrink icons on every grid line")
+assert(bar.buttons[7].points[#bar.buttons[7].points][5] == -(36 + 2 + 4),
+  "second grid line icon sits below its cell top plus this Bar's gap above")
 
 Addon.editMode = true
 Addon:UpdateBarLayout(bar, { buttons = 12, buttonSize = 36, columns = 12, scale = 1, x = 0, y = 0 })

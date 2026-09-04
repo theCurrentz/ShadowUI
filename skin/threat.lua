@@ -1,6 +1,7 @@
 --[[
   Purpose: Paint the Threat Bar as a bubble tab on the Target Frame portrait.
-  The bubble is one circle that floats on the 45-degree (top-right) portrait edge.
+  The bubble is one circle that floats on the 45-degree (top-right) portrait edge,
+  slightly off the rim so it does not cover the face.
   Fill is one vertical lighting gradient of the threat colour. The fill host
   sits at 50% opacity so the portrait shows through. Classic SetGradient keeps
   ColorMixin RGB and drops texture alpha, so the fill frame is the glass. The
@@ -28,7 +29,7 @@ local SIZE = 32
 local STROKE = 3
 local FILL = SIZE - STROKE * 2
 local FONT_SIZE = 9
-local OVERLAP = 10
+local OVERLAP = 4
 local CIRCLE = "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask"
 local WARN = 70
 local HIGH = 88
@@ -242,6 +243,9 @@ end
 local function layerFrame(tab, key, extraLevel)
   local layer = tab[key]
   if layer then
+    if layer.SetFrameLevel and tab.GetFrameLevel then
+      layer:SetFrameLevel(tab:GetFrameLevel() + extraLevel)
+    end
     return layer
   end
   if not CreateFrame then
@@ -256,6 +260,19 @@ local function layerFrame(tab, key, extraLevel)
   end
   tab[key] = layer
   return layer
+end
+
+local function raiseAbovePortrait(tab, frame)
+  if not tab or not tab.SetFrameLevel or not frame then
+    return
+  end
+  local level = (frame.GetFrameLevel and frame:GetFrameLevel()) or 0
+  local port = portrait(frame)
+  local parent = port and port.GetParent and port:GetParent()
+  if parent and parent.GetFrameLevel then
+    level = math.max(level, parent:GetFrameLevel() or 0)
+  end
+  tab:SetFrameLevel(level + 8)
 end
 
 local function ensureText(tab, textHost)
@@ -323,6 +340,7 @@ local function host(frame)
   muteNative(frame)
   local tab = frame.shadowUIThreat
   if tab then
+    raiseAbovePortrait(tab, frame)
     ensureLayers(tab)
     return tab
   end
@@ -333,9 +351,7 @@ local function host(frame)
   if tab.SetSize then
     tab:SetSize(SIZE, SIZE)
   end
-  if tab.SetFrameLevel and frame.GetFrameLevel then
-    tab:SetFrameLevel(frame:GetFrameLevel() + 8)
-  end
+  raiseAbovePortrait(tab, frame)
   if tab.SetScript then
     tab:SetScript("OnUpdate", function()
       Addon:SkinTargetThreat()

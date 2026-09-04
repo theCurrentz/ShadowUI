@@ -2,7 +2,7 @@
 
 Source of truth: [catalog.json](catalog.json). WoW Macro Cursor loads that file. Groups with `gameVersion` TBC show only on Version TBC.
 
-Each body starts with `# <global|class-specific|character-specific> <CLASS> <spec> [Toon]` after `#showtooltip` when the 255 cap allows.
+Scope, class, and spec live on the catalog record. Do not put `# class-specific` comments in the body.
 
 - Macros: **391**
 - Groups: **45**
@@ -74,11 +74,10 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 - tab: account
 - icon: `inv_misc_orb_02`
 - source: plan
-- chars: 37
+- chars: 20
 
 ```
 #showtooltip
-# global ALL all
 /use 13
 ```
 
@@ -92,11 +91,10 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 - tab: account
 - icon: `inv_misc_orb_03`
 - source: plan
-- chars: 37
+- chars: 20
 
 ```
 #showtooltip
-# global ALL all
 /use 14
 ```
 
@@ -110,11 +108,10 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 - tab: account
 - icon: `ability_druid_bash`
 - source: existing
-- chars: 37
+- chars: 10
 - notes: Hunter, Warlock, and any other pet class. One General-tab body.
 
 ```
-# global ALL all | key (`)
 /petattack
 ```
 
@@ -128,11 +125,10 @@ General-tab utilities that need a macro: assist, focus, trinket slots, pet attac
 - tab: account
 - icon: `ability_tracking`
 - source: existing
-- chars: 43
+- chars: 10
 - notes: Shift-backtick. Split from pet attack so Shift is a bind, not a modifier.
 
 ```
-# global ALL all | key (SHIFT-`)
 /petfollow
 ```
 
@@ -150,12 +146,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_charge`
 - source: hybrid
-- chars: 206
+- chars: 167
 - notes: Enters Battle for Charge or Berserker for Intercept. Do not add Rend.
 
 ```
 #showtooltip [combat] Intercept; Charge
-# class-specific WARRIOR all | key (T)
 /cast [nocombat,nostance:1] Battle Stance; [combat,nostance:3] Berserker Stance
 /cast [nocombat] Charge; Intercept
 /startattack
@@ -171,12 +166,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_racial_bloodrage`
 - source: plan
-- chars: 90
+- chars: 51
 - notes: Bloodrage stays separate from Berserker Rage.
 
 ```
 #showtooltip Bloodrage
-# class-specific WARRIOR all | key (F)
 /cast Bloodrage
 /startattack
 ```
@@ -191,11 +185,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `spell_nature_ancestralguardian`
 - source: hybrid
-- chars: 123
+- chars: 84
 
 ```
 #showtooltip Berserker Rage
-# class-specific WARRIOR all | key (G)
 /cast [nostance:3] Berserker Stance
 /cast Berserker Rage
 ```
@@ -210,11 +203,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_offensivestance`
 - source: existing
-- chars: 111
+- chars: 59
 
 ```
 #showtooltip Battle Stance
-# class-specific WARRIOR all | key (moust button 1)
 /cast Battle Stance
 /startattack
 ```
@@ -229,11 +221,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_racial_avatar`
 - source: existing
-- chars: 117
+- chars: 65
 
 ```
 #showtooltip Berserker Stance
-# class-specific WARRIOR all | key (mouse button 2)
 /cast Berserker Stance
 /startattack
 ```
@@ -248,11 +239,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_defensivestance`
 - source: existing
-- chars: 117
+- chars: 65
 
 ```
 #showtooltip Defensive Stance
-# class-specific WARRIOR all | key (mouse button 3)
 /cast Defensive Stance
 /startattack
 ```
@@ -267,12 +257,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_rogue_ambush`
 - source: existing
-- chars: 98
+- chars: 59
 - notes: Uses maximum rank. Rank 3 has the same listed rage cost and is not a rage-saving option.
 
 ```
 #showtooltip Heroic Strike
-# class-specific WARRIOR all | key (1)
 /cast Heroic Strike
 /startattack
 ```
@@ -287,11 +276,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_cleave`
 - source: existing
-- chars: 84
+- chars: 45
 
 ```
 #showtooltip Cleave
-# class-specific WARRIOR all | key (R)
 /cast Cleave
 /startattack
 ```
@@ -306,12 +294,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_whirlwind`
 - source: hybrid
-- chars: 126
+- chars: 87
 - notes: Enters Berserker Stance. A stance change can require a second press.
 
 ```
 #showtooltip Whirlwind
-# class-specific WARRIOR all | key (C)
 /cast [nostance:3] Berserker Stance
 /cast Whirlwind
 /startattack
@@ -327,12 +314,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `inv_sword_48`
 - source: hybrid
-- chars: 117
+- chars: 78
 - notes: Leaves Defensive Stance because Execute requires Battle or Berserker Stance.
 
 ```
 #showtooltip Execute
-# class-specific WARRIOR all | key (4)
 /cast [stance:2] Battle Stance
 /cast Execute
 /startattack
@@ -348,12 +334,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_meleedamage`
 - source: hybrid
-- chars: 123
+- chars: 84
 - notes: Enters Battle Stance. A stance change can require a second press.
 
 ```
 #showtooltip Overpower
-# class-specific WARRIOR all | key (2)
 /cast [nostance:1] Battle Stance
 /cast Overpower
 /startattack
@@ -369,12 +354,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_gouge`
 - source: hybrid
-- chars: 111
+- chars: 72
 - notes: Leaves Berserker Stance because Rend requires Battle or Defensive Stance.
 
 ```
 #showtooltip Rend
-# class-specific WARRIOR all | key (H)
 /cast [stance:3] Battle Stance
 /cast Rend
 /startattack
@@ -390,12 +374,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_sunder`
 - source: hybrid
-- chars: 129
+- chars: 90
 - notes: Uses a hostile living mouseover, then the current target. Useful for multi-target tanking.
 
 ```
 #showtooltip Sunder Armor
-# class-specific WARRIOR all | key (Q)
 /startattack
 /cast [target=mouseover,harm,nodead][] Sunder Armor
 ```
@@ -410,13 +393,12 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_decisivestrike`
 - source: plan
-- chars: 111
+- chars: 72
 - version: TBC
 - notes: Trainer-taught filler. TBC uses it on the baseline bar. Leaves Defensive Stance.
 
 ```
 #showtooltip Slam
-# class-specific WARRIOR all | key (L)
 /cast [stance:2] Battle Stance
 /startattack
 /cast Slam
@@ -432,12 +414,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `inv_gauntlets_04`
 - source: plan
-- chars: 246
+- chars: 207
 - notes: One interrupt replaces separate Pummel and Shield Bash copies. It uses Shield Bash with a shield; otherwise it enters Berserker and uses Pummel.
 
 ```
 #showtooltip [stance:3] Pummel; [equipped:Shields] Shield Bash; Pummel
-# class-specific WARRIOR all | key (G)
 /stopcasting
 /startattack
 /cast [noequipped:Shields,nostance:3] Berserker Stance
@@ -454,12 +435,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_challange`
 - source: plan
-- chars: 118
+- chars: 79
 - notes: One major cooldown key. The current stance selects the spell.
 
 ```
 #showtooltip
-# class-specific WARRIOR all | key (B)
 /cast [stance:1] Retaliation; [stance:2] Shield Wall; Recklessness
 ```
 
@@ -473,12 +453,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `spell_nature_reincarnation`
 - source: hybrid
-- chars: 138
+- chars: 99
 - notes: Uses a hostile living mouseover, then the current target.
 
 ```
 #showtooltip Taunt
-# class-specific WARRIOR all | key (X)
 /cast [nostance:2] Defensive Stance
 /cast [target=mouseover,harm,nodead][] Taunt
 ```
@@ -493,12 +472,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_battleshout`
 - source: hybrid
-- chars: 147
+- chars: 108
 - notes: Battle Shout normally. Shift uses Demoralizing Shout.
 
 ```
 #showtooltip [mod:shift] Demoralizing Shout; Battle Shout
-# class-specific WARRIOR all | key (Y)
 /cast [mod:shift] Demoralizing Shout; Battle Shout
 ```
 
@@ -512,12 +490,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_warcry`
 - source: existing
-- chars: 114
-- notes: Dedicated Action Deck copy; `w-shout` also provides Demoralizing Shout on Shift.
+- chars: 69
+- notes: Dedicated Demoralizing Shout copy; `w-shout` also provides Demoralizing Shout on Shift.
 
 ```
 #showtooltip Demoralizing Shout
-# class-specific WARRIOR all | key (SHIFT-B)
 /cast Demoralizing Shout
 /startattack
 ```
@@ -532,12 +509,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_shockwave`
 - source: hybrid
-- chars: 121
+- chars: 82
 - notes: Leaves Defensive Stance because Hamstring requires Battle or Berserker Stance.
 
 ```
 #showtooltip Hamstring
-# class-specific WARRIOR all | key (`)
 /cast [stance:2] Battle Stance
 /cast Hamstring
 /startattack
@@ -553,11 +529,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_disarm`
 - source: hybrid
-- chars: 126
+- chars: 81
 
 ```
 #showtooltip Disarm
-# class-specific WARRIOR all | key (shift-c)
 /startattack
 /cast [nostance:2] Defensive Stance
 /cast Disarm
@@ -573,12 +548,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_golemthunderclap`
 - source: plan
-- chars: 113
+- chars: 68
 - notes: Stops auto-attack so the primary target is not hit immediately after the fear.
 
 ```
 #showtooltip Intimidating Shout
-# class-specific WARRIOR all | key (shift-T)
 /cast Intimidating Shout
 /stopattack
 ```
@@ -593,11 +567,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_revenge`
 - source: plan
-- chars: 122
+- chars: 83
 
 ```
 #showtooltip Revenge
-# class-specific WARRIOR all | key (2)
 /cast [nostance:2] Defensive Stance
 /cast Revenge
 /startattack
@@ -613,11 +586,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_defend`
 - source: plan
-- chars: 125
+- chars: 80
 
 ```
 #showtooltip Shield Block
-# class-specific WARRIOR all | key (shift-r)
 /cast [nostance:2] Defensive Stance
 /cast Shield Block
 ```
@@ -632,12 +604,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_punishingblow`
 - source: plan
-- chars: 155
+- chars: 110
 - notes: Uses a hostile living mouseover, then the current target.
 
 ```
 #showtooltip Mocking Blow
-# class-specific WARRIOR all | key (shift-X)
 /cast [nostance:1] Battle Stance
 /cast [target=mouseover,harm,nodead][] Mocking Blow
 ```
@@ -652,11 +623,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_bullrush`
 - source: plan
-- chars: 106
+- chars: 67
 
 ```
 #showtooltip Challenging Shout
-# class-specific WARRIOR all | key (X)
 /cast Challenging Shout
 /startattack
 ```
@@ -671,11 +641,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `spell_nature_thunderclap`
 - source: plan
-- chars: 116
+- chars: 77
 
 ```
 #showtooltip Thunder Clap
-# class-specific WARRIOR all | key (6)
 /cast [nostance:1] Battle Stance
 /cast Thunder Clap
 ```
@@ -690,11 +659,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_challange`
 - source: plan
-- chars: 114
+- chars: 75
 
 ```
 #showtooltip Retaliation
-# class-specific WARRIOR all | key (Z)
 /cast [nostance:1] Battle Stance
 /cast Retaliation
 ```
@@ -709,11 +677,10 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_criticalstrike`
 - source: plan
-- chars: 119
+- chars: 80
 
 ```
 #showtooltip Recklessness
-# class-specific WARRIOR all | key (Z)
 /cast [nostance:3] Berserker Stance
 /cast Recklessness
 ```
@@ -728,12 +695,11 @@ Useful macros for non-talent Warrior abilities. Load this complete set on the Ge
 - tab: account
 - icon: `ability_warrior_shieldwall`
 - source: hybrid
-- chars: 117
+- chars: 78
 - notes: Requires an equipped shield. Named equip copies stay in the gear kit.
 
 ```
 #showtooltip Shield Wall
-# class-specific WARRIOR all | key (Z)
 /cast [nostance:2] Defensive Stance
 /cast Shield Wall
 ```
@@ -752,11 +718,10 @@ Only active abilities unlocked by Arms talents.
 - tab: character
 - icon: `ability_rogue_slicedice`
 - source: plan
-- chars: 125
+- chars: 85
 
 ```
 #showtooltip Sweeping Strikes
-# class-specific WARRIOR arms | key (T)
 /cast [nostance:1] Battle Stance
 /cast Sweeping Strikes
 ```
@@ -771,11 +736,10 @@ Only active abilities unlocked by Arms talents.
 - tab: character
 - icon: `ability_warrior_savageblow`
 - source: existing
-- chars: 99
+- chars: 59
 
 ```
 #showtooltip Mortal Strike
-# class-specific WARRIOR arms | key (1)
 /cast Mortal Strike
 /startattack
 ```
@@ -794,11 +758,10 @@ Useful macros for Fury talent abilities. Piercing Howl needs no wrapper; drag th
 - tab: character
 - icon: `spell_shadow_deathpact`
 - source: plan
-- chars: 93
+- chars: 53
 
 ```
 #showtooltip Death Wish
-# class-specific WARRIOR fury | key (T)
 /cast Death Wish
 /startattack
 ```
@@ -813,11 +776,10 @@ Useful macros for Fury talent abilities. Piercing Howl needs no wrapper; drag th
 - tab: character
 - icon: `spell_nature_bloodlust`
 - source: existing
-- chars: 95
+- chars: 55
 
 ```
 #showtooltip Bloodthirst
-# class-specific WARRIOR fury | key (1)
 /cast Bloodthirst
 /startattack
 ```
@@ -836,12 +798,11 @@ Only active abilities unlocked by Protection talents. A Fury/Protection build us
 - tab: character
 - icon: `spell_holy_ashestoashes`
 - source: plan
-- chars: 99
+- chars: 53
 - notes: Stops a cast or queued spell so the emergency defensive can fire immediately.
 
 ```
 #showtooltip Last Stand
-# class-specific WARRIOR protection | key (T)
 /stopcasting
 /cast Last Stand
 ```
@@ -860,11 +821,10 @@ Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this gr
 - tab: character
 - icon: `inv_potion_69`
 - source: existing
-- chars: 85
+- chars: 35
 - notes: Uses Diamond Flask, then Death Wish. The flask can consume the first press; press again after the global cooldown.
 
 ```
-# character-specific WARRIOR fury Tazzy | key (T)
 /use Diamond Flask
 /cast Death Wish
 ```
@@ -879,11 +839,10 @@ Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this gr
 - tab: character
 - icon: `inv_sword_39`
 - source: existing
-- chars: 120
+- chars: 65
 - notes: Cancels a queued attack, then equips the dual-wield threat set.
 
 ```
-# character-specific WARRIOR all Tazzy | key (unbound)
 /stopcasting
 /equipslot 16 Quel'Serrar
 /equipslot 17 Mirah's Song
@@ -899,11 +858,10 @@ Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this gr
 - tab: character
 - icon: `inv_shield_04`
 - source: existing
-- chars: 129
+- chars: 74
 - notes: Cancels a queued attack, then equips the alternate shield set. The one-handed weapon goes on before the shield.
 
 ```
-# character-specific WARRIOR all Tazzy | key (unbound)
 /stopcasting
 /equipslot 16 Quel'Serrar
 /equipslot 17 Buru's Skull Fragment
@@ -919,11 +877,10 @@ Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this gr
 - tab: character
 - icon: `inv_shield_06`
 - source: existing
-- chars: 128
+- chars: 73
 - notes: Cancels a queued attack, then equips the mitigation shield set.
 
 ```
-# character-specific WARRIOR all Tazzy | key (unbound)
 /stopcasting
 /equipslot 16 Quel'Serrar
 /equipslot 17 The Immovable Object
@@ -939,12 +896,11 @@ Character-specific Nightslayer Tazzy cooldown and equipment macros. Swap this gr
 - tab: character
 - icon: `ability_warrior_shieldwall`
 - source: existing
-- chars: 207
+- chars: 152
 - notes: Cancels a queued attack, equips the mitigation set, enters Defensive Stance, then uses Shield Wall. Combat swaps can require repeated presses.
 
 ```
 #showtooltip Shield Wall
-# character-specific WARRIOR all Tazzy | key (unbound)
 /stopcasting
 /equipslot 16 Quel'Serrar
 /equipslot 17 The Immovable Object
@@ -966,11 +922,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_frost_frostbolt02`
 - source: existing
-- chars: 97
+- chars: 115
 
 ```
-#showtooltip
-# class-specific MAGE frost
+#showtooltip [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)
 /cqs
 /cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)
 ```
@@ -985,11 +940,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_fire_flamebolt`
 - source: existing
-- chars: 230
+- chars: 217
 
 ```
-#showtooltip Fireball
-# class-specific MAGE fire | key (2)
+#showtooltip [mod:shift] Combustion; Fireball
 /cqs
 /cast [mod:shift] Combustion
 /use [mod:shift] Mind Quickening Gem
@@ -1008,11 +962,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_fire_fireball`
 - source: existing
-- chars: 93
+- chars: 114
 
 ```
-#showtooltip
-# class-specific MAGE fire
+#showtooltip [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)
 /cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)
 ```
 
@@ -1026,11 +979,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_nature_wispsplode`
 - source: existing
-- chars: 107
+- chars: 138
 
 ```
-#showtooltip
-# class-specific MAGE arcane
+#showtooltip [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)
 /cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)
 ```
 
@@ -1044,11 +996,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_nature_starfall`
 - source: existing
-- chars: 110
+- chars: 81
 
 ```
 #showtooltip Arcane Missiles
-# class-specific MAGE arcane
 /cast [nochanneling:Arcane Missiles] Arcane Missiles
 ```
 
@@ -1062,11 +1013,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_frost_icestorm`
 - source: existing
-- chars: 90
+- chars: 106
 
 ```
-#showtooltip
-# class-specific MAGE frost
+#showtooltip [nomod]Blizzard;[mod:shift]Blizzard(rank 1)
 /cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)
 ```
 
@@ -1080,12 +1030,11 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_frost_glacier`
 - source: existing
-- chars: 100
+- chars: 122
 
 ```
-#showtooltip
-# class-specific MAGE frost
-/cast [nomod]Cone of Cold; [mod:shift] Cone of Cold(rank 1)
+#showtooltip [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)
+/cast [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)
 ```
 
 #### m-fs
@@ -1098,11 +1047,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_fire_selfdestruct`
 - source: existing
-- chars: 218
+- chars: 254
 
 ```
-#showtooltip
-# class-specific MAGE fire
+#showtooltip [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike
 /use [mod:alt] Talisman of Ephemeral Power
 /use [mod:alt] Zandalarian Hero Charm
 /cast [mod:alt] Arcane Power
@@ -1119,11 +1067,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_fire_soulburn`
 - source: plan
-- chars: 59
+- chars: 32
 
 ```
 #showtooltip Scorch
-# class-specific MAGE fire
 /cast Scorch
 ```
 
@@ -1137,11 +1084,10 @@ Existing Currentz fillers. /cqs and [nomod]/[mod:shift] downranks stay.
 - tab: account
 - icon: `spell_fire_fireball02`
 - source: plan
-- chars: 88
+- chars: 61
 
 ```
 #showtooltip Pyroblast
-# class-specific MAGE fire
 /cast Presence of Mind
 /cast Pyroblast
 ```
@@ -1160,11 +1106,10 @@ Character-specific Currentz. Touch of Chaos wand and named Naxx shells. Generic 
 - tab: account
 - icon: `spell_shadow_shadowbolt`
 - source: existing
-- chars: 85
+- chars: 46
 
 ```
 #showtooltip
-# character-specific MAGE all Currentz
 /equip Touch of Chaos
 /cast shoot
 ```
@@ -1183,12 +1128,11 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_iceshock`
 - source: existing
-- chars: 116
+- chars: 90
 - notes: Mouseover stays commented, as on disk.
 
 ```
 #showtooltip
-# class-specific MAGE all
 /stopcasting
 #/cast [target=mouseover,exists] Counterspell
 /cast Counterspell
@@ -1204,11 +1148,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_iceshock`
 - source: plan
-- chars: 124
+- chars: 98
 
 ```
 #showtooltip Counterspell
-# class-specific MAGE all
 /stopcasting
 /cast [target=focus,harm,nodead] Counterspell; Counterspell
 ```
@@ -1223,11 +1166,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_nature_polymorph`
 - source: existing
-- chars: 90
+- chars: 110
 
 ```
-#showtooltip
-# class-specific MAGE all
+#showtooltip [nomod]Polymorph;[mod:shift]Polymorph(rank 1)
 /cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)
 ```
 
@@ -1241,11 +1183,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_nature_removecurse`
 - source: existing
-- chars: 136
+- chars: 110
 
 ```
 #showtooltip Remove Lesser Curse
-# class-specific MAGE all
 /cast [target=mouseover,exists] Remove Lesser Curse
 /cast Remove Lesser Curse
 ```
@@ -1260,11 +1201,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_frost`
 - source: existing
-- chars: 101
+- chars: 73
 
 ```
 #showtooltip Ice block
-# class-specific MAGE frost
 /stopcasting
 /cast Ice block
 /cancelaura Ice block
@@ -1280,11 +1220,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_shadow_detectlesserinvisibility`
 - source: existing
-- chars: 69
+- chars: 43
 
 ```
 #showtooltip
-# class-specific MAGE all
 /stopcasting
 /cast mana shield
 ```
@@ -1299,12 +1238,11 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_frostnova`
 - source: plan
-- chars: 124
+- chars: 104
 
 ```
-#showtooltip Frost Nova
-# class-specific MAGE frost | key (V / ALT-SHIFT-Q)
-/cast [mod:shift] Frost Nova;Frost Nova (rank 1)
+#showtooltip [mod:shift] Frost Nova; Frost Nova(rank 1)
+/cast [mod:shift] Frost Nova; Frost Nova(rank 1)
 ```
 
 #### m-barrier
@@ -1317,11 +1255,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_ice_lament`
 - source: plan
-- chars: 70
+- chars: 42
 
 ```
 #showtooltip Ice Barrier
-# class-specific MAGE frost
 /cast Ice Barrier
 ```
 
@@ -1335,11 +1272,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_frostward`
 - source: plan
-- chars: 128
+- chars: 86
 
 ```
 #showtooltip [mod:shift] Fire Ward; Frost Ward
-# class-specific MAGE all | key (BUTTON3)
 /cast [mod:shift] Fire Ward; Frost Ward
 ```
 
@@ -1353,11 +1289,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_magic_featherfall`
 - source: plan
-- chars: 74
+- chars: 38
 
 ```
 #showtooltip Slow Fall
-# class-specific MAGE all | key (8)
 /cast Slow Fall
 ```
 
@@ -1371,11 +1306,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_nature_abolishmagic`
 - source: plan
-- chars: 84
+- chars: 98
 
 ```
-#showtooltip
-# class-specific MAGE all
+#showtooltip [mod:shift] Amplify Magic; Dampen Magic
 /cast [mod:shift] Amplify Magic; Dampen Magic
 ```
 
@@ -1389,11 +1323,10 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_frost_wizardmark`
 - source: plan
-- chars: 66
+- chars: 38
 
 ```
 #showtooltip Cold Snap
-# class-specific MAGE frost
 /cast Cold Snap
 ```
 
@@ -1407,10 +1340,9 @@ Kicks, sheep, block, decurse. Existing bodies win.
 - tab: account
 - icon: `spell_holy_excorcism_02`
 - source: existing
-- chars: 80
+- chars: 53
 
 ```
-# class-specific MAGE fire
 /use [@cursor] Stratholme Holy Water
 /cast Blast Wave
 ```
@@ -1429,12 +1361,11 @@ Existing Currentz IF/SW plus Darnassus from the plan. Shift = portal.
 - tab: character
 - icon: `spell_arcane_teleportstormwind`
 - source: existing
-- chars: 104
+- chars: 136
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind;
+#showtooltip [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind
+/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind
 ```
 
 #### m-if
@@ -1447,12 +1378,11 @@ Existing Currentz IF/SW plus Darnassus from the plan. Shift = portal.
 - tab: character
 - icon: `spell_arcane_teleportironforge`
 - source: existing
-- chars: 104
+- chars: 136
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge;
+#showtooltip [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge
+/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge
 ```
 
 #### m-dar
@@ -1465,12 +1395,11 @@ Existing Currentz IF/SW plus Darnassus from the plan. Shift = portal.
 - tab: character
 - icon: `spell_arcane_teleportdarnassus`
 - source: plan
-- chars: 104
+- chars: 136
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus;
+#showtooltip [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus
+/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus
 ```
 
 ### mage-ports-horde
@@ -1487,11 +1416,11 @@ Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
 - tab: account
 - icon: `spell_arcane_teleportorgrimmar`
 - source: existing
-- chars: 91
+- chars: 136
 
 ```
-# class-specific MAGE all
-/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar;
+#showtooltip [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar
+/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar
 ```
 
 #### m-uc
@@ -1504,11 +1433,11 @@ Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
 - tab: account
 - icon: `spell_arcane_teleportundercity`
 - source: existing
-- chars: 91
+- chars: 136
 
 ```
-# class-specific MAGE all
-/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity;
+#showtooltip [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity
+/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity
 ```
 
 #### m-tb
@@ -1521,11 +1450,11 @@ Existing WARKEYS Orgrimmar / Undercity / Thunder Bluff.
 - tab: account
 - icon: `spell_arcane_teleportthunderbluff`
 - source: existing
-- chars: 99
+- chars: 152
 
 ```
-# class-specific MAGE all
-/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff;
+#showtooltip [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff
+/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff
 ```
 
 ### paladin-ret
@@ -1542,11 +1471,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_righteousfury`
 - source: plan
-- chars: 88
+- chars: 51
 
 ```
 #showtooltip Judgement
-# class-specific PALADIN retribution
 /startattack
 /cast Judgement
 ```
@@ -1561,11 +1489,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `ability_thunderbolt`
 - source: plan
-- chars: 106
+- chars: 69
 
 ```
 #showtooltip
-# class-specific PALADIN retribution
 /cast [mod:shift] Seal of Command; Seal of Righteousness
 ```
 
@@ -1579,11 +1506,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_sealofmight`
 - source: plan
-- chars: 96
+- chars: 67
 
 ```
 #showtooltip Hammer of Justice
-# class-specific PALADIN all
 /stopcasting
 /cast Hammer of Justice
 ```
@@ -1598,11 +1524,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_innerfire`
 - source: plan
-- chars: 94
+- chars: 65
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Consecration(Rank 1); Consecration
 ```
 
@@ -1616,11 +1541,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `ability_thunderclap`
 - source: plan
-- chars: 79
+- chars: 50
 
 ```
 #showtooltip Hammer of Wrath
-# class-specific PALADIN all
 /cast Hammer of Wrath
 ```
 
@@ -1634,11 +1558,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_excorcism_02`
 - source: plan
-- chars: 73
+- chars: 36
 
 ```
 #showtooltip Exorcism
-# class-specific PALADIN retribution
 /cast Exorcism
 ```
 
@@ -1652,11 +1575,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_prayerofhealing`
 - source: plan
-- chars: 90
+- chars: 53
 
 ```
 #showtooltip Repentance
-# class-specific PALADIN retribution
 /stopcasting
 /cast Repentance
 ```
@@ -1671,11 +1593,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_divineintervention`
 - source: plan
-- chars: 75
+- chars: 46
 
 ```
 #showtooltip Divine Shield
-# class-specific PALADIN all
 /cast Divine Shield
 ```
 
@@ -1689,10 +1610,9 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_divineintervention`
 - source: plan
-- chars: 54
+- chars: 25
 
 ```
-# class-specific PALADIN all
 /cancelaura Divine Shield
 ```
 
@@ -1706,11 +1626,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_sealofprotection`
 - source: plan
-- chars: 93
+- chars: 64
 
 ```
 #showtooltip Blessing of Protection
-# class-specific PALADIN all
 /cast Blessing of Protection
 ```
 
@@ -1724,11 +1643,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_purify`
 - source: hybrid
-- chars: 131
+- chars: 102
 
 ```
 #showtooltip Cleanse
-# class-specific PALADIN all
 /cast [mod:alt,target=player] Cleanse; [target=mouseover,exists] Cleanse; Cleanse
 ```
 
@@ -1742,11 +1660,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_flashheal`
 - source: plan
-- chars: 174
+- chars: 144
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light
 ```
 
@@ -1760,11 +1677,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_fistofjustice`
 - source: plan
-- chars: 131
+- chars: 102
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might
 ```
 
@@ -1778,11 +1694,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_devotionaura`
 - source: plan
-- chars: 122
+- chars: 93
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura
 ```
 
@@ -1796,11 +1711,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_sealoffury`
 - source: plan
-- chars: 84
+- chars: 48
 
 ```
 #showtooltip Righteous Fury
-# class-specific PALADIN protection
 /cast Righteous Fury
 ```
 
@@ -1814,11 +1728,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_blessingofprotection`
 - source: plan
-- chars: 78
+- chars: 42
 
 ```
 #showtooltip Holy Shield
-# class-specific PALADIN protection
 /cast Holy Shield
 ```
 
@@ -1832,11 +1745,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_holy_layonhands`
 - source: plan
-- chars: 99
+- chars: 69
 
 ```
 #showtooltip Lay on Hands
-# class-specific PALADIN holy
 /raid Lay on Hands on %t
 /cast Lay on Hands
 ```
@@ -1851,11 +1763,10 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 - tab: character
 - icon: `spell_nature_timestop`
 - source: plan
-- chars: 102
+- chars: 73
 
 ```
 #showtooltip Divine Intervention
-# class-specific PALADIN all
 /raid DI on %t
 /cast Divine Intervention
 ```
@@ -1874,11 +1785,10 @@ Heals. Alt self. Shift cheap rank.
 - tab: character
 - icon: `spell_holy_holybolt`
 - source: plan
-- chars: 127
+- chars: 97
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light
 ```
 
@@ -1892,11 +1802,10 @@ Heals. Alt self. Shift cheap rank.
 - tab: character
 - icon: `spell_holy_flashheal`
 - source: plan
-- chars: 97
+- chars: 67
 
 ```
 #showtooltip Flash of Light
-# class-specific PALADIN holy
 /cast Divine Favor
 /cast Flash of Light
 ```
@@ -1911,11 +1820,10 @@ Heals. Alt self. Shift cheap rank.
 - tab: character
 - icon: `spell_holy_searinglight`
 - source: plan
-- chars: 70
+- chars: 40
 
 ```
 #showtooltip Holy Shock
-# class-specific PALADIN holy
 /cast Holy Shock
 ```
 
@@ -1929,11 +1837,10 @@ Heals. Alt self. Shift cheap rank.
 - tab: character
 - icon: `spell_holy_righteousnessaura`
 - source: plan
-- chars: 90
+- chars: 60
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:shift] Seal of Light; Seal of Wisdom
 ```
 
@@ -1947,11 +1854,10 @@ Heals. Alt self. Shift cheap rank.
 - tab: character
 - icon: `spell_nature_swiftness`
 - source: plan
-- chars: 91
+- chars: 62
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Summon Warhorse; Summon Charger
 ```
 
@@ -1969,11 +1875,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_hunter_snipershot`
 - source: plan
-- chars: 74
+- chars: 46
 
 ```
 #showtooltip Hunter's Mark
-# class-specific HUNTER all
 /cast Hunter's Mark
 ```
 
@@ -1987,11 +1892,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `spell_nature_ravenform`
 - source: plan
-- chars: 99
+- chars: 71
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Aspect of the Monkey; Aspect of the Hawk
 ```
 
@@ -2005,11 +1909,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `inv_spear_07`
 - source: plan
-- chars: 77
+- chars: 40
 
 ```
 #showtooltip Aimed Shot
-# class-specific HUNTER marksmanship
 /cast Aimed Shot
 ```
 
@@ -2023,11 +1926,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_upgrademoonglaive`
 - source: plan
-- chars: 77
+- chars: 40
 
 ```
 #showtooltip Multi-Shot
-# class-specific HUNTER marksmanship
 /cast Multi-Shot
 ```
 
@@ -2041,11 +1943,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_impalingbolt`
 - source: plan
-- chars: 91
+- chars: 63
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot
 ```
 
@@ -2059,11 +1960,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_hunter_quickshot`
 - source: plan
-- chars: 74
+- chars: 46
 
 ```
 #showtooltip Serpent Sting
-# class-specific HUNTER all
 /cast Serpent Sting
 ```
 
@@ -2077,11 +1977,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `spell_frost_stun`
 - source: plan
-- chars: 78
+- chars: 50
 
 ```
 #showtooltip Concussive Shot
-# class-specific HUNTER all
 /cast Concussive Shot
 ```
 
@@ -2095,11 +1994,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_rogue_trip`
 - source: plan
-- chars: 87
+- chars: 59
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Wing Clip(Rank 1); Wing Clip
 ```
 
@@ -2113,11 +2011,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_rogue_feigndeath`
 - source: plan
-- chars: 95
+- chars: 67
 
 ```
 #showtooltip Feign Death
-# class-specific HUNTER all
 /stopattack
 /stopcasting
 /cast Feign Death
@@ -2133,11 +2030,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `spell_frost_chainsofice`
 - source: plan
-- chars: 74
+- chars: 46
 
 ```
 #showtooltip Freezing Trap
-# class-specific HUNTER all
 /cast Freezing Trap
 ```
 
@@ -2151,11 +2047,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_hunter_runningshot`
 - source: plan
-- chars: 85
+- chars: 48
 
 ```
 #showtooltip Rapid Fire
-# class-specific HUNTER marksmanship
 /use 13
 /cast Rapid Fire
 ```
@@ -2170,11 +2065,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `spell_nature_drowsy`
 - source: plan
-- chars: 84
+- chars: 56
 
 ```
 #showtooltip Tranquilizing Shot
-# class-specific HUNTER all
 /cast Tranquilizing Shot
 ```
 
@@ -2188,11 +2082,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_hunter_mendpet`
 - source: plan
-- chars: 74
+- chars: 36
 
 ```
 #showtooltip Mend Pet
-# class-specific HUNTER beast-mastery
 /cast Mend Pet
 ```
 
@@ -2206,11 +2099,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_hunter_beastcall`
 - source: plan
-- chars: 74
+- chars: 36
 
 ```
 #showtooltip Call Pet
-# class-specific HUNTER beast-mastery
 /cast Call Pet
 ```
 
@@ -2224,11 +2116,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_druid_ferociousbite`
 - source: plan
-- chars: 84
+- chars: 46
 
 ```
 #showtooltip Bestial Wrath
-# class-specific HUNTER beast-mastery
 /cast Bestial Wrath
 ```
 
@@ -2242,11 +2133,10 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 - tab: character
 - icon: `ability_mount_jungletiger`
 - source: plan
-- chars: 90
+- chars: 62
 
 ```
 #showtooltip Aspect of the Cheetah
-# class-specific HUNTER all
 /cast Aspect of the Cheetah
 ```
 
@@ -2264,11 +2154,10 @@ Character-specific Auden. Worg Carrier from the 372399535 account.
 - tab: account
 - icon: `ability_hunter_beastcall`
 - source: existing
-- chars: 93
+- chars: 45
 
 ```
 #showtooltip
-# character-specific HUNTER beast-mastery Auden
 /cast Call Pet
 /use Worg Carrier
 ```
@@ -2287,11 +2176,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_stealth`
 - source: plan
-- chars: 61
+- chars: 34
 
 ```
 #showtooltip Stealth
-# class-specific ROGUE all
 /cast Stealth
 ```
 
@@ -2305,11 +2193,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `spell_shadow_ritualofsacrifice`
 - source: plan
-- chars: 93
+- chars: 63
 
 ```
 #showtooltip Sinister Strike
-# class-specific ROGUE combat
 /startattack
 /cast Sinister Strike
 ```
@@ -2324,11 +2211,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_kick`
 - source: plan
-- chars: 68
+- chars: 41
 
 ```
 #showtooltip Kick
-# class-specific ROGUE all
 /stopcasting
 /cast Kick
 ```
@@ -2343,11 +2229,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_eviscerate`
 - source: plan
-- chars: 67
+- chars: 40
 
 ```
 #showtooltip Eviscerate
-# class-specific ROGUE all
 /cast Eviscerate
 ```
 
@@ -2361,11 +2246,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_slicedice`
 - source: plan
-- chars: 78
+- chars: 48
 
 ```
 #showtooltip Slice and Dice
-# class-specific ROGUE combat
 /cast Slice and Dice
 ```
 
@@ -2379,11 +2263,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_rupture`
 - source: plan
-- chars: 71
+- chars: 34
 
 ```
 #showtooltip Rupture
-# class-specific ROGUE assassination
 /cast Rupture
 ```
 
@@ -2397,11 +2280,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_kidneyshot`
 - source: plan
-- chars: 79
+- chars: 42
 
 ```
 #showtooltip Kidney Shot
-# class-specific ROGUE assassination
 /cast Kidney Shot
 ```
 
@@ -2415,11 +2297,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_gouge`
 - source: plan
-- chars: 72
+- chars: 42
 
 ```
 #showtooltip Gouge
-# class-specific ROGUE combat
 /stopattack
 /cast Gouge
 ```
@@ -2434,11 +2315,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_cheapshot`
 - source: plan
-- chars: 93
+- chars: 66
 
 ```
 #showtooltip Cheap Shot
-# class-specific ROGUE all
 /cast [nostealth] Stealth
 /cast Cheap Shot
 ```
@@ -2453,11 +2333,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_ambush`
 - source: plan
-- chars: 95
+- chars: 58
 
 ```
 #showtooltip Ambush
-# class-specific ROGUE assassination
 /cast [nostealth] Stealth
 /cast Ambush
 ```
@@ -2472,11 +2351,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_warrior_punishingblow`
 - source: plan
-- chars: 82
+- chars: 52
 
 ```
 #showtooltip Blade Flurry
-# class-specific ROGUE combat
 /use 13
 /cast Blade Flurry
 ```
@@ -2491,11 +2369,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `spell_shadow_shadowworddominate`
 - source: plan
-- chars: 80
+- chars: 50
 
 ```
 #showtooltip Adrenaline Rush
-# class-specific ROGUE combat
 /cast Adrenaline Rush
 ```
 
@@ -2509,11 +2386,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `spell_shadow_shadowward`
 - source: plan
-- chars: 64
+- chars: 34
 
 ```
 #showtooltip Evasion
-# class-specific ROGUE combat
 /cast Evasion
 ```
 
@@ -2527,11 +2403,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_vanish`
 - source: plan
-- chars: 76
+- chars: 44
 
 ```
 #showtooltip Vanish
-# class-specific ROGUE subtlety
 /stopattack
 /cast Vanish
 ```
@@ -2546,11 +2421,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_rogue_sprint`
 - source: plan
-- chars: 59
+- chars: 32
 
 ```
 #showtooltip Sprint
-# class-specific ROGUE all
 /cast Sprint
 ```
 
@@ -2564,11 +2438,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `spell_shadow_mindsteal`
 - source: plan
-- chars: 57
+- chars: 30
 
 ```
 #showtooltip Blind
-# class-specific ROGUE all
 /cast Blind
 ```
 
@@ -2582,11 +2455,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `ability_sap`
 - source: plan
-- chars: 100
+- chars: 73
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nostealth] Stealth
 /cast [mod:shift] Sap; Pick Pocket
 ```
@@ -2601,11 +2473,10 @@ Openers, Kick, finishers. /startattack on builders.
 - tab: character
 - icon: `spell_ice_lament`
 - source: plan
-- chars: 94
+- chars: 57
 
 ```
 #showtooltip Eviscerate
-# class-specific ROGUE assassination
 /cast Cold Blood
 /cast Eviscerate
 ```
@@ -2624,11 +2495,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_flashheal`
 - source: plan
-- chars: 157
+- chars: 128
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal
 ```
 
@@ -2642,11 +2512,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_greaterheal`
 - source: plan
-- chars: 132
+- chars: 103
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Greater Heal; [mod:shift] Greater Heal(Rank 1); Greater Heal
 ```
 
@@ -2660,11 +2529,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_renew`
 - source: plan
-- chars: 111
+- chars: 82
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Renew; [mod:shift] Renew(Rank 3); Renew
 ```
 
@@ -2678,11 +2546,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_powerwordshield`
 - source: plan
-- chars: 156
+- chars: 121
 
 ```
 #showtooltip
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Power Word: Shield; [mod:shift] Power Word: Shield(Rank 1); Power Word: Shield
 ```
 
@@ -2696,11 +2563,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_prayerofhealing02`
 - source: plan
-- chars: 101
+- chars: 72
 
 ```
 #showtooltip Prayer of Healing
-# class-specific PRIEST holy
 /cast Inner Focus
 /cast Prayer of Healing
 ```
@@ -2715,11 +2581,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_dispelmagic`
 - source: hybrid
-- chars: 157
+- chars: 122
 
 ```
 #showtooltip Dispel Magic
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Dispel Magic; [target=mouseover,exists] Dispel Magic; Dispel Magic
 ```
 
@@ -2733,11 +2598,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_magic_lesserinvisibilty`
 - source: plan
-- chars: 56
+- chars: 28
 
 ```
 #showtooltip Fade
-# class-specific PRIEST all
 /cast Fade
 ```
 
@@ -2751,11 +2615,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_shadow_psychicscream`
 - source: plan
-- chars: 79
+- chars: 48
 
 ```
 #showtooltip Psychic Scream
-# class-specific PRIEST shadow
 /cast Psychic Scream
 ```
 
@@ -2769,11 +2632,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_excorcism`
 - source: plan
-- chars: 130
+- chars: 95
 
 ```
 #showtooltip Fear Ward
-# class-specific PRIEST discipline
 /raid Fear Ward on %t
 /cast [mod:alt,target=player] Fear Ward; Fear Ward
 ```
@@ -2788,11 +2650,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_wordfortitude`
 - source: plan
-- chars: 144
+- chars: 109
 
 ```
 #showtooltip Power Word: Fortitude
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Power Word: Fortitude; Power Word: Fortitude
 ```
 
@@ -2806,11 +2667,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_resurrection`
 - source: plan
-- chars: 73
+- chars: 44
 
 ```
 #showtooltip Resurrection
-# class-specific PRIEST holy
 /cast Resurrection
 ```
 
@@ -2824,11 +2684,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_innerfire`
 - source: plan
-- chars: 75
+- chars: 40
 
 ```
 #showtooltip Inner Fire
-# class-specific PRIEST discipline
 /cast Inner Fire
 ```
 
@@ -2842,11 +2701,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_holynova`
 - source: plan
-- chars: 88
+- chars: 59
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:shift] Holy Nova(Rank 1); Holy Nova
 ```
 
@@ -2860,11 +2718,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `ability_shootwand`
 - source: plan
-- chars: 58
+- chars: 30
 
 ```
 #showtooltip Shoot
-# class-specific PRIEST all
 /cast Shoot
 ```
 
@@ -2878,11 +2735,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_nature_nullifydisease`
 - source: hybrid
-- chars: 163
+- chars: 134
 
 ```
 #showtooltip Abolish Disease
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Abolish Disease; [target=mouseover,exists] Abolish Disease; Abolish Disease
 ```
 
@@ -2896,11 +2752,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_prayeroffortitude`
 - source: plan
-- chars: 93
+- chars: 58
 
 ```
 #showtooltip Prayer of Fortitude
-# class-specific PRIEST discipline
 /cast Prayer of Fortitude
 ```
 
@@ -2914,11 +2769,10 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 - tab: character
 - icon: `spell_holy_prayerofspirit`
 - source: plan
-- chars: 87
+- chars: 52
 
 ```
 #showtooltip Prayer of Spirit
-# class-specific PRIEST discipline
 /cast Prayer of Spirit
 ```
 
@@ -2936,11 +2790,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_shadowwordpain`
 - source: plan
-- chars: 106
+- chars: 75
 
 ```
 #showtooltip
-# class-specific PRIEST shadow
 /cast [mod:shift] Shadow Word: Pain(Rank 1); Shadow Word: Pain
 ```
 
@@ -2954,11 +2807,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_siphonmana`
 - source: plan
-- chars: 69
+- chars: 38
 
 ```
 #showtooltip Mind Flay
-# class-specific PRIEST shadow
 /cast Mind Flay
 ```
 
@@ -2972,11 +2824,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_unholyfrenzy`
 - source: plan
-- chars: 71
+- chars: 40
 
 ```
 #showtooltip Mind Blast
-# class-specific PRIEST shadow
 /cast Mind Blast
 ```
 
@@ -2990,11 +2841,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_unsummonbuilding`
 - source: plan
-- chars: 83
+- chars: 52
 
 ```
 #showtooltip Vampiric Embrace
-# class-specific PRIEST shadow
 /cast Vampiric Embrace
 ```
 
@@ -3008,11 +2858,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_shadowform`
 - source: plan
-- chars: 71
+- chars: 40
 
 ```
 #showtooltip Shadowform
-# class-specific PRIEST shadow
 /cast Shadowform
 ```
 
@@ -3026,11 +2875,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_shadow_impphaseshift`
 - source: plan
-- chars: 78
+- chars: 47
 
 ```
 #showtooltip Silence
-# class-specific PRIEST shadow
 /stopcasting
 /cast Silence
 ```
@@ -3045,11 +2893,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_nature_slow`
 - source: plan
-- chars: 92
+- chars: 61
 
 ```
 #showtooltip Shackle Undead
-# class-specific PRIEST shadow
 /stopcasting
 /cast Shackle Undead
 ```
@@ -3064,11 +2911,10 @@ Dots and form. Cancel form to heal.
 - tab: character
 - icon: `spell_holy_flashheal`
 - source: plan
-- chars: 130
+- chars: 99
 
 ```
 #showtooltip Flash Heal
-# class-specific PRIEST shadow
 /cancelaura Shadowform
 /cast [mod:alt,target=player] Flash Heal; Flash Heal
 ```
@@ -3087,11 +2933,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_earthshock`
 - source: plan
-- chars: 116
+- chars: 88
 
 ```
 #showtooltip Earth Shock
-# class-specific SHAMAN all
 /stopcasting
 /cast [mod:shift] Earth Shock(Rank 1); Earth Shock
 ```
@@ -3106,11 +2951,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_fire_flameshock`
 - source: plan
-- chars: 91
+- chars: 55
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast [mod:shift] Frost Shock; Flame Shock
 ```
 
@@ -3124,11 +2968,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `ability_shaman_stormstrike`
 - source: plan
-- chars: 91
+- chars: 55
 
 ```
 #showtooltip Stormstrike
-# class-specific SHAMAN enhancement
 /startattack
 /cast Stormstrike
 ```
@@ -3143,11 +2986,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_lightning`
 - source: plan
-- chars: 103
+- chars: 69
 
 ```
 #showtooltip
-# class-specific SHAMAN elemental
 /cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt
 ```
 
@@ -3161,11 +3003,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_chainlightning`
 - source: plan
-- chars: 84
+- chars: 50
 
 ```
 #showtooltip Chain Lightning
-# class-specific SHAMAN elemental
 /cast Chain Lightning
 ```
 
@@ -3179,11 +3020,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_lightningshield`
 - source: plan
-- chars: 80
+- chars: 52
 
 ```
 #showtooltip Lightning Shield
-# class-specific SHAMAN all
 /cast Lightning Shield
 ```
 
@@ -3197,11 +3037,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_cyclone`
 - source: plan
-- chars: 102
+- chars: 66
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast [mod:shift] Flametongue Weapon; Windfury Weapon
 ```
 
@@ -3215,11 +3054,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_healingway`
 - source: plan
-- chars: 200
+- chars: 164
 
 ```
 #showtooltip
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave
 ```
 
@@ -3233,11 +3071,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_magicimmunity`
 - source: plan
-- chars: 139
+- chars: 103
 
 ```
 #showtooltip
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave
 ```
 
@@ -3251,11 +3088,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_ravenform`
 - source: plan
-- chars: 105
+- chars: 69
 
 ```
 #showtooltip Healing Wave
-# class-specific SHAMAN restoration
 /cast Nature's Swiftness
 /cast Healing Wave
 ```
@@ -3270,11 +3106,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_purge`
 - source: hybrid
-- chars: 97
+- chars: 63
 
 ```
 #showtooltip Purge
-# class-specific SHAMAN elemental
 /cast [target=mouseover,exists] Purge; Purge
 ```
 
@@ -3288,11 +3123,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_spiritwolf`
 - source: plan
-- chars: 68
+- chars: 40
 
 ```
 #showtooltip Ghost Wolf
-# class-specific SHAMAN all
 /cast Ghost Wolf
 ```
 
@@ -3306,11 +3140,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_groundingtotem`
 - source: plan
-- chars: 90
+- chars: 62
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:shift] Grounding Totem; Windfury Totem
 ```
 
@@ -3324,11 +3157,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_tremortotem`
 - source: plan
-- chars: 72
+- chars: 44
 
 ```
 #showtooltip Tremor Totem
-# class-specific SHAMAN all
 /cast Tremor Totem
 ```
 
@@ -3342,11 +3174,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_manaregentotem`
 - source: plan
-- chars: 82
+- chars: 54
 
 ```
 #showtooltip Mana Spring Totem
-# class-specific SHAMAN all
 /cast Mana Spring Totem
 ```
 
@@ -3360,11 +3191,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_earthbindtotem`
 - source: plan
-- chars: 102
+- chars: 66
 
 ```
 #showtooltip Strength of Earth Totem
-# class-specific SHAMAN enhancement
 /cast Strength of Earth Totem
 ```
 
@@ -3378,11 +3208,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_frost_summonwaterelemental`
 - source: plan
-- chars: 86
+- chars: 50
 
 ```
 #showtooltip Mana Tide Totem
-# class-specific SHAMAN restoration
 /cast Mana Tide Totem
 ```
 
@@ -3396,11 +3225,10 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 - tab: character
 - icon: `spell_nature_nullifypoison`
 - source: hybrid
-- chars: 154
+- chars: 118
 
 ```
 #showtooltip Cure Poison
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Cure Poison; [target=mouseover,exists] Cure Poison; Cure Poison
 ```
 
@@ -3418,11 +3246,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_burningspirit`
 - source: plan
-- chars: 86
+- chars: 57
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [mod:shift] Life Tap(Rank 1); Life Tap
 ```
 
@@ -3436,11 +3263,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_shadowbolt`
 - source: plan
-- chars: 100
+- chars: 63
 
 ```
 #showtooltip
-# class-specific WARLOCK destruction
 /cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt
 ```
 
@@ -3454,11 +3280,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_fire_immolation`
 - source: plan
-- chars: 73
+- chars: 36
 
 ```
 #showtooltip Immolate
-# class-specific WARLOCK destruction
 /cast Immolate
 ```
 
@@ -3472,11 +3297,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_abominationexplosion`
 - source: plan
-- chars: 97
+- chars: 61
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Corruption(Rank 1); Corruption
 ```
 
@@ -3490,11 +3314,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_curseofsargeras`
 - source: plan
-- chars: 104
+- chars: 68
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Curse of Agony; Curse of the Elements
 ```
 
@@ -3508,11 +3331,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_possession`
 - source: plan
-- chars: 98
+- chars: 62
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /stopcasting
 /cast [mod:shift] Fear(Rank 1); Fear
 ```
@@ -3527,11 +3349,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_mindrot`
 - source: plan
-- chars: 89
+- chars: 53
 
 ```
 #showtooltip Spell Lock
-# class-specific WARLOCK demonology
 /stopcasting
 /cast Spell Lock
 ```
@@ -3546,10 +3367,9 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: account
 - icon: `spell_shadow_twilight`
 - source: existing
-- chars: 96
+- chars: 67
 
 ```
-# class-specific WARLOCK all
 /ra Summoning %t
 /rw Summoning %t, click!
 /cast Ritual of Summoning
@@ -3565,11 +3385,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `inv_misc_orb_04`
 - source: plan
-- chars: 100
+- chars: 71
 
 ```
 #showtooltip Major Soulstone
-# class-specific WARLOCK all
 /raid Soulstone on %t
 /use Major Soulstone
 ```
@@ -3584,11 +3403,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_sacrificialshield`
 - source: plan
-- chars: 74
+- chars: 38
 
 ```
 #showtooltip Sacrifice
-# class-specific WARLOCK demonology
 /cast Sacrifice
 ```
 
@@ -3602,11 +3420,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_cripple`
 - source: plan
-- chars: 81
+- chars: 45
 
 ```
 #showtooltip Banish
-# class-specific WARLOCK demonology
 /stopcasting
 /cast Banish
 ```
@@ -3621,11 +3438,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_deathcoil`
 - source: plan
-- chars: 76
+- chars: 40
 
 ```
 #showtooltip Death Coil
-# class-specific WARLOCK affliction
 /cast Death Coil
 ```
 
@@ -3639,11 +3455,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_summonfelhunter`
 - source: plan
-- chars: 100
+- chars: 64
 
 ```
 #showtooltip
-# class-specific WARLOCK demonology
 /cast [mod:shift] Summon Succubus; Summon Felhunter
 ```
 
@@ -3657,11 +3472,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_ragingscream`
 - source: plan
-- chars: 71
+- chars: 42
 
 ```
 #showtooltip Demon Armor
-# class-specific WARLOCK all
 /cast Demon Armor
 ```
 
@@ -3675,11 +3489,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_haunting`
 - source: plan
-- chars: 97
+- chars: 61
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Drain Soul(Rank 1); Drain Soul
 ```
 
@@ -3693,11 +3506,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `spell_shadow_scourgebuild`
 - source: plan
-- chars: 77
+- chars: 40
 
 ```
 #showtooltip Shadowburn
-# class-specific WARLOCK destruction
 /cast Shadowburn
 ```
 
@@ -3711,11 +3523,10 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 - tab: character
 - icon: `ability_shootwand`
 - source: plan
-- chars: 59
+- chars: 30
 
 ```
 #showtooltip Shoot
-# class-specific WARLOCK all
 /cast Shoot
 ```
 
@@ -3733,11 +3544,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_shadow_vampiricaura`
 - source: plan
-- chars: 72
+- chars: 43
 
 ```
 #showtooltip Shred
-# class-specific DRUID feral
 /startattack
 /cast Shred
 ```
@@ -3752,11 +3562,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_ferociousbite`
 - source: plan
-- chars: 98
+- chars: 69
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite
 ```
 
@@ -3770,11 +3579,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_ghoulfrenzy`
 - source: plan
-- chars: 55
+- chars: 26
 
 ```
 #showtooltip Rip
-# class-specific DRUID feral
 /cast Rip
 ```
 
@@ -3788,11 +3596,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_disembowel`
 - source: plan
-- chars: 70
+- chars: 41
 
 ```
 #showtooltip Rake
-# class-specific DRUID feral
 /startattack
 /cast Rake
 ```
@@ -3807,11 +3614,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_prowl`
 - source: plan
-- chars: 85
+- chars: 56
 
 ```
 #showtooltip Prowl
-# class-specific DRUID feral
 /cast [noform:3] Cat Form
 /cast Prowl
 ```
@@ -3826,11 +3632,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_maul`
 - source: plan
-- chars: 70
+- chars: 41
 
 ```
 #showtooltip Maul
-# class-specific DRUID feral
 /startattack
 /cast Maul
 ```
@@ -3845,11 +3650,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_physical_taunt`
 - source: plan
-- chars: 91
+- chars: 62
 
 ```
 #showtooltip Growl
-# class-specific DRUID feral
 /cast [noform:1] Dire Bear Form
 /cast Growl
 ```
@@ -3864,11 +3668,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_bash`
 - source: plan
-- chars: 70
+- chars: 41
 
 ```
 #showtooltip Bash
-# class-specific DRUID feral
 /stopcasting
 /cast Bash
 ```
@@ -3883,11 +3686,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_nature_faeriefire`
 - source: plan
-- chars: 89
+- chars: 62
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [form:1/3] Faerie Fire (Feral); Faerie Fire
 ```
 
@@ -3901,11 +3703,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_hunter_pet_bear`
 - source: plan
-- chars: 73
+- chars: 44
 
 ```
 #showtooltip Feral Charge
-# class-specific DRUID feral
 /cast Feral Charge
 ```
 
@@ -3919,11 +3720,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_bullrush`
 - source: plan
-- chars: 91
+- chars: 62
 
 ```
 #showtooltip Frenzied Regeneration
-# class-specific DRUID feral
 /cast Frenzied Regeneration
 ```
 
@@ -3937,11 +3737,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_dash`
 - source: plan
-- chars: 57
+- chars: 28
 
 ```
 #showtooltip Dash
-# class-specific DRUID feral
 /cast Dash
 ```
 
@@ -3955,11 +3754,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_druid_catform`
 - source: plan
-- chars: 81
+- chars: 52
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /cast [mod:shift] Travel Form; Cat Form
 ```
 
@@ -3973,11 +3771,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `ability_racial_bearform`
 - source: plan
-- chars: 77
+- chars: 48
 
 ```
 #showtooltip Dire Bear Form
-# class-specific DRUID feral
 /cast Dire Bear Form
 ```
 
@@ -3991,11 +3788,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_nature_healingtouch`
 - source: plan
-- chars: 187
+- chars: 152
 
 ```
 #showtooltip
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch
 ```
@@ -4010,11 +3806,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_nature_lightning`
 - source: plan
-- chars: 142
+- chars: 107
 
 ```
 #showtooltip Innervate
-# class-specific DRUID restoration
 /cancelform
 /raid Innervate on %t
 /cast [mod:alt,target=player] Innervate; Innervate
@@ -4030,11 +3825,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_nature_reincarnation`
 - source: plan
-- chars: 113
+- chars: 78
 
 ```
 #showtooltip Rebirth
-# class-specific DRUID restoration
 /cancelform
 /raid {rt8} Rebirth on %t {rt8}
 /cast Rebirth
@@ -4050,11 +3844,10 @@ Cat/bear. /cancelform before heals. Form numbers: 1 bear, 3 cat.
 - tab: character
 - icon: `spell_nature_regeneration`
 - source: plan
-- chars: 141
+- chars: 106
 
 ```
 #showtooltip Mark of the Wild
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild
 ```
@@ -4073,11 +3866,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_starfall`
 - source: plan
-- chars: 88
+- chars: 57
 
 ```
 #showtooltip
-# class-specific DRUID balance
 /cast [mod:shift] Moonfire(Rank 1); Moonfire
 ```
 
@@ -4091,11 +3883,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_abolishmagic`
 - source: plan
-- chars: 61
+- chars: 30
 
 ```
 #showtooltip Wrath
-# class-specific DRUID balance
 /cast Wrath
 ```
 
@@ -4109,11 +3900,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_arcane_starfire`
 - source: plan
-- chars: 67
+- chars: 36
 
 ```
 #showtooltip Starfire
-# class-specific DRUID balance
 /cast Starfire
 ```
 
@@ -4127,11 +3917,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_forceofnature`
 - source: plan
-- chars: 75
+- chars: 44
 
 ```
 #showtooltip Moonkin Form
-# class-specific DRUID balance
 /cast Moonkin Form
 ```
 
@@ -4145,11 +3934,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_stranglevines`
 - source: plan
-- chars: 116
+- chars: 85
 
 ```
 #showtooltip
-# class-specific DRUID balance
 /cancelform
 /cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots
 ```
@@ -4164,11 +3952,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_rejuvenation`
 - source: plan
-- chars: 150
+- chars: 115
 
 ```
 #showtooltip
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation
 ```
@@ -4183,11 +3970,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `inv_relics_idolofrejuvenation`
 - source: plan
-- chars: 85
+- chars: 50
 
 ```
 #showtooltip Swiftmend
-# class-specific DRUID restoration
 /cancelform
 /cast Swiftmend
 ```
@@ -4202,11 +3988,10 @@ Moonkin and healer extras.
 - tab: character
 - icon: `spell_nature_ravenform`
 - source: plan
-- chars: 118
+- chars: 83
 
 ```
 #showtooltip Healing Touch
-# class-specific DRUID restoration
 /cancelform
 /cast Nature's Swiftness
 /cast Healing Touch
@@ -4226,13 +4011,12 @@ TBC racial wrappers that need a modifier or stopcasting. Blood Elf and Draenei p
 - tab: account
 - icon: `spell_holy_holyprotection`
 - source: plan
-- chars: 114
+- chars: 97
 - version: TBC
 - notes: Draenei heal. Alt self.
 
 ```
 #showtooltip Gift of the Naaru
-# global ALL all
 /cast [mod:alt,target=player] Gift of the Naaru; Gift of the Naaru
 ```
 
@@ -4246,13 +4030,12 @@ TBC racial wrappers that need a modifier or stopcasting. Blood Elf and Draenei p
 - tab: account
 - icon: `spell_shadow_teleport`
 - source: plan
-- chars: 78
+- chars: 61
 - version: TBC
 - notes: Blood Elf interrupt. Stops a queued spell first.
 
 ```
 #showtooltip Arcane Torrent
-# global ALL all
 /stopcasting
 /cast Arcane Torrent
 ```
@@ -4271,13 +4054,12 @@ TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passi
 - tab: character
 - icon: `ability_warrior_rallyingcry`
 - source: plan
-- chars: 94
+- chars: 65
 - version: TBC
 - notes: Health shout. Battle Shout stays on `w-shout`.
 
 ```
 #showtooltip Commanding Shout
-# class-specific WARRIOR all
 /cast Commanding Shout
 /startattack
 ```
@@ -4292,13 +4074,12 @@ TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passi
 - tab: character
 - icon: `ability_warrior_victoryrush`
 - source: plan
-- chars: 136
+- chars: 107
 - version: TBC
 - notes: Enters Defensive Stance. Uses a friendly living mouseover, then the current target.
 
 ```
 #showtooltip Intervene
-# class-specific WARRIOR all
 /cast [nostance:2] Defensive Stance
 /cast [target=mouseover,help,nodead][] Intervene
 ```
@@ -4313,13 +4094,12 @@ TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passi
 - tab: character
 - icon: `ability_warrior_shieldreflection`
 - source: plan
-- chars: 130
+- chars: 101
 - version: TBC
 - notes: Requires an equipped shield. Enters Defensive Stance.
 
 ```
 #showtooltip Spell Reflection
-# class-specific WARRIOR all
 /stopcasting
 /cast [nostance:2] Defensive Stance
 /cast Spell Reflection
@@ -4335,13 +4115,12 @@ TBC trainer abilities. Slam sits in Warrior core on TBC. Stance Mastery is passi
 - tab: character
 - icon: `ability_warrior_devastate`
 - source: plan
-- chars: 117
+- chars: 88
 - version: TBC
 - notes: Leaves Defensive Stance. Usable after a killing blow.
 
 ```
 #showtooltip Victory Rush
-# class-specific WARRIOR all
 /cast [stance:2] Battle Stance
 /cast Victory Rush
 /startattack
@@ -4361,12 +4140,11 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_crusaderstrike`
 - source: plan
-- chars: 100
+- chars: 63
 - version: TBC
 
 ```
 #showtooltip Crusader Strike
-# class-specific PALADIN retribution
 /startattack
 /cast Crusader Strike
 ```
@@ -4381,12 +4159,11 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_avenginewrath`
 - source: plan
-- chars: 85
+- chars: 56
 - version: TBC
 
 ```
 #showtooltip Avenging Wrath
-# class-specific PALADIN all
 /use 13
 /cast Avenging Wrath
 ```
@@ -4401,13 +4178,12 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `inv_shoulder_37`
 - source: plan
-- chars: 116
+- chars: 87
 - version: TBC
 - notes: Taunt the mobs on a friendly mouseover, then the current target.
 
 ```
 #showtooltip Righteous Defense
-# class-specific PALADIN all
 /cast [target=mouseover,help,nodead][] Righteous Defense
 ```
 
@@ -4421,12 +4197,11 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_avengersshield`
 - source: plan
-- chars: 101
+- chars: 65
 - version: TBC
 
 ```
 #showtooltip Avenger's Shield
-# class-specific PALADIN protection
 /startattack
 /cast Avenger's Shield
 ```
@@ -4441,13 +4216,12 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_sealofblood`
 - source: plan
-- chars: 143
+- chars: 106
 - version: TBC
 - notes: Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins.
 
 ```
 #showtooltip
-# class-specific PALADIN retribution
 /cast Seal of Blood
 /cast Seal of Vengeance
 /cast Seal of the Martyr
@@ -4464,12 +4238,11 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_turnundead`
 - source: plan
-- chars: 80
+- chars: 51
 - version: TBC
 
 ```
 #showtooltip Turn Evil
-# class-specific PALADIN all
 /stopcasting
 /cast Turn Evil
 ```
@@ -4484,12 +4257,11 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 - tab: character
 - icon: `spell_holy_crusaderaura`
 - source: plan
-- chars: 75
+- chars: 46
 - version: TBC
 
 ```
 #showtooltip Crusader Aura
-# class-specific PALADIN all
 /cast Crusader Aura
 ```
 
@@ -4507,12 +4279,11 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 - tab: character
 - icon: `ability_hunter_steadyshot`
 - source: plan
-- chars: 70
+- chars: 42
 - version: TBC
 
 ```
 #showtooltip Steady Shot
-# class-specific HUNTER all
 /cast Steady Shot
 ```
 
@@ -4526,12 +4297,11 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 - tab: character
 - icon: `ability_hunter_killcommand`
 - source: plan
-- chars: 93
+- chars: 55
 - version: TBC
 
 ```
 #showtooltip Kill Command
-# class-specific HUNTER beast-mastery
 /petattack
 /cast Kill Command
 ```
@@ -4546,13 +4316,12 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 - tab: character
 - icon: `ability_hunter_misdirection`
 - source: plan
-- chars: 151
+- chars: 123
 - version: TBC
 - notes: Friendly mouseover, then pet, then current target.
 
 ```
 #showtooltip Misdirection
-# class-specific HUNTER all
 /cast [target=mouseover,help,nodead] Misdirection; [target=pet,exists] Misdirection; Misdirection
 ```
 
@@ -4566,12 +4335,11 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 - tab: character
 - icon: `ability_hunter_snaketrap`
 - source: plan
-- chars: 68
+- chars: 40
 - version: TBC
 
 ```
 #showtooltip Snake Trap
-# class-specific HUNTER all
 /cast Snake Trap
 ```
 
@@ -4585,13 +4353,12 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 - tab: character
 - icon: `ability_hunter_aspectoftheviper`
 - source: plan
-- chars: 131
+- chars: 103
 - version: TBC
 - notes: Hawk normally. Shift is Viper. Ctrl is Monkey. Era `asp` has no Viper line.
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Aspect of the Viper; [mod:ctrl] Aspect of the Monkey; Aspect of the Hawk
 ```
 
@@ -4609,12 +4376,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `spell_shadow_nethercloak`
 - source: plan
-- chars: 92
+- chars: 65
 - version: TBC
 
 ```
 #showtooltip Cloak of Shadows
-# class-specific ROGUE all
 /stopcasting
 /cast Cloak of Shadows
 ```
@@ -4629,12 +4395,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `inv_throwingknife_06`
 - source: plan
-- chars: 71
+- chars: 44
 - version: TBC
 
 ```
 #showtooltip Deadly Throw
-# class-specific ROGUE all
 /cast Deadly Throw
 ```
 
@@ -4648,12 +4413,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `inv_throwingknife_04`
 - source: plan
-- chars: 68
+- chars: 41
 - version: TBC
 
 ```
 #showtooltip Shiv
-# class-specific ROGUE all
 /startattack
 /cast Shiv
 ```
@@ -4668,12 +4432,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `ability_rogue_disembowel`
 - source: plan
-- chars: 71
+- chars: 34
 - version: TBC
 
 ```
 #showtooltip Envenom
-# class-specific ROGUE assassination
 /cast Envenom
 ```
 
@@ -4687,12 +4450,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `ability_rogue_shadowstep`
 - source: plan
-- chars: 72
+- chars: 40
 - version: TBC
 
 ```
 #showtooltip Shadowstep
-# class-specific ROGUE subtlety
 /cast Shadowstep
 ```
 
@@ -4706,12 +4468,11 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 - tab: character
 - icon: `ability_rogue_shadowstrikes`
 - source: plan
-- chars: 86
+- chars: 49
 - version: TBC
 
 ```
 #showtooltip Mutilate
-# class-specific ROGUE assassination
 /startattack
 /cast Mutilate
 ```
@@ -4730,12 +4491,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_shadow_demonicfortitude`
 - source: plan
-- chars: 84
+- chars: 56
 - version: TBC
 
 ```
 #showtooltip Shadow Word: Death
-# class-specific PRIEST all
 /cast Shadow Word: Death
 ```
 
@@ -4749,12 +4509,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_prayerofmendingtga`
 - source: plan
-- chars: 126
+- chars: 97
 - version: TBC
 
 ```
 #showtooltip Prayer of Mending
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending
 ```
 
@@ -4768,12 +4527,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_circleofrenewal`
 - source: plan
-- chars: 126
+- chars: 97
 - version: TBC
 
 ```
 #showtooltip Circle of Healing
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Circle of Healing; Circle of Healing
 ```
 
@@ -4787,12 +4545,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_painsupression`
 - source: plan
-- chars: 158
+- chars: 123
 - version: TBC
 
 ```
 #showtooltip Pain Suppression
-# class-specific PRIEST discipline
 /raid Pain Suppression on %t
 /cast [mod:alt,target=player] Pain Suppression; Pain Suppression
 ```
@@ -4807,12 +4564,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_arcane_massdispel`
 - source: plan
-- chars: 83
+- chars: 55
 - version: TBC
 
 ```
 #showtooltip Mass Dispel
-# class-specific PRIEST all
 /stopcasting
 /cast Mass Dispel
 ```
@@ -4827,12 +4583,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_shadow_shadowfiend`
 - source: plan
-- chars: 70
+- chars: 42
 - version: TBC
 
 ```
 #showtooltip Shadowfiend
-# class-specific PRIEST all
 /cast Shadowfiend
 ```
 
@@ -4846,12 +4601,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_blindingheal`
 - source: plan
-- chars: 73
+- chars: 44
 - version: TBC
 
 ```
 #showtooltip Binding Heal
-# class-specific PRIEST holy
 /cast Binding Heal
 ```
 
@@ -4865,12 +4619,11 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_stoicism`
 - source: plan
-- chars: 79
+- chars: 48
 - version: TBC
 
 ```
 #showtooltip Vampiric Touch
-# class-specific PRIEST shadow
 /cast Vampiric Touch
 ```
 
@@ -4884,13 +4637,12 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_arcane_studentofmagic`
 - source: plan
-- chars: 87
+- chars: 59
 - version: TBC
 - notes: Blood Elf priest racial.
 
 ```
 #showtooltip Consume Magic
-# class-specific PRIEST all
 /stopcasting
 /cast Consume Magic
 ```
@@ -4905,13 +4657,12 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 - tab: character
 - icon: `spell_holy_chastise`
 - source: plan
-- chars: 77
+- chars: 49
 - version: TBC
 - notes: Dwarf and Draenei priest racial.
 
 ```
 #showtooltip Chastise
-# class-specific PRIEST all
 /stopcasting
 /cast Chastise
 ```
@@ -4930,13 +4681,12 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_nature_bloodlust`
 - source: plan
-- chars: 78
+- chars: 42
 - version: TBC
 - notes: Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast Bloodlust
 /cast Heroism
 ```
@@ -4951,12 +4701,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `ability_shaman_watershield`
 - source: plan
-- chars: 89
+- chars: 61
 - version: TBC
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:shift] Lightning Shield; Water Shield
 ```
 
@@ -4970,12 +4719,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_nature_skinofearth`
 - source: plan
-- chars: 118
+- chars: 82
 - version: TBC
 
 ```
 #showtooltip Earth Shield
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Earth Shield; Earth Shield
 ```
 
@@ -4989,12 +4737,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_nature_shamanrage`
 - source: plan
-- chars: 88
+- chars: 52
 - version: TBC
 
 ```
 #showtooltip Shamanistic Rage
-# class-specific SHAMAN enhancement
 /cast Shamanistic Rage
 ```
 
@@ -5008,12 +4755,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_nature_slowingtotem`
 - source: plan
-- chars: 84
+- chars: 56
 - version: TBC
 
 ```
 #showtooltip Wrath of Air Totem
-# class-specific SHAMAN all
 /cast Wrath of Air Totem
 ```
 
@@ -5027,12 +4773,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_fire_totemofwrath`
 - source: plan
-- chars: 82
+- chars: 48
 - version: TBC
 
 ```
 #showtooltip Totem of Wrath
-# class-specific SHAMAN elemental
 /cast Totem of Wrath
 ```
 
@@ -5046,12 +4791,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_nature_earthelemental_totem`
 - source: plan
-- chars: 90
+- chars: 62
 - version: TBC
 
 ```
 #showtooltip Earth Elemental Totem
-# class-specific SHAMAN all
 /cast Earth Elemental Totem
 ```
 
@@ -5065,12 +4809,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_fire_elemental_totem`
 - source: plan
-- chars: 88
+- chars: 60
 - version: TBC
 
 ```
 #showtooltip Fire Elemental Totem
-# class-specific SHAMAN all
 /cast Fire Elemental Totem
 ```
 
@@ -5084,12 +4827,11 @@ TBC both factions. Bloodlust and Heroism share one body. Stormstrike stays in Sh
 - tab: character
 - icon: `spell_unused`
 - source: plan
-- chars: 72
+- chars: 44
 - version: TBC
 
 ```
 #showtooltip Totemic Call
-# class-specific SHAMAN all
 /cast Totemic Call
 ```
 
@@ -5107,12 +4849,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_frost_frostblast`
 - source: plan
-- chars: 66
+- chars: 38
 - version: TBC
 
 ```
 #showtooltip Ice Lance
-# class-specific MAGE frost
 /cast Ice Lance
 ```
 
@@ -5126,12 +4867,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_arcane02`
 - source: plan
-- chars: 79
+- chars: 53
 - version: TBC
 
 ```
 #showtooltip Spellsteal
-# class-specific MAGE all
 /stopcasting
 /cast Spellsteal
 ```
@@ -5146,12 +4886,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `ability_mage_invisibility`
 - source: plan
-- chars: 83
+- chars: 57
 - version: TBC
 
 ```
 #showtooltip Invisibility
-# class-specific MAGE all
 /stopcasting
 /cast Invisibility
 ```
@@ -5166,12 +4905,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `ability_mage_moltenarmor`
 - source: plan
-- chars: 70
+- chars: 44
 - version: TBC
 
 ```
 #showtooltip Molten Armor
-# class-specific MAGE all
 /cast Molten Armor
 ```
 
@@ -5185,12 +4923,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_blast`
 - source: plan
-- chars: 78
+- chars: 49
 - version: TBC
 
 ```
 #showtooltip Arcane Blast
-# class-specific MAGE arcane
 /cqs
 /cast Arcane Blast
 ```
@@ -5205,12 +4942,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_nature_slow`
 - source: plan
-- chars: 57
+- chars: 28
 - version: TBC
 
 ```
 #showtooltip Slow
-# class-specific MAGE arcane
 /cast Slow
 ```
 
@@ -5224,12 +4960,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `inv_misc_head_dragon_01`
 - source: plan
-- chars: 77
+- chars: 50
 - version: TBC
 
 ```
 #showtooltip Dragon's Breath
-# class-specific MAGE fire
 /cast Dragon's Breath
 ```
 
@@ -5243,12 +4978,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_frost_summonwaterelemental_2`
 - source: plan
-- chars: 92
+- chars: 64
 - version: TBC
 
 ```
 #showtooltip Summon Water Elemental
-# class-specific MAGE frost
 /cast Summon Water Elemental
 ```
 
@@ -5262,12 +4996,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_massdispel`
 - source: plan
-- chars: 88
+- chars: 62
 - version: TBC
 
 ```
 #showtooltip Ritual of Refreshment
-# class-specific MAGE all
 /cast Ritual of Refreshment
 ```
 
@@ -5281,12 +5014,11 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `inv_misc_gem_stone_01`
 - source: plan
-- chars: 86
+- chars: 60
 - version: TBC
 
 ```
 #showtooltip Conjure Mana Emerald
-# class-specific MAGE all
 /cast Conjure Mana Emerald
 ```
 
@@ -5300,13 +5032,12 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_portalexodar`
 - source: plan
-- chars: 98
+- chars: 124
 - version: TBC
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar;
+#showtooltip [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar
+/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar
 ```
 
 #### m-slvr
@@ -5319,13 +5050,12 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_portalsilvermoon`
 - source: plan
-- chars: 106
+- chars: 140
 - version: TBC
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon;
+#showtooltip [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon
+/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon
 ```
 
 #### m-shat
@@ -5338,13 +5068,12 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_portalshattrath`
 - source: plan
-- chars: 104
+- chars: 136
 - version: TBC
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath;
+#showtooltip [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath
+/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath
 ```
 
 #### m-thera
@@ -5357,13 +5086,12 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_portaltheramore`
 - source: plan
-- chars: 104
+- chars: 136
 - version: TBC
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore;
+#showtooltip [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore
+/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore
 ```
 
 #### m-stonard
@@ -5376,13 +5104,12 @@ TBC trainer and talent buttons plus Outland ports. Shift still opens a portal on
 - tab: character
 - icon: `spell_arcane_portalstonard`
 - source: plan
-- chars: 100
+- chars: 128
 - version: TBC
 
 ```
-#showtooltip
-# class-specific MAGE all
-/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard;
+#showtooltip [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard
+/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard
 ```
 
 ### warlock-tbc
@@ -5399,12 +5126,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_fire_burnout`
 - source: plan
-- chars: 77
+- chars: 40
 - version: TBC
 
 ```
 #showtooltip Incinerate
-# class-specific WARLOCK destruction
 /cast Incinerate
 ```
 
@@ -5418,12 +5144,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_felarmour`
 - source: plan
-- chars: 82
+- chars: 53
 - version: TBC
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [mod:shift] Demon Armor; Fel Armor
 ```
 
@@ -5437,12 +5162,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_arcane_arcane01`
 - source: plan
-- chars: 71
+- chars: 42
 - version: TBC
 
 ```
 #showtooltip Soulshatter
-# class-specific WARLOCK all
 /cast Soulshatter
 ```
 
@@ -5456,12 +5180,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_shadesofdarkness`
 - source: plan
-- chars: 79
+- chars: 50
 - version: TBC
 
 ```
 #showtooltip Ritual of Souls
-# class-specific WARLOCK all
 /cast Ritual of Souls
 ```
 
@@ -5475,12 +5198,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_seedofdestruction`
 - source: plan
-- chars: 92
+- chars: 56
 - version: TBC
 
 ```
 #showtooltip Seed of Corruption
-# class-specific WARLOCK affliction
 /cast Seed of Corruption
 ```
 
@@ -5494,12 +5216,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_unstableaffliction_3`
 - source: plan
-- chars: 94
+- chars: 58
 - version: TBC
 
 ```
 #showtooltip Unstable Affliction
-# class-specific WARLOCK affliction
 /cast Unstable Affliction
 ```
 
@@ -5513,12 +5234,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_shadowfury`
 - source: plan
-- chars: 90
+- chars: 53
 - version: TBC
 
 ```
 #showtooltip Shadowfury
-# class-specific WARLOCK destruction
 /stopcasting
 /cast Shadowfury
 ```
@@ -5533,12 +5253,11 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 - tab: character
 - icon: `spell_shadow_summonfelguard`
 - source: plan
-- chars: 86
+- chars: 50
 - version: TBC
 
 ```
 #showtooltip Summon Felguard
-# class-specific WARLOCK demonology
 /cast Summon Felguard
 ```
 
@@ -5556,12 +5275,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `ability_druid_mangle2`
 - source: plan
-- chars: 97
+- chars: 68
 - version: TBC
 
 ```
 #showtooltip
-# class-specific DRUID feral
 /startattack
 /cast [form:3] Mangle (Cat); Mangle (Bear)
 ```
@@ -5576,12 +5294,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `inv_misc_herb_felblossom`
 - source: plan
-- chars: 120
+- chars: 85
 - version: TBC
 
 ```
 #showtooltip Lifebloom
-# class-specific DRUID restoration
 /cancelform
 /cast [mod:alt,target=player] Lifebloom; Lifebloom
 ```
@@ -5596,12 +5313,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `spell_nature_earthbind`
 - source: plan
-- chars: 78
+- chars: 47
 - version: TBC
 
 ```
 #showtooltip Cyclone
-# class-specific DRUID balance
 /stopcasting
 /cast Cyclone
 ```
@@ -5616,12 +5332,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `ability_druid_flightform`
 - source: plan
-- chars: 88
+- chars: 61
 - version: TBC
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [mod:shift] Swift Flight Form; Flight Form
 ```
 
@@ -5635,12 +5350,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `ability_druid_lacerate`
 - source: plan
-- chars: 78
+- chars: 49
 - version: TBC
 
 ```
 #showtooltip Lacerate
-# class-specific DRUID feral
 /startattack
 /cast Lacerate
 ```
@@ -5655,12 +5369,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `ability_druid_mangle-tga`
 - source: plan
-- chars: 57
+- chars: 28
 - version: TBC
 
 ```
 #showtooltip Maim
-# class-specific DRUID feral
 /cast Maim
 ```
 
@@ -5674,12 +5387,11 @@ TBC forms and feral/resto buttons. Flight Form is trainer-taught. Swift Flight F
 - tab: character
 - icon: `ability_druid_treeoflife`
 - source: plan
-- chars: 79
+- chars: 44
 - version: TBC
 
 ```
 #showtooltip Tree of Life
-# class-specific DRUID restoration
 /cast Tree of Life
 ```
 
@@ -5697,11 +5409,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_greaterblessingofkings`
 - source: plan
-- chars: 125
+- chars: 96
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Greater Blessing of Might;[mod:shift]Greater Blessing of Might(Rank 1)
 ```
 
@@ -5715,11 +5426,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_holysmite`
 - source: plan
-- chars: 115
+- chars: 86
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Seal of the Crusader;[mod:shift]Seal of the Crusader(Rank 1)
 ```
 
@@ -5733,11 +5443,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_sealofsacrifice`
 - source: plan
-- chars: 117
+- chars: 88
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Blessing of Sacrifice;[mod:shift]Blessing of Sacrifice(Rank 1)
 ```
 
@@ -5751,11 +5460,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_restoration`
 - source: plan
-- chars: 109
+- chars: 80
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Divine Protection;[mod:shift]Divine Protection(Rank 1)
 ```
 
@@ -5769,11 +5477,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_sealoffire`
 - source: plan
-- chars: 115
+- chars: 86
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Fire Resistance Aura;[mod:shift]Fire Resistance Aura(Rank 1)
 ```
 
@@ -5787,11 +5494,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_frost_wizardmark`
 - source: plan
-- chars: 117
+- chars: 88
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Frost Resistance Aura;[mod:shift]Frost Resistance Aura(Rank 1)
 ```
 
@@ -5805,11 +5511,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_sealofkings`
 - source: plan
-- chars: 119
+- chars: 90
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Shadow Resistance Aura;[mod:shift]Shadow Resistance Aura(Rank 1)
 ```
 
@@ -5823,11 +5528,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_prayerofhealing02`
 - source: plan
-- chars: 109
+- chars: 80
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Blessing of Light;[mod:shift]Blessing of Light(Rank 1)
 ```
 
@@ -5841,11 +5545,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_greaterblessingofwisdom`
 - source: plan
-- chars: 127
+- chars: 98
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Greater Blessing of Wisdom;[mod:shift]Greater Blessing of Wisdom(Rank 1)
 ```
 
@@ -5859,11 +5562,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_excorcism`
 - source: plan
-- chars: 95
+- chars: 66
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Holy Wrath;[mod:shift]Holy Wrath(Rank 1)
 ```
 
@@ -5877,11 +5579,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_resurrection`
 - source: plan
-- chars: 95
+- chars: 66
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Redemption;[mod:shift]Redemption(Rank 1)
 ```
 
@@ -5895,11 +5596,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_turnundead`
 - source: plan
-- chars: 97
+- chars: 68
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Turn Undead;[mod:shift]Turn Undead(Rank 1)
 ```
 
@@ -5917,11 +5617,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_protectionformnature`
 - source: plan
-- chars: 110
+- chars: 82
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Aspect of the Wild;[mod:shift]Aspect of the Wild(Rank 1)
 ```
 
@@ -5935,11 +5634,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_druid_cower`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Scare Beast;[mod:shift]Scare Beast(Rank 1)
 ```
 
@@ -5953,11 +5651,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_arcane_blink`
 - source: plan
-- chars: 106
+- chars: 78
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Distracting Shot;[mod:shift]Distracting Shot(Rank 1)
 ```
 
@@ -5971,11 +5668,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_hunter_criticalshot`
 - source: plan
-- chars: 100
+- chars: 72
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Scorpid Sting;[mod:shift]Scorpid Sting(Rank 1)
 ```
 
@@ -5989,11 +5685,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_hunter_aimedshot`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Viper Sting;[mod:shift]Viper Sting(Rank 1)
 ```
 
@@ -6007,11 +5702,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_marksmanship`
 - source: plan
-- chars: 86
+- chars: 58
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Volley;[mod:shift]Volley(Rank 1)
 ```
 
@@ -6025,11 +5719,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_rogue_feint`
 - source: plan
-- chars: 92
+- chars: 64
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Disengage;[mod:shift]Disengage(Rank 1)
 ```
 
@@ -6043,11 +5736,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_selfdestruct`
 - source: plan
-- chars: 102
+- chars: 74
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Explosive Trap;[mod:shift]Explosive Trap(Rank 1)
 ```
 
@@ -6061,11 +5753,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_flameshock`
 - source: plan
-- chars: 104
+- chars: 76
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Immolation Trap;[mod:shift]Immolation Trap(Rank 1)
 ```
 
@@ -6079,11 +5770,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_hunter_swiftstrike`
 - source: plan
-- chars: 113
+- chars: 85
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /startattack
 /cast [nomod]Mongoose Bite;[mod:shift]Mongoose Bite(Rank 1)
 ```
@@ -6098,11 +5788,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_meleedamage`
 - source: plan
-- chars: 113
+- chars: 85
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /startattack
 /cast [nomod]Raptor Strike;[mod:shift]Raptor Strike(Rank 1)
 ```
@@ -6121,11 +5810,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_warrior_riposte`
 - source: plan
-- chars: 97
+- chars: 70
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)
 ```
 
@@ -6139,11 +5827,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_rogue_garrote`
 - source: plan
-- chars: 87
+- chars: 60
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)
 ```
 
@@ -6157,11 +5844,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_backstab`
 - source: plan
-- chars: 102
+- chars: 75
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /startattack
 /cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)
 ```
@@ -6176,11 +5862,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_rogue_feint`
 - source: plan
-- chars: 83
+- chars: 56
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Feint;[mod:shift]Feint(Rank 1)
 ```
 
@@ -6198,11 +5883,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_elunesgrace`
 - source: plan
-- chars: 100
+- chars: 72
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)
 ```
 
@@ -6216,11 +5900,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_ritualofsacrifice`
 - source: plan
-- chars: 90
+- chars: 62
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)
 ```
 
@@ -6234,11 +5917,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_manaburn`
 - source: plan
-- chars: 92
+- chars: 64
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)
 ```
 
@@ -6252,11 +5934,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_arcane_starfire`
 - source: plan
-- chars: 94
+- chars: 66
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)
 ```
 
@@ -6270,11 +5951,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_restoration`
 - source: plan
-- chars: 106
+- chars: 78
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)
 ```
 
@@ -6288,11 +5968,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_heal02`
 - source: plan
-- chars: 107
+- chars: 79
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal
 ```
 
@@ -6306,11 +5985,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_searinglight`
 - source: plan
-- chars: 92
+- chars: 64
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)
 ```
 
@@ -6324,11 +6002,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_lesserheal`
 - source: plan
-- chars: 128
+- chars: 100
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal
 ```
 
@@ -6342,11 +6019,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_holysmite`
 - source: plan
-- chars: 84
+- chars: 56
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Smite;[mod:shift]Smite(Rank 1)
 ```
 
@@ -6360,11 +6036,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_blackplague`
 - source: plan
-- chars: 106
+- chars: 78
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)
 ```
 
@@ -6378,11 +6053,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_fingerofdeath`
 - source: plan
-- chars: 104
+- chars: 76
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)
 ```
 
@@ -6396,11 +6070,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_shadowworddominate`
 - source: plan
-- chars: 98
+- chars: 70
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)
 ```
 
@@ -6414,11 +6087,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_mindsooth`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)
 ```
 
@@ -6432,11 +6104,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_mindvision`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)
 ```
 
@@ -6450,11 +6121,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_antishadow`
 - source: plan
-- chars: 108
+- chars: 80
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)
 ```
 
@@ -6468,11 +6138,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_lightningshield`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)
 ```
 
@@ -6486,11 +6155,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_deadofnight`
 - source: plan
-- chars: 108
+- chars: 80
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)
 ```
 
@@ -6508,11 +6176,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_sealoffire`
 - source: plan
-- chars: 104
+- chars: 76
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Fire Nova Totem;[mod:shift]Fire Nova Totem(Rank 1)
 ```
 
@@ -6526,11 +6193,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_selfdestruct`
 - source: plan
-- chars: 96
+- chars: 68
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Magma Totem;[mod:shift]Magma Totem(Rank 1)
 ```
 
@@ -6544,11 +6210,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_searingtotem`
 - source: plan
-- chars: 100
+- chars: 72
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Searing Totem;[mod:shift]Searing Totem(Rank 1)
 ```
 
@@ -6562,11 +6227,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_stoneclawtotem`
 - source: plan
-- chars: 104
+- chars: 76
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Stoneclaw Totem;[mod:shift]Stoneclaw Totem(Rank 1)
 ```
 
@@ -6580,11 +6244,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fireresistancetotem_01`
 - source: plan
-- chars: 116
+- chars: 88
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Fire Resistance Totem;[mod:shift]Fire Resistance Totem(Rank 1)
 ```
 
@@ -6598,11 +6261,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_guardianward`
 - source: plan
-- chars: 108
+- chars: 80
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Flametongue Totem;[mod:shift]Flametongue Totem(Rank 1)
 ```
 
@@ -6616,11 +6278,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_frostresistancetotem_01`
 - source: plan
-- chars: 118
+- chars: 90
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Frost Resistance Totem;[mod:shift]Frost Resistance Totem(Rank 1)
 ```
 
@@ -6634,11 +6295,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_frost_frostbrand`
 - source: plan
-- chars: 108
+- chars: 80
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Frostbrand Weapon;[mod:shift]Frostbrand Weapon(Rank 1)
 ```
 
@@ -6652,11 +6312,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_invisibilitytotem`
 - source: plan
-- chars: 110
+- chars: 82
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Grace of Air Totem;[mod:shift]Grace of Air Totem(Rank 1)
 ```
 
@@ -6670,11 +6329,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_natureresistancetotem`
 - source: plan
-- chars: 120
+- chars: 92
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Nature Resistance Totem;[mod:shift]Nature Resistance Totem(Rank 1)
 ```
 
@@ -6688,11 +6346,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_rockbiter`
 - source: plan
-- chars: 106
+- chars: 78
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Rockbiter Weapon;[mod:shift]Rockbiter Weapon(Rank 1)
 ```
 
@@ -6706,11 +6363,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_stoneskintotem`
 - source: plan
-- chars: 104
+- chars: 76
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Stoneskin Totem;[mod:shift]Stoneskin Totem(Rank 1)
 ```
 
@@ -6724,11 +6380,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_earthbind`
 - source: plan
-- chars: 102
+- chars: 74
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Windwall Totem;[mod:shift]Windwall Totem(Rank 1)
 ```
 
@@ -6742,11 +6397,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_regenerate`
 - source: plan
-- chars: 106
+- chars: 78
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Ancestral Spirit;[mod:shift]Ancestral Spirit(Rank 1)
 ```
 
@@ -6760,11 +6414,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_healingwavegreater`
 - source: plan
-- chars: 125
+- chars: 97
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:alt,target=player] Chain Heal; [mod:shift] Chain Heal(Rank 1); Chain Heal
 ```
 
@@ -6778,11 +6431,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `inv_spear_04`
 - source: plan
-- chars: 114
+- chars: 86
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Healing Stream Totem;[mod:shift]Healing Stream Totem(Rank 1)
 ```
 
@@ -6800,11 +6452,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_holy_magicalsentry`
 - source: plan
-- chars: 82
+- chars: 36
 
 ```
 #showtooltip
-# class-specific MAGE all | key (ALT-SHIFT-3)
 /cast Arcane Intellect;
 ```
 
@@ -6818,11 +6469,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `inv_misc_food_73cinnamonroll`
 - source: plan
-- chars: 71
+- chars: 31
 
 ```
 #showtooltip
-# class-specific MAGE all | key (ALT-6)
 /cast Conjure Food
 ```
 
@@ -6836,11 +6486,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `inv_drink_18`
 - source: plan
-- chars: 58
+- chars: 32
 
 ```
 #showtooltip
-# class-specific MAGE all
 /cast Conjure Water
 ```
 
@@ -6854,11 +6503,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_magearmor`
 - source: plan
-- chars: 70
+- chars: 30
 
 ```
 #showtooltip
-# class-specific MAGE all | key (ALT-Q)
 /cast Mage Armor;
 ```
 
@@ -6872,11 +6520,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_frost_frostarmor02`
 - source: plan
-- chars: 75
+- chars: 29
 
 ```
 #showtooltip
-# class-specific MAGE all | key (ALT-SHIFT-1)
 /cast Ice Armor;
 ```
 
@@ -6894,11 +6541,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_unholystrength`
 - source: plan
-- chars: 117
+- chars: 88
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Recklessness;[mod:shift]Curse of Recklessness(Rank 1)
 ```
 
@@ -6912,11 +6558,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_curseofachimonde`
 - source: plan
-- chars: 105
+- chars: 76
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Shadow;[mod:shift]Curse of Shadow(Rank 1)
 ```
 
@@ -6930,11 +6575,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_curseoftounges`
 - source: plan
-- chars: 107
+- chars: 78
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Tongues;[mod:shift]Curse of Tongues(Rank 1)
 ```
 
@@ -6948,11 +6592,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_curseofmannoroth`
 - source: plan
-- chars: 109
+- chars: 80
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Weakness;[mod:shift]Curse of Weakness(Rank 1)
 ```
 
@@ -6966,11 +6609,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_lifedrain02`
 - source: plan
-- chars: 95
+- chars: 66
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Drain Life;[mod:shift]Drain Life(Rank 1)
 ```
 
@@ -6984,11 +6626,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_siphonmana`
 - source: plan
-- chars: 95
+- chars: 66
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Drain Mana;[mod:shift]Drain Mana(Rank 1)
 ```
 
@@ -7002,11 +6643,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_deathscream`
 - source: plan
-- chars: 103
+- chars: 74
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Howl of Terror;[mod:shift]Howl of Terror(Rank 1)
 ```
 
@@ -7020,11 +6660,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_ragingscream`
 - source: plan
-- chars: 95
+- chars: 66
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Demon Skin;[mod:shift]Demon Skin(Rank 1)
 ```
 
@@ -7038,11 +6677,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_lifedrain`
 - source: plan
-- chars: 101
+- chars: 72
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Health Funnel;[mod:shift]Health Funnel(Rank 1)
 ```
 
@@ -7056,11 +6694,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_antishadow`
 - source: plan
-- chars: 97
+- chars: 68
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Shadow Ward;[mod:shift]Shadow Ward(Rank 1)
 ```
 
@@ -7074,11 +6711,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_enslavedemon`
 - source: plan
-- chars: 105
+- chars: 76
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Subjugate Demon;[mod:shift]Subjugate Demon(Rank 1)
 ```
 
@@ -7092,11 +6728,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_incinerate`
 - source: plan
-- chars: 91
+- chars: 62
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Hellfire;[mod:shift]Hellfire(Rank 1)
 ```
 
@@ -7110,11 +6745,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_shadow_rainoffire`
 - source: plan
-- chars: 99
+- chars: 70
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Rain of Fire;[mod:shift]Rain of Fire(Rank 1)
 ```
 
@@ -7128,11 +6762,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_soulburn`
 - source: plan
-- chars: 99
+- chars: 70
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Searing Pain;[mod:shift]Searing Pain(Rank 1)
 ```
 
@@ -7146,11 +6779,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_fire_fireball02`
 - source: plan
-- chars: 93
+- chars: 64
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Soul Fire;[mod:shift]Soul Fire(Rank 1)
 ```
 
@@ -7168,11 +6800,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_sleep`
 - source: plan
-- chars: 103
+- chars: 76
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)
 ```
@@ -7187,11 +6818,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_cyclone`
 - source: plan
-- chars: 91
+- chars: 64
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)
 ```
 
@@ -7205,11 +6835,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_hunter_beastsoothe`
 - source: plan
-- chars: 111
+- chars: 84
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)
 ```
@@ -7224,11 +6853,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_thorns`
 - source: plan
-- chars: 97
+- chars: 70
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)
 ```
@@ -7243,11 +6871,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_druid_rake`
 - source: plan
-- chars: 94
+- chars: 67
 
 ```
 #showtooltip
-# class-specific DRUID all
 /startattack
 /cast [nomod]Claw;[mod:shift]Claw(Rank 1)
 ```
@@ -7262,11 +6889,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_druid_cower`
 - source: plan
-- chars: 83
+- chars: 56
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Cower;[mod:shift]Cower(Rank 1)
 ```
 
@@ -7280,11 +6906,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `classic_ability_druid_demoralizingroar`
 - source: plan
-- chars: 107
+- chars: 80
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)
 ```
 
@@ -7298,11 +6923,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_druid_supriseattack`
 - source: plan
-- chars: 85
+- chars: 58
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)
 ```
 
@@ -7316,11 +6940,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_druid_ravage`
 - source: plan
-- chars: 85
+- chars: 58
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)
 ```
 
@@ -7334,11 +6957,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `inv_misc_monsterclaw_03`
 - source: plan
-- chars: 96
+- chars: 69
 
 ```
 #showtooltip
-# class-specific DRUID all
 /startattack
 /cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)
 ```
@@ -7353,11 +6975,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `ability_mount_jungletiger`
 - source: plan
-- chars: 97
+- chars: 70
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)
 ```
 
@@ -7371,11 +6992,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_regeneration`
 - source: plan
-- chars: 117
+- chars: 90
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)
 ```
@@ -7390,11 +7010,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_resistnature`
 - source: plan
-- chars: 130
+- chars: 103
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth
 ```
@@ -7409,11 +7028,10 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 - tab: account
 - icon: `spell_nature_tranquility`
 - source: plan
-- chars: 107
+- chars: 80
 
 ```
 #showtooltip
-# class-specific DRUID all
 /cancelform
 /cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)
 ```
@@ -7514,12 +7132,11 @@ In-game macros with no catalog group. Auto-heal keeps them for Export.
 - tab: account
 - icon: `ability_warrior_battleshout`
 - source: ingame
-- chars: 96
+- chars: 57
 - notes: Imported from in-game macros-cache.txt.
 
 ```
 #showtooltip Battle Shout
-# class-specific WARRIOR all | key (B)
 /cast Battle Shout
 /startattack
 ```

@@ -1,5 +1,5 @@
--- ApplyBars must create ShadowUI bars before it hides Blizzard bars.
--- If create throws after the hide, the player is left with no bars.
+-- ApplyBars must create ShadowUI bars before it skins Blizzard bars.
+-- If create throws after that restyle, the player is left with no bars.
 -- Run: lua tests/apply_bars_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -9,6 +9,7 @@ end
 _G.InCombatLockdown = function() return false end
 _G.SetActionBarToggles = function() end
 
+assert(loadfile(root .. "core/resolve.lua"))()
 assert(loadfile(root .. "bars/manager.lua"))()
 
 local events = {}
@@ -30,8 +31,9 @@ function Addon:CreateSpecialBar(barId)
     Hide = function() end,
   }
 end
-function Addon:UpdateBarLayout()
-  events[#events + 1] = { "layout" }
+function Addon:UpdateBarLayout(bar, cfg)
+  events[#events + 1] = { "layout", bar.barId or cfg }
+  bar.lastLayout = cfg
 end
 function Addon:StartSpecialBarUpdates() end
 function Addon:RefreshSpecialBars() end
@@ -108,5 +110,34 @@ Addon.bars.pet = {
 }
 Addon:ShowBarsForActionPlacement(true)
 assert(not petShown, "a pickup does not show a Special Bar that is off")
+
+Addon:ApplyBars({
+  layout = {
+    global = { gap = 4, iconShape = "circle" },
+    barGroups = { Main = { members = { bar1 = true }, gap = 2 } },
+    bar1 = { enabled = true, buttons = 12 },
+  },
+})
+assert(Addon.bars.global == nil, "Global is not a Bar")
+assert(Addon.bars.barGroups == nil, "Bar Groups is not a Bar")
+assert(Addon.bars.bar1.lastLayout.gap == 4, "ApplyBars fills Global gap")
+assert(Addon.bars.bar1.lastLayout.iconShape == "circle", "ApplyBars fills Global shape")
+
+Addon:ApplyBars({
+  layout = {
+    barGroups = { Stack = { gapAbove = 2, gapBelow = 6 } },
+    bar1 = {
+      enabled = true, buttons = 12, group = "Stack",
+      gapAbove = 9, gapBelow = 9,
+    },
+    bar3 = { enabled = true, buttons = 12, group = "Stack" },
+  },
+})
+assert(Addon.bars.bar1.lastLayout.rowGaps[1].above == 2
+  and Addon.bars.bar1.lastLayout.rowGaps[1].below == 6,
+  "grouped Bar apply uses Bar Group row pads")
+assert(Addon.bars.bar3.lastLayout.rowGaps[1].above == 2
+  and Addon.bars.bar3.lastLayout.rowGaps[1].below == 6,
+  "every grouped Bar gets the same row pads")
 
 print("apply_bars_spec OK")

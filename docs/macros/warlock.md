@@ -11,7 +11,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [mod:shift] Life Tap(Rank 1); Life Tap
 ```
 
@@ -19,7 +18,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK destruction
 /cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt
 ```
 
@@ -27,7 +25,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Immolate
-# class-specific WARLOCK destruction
 /cast Immolate
 ```
 
@@ -35,7 +32,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Corruption(Rank 1); Corruption
 ```
 
@@ -43,7 +39,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Curse of Agony; Curse of the Elements
 ```
 
@@ -51,7 +46,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /stopcasting
 /cast [mod:shift] Fear(Rank 1); Fear
 ```
@@ -60,7 +54,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Spell Lock
-# class-specific WARLOCK demonology
 /stopcasting
 /cast Spell Lock
 ```
@@ -68,7 +61,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 ### sum — `l-sum`
 
 ```
-# class-specific WARLOCK all
 /ra Summoning %t
 /rw Summoning %t, click!
 /cast Ritual of Summoning
@@ -78,7 +70,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Major Soulstone
-# class-specific WARLOCK all
 /raid Soulstone on %t
 /use Major Soulstone
 ```
@@ -87,7 +78,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Sacrifice
-# class-specific WARLOCK demonology
 /cast Sacrifice
 ```
 
@@ -95,7 +85,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Banish
-# class-specific WARLOCK demonology
 /stopcasting
 /cast Banish
 ```
@@ -104,7 +93,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Death Coil
-# class-specific WARLOCK affliction
 /cast Death Coil
 ```
 
@@ -112,7 +100,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK demonology
 /cast [mod:shift] Summon Succubus; Summon Felhunter
 ```
 
@@ -120,7 +107,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Demon Armor
-# class-specific WARLOCK all
 /cast Demon Armor
 ```
 
@@ -128,7 +114,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip
-# class-specific WARLOCK affliction
 /cast [mod:shift] Drain Soul(Rank 1); Drain Soul
 ```
 
@@ -136,7 +121,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Shadowburn
-# class-specific WARLOCK destruction
 /cast Shadowburn
 ```
 
@@ -144,7 +128,6 @@ Life Tap, bolts, curses, Spell Lock, summon announce (existing `sum`).
 
 ```
 #showtooltip Shoot
-# class-specific WARLOCK all
 /cast Shoot
 ```
 
@@ -156,7 +139,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Recklessness;[mod:shift]Curse of Recklessness(Rank 1)
 ```
 
@@ -164,7 +146,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Shadow;[mod:shift]Curse of Shadow(Rank 1)
 ```
 
@@ -172,7 +153,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Tongues;[mod:shift]Curse of Tongues(Rank 1)
 ```
 
@@ -180,7 +160,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Curse of Weakness;[mod:shift]Curse of Weakness(Rank 1)
 ```
 
@@ -188,7 +167,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Drain Life;[mod:shift]Drain Life(Rank 1)
 ```
 
@@ -196,7 +174,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Drain Mana;[mod:shift]Drain Mana(Rank 1)
 ```
 
@@ -204,7 +181,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Howl of Terror;[mod:shift]Howl of Terror(Rank 1)
 ```
 
@@ -212,7 +188,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Demon Skin;[mod:shift]Demon Skin(Rank 1)
 ```
 
@@ -220,7 +195,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Health Funnel;[mod:shift]Health Funnel(Rank 1)
 ```
 
@@ -228,7 +202,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Shadow Ward;[mod:shift]Shadow Ward(Rank 1)
 ```
 
@@ -236,7 +209,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Subjugate Demon;[mod:shift]Subjugate Demon(Rank 1)
 ```
 
@@ -244,7 +216,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Hellfire;[mod:shift]Hellfire(Rank 1)
 ```
 
@@ -252,7 +223,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Rain of Fire;[mod:shift]Rain of Fire(Rank 1)
 ```
 
@@ -260,7 +230,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Searing Pain;[mod:shift]Searing Pain(Rank 1)
 ```
 
@@ -268,7 +237,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [nomod]Soul Fire;[mod:shift]Soul Fire(Rank 1)
 ```
 
@@ -280,7 +248,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Incinerate
-# class-specific WARLOCK destruction
 /cast Incinerate
 ```
 
@@ -288,7 +255,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip
-# class-specific WARLOCK all
 /cast [mod:shift] Demon Armor; Fel Armor
 ```
 
@@ -296,7 +262,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Soulshatter
-# class-specific WARLOCK all
 /cast Soulshatter
 ```
 
@@ -304,7 +269,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Ritual of Souls
-# class-specific WARLOCK all
 /cast Ritual of Souls
 ```
 
@@ -312,7 +276,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Seed of Corruption
-# class-specific WARLOCK affliction
 /cast Seed of Corruption
 ```
 
@@ -320,7 +283,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Unstable Affliction
-# class-specific WARLOCK affliction
 /cast Unstable Affliction
 ```
 
@@ -328,7 +290,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Shadowfury
-# class-specific WARLOCK destruction
 /stopcasting
 /cast Shadowfury
 ```
@@ -337,7 +298,6 @@ TBC armor, filler, soulwell, and talent CCs. Create Soulstone ranks collapsed on
 
 ```
 #showtooltip Summon Felguard
-# class-specific WARLOCK demonology
 /cast Summon Felguard
 ```
 

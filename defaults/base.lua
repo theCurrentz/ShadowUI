@@ -1,20 +1,12 @@
 --[[
   Purpose: Shared Base layout and Keybinds: six reversed rows, 3x4 side bars,
-           bar9, bar10, pet, possess, and the default Action Slot keys.
+           bar9, bar10, pet, possess, Global gap and shape, and the default Action Slot keys.
   Deps: ShadowUI addon table
-  Public: populates ShadowUI.Defaults.base; Addon.Defaults.act builds Action Deck entries
+  Public: populates ShadowUI.Defaults.base
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 Addon.Defaults = Addon.Defaults or { base = {}, classes = {} }
-
--- Class files bind `local act = Addon.Defaults.act` after Base loads.
-function Addon.Defaults.act(id, name, extra)
-  local entry = extra or {}
-  entry.id = id
-  entry.name = name
-  return entry
-end
 
 -- 90% of the Classic 36px icon. Row y uses SIZE so bar6 stays on the screen edge.
 local SIZE = 36 * 0.9
@@ -35,7 +27,6 @@ local function bar(point, x, y, buttons, columns, enabled)
     x = x, y = y,
     buttons = buttons or 12,
     columns = columns or 12,
-    scale = 1,
     enabled = enabled ~= false,
     buttonSize = SIZE,
   }
@@ -48,6 +39,10 @@ end
 
 Addon.Defaults.base = {
   layout = {
+    global = {
+      gap = 0,
+      iconShape = "square",
+    },
     bar1 = row(0),
     bar2 = row(1),
     bar3 = row(2),
@@ -60,6 +55,21 @@ Addon.Defaults.base = {
     bar10 = bar("BOTTOM", 0, BOTTOM + 9 * SIZE, 12, 12),
     pet = bar("BOTTOM", 0, BOTTOM + 6 * SIZE, 10, 10),
     possess = bar("BOTTOM", 0, BOTTOM + 7 * SIZE, 2, 2),
+    cooldown = {
+      point = "CENTER",
+      relativeTo = "UIParent",
+      relativePoint = "CENTER",
+      x = 0,
+      y = -96,
+      scale = 1,
+      gap = 4,
+      direction = "right",
+      columns = 8,
+      max = 8,
+      vertical = false,
+      enabled = true,
+      buttonSize = SIZE,
+    },
   },
   -- Current Warrior Action Bar keys. Every class inherits this Base map.
   keybinds = {

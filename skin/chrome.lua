@@ -1,12 +1,15 @@
 --[[
   Purpose: Apply Lorti outer chrome to ShadowUI hosts. Action Bars have no matte fill
-           so empty Action Slots stay hidden. ApplySkins also skins the Stance Bar.
-  Deps: ShadowUI bars, media/outer_shadow.tga
+           so empty Action Slots stay hidden. ApplySkins also skins the Stance Bar
+           and the Extra Action Button.
+  Deps: ShadowUI bars, media/outer_shadow.tga, media/outer_shadow_roundrect.tga
   Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:PaintOuterChrome(),
           ShadowUI:ApplyBarChrome(), ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
   Notes: ParkFrame uses SetPointBase when 1.15.9 Edit Mode has replaced SetPoint.
          outer_shadow.tga is white RGB. PaintOuterChrome tints it black. BackdropTemplate
-         ApplyBackdrop resets that tint to white.
+         ApplyBackdrop resets that tint to white. Circle, diamond, and roundrect Outer
+         Edge use matching drop textures instead of the 9-slice. Roundrect is a 2:1
+         ring so a meter well does not stretch square corner quads.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -14,10 +17,12 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 function Addon:SkinTargetStatus() end
 function Addon:SkinTargetThreat() end
 function Addon:SkinPortraitRings() end
+function Addon:SkinComboPoints() end
 function Addon:SkinStatusBarGradients() end
 local snapping = {}
 local OUTER_PAD = 4
 local OUTER_EDGE = 5
+local OUTER_CHROME_REV = 2
 local OUTER_BACKDROP = {
   edgeFile = "Interface\\AddOns\\ShadowUI\\media\\outer_shadow",
   tile = false,
@@ -121,42 +126,85 @@ function Addon:PaintOuterChrome(outer)
   end
 end
 
-function Addon:ApplyOuterChrome(host)
-  if not host or host.shadowUIOuter or not CreateFrame then
+function Addon:ApplyOuterChrome(host, shape)
+  if not host or not CreateFrame then
     return host and host.shadowUIOuter
   end
-  if host.GetFrameLevel and host:GetFrameLevel() < 1 and host.SetFrameLevel then
-    host:SetFrameLevel(1)
+  shape = shape or "square"
+  if host.shadowUIOuter and host.shadowUIOuterShape == shape
+      and host.shadowUIOuterRev == OUTER_CHROME_REV then
+    self:PaintOuterChrome(host.shadowUIOuter)
+    if host.shadowUIOuter.Show then
+      host.shadowUIOuter:Show()
+    end
+    return host.shadowUIOuter
   end
-  local ok, outer = pcall(CreateFrame, "Frame", nil, host, "BackdropTemplate")
-  if not ok or not outer then
-    outer = CreateFrame("Frame", nil, host)
-  end
-  host.shadowUIOuter = outer
-  if outer.ClearAllPoints then
-    outer:ClearAllPoints()
-  end
-  outer:SetPoint("TOPLEFT", host, "TOPLEFT", -OUTER_PAD, OUTER_PAD)
-  outer:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", OUTER_PAD, -OUTER_PAD)
-  if host.GetFrameLevel and outer.SetFrameLevel then
-    local level = host:GetFrameLevel()
-    if level > 0 then
-      outer:SetFrameLevel(level - 1)
+  local outer = host.shadowUIOuter
+  if not outer then
+    if host.GetFrameLevel and host:GetFrameLevel() < 1 and host.SetFrameLevel then
+      host:SetFrameLevel(1)
+    end
+    local ok, created = pcall(CreateFrame, "Frame", nil, host, "BackdropTemplate")
+    if not ok or not created then
+      created = CreateFrame("Frame", nil, host)
+    end
+    outer = created
+    host.shadowUIOuter = outer
+    if outer.ClearAllPoints then
+      outer:ClearAllPoints()
+    end
+    outer:SetPoint("TOPLEFT", host, "TOPLEFT", -OUTER_PAD, OUTER_PAD)
+    outer:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", OUTER_PAD, -OUTER_PAD)
+    if host.GetFrameLevel and outer.SetFrameLevel then
+      local level = host:GetFrameLevel()
+      if level > 0 then
+        outer:SetFrameLevel(level - 1)
+      end
     end
   end
-  if outer.SetBackdrop then
-    outer:SetBackdrop(OUTER_BACKDROP)
-    self:PaintOuterChrome(outer)
-  end
-  if hooksecurefunc and outer.ApplyBackdrop and not outer._shadowUIOuterPaint then
-    outer._shadowUIOuterPaint = true
-    hooksecurefunc(outer, "ApplyBackdrop", function(self)
-      Addon:PaintOuterChrome(self)
-    end)
+  host.shadowUIOuterShape = shape
+  if shape == "square" then
+    if outer.shadowUIDrop and outer.shadowUIDrop.Hide then
+      outer.shadowUIDrop:Hide()
+    end
+    if outer.SetBackdrop then
+      outer:SetBackdrop(OUTER_BACKDROP)
+      self:PaintOuterChrome(outer)
+    end
+    if hooksecurefunc and outer.ApplyBackdrop and not outer._shadowUIOuterPaint then
+      outer._shadowUIOuterPaint = true
+      hooksecurefunc(outer, "ApplyBackdrop", function(self)
+        Addon:PaintOuterChrome(self)
+      end)
+    end
+  else
+    if outer.SetBackdrop then
+      outer:SetBackdrop(nil)
+    end
+    local drop = outer.shadowUIDrop
+    if not drop and outer.CreateTexture then
+      drop = outer:CreateTexture(nil, "BACKGROUND")
+      outer.shadowUIDrop = drop
+    end
+    if drop then
+      if drop.SetTexture then
+        drop:SetTexture(self:OuterEdgeFile(shape))
+      end
+      if drop.SetAllPoints then
+        drop:SetAllPoints(outer)
+      end
+      if drop.SetVertexColor then
+        drop:SetVertexColor(0, 0, 0, 0.9)
+      end
+      if drop.Show then
+        drop:Show()
+      end
+    end
   end
   if outer.Show then
     outer:Show()
   end
+  host.shadowUIOuterRev = OUTER_CHROME_REV
   return outer
 end
 
@@ -164,6 +212,7 @@ function Addon:SkinDetails() end
 function Addon:SkinItemRack() end
 function Addon:SkinBags() end -- parked: skin/bags.lua is not in the TOC
 function Addon:SkinStanceBar() end
+function Addon:SkinExtraActionBar() end
 function Addon:SkinTime() end
 
 function Addon:ApplyBarChrome(bar)
@@ -198,7 +247,16 @@ function Addon:ApplySkins()
   self:SkinTargetStatus()
   self:SkinTargetThreat()
   self:SkinPortraitRings()
+  if self.SkinComboPoints then
+    self:SkinComboPoints()
+  end
+  if self.ApplyCrowdControlPortraits then
+    self:ApplyCrowdControlPortraits()
+  end
   self:SkinDetails()
   self:SkinItemRack()
   self:SkinStanceBar()
+  if self.SkinExtraActionBar then
+    self:SkinExtraActionBar()
+  end
 end

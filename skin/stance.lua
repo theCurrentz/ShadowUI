@@ -1,7 +1,8 @@
 --[[
   Purpose: Apply Lorti icon chrome and Outer Edge to Blizzard Stance Bar
-           buttons. Unused shapeshift slots stay empty. ShadowUI does not
-           replace StanceBarFrame / ShapeshiftBarFrame.
+           buttons. Unused shapeshift slots stay empty. Strip IconMask so
+           the 0.07 crop fills the square. ShadowUI does not replace
+           StanceBar / StanceBarFrame / ShapeshiftBarFrame.
   Deps: ShadowUI:ApplyOuterChrome()
   Public: ShadowUI:SkinStanceButton(), ShadowUI:SkinStanceBar()
 ]]
@@ -15,7 +16,7 @@ local ART = {
   "StanceBarLeft", "StanceBarMiddle", "StanceBarRight",
   "ShapeshiftBarLeft", "ShapeshiftBarMiddle", "ShapeshiftBarRight",
 }
-local BARS = { "StanceBarFrame", "ShapeshiftBarFrame" }
+local BARS = { "StanceBar", "StanceBarFrame", "ShapeshiftBarFrame" }
 
 local function strip(texture)
   if not texture then
@@ -27,6 +28,19 @@ local function strip(texture)
   end
   if texture.Hide then
     texture:Hide()
+  end
+end
+
+local function stripIconMask(button, icon)
+  local mask = button.IconMask
+  if not mask then
+    return
+  end
+  if icon and icon.RemoveMaskTexture then
+    pcall(icon.RemoveMaskTexture, icon, mask)
+  end
+  if mask.Hide then
+    mask:Hide()
   end
 end
 
@@ -107,14 +121,20 @@ function Addon:SkinStanceButton(button)
     chrome:SetColorTexture(0.05, 0.05, 0.05, 1)
     chrome:Show()
   end
-  placeOuter(button, self:ApplyOuterChrome(button))
+  placeOuter(button, self:ApplyOuterChrome(button, "square"))
   if button.shadowUIOuter and button.shadowUIOuter.Show then
     button.shadowUIOuter:Show()
   end
   strip(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()))
+  strip(button.Border)
+  strip(button.SlotBackground)
+  strip(button.Flash)
+  strip(button.FloatingBG)
+  strip(button.IconBorder)
   local icon = stanceIcon(button, name)
   if icon then
     button.icon = icon
+    stripIconMask(button, icon)
     inset(icon)
     if icon.SetTexCoord then
       icon:SetTexCoord(CROP, 1 - CROP, CROP, 1 - CROP)
@@ -125,24 +145,38 @@ function Addon:SkinStanceButton(button)
   end
 end
 
+local function consider(seen, button)
+  if not button or seen[button] then
+    return
+  end
+  seen[button] = true
+  Addon:SkinStanceButton(button)
+end
+
 function Addon:SkinStanceBar()
   for _, name in ipairs(ART) do
     strip(_G[name])
   end
+  local seen = {}
   for _, name in ipairs(BARS) do
     local bar = _G[name]
-    if bar and bar.SetClipsChildren then
-      bar:SetClipsChildren(false)
+    if bar then
+      if bar.SetClipsChildren then
+        bar:SetClipsChildren(false)
+      end
+      for _, key in ipairs({ "actionButtons", "buttons", "stanceButtons" }) do
+        local list = bar[key]
+        if type(list) == "table" then
+          for _, button in ipairs(list) do
+            consider(seen, button)
+          end
+        end
+      end
     end
   end
-  local seen = {}
   for _, prefix in ipairs(PREFIXES) do
     for i = 1, LAST do
-      local button = _G[prefix .. i]
-      if button and not seen[button] then
-        seen[button] = true
-        self:SkinStanceButton(button)
-      end
+      consider(seen, _G[prefix .. i])
     end
   end
 end
@@ -163,5 +197,16 @@ if hooksecurefunc then
   end
   if StanceBar_UpdateState then
     hooksecurefunc("StanceBar_UpdateState", restyle)
+  end
+  if StanceBarMixin and StanceBarMixin.Update then
+    hooksecurefunc(StanceBarMixin, "Update", restyle)
+  end
+  if StanceButtonMixin then
+    if StanceButtonMixin.UpdateState then
+      hooksecurefunc(StanceButtonMixin, "UpdateState", restyle)
+    end
+    if StanceButtonMixin.Update then
+      hooksecurefunc(StanceButtonMixin, "Update", restyle)
+    end
   end
 end

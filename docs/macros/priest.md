@@ -11,7 +11,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal
 ```
 
@@ -19,7 +18,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Greater Heal; [mod:shift] Greater Heal(Rank 1); Greater Heal
 ```
 
@@ -27,7 +25,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Renew; [mod:shift] Renew(Rank 3); Renew
 ```
 
@@ -35,7 +32,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Power Word: Shield; [mod:shift] Power Word: Shield(Rank 1); Power Word: Shield
 ```
 
@@ -43,7 +39,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Prayer of Healing
-# class-specific PRIEST holy
 /cast Inner Focus
 /cast Prayer of Healing
 ```
@@ -52,7 +47,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Dispel Magic
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Dispel Magic; [target=mouseover,exists] Dispel Magic; Dispel Magic
 ```
 
@@ -60,7 +54,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Fade
-# class-specific PRIEST all
 /cast Fade
 ```
 
@@ -68,7 +61,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Psychic Scream
-# class-specific PRIEST shadow
 /cast Psychic Scream
 ```
 
@@ -76,7 +68,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Fear Ward
-# class-specific PRIEST discipline
 /raid Fear Ward on %t
 /cast [mod:alt,target=player] Fear Ward; Fear Ward
 ```
@@ -85,7 +76,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Power Word: Fortitude
-# class-specific PRIEST discipline
 /cast [mod:alt,target=player] Power Word: Fortitude; Power Word: Fortitude
 ```
 
@@ -93,7 +83,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Resurrection
-# class-specific PRIEST holy
 /cast Resurrection
 ```
 
@@ -101,7 +90,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Inner Fire
-# class-specific PRIEST discipline
 /cast Inner Fire
 ```
 
@@ -109,7 +97,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip
-# class-specific PRIEST holy
 /cast [mod:shift] Holy Nova(Rank 1); Holy Nova
 ```
 
@@ -117,7 +104,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Shoot
-# class-specific PRIEST all
 /cast Shoot
 ```
 
@@ -125,7 +111,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Abolish Disease
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Abolish Disease; [target=mouseover,exists] Abolish Disease; Abolish Disease
 ```
 
@@ -133,7 +118,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Prayer of Fortitude
-# class-specific PRIEST discipline
 /cast Prayer of Fortitude
 ```
 
@@ -141,7 +125,6 @@ Alt self. Shift cheap rank. Ctrl Rank 1. Mouseover on dispel.
 
 ```
 #showtooltip Prayer of Spirit
-# class-specific PRIEST discipline
 /cast Prayer of Spirit
 ```
 
@@ -153,7 +136,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)
 ```
 
@@ -161,7 +143,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)
 ```
 
@@ -169,7 +150,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)
 ```
 
@@ -177,7 +157,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)
 ```
 
@@ -185,7 +164,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)
 ```
 
@@ -193,7 +171,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal
 ```
 
@@ -201,7 +178,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)
 ```
 
@@ -209,7 +185,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal
 ```
 
@@ -217,7 +192,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Smite;[mod:shift]Smite(Rank 1)
 ```
 
@@ -225,7 +199,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)
 ```
 
@@ -233,7 +206,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)
 ```
 
@@ -241,7 +213,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)
 ```
 
@@ -249,7 +220,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)
 ```
 
@@ -257,7 +227,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)
 ```
 
@@ -265,7 +234,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)
 ```
 
@@ -273,7 +241,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)
 ```
 
@@ -281,7 +248,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PRIEST all
 /cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)
 ```
 
@@ -293,7 +259,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip
-# class-specific PRIEST shadow
 /cast [mod:shift] Shadow Word: Pain(Rank 1); Shadow Word: Pain
 ```
 
@@ -301,7 +266,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Mind Flay
-# class-specific PRIEST shadow
 /cast Mind Flay
 ```
 
@@ -309,7 +273,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Mind Blast
-# class-specific PRIEST shadow
 /cast Mind Blast
 ```
 
@@ -317,7 +280,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Vampiric Embrace
-# class-specific PRIEST shadow
 /cast Vampiric Embrace
 ```
 
@@ -325,7 +287,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Shadowform
-# class-specific PRIEST shadow
 /cast Shadowform
 ```
 
@@ -333,7 +294,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Silence
-# class-specific PRIEST shadow
 /stopcasting
 /cast Silence
 ```
@@ -342,7 +302,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Shackle Undead
-# class-specific PRIEST shadow
 /stopcasting
 /cast Shackle Undead
 ```
@@ -351,7 +310,6 @@ Dots and form. Cancel form to heal.
 
 ```
 #showtooltip Flash Heal
-# class-specific PRIEST shadow
 /cancelaura Shadowform
 /cast [mod:alt,target=player] Flash Heal; Flash Heal
 ```
@@ -364,7 +322,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Shadow Word: Death
-# class-specific PRIEST all
 /cast Shadow Word: Death
 ```
 
@@ -372,7 +329,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Prayer of Mending
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending
 ```
 
@@ -380,7 +336,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Circle of Healing
-# class-specific PRIEST holy
 /cast [mod:alt,target=player] Circle of Healing; Circle of Healing
 ```
 
@@ -388,7 +343,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Pain Suppression
-# class-specific PRIEST discipline
 /raid Pain Suppression on %t
 /cast [mod:alt,target=player] Pain Suppression; Pain Suppression
 ```
@@ -397,7 +351,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Mass Dispel
-# class-specific PRIEST all
 /stopcasting
 /cast Mass Dispel
 ```
@@ -406,7 +359,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Shadowfiend
-# class-specific PRIEST all
 /cast Shadowfiend
 ```
 
@@ -414,7 +366,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Binding Heal
-# class-specific PRIEST holy
 /cast Binding Heal
 ```
 
@@ -422,7 +373,6 @@ TBC trainer and talent heals. Fear Ward is baseline. Blood Elf Consume Magic and
 
 ```
 #showtooltip Vampiric Touch
-# class-specific PRIEST shadow
 /cast Vampiric Touch
 ```
 
@@ -432,7 +382,6 @@ Blood Elf priest racial.
 
 ```
 #showtooltip Consume Magic
-# class-specific PRIEST all
 /stopcasting
 /cast Consume Magic
 ```
@@ -443,7 +392,6 @@ Dwarf and Draenei priest racial.
 
 ```
 #showtooltip Chastise
-# class-specific PRIEST all
 /stopcasting
 /cast Chastise
 ```

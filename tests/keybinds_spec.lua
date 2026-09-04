@@ -84,7 +84,9 @@ assert(merged["CLICK ShadowUIActionButton14:Keybind"] == "E", "profile E stays o
 local painted = Addon:HotkeysBySlot(merged)
 assert(painted[13] == "Q", "claimed slot hotkey is Q not S-1")
 assert(painted[14] == "E", "claimed slot hotkey is E not S-Q")
-assert(Addon:ShortHotkey("CTRL-SHIFT-1") == "C-S-1", "modifiers shorten")
+assert(Addon:ShortHotkey("CTRL-SHIFT-1") == "CS1", "modifiers compact with no hyphen")
+assert(Addon:ShortHotkey("SHIFT-Q") == "SQ", "Shift+Q is SQ")
+assert(Addon:ShortHotkey("Q") == "Q", "plain keys stay uppercase")
 assert(Addon:ShortHotkey("BUTTON3") == "M3", "mouse3 shortens")
 local slots = Addon:HotkeysBySlot({ ACTIONBUTTON1 = "1", ["CLICK BT4Button17:LeftButton"] = "BUTTON3" })
 assert(slots[1] == "1", "hotkey map uses action slots")
@@ -94,7 +96,7 @@ assert(Addon:CanonicalBindName({ GetName = function() return "ShadowUIActionButt
 assert(Addon:BindingSlotFromButton({
   _state_action = 85,
   GetName = function() return "ShadowUIActionButton73" end,
-}) == 73, "paged hotkey uses the stable button slot instead of the active stance slot")
+}) == 73, "named hotkey uses the fixed button slot")
 assert(Addon:BindingSlotFromButton({ _state_action = 85 }) == 85,
   "unnamed buttons fall back to the active action slot")
 assert(Addon:NormalizeBindingKey("LSHIFT", {}) == nil, "modifier-only keys are ignored")
@@ -102,8 +104,19 @@ assert(Addon:NormalizeBindingKey("LeftButton", {}) == nil, "bare left click is n
 assert(Addon:NormalizeBindingKey("LeftButton", { shift = true }) == "SHIFT-BUTTON1", "shift-click is BUTTON1")
 assert(Addon:NormalizeBindingKey("1", { ctrl = true, alt = true }) == "ALT-CTRL-1", "modifiers prefix the key")
 assert(Addon:NormalizeBindingKey("ESCAPE", {}) == "ESCAPE", "escape is a clear command")
+local labName, labClick = Addon:OverrideClickTarget(1)
+assert(labName == "ShadowUIActionButton1" and labClick == "Keybind",
+  "clicks stay on the ShadowUI LAB frame")
+_G.ActionButton1 = {}
+local stillLab, stillClick = Addon:OverrideClickTarget(1)
+assert(stillLab == "ShadowUIActionButton1" and stillClick == "Keybind",
+  "a live ActionButton does not steal the click")
+_G.ActionButton1 = nil
+
 assert(Addon:FirstActionSlot("bar2") == 13, "bar2 defaults to slot 13")
 assert(Addon:FirstActionSlot("bar2", { firstSlot = 61 }) == 61, "mage firstSlot override")
+assert(Addon:FirstActionSlot("bar2", { stancePages = { 73, 85, 97 } }) == 13,
+  "legacy stancePages do not change the fixed slot")
 assert(Addon:FirstActionSlot("pet") == nil, "special ids have no default slot")
 
 local warrior = Addon.Defaults.classes.WARRIOR
@@ -111,13 +124,12 @@ local baseBinds = Addon.Defaults.base.keybinds
 local function wslot(n)
   return "CLICK ShadowUIActionButton" .. n .. ":Keybind"
 end
-assert(warrior.layout.bar1.stancePages[1] == 73, "Warrior main Bar starts on Battle slots")
-assert(warrior.layout.bar2.firstSlot == 1, "Warrior fixed utility row starts at slot 1")
-assert(warrior.keybinds[wslot(1)] == "1", "Warrior Class Keybinds overlay the utility row")
+assert(next(warrior.layout) == nil, "Warrior inherits the fixed Base Bar layout")
+assert(warrior.keybinds[wslot(1)] == "1", "Warrior Class Keybinds start on fixed bar1")
 assert(baseBinds[wslot(1)] == "Q", "Base main row starts on Q")
 assert(baseBinds[wslot(4)] == "F", "Base interrupt job sits on F")
 assert(baseBinds[wslot(73)] == "BUTTON5", "Base slot 73 is mouse5")
-assert(warrior.keybinds[wslot(73)] == "Q", "Warrior Class Keybinds keep stance page 1 on Q")
+assert(warrior.keybinds[wslot(73)] == "Q", "Warrior Class Keybinds keep fixed slot 73 on Q")
 assert(warrior.keybinds[wslot(82)] == "X", "Warrior Class Keybinds keep major cooldown on X")
 assert(warrior.variants.Arms.talentTree == 1, "Arms binds talent tree 1")
 assert(warrior.variants.Fury.talentTree == 2, "Fury binds talent tree 2")
@@ -158,5 +170,29 @@ function emptySlot:HasAction() return true end
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
   "a filled Action Slot still shows its Keybind")
+
+assert(Addon:FormatTooltipKeybind(nil) == nil, "empty Keybind has no tooltip line")
+assert(Addon:FormatTooltipKeybind("") == nil, "blank Keybind has no tooltip line")
+assert(Addon:FormatTooltipKeybind("SHIFT-R") == "SHIFT-R",
+  "tooltip Keybind uses the full key when GetBindingText is missing")
+_G.GetBindingText = function(key)
+  return key == "BUTTON4" and "Mouse Button 4" or key
+end
+assert(Addon:FormatTooltipKeybind("BUTTON4") == "Mouse Button 4",
+  "tooltip Keybind uses GetBindingText")
+
+local tooltipLines = {}
+_G.GameTooltip = {
+  AddLine = function(_, text, r, g, b)
+    tooltipLines[#tooltipLines + 1] = { text = text, r = r, g = g, b = b }
+  end,
+  Show = function(self) self.shown = true end,
+}
+Addon:AppendActionTooltipKeybind({ shadowUIBindingKey = nil })
+assert(#tooltipLines == 0, "no Keybind skips the ability tooltip line")
+Addon:AppendActionTooltipKeybind({ shadowUIBindingKey = "SHIFT-R" })
+assert(#tooltipLines == 1 and tooltipLines[1].text == "SHIFT-R",
+  "ability tooltip appends the Action Slot Keybind")
+assert(_G.GameTooltip.shown, "ability tooltip resizes after the Keybind line")
 
 print("keybinds_spec OK")

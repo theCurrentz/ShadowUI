@@ -147,32 +147,47 @@ function Addon:AttachBarDragOverlay(bar)
       and cy <= bottom + size
   end
   local function dragToCursor()
-    if not drag or not Addon.SnapValue then
+    if not drag then
       return
     end
     local cx, cy = cursor()
-    local x = Addon:SnapValue(cx + drag.dx)
-    local y = Addon:SnapValue(cy + drag.dy)
+    local x, y = cx + drag.dx, cy + drag.dy
+    local width = (bar.GetWidth and bar:GetWidth() or 0) * barScale()
+    local height = (bar.GetHeight and bar:GetHeight() or 0) * barScale()
+    if Addon.SnapVisualToGrid then
+      x, y = Addon:SnapVisualToGrid(x, y, width, height)
+    elseif Addon.SnapValue then
+      x, y = Addon:SnapValue(x), Addon:SnapValue(y)
+    end
     bar:ClearAllPoints()
     bar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
     dragOverlay:SetAllPoints(bar)
+    if Addon.PaintEditReadout then
+      Addon:PaintEditReadout(bar, barLabel(bar.barId))
+    end
   end
   local function sizeToCursor()
     if not sizing or not Addon.NearestBarLayout then
       return
     end
     local cx, cy = cursor()
+    local gap = bar.gap or 0
     local layout = Addon:NearestBarLayout(
       #bar.buttons,
       bar.buttonSize or 36,
       cx - sizing.left,
-      sizing.top - cy
+      sizing.top - cy,
+      gap,
+      bar.rowGaps
     )
-    Addon:PlaceBarButtons(bar, layout.columns, bar.buttonSize or 36)
+    Addon:PlaceBarButtons(bar, layout.columns, bar.buttonSize or 36, gap, bar.rowGaps)
     local scale = barScale()
     bar:ClearAllPoints()
     bar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", sizing.left, sizing.top - layout.height * scale)
     dragOverlay:SetAllPoints(bar)
+    if Addon.PaintEditReadout then
+      Addon:PaintEditReadout(bar, barLabel(bar.barId))
+    end
   end
   local function tick()
     if sizing then
@@ -194,6 +209,9 @@ function Addon:AttachBarDragOverlay(bar)
     if Addon.PersistBarPosition then
       Addon:PersistBarPosition(bar)
     end
+    if Addon.HideEditReadout then
+      Addon:HideEditReadout()
+    end
   end
   local function endSize()
     if not sizing then
@@ -204,6 +222,9 @@ function Addon:AttachBarDragOverlay(bar)
     sizing = nil
     if Addon.PersistBarPosition then
       Addon:PersistBarPosition(bar, true)
+    end
+    if Addon.HideEditReadout then
+      Addon:HideEditReadout()
     end
   end
   endPointer = function()

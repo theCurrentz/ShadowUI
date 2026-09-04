@@ -1,10 +1,11 @@
 --[[
-  Purpose: Shift and Prune packs Keybinds left and drops gaps with no Keybind.
-           Shift+Alt drag inserts the action and Keybind and shifts that row right.
+  Purpose: Shift and Prune packs Keybinds left in one Bar Group and drops gaps
+           with no Keybind. Shift+Alt drag inserts the action and Keybind and
+           shifts that row right.
   Deps: ShadowUI addon table, live Action Slots, WriteLayerDelta
   Public: SlotDropKind, OrderedHudButtons, PruneWouldChange, ShiftAndPrune,
           InsertHudSlot, CollectHudButtons, ShiftAndPruneBars, InsertBarSlot,
-          HookButtonForSlotShift
+          HookButtonForSlotShift, WithUnlockedActionBars
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -284,7 +285,7 @@ function Addon:InsertHudSlot(buttons, colsOf, fromActionSlot, toActionSlot, bind
   }
 end
 
-local function withUnlockedActionBars(fn)
+function Addon:WithUnlockedActionBars(fn)
   local lockBars
   if type(GetCVar) == "function" then
     lockBars = GetCVar("lockActionBars")
@@ -292,9 +293,12 @@ local function withUnlockedActionBars(fn)
   if lockBars == "1" and type(SetCVar) == "function" then
     pcall(SetCVar, "lockActionBars", "0")
   end
-  fn()
+  local ok, err = pcall(fn)
   if lockBars == "1" and type(SetCVar) == "function" then
     pcall(SetCVar, "lockActionBars", lockBars)
+  end
+  if not ok then
+    error(err, 0)
   end
 end
 
@@ -326,16 +330,6 @@ function Addon:ActionFromSlot(slot)
         end
       end
     end
-    if self.ResolveDeck then
-      local deck = self:ResolveDeck()
-      if type(deck) == "table" then
-        for _, entry in pairs(deck) do
-          if type(entry) == "table" and entry.name == name then
-            return copyAction(entry)
-          end
-        end
-      end
-    end
     return { id = name, name = name }
   end
   if actionType == "item" then
@@ -361,7 +355,15 @@ local function keyByBindSlot(self, binds)
   return keys
 end
 
-function Addon:CollectHudButtons()
+function Addon:CollectHudButtons(groupName)
+  if type(groupName) == "string" then
+    groupName = groupName:match("^%s*(.-)%s*$") or ""
+    if groupName == "" then
+      groupName = nil
+    end
+  else
+    groupName = nil
+  end
   local cfg = self.ResolveEffective and self:ResolveEffective() or {}
   local layout = cfg.layout or {}
   local binds = cfg.keybinds or {}
@@ -373,7 +375,10 @@ function Addon:CollectHudButtons()
   for _, bar in pairs(self.bars or {}) do
     local barId = bar.barId
     if type(barId) == "string" and barId:match("^bar%d+$") and bar.configEnabled ~= false then
-      bars[#bars + 1] = bar
+      local barCfg = layout[barId] or {}
+      if not groupName or barCfg.group == groupName then
+        bars[#bars + 1] = bar
+      end
     end
   end
   table.sort(bars, function(a, b)
@@ -477,7 +482,7 @@ function Addon:ApplySlotMoves(moves, held)
   if held and not heldSnap then
     heldSnap = snapshotSlot(held.fromSlot)
   end
-  withUnlockedActionBars(function()
+  self:WithUnlockedActionBars(function()
     ClearCursor()
     for _, dest in ipairs(dests) do
       PickupAction(dest)
@@ -499,34 +504,43 @@ function Addon:ApplySlotMoves(moves, held)
   end)
 end
 
-function Addon:WriteHudOverlays(bindOverlay, actionOverlay)
+function Addon:WriteHudOverlays(bindOverlay)
   local layer = self:GetCharDB().editLayer
   for name, key in pairs(bindOverlay or {}) do
     self:WriteLayerDelta(layer, "keybinds", name, key)
   end
-  for slot, action in pairs(actionOverlay or {}) do
-    self:WriteLayerDelta(layer, "actions", slot, action)
-  end
 end
 
-function Addon:ShiftAndPruneBars()
+function Addon:ShiftAndPruneBars(groupName)
   if InCombatLockdown and InCombatLockdown() then
     self:Print("Leave combat to shift Action Slots.")
     return false
   end
-  local buttons = self:CollectHudButtons()
+  if type(groupName) == "string" then
+    groupName = groupName:match("^%s*(.-)%s*$") or ""
+  else
+    groupName = ""
+  end
+  if groupName == "" then
+    self:Print("Name a Bar Group to prune.")
+    return false
+  end
+  local layout = ((self.ResolveEffective and self:ResolveEffective()) or {}).layout or {}
+  local groups = layout.barGroups or {}
+  if groups[groupName] == nil or groups[groupName] == false then
+    self:Print("Unknown Bar Group.")
+    return false
+  end
+  local buttons = self:CollectHudButtons(groupName)
   if not self:PruneWouldChange(buttons) then
     self:Print("No keybind gaps to prune.")
     return false
   end
   local result = self:ShiftAndPrune(buttons, {}, {})
-  self:WriteHudOverlays(result.bindOverlay, result.actionOverlay)
+  self:WriteHudOverlays(result.bindOverlay)
   self:ApplySlotMoves(result.moves)
   if self.ApplyKeybinds then
     self:ApplyKeybinds(self:ResolveEffective())
-  end
-  if self.RefreshActionDeckButtons then
-    self:RefreshActionDeckButtons()
   end
   self:Print("Shifted keybinds left and pruned gaps.")
   return true
@@ -555,13 +569,10 @@ function Addon:InsertBarSlot(fromSlot, toSlot)
     return 12
   end
   local result = self:InsertHudSlot(buttons, colsOf, fromSlot, toSlot, {}, {})
-  self:WriteHudOverlays(result.bindOverlay, result.actionOverlay)
+  self:WriteHudOverlays(result.bindOverlay)
   self:ApplySlotMoves(result.moves, result.held)
   if self.ApplyKeybinds then
     self:ApplyKeybinds(self:ResolveEffective())
-  end
-  if self.RefreshActionDeckButtons then
-    self:RefreshActionDeckButtons()
   end
   self:ClearSlotShiftFrom()
   return true

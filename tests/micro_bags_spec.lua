@@ -250,8 +250,8 @@ assert(character.shadowUIOuter == nil or character.shadowUIOuter.shown == false,
   "micro buttons do not use Outer Edge")
 assert(host.shadowUIOuter == nil or host.shadowUIOuter.shown == false,
   "micro hosts do not use Outer Edge")
-assert(bag.shadowUIOuter == nil or bag.shadowUIOuter.shown == false,
-  "backpack does not use Outer Edge")
+assert(bag.shadowUIOuter and bag.shadowUIOuter.shown ~= false,
+  "backpack gets Outer Edge when the Micro Cluster is on")
 
 character:SetParent(art)
 character:SetPoint("BOTTOMLEFT", art, "BOTTOMLEFT", 552, 2)

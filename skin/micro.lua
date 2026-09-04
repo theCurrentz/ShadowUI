@@ -87,6 +87,38 @@ local function hideOuter(host)
   end
 end
 
+local function clusterShape()
+  local get = Addon.GetCharDB
+  if not get then
+    return "square"
+  end
+  local char = get(Addon)
+  return (char and char.microIconShape) or "square"
+end
+
+local function applyClusterShape(button, host, shape)
+  if shape == "square" then
+    hideOuter(host)
+    if host ~= button then
+      hideOuter(button)
+    end
+    return
+  end
+  local side = math.min(button._shadowUINativeW or MICRO, MICRO)
+  if host.SetSize then
+    host:SetSize(side, side)
+  end
+  if button.SetSize then
+    button:SetSize(side, side)
+  end
+  if Addon.ApplyIconShape then
+    Addon:ApplyIconShape(button, shape)
+  end
+  if Addon.ApplyOuterChrome then
+    Addon:ApplyOuterChrome(host, shape)
+  end
+end
+
 local function ensureHost(button, parent)
   local host = button._shadowUIHost
   if not host then
@@ -320,6 +352,9 @@ function Addon:SkinMicroAndBags()
     restoreBlizzardMenu()
     snapping = nil
     self._skinMicroThen = nil
+    if self.ApplyMicroFade then
+      self:ApplyMicroFade()
+    end
     return
   end
 
@@ -327,9 +362,6 @@ function Addon:SkinMicroAndBags()
   cluster:ClearAllPoints()
   cluster:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, -2)
   cluster:Show()
-  if cluster.SetAlpha then
-    cluster:SetAlpha(1)
-  end
 
   for _, name in ipairs(EXTRA_BAGS) do
     hideExtra(name)
@@ -375,16 +407,22 @@ function Addon:SkinMicroAndBags()
     end
   end
 
+  local shape = clusterShape()
   local bag = _G.MainMenuBarBackpackButton
   local bagW, bagH
   if bag then
     bagW, bagH = nativeSize(bag, MICRO, MICRO)
     fit(bag, cluster, bagW, bagH)
-    hideOuter(bag)
     dropHost(bag)
     bag:Show()
     bag:ClearAllPoints()
     bag:SetPoint("BOTTOMRIGHT", cluster, "BOTTOMRIGHT", 0, 0)
+    if self.ApplyOuterChrome then
+      self:ApplyOuterChrome(bag, shape)
+    end
+    if shape ~= "square" and self.ApplyIconShape then
+      self:ApplyIconShape(bag, shape)
+    end
   end
 
   if menu then
@@ -411,6 +449,7 @@ function Addon:SkinMicroAndBags()
         local width, height = nativeSize(button, MICRO, NATIVE_H)
         local host = ensureHost(button, microParent)
         fit(button, host, width, height)
+        applyClusterShape(button, host, shape)
         button:ClearAllPoints()
         button:SetPoint("BOTTOMLEFT", host, "BOTTOMLEFT", 0, 0)
         if button.SetScript then
@@ -457,6 +496,9 @@ function Addon:SkinMicroAndBags()
 
   snapping = nil
   self._skinMicroThen = nil
+  if self.ApplyMicroFade then
+    self:ApplyMicroFade()
+  end
 end
 
 local function restyle()

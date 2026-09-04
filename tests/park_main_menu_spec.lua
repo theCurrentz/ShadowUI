@@ -52,8 +52,8 @@ local function fakeBar(name)
   function bar:IsShown() return self.shown end
   function bar:SetScript(event, fn) self.scripts[event] = fn end
   function bar:UnregisterAllEvents() end
-  function bar:SetAlpha() end
-  function bar:EnableMouse() end
+  function bar:SetAlpha(a) self.alpha = a end
+  function bar:EnableMouse(enabled) self.mouse = enabled and true or false end
   function bar:ClearAllPoints() self.points = {} end
   function bar:SetPoint(point, relative, relativePoint, x, y)
     self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
@@ -70,11 +70,16 @@ _G.MainMenuBar = fakeBar("MainMenuBar")
 _G.MainMenuBarArtFrame = fakeBar("MainMenuBarArtFrame")
 _G.MainMenuBarOverlayFrame = fakeBar("MainMenuBarOverlayFrame")
 _G.ActionButton1 = fakeBar("ActionButton1")
+_G.MultiBarBottomLeft = fakeBar("MultiBarBottomLeft")
 _G.PossessBarFrame = fakeBar("PossessBarFrame")
+_G.PetActionBarFrame = fakeBar("PetActionBarFrame")
+_G.ExtraActionBarFrame = fakeBar("ExtraActionBarFrame")
 _G.ShapeshiftBarFrame = fakeBar("ShapeshiftBarFrame")
 _G.StanceBarFrame = fakeBar("StanceBarFrame")
+_G.StanceBar = fakeBar("StanceBar")
 _G.ShapeshiftBarFrame.parent = _G.MainMenuBar
 _G.StanceBarFrame.parent = _G.MainMenuBar
+_G.StanceBar.parent = _G.MainMenuBar
 
 assert(loadfile(root .. "bars/manager.lua"))()
 Addon:HideBlizzardBars()
@@ -85,11 +90,20 @@ assert(_G.MainMenuBar.parent and _G.MainMenuBar.parent.name == "ShadowUIBlizzard
 assert(_G.MainMenuBar.parent.shown == false, "park frame stays hidden")
 assert(_G.MainMenuBarArtFrame.hidden, "default art frame hides")
 assert(_G.ActionButton1.hidden, "default action buttons hide")
+assert(_G.MultiBarBottomLeft.hidden, "MultiBarBottomLeft hides")
+assert(_G.PetActionBarFrame.hidden, "PetActionBarFrame stays hidden")
+assert(_G.ExtraActionBarFrame.hidden == false, "Extra Action Bar stays shown")
+assert(_G.PossessBarFrame.alpha == 0 and _G.PossessBarFrame.mouse == false,
+  "PossessBarFrame stays parked so /click PossessButtonN still resolves")
+local possessPoint = _G.PossessBarFrame.points[#_G.PossessBarFrame.points]
+assert(possessPoint and possessPoint[4] == -1500 and possessPoint[5] == -1500,
+  "PossessBarFrame parks off-screen")
 assert(_G.MainMenuBarOverlayFrame.hidden, "overlay art still hides")
 assert(_G.ShapeshiftBarFrame.hidden == false, "default shapeshift bar stays shown")
 assert(_G.StanceBarFrame.hidden == false, "default stance bar stays shown")
 assert(_G.ShapeshiftBarFrame.parent == _G.UIParent, "shapeshift bar parents to UIParent")
 assert(_G.StanceBarFrame.parent == _G.UIParent, "stance bar parents to UIParent")
+assert(_G.StanceBar.parent == _G.UIParent, "1.15 StanceBar parents to UIParent")
 local shapeshiftPoint = _G.ShapeshiftBarFrame.points[#_G.ShapeshiftBarFrame.points]
 assert(shapeshiftPoint[1] == "CENTER" and shapeshiftPoint[4] == 0 and shapeshiftPoint[5] == -84,
   "shapeshift bar parks at centre above the Cast Bar")

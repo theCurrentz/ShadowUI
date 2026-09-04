@@ -13,7 +13,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Earth Shock
-# class-specific SHAMAN all
 /stopcasting
 /cast [mod:shift] Earth Shock(Rank 1); Earth Shock
 ```
@@ -22,7 +21,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast [mod:shift] Frost Shock; Flame Shock
 ```
 
@@ -30,7 +28,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Stormstrike
-# class-specific SHAMAN enhancement
 /startattack
 /cast Stormstrike
 ```
@@ -39,7 +36,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN elemental
 /cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt
 ```
 
@@ -47,7 +43,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Chain Lightning
-# class-specific SHAMAN elemental
 /cast Chain Lightning
 ```
 
@@ -55,7 +50,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Lightning Shield
-# class-specific SHAMAN all
 /cast Lightning Shield
 ```
 
@@ -63,7 +57,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast [mod:shift] Flametongue Weapon; Windfury Weapon
 ```
 
@@ -71,7 +64,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave
 ```
 
@@ -79,7 +71,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave
 ```
 
@@ -87,7 +78,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Healing Wave
-# class-specific SHAMAN restoration
 /cast Nature's Swiftness
 /cast Healing Wave
 ```
@@ -96,7 +86,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Purge
-# class-specific SHAMAN elemental
 /cast [target=mouseover,exists] Purge; Purge
 ```
 
@@ -104,7 +93,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Ghost Wolf
-# class-specific SHAMAN all
 /cast Ghost Wolf
 ```
 
@@ -112,7 +100,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:shift] Grounding Totem; Windfury Totem
 ```
 
@@ -120,7 +107,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Tremor Totem
-# class-specific SHAMAN all
 /cast Tremor Totem
 ```
 
@@ -128,7 +114,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Mana Spring Totem
-# class-specific SHAMAN all
 /cast Mana Spring Totem
 ```
 
@@ -136,7 +121,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Strength of Earth Totem
-# class-specific SHAMAN enhancement
 /cast Strength of Earth Totem
 ```
 
@@ -144,7 +128,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Mana Tide Totem
-# class-specific SHAMAN restoration
 /cast Mana Tide Totem
 ```
 
@@ -152,7 +135,6 @@ Horde Era. Shock interrupt uses /stopcasting and Rank 1 on Shift.
 
 ```
 #showtooltip Cure Poison
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Cure Poison; [target=mouseover,exists] Cure Poison; Cure Poison
 ```
 
@@ -164,7 +146,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Fire Nova Totem;[mod:shift]Fire Nova Totem(Rank 1)
 ```
 
@@ -172,7 +153,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Magma Totem;[mod:shift]Magma Totem(Rank 1)
 ```
 
@@ -180,7 +160,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Searing Totem;[mod:shift]Searing Totem(Rank 1)
 ```
 
@@ -188,7 +167,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Stoneclaw Totem;[mod:shift]Stoneclaw Totem(Rank 1)
 ```
 
@@ -196,7 +174,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Fire Resistance Totem;[mod:shift]Fire Resistance Totem(Rank 1)
 ```
 
@@ -204,7 +181,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Flametongue Totem;[mod:shift]Flametongue Totem(Rank 1)
 ```
 
@@ -212,7 +188,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Frost Resistance Totem;[mod:shift]Frost Resistance Totem(Rank 1)
 ```
 
@@ -220,7 +195,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Frostbrand Weapon;[mod:shift]Frostbrand Weapon(Rank 1)
 ```
 
@@ -228,7 +202,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Grace of Air Totem;[mod:shift]Grace of Air Totem(Rank 1)
 ```
 
@@ -236,7 +209,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Nature Resistance Totem;[mod:shift]Nature Resistance Totem(Rank 1)
 ```
 
@@ -244,7 +216,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Rockbiter Weapon;[mod:shift]Rockbiter Weapon(Rank 1)
 ```
 
@@ -252,7 +223,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Stoneskin Totem;[mod:shift]Stoneskin Totem(Rank 1)
 ```
 
@@ -260,7 +230,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Windwall Totem;[mod:shift]Windwall Totem(Rank 1)
 ```
 
@@ -268,7 +237,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Ancestral Spirit;[mod:shift]Ancestral Spirit(Rank 1)
 ```
 
@@ -276,7 +244,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:alt,target=player] Chain Heal; [mod:shift] Chain Heal(Rank 1); Chain Heal
 ```
 
@@ -284,7 +251,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [nomod]Healing Stream Totem;[mod:shift]Healing Stream Totem(Rank 1)
 ```
 
@@ -298,7 +264,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip
-# class-specific SHAMAN enhancement
 /cast Bloodlust
 /cast Heroism
 ```
@@ -307,7 +272,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip
-# class-specific SHAMAN all
 /cast [mod:shift] Lightning Shield; Water Shield
 ```
 
@@ -315,7 +279,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Earth Shield
-# class-specific SHAMAN restoration
 /cast [mod:alt,target=player] Earth Shield; Earth Shield
 ```
 
@@ -323,7 +286,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Shamanistic Rage
-# class-specific SHAMAN enhancement
 /cast Shamanistic Rage
 ```
 
@@ -331,7 +293,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Wrath of Air Totem
-# class-specific SHAMAN all
 /cast Wrath of Air Totem
 ```
 
@@ -339,7 +300,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Totem of Wrath
-# class-specific SHAMAN elemental
 /cast Totem of Wrath
 ```
 
@@ -347,7 +307,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Earth Elemental Totem
-# class-specific SHAMAN all
 /cast Earth Elemental Totem
 ```
 
@@ -355,7 +314,6 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Fire Elemental Totem
-# class-specific SHAMAN all
 /cast Fire Elemental Totem
 ```
 
@@ -363,6 +321,5 @@ Horde Bloodlust. Alliance Heroism. First learned spell wins.
 
 ```
 #showtooltip Totemic Call
-# class-specific SHAMAN all
 /cast Totemic Call
 ```

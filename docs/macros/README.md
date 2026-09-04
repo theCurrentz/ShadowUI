@@ -1,6 +1,6 @@
 # Classic Era macro index
 
-Parked notes plus class Action Decks. `/shadowui deck` places the merged Action Deck (macros and spells). Live Keybind and Action Deck overlays live in AceDB SavedVariables, not in sidecar JSON.
+Parked notes plus class Macro Library groups. Live Keybind overlays live in AceDB SavedVariables, not in sidecar JSON.
 
 The sidecar **WoW Macro Cursor** (sibling repo `../MacroCursor`) reads and writes [catalog.json](catalog.json). That file is the Macro Library. The header **Version** chip selects Era or TBC. TBC reads `_anniversary_` WTF and, when present, [spells-tbc.json](spells-tbc.json). Load a group without wiping groups already on that tab. Replace is an explicit action. On startup the sidecar diffs live `macros-cache.txt` into the library. Catalog bodies win on a name match. Delete in Macro Cursor removes the record from the live cache. A macro removed in the game is unloaded and stays in the library.
 
@@ -23,7 +23,7 @@ Key ranks and class/Variant binds: [classic-keymaps.md](../classic-keymaps.md).
 | [spells-tbc.json](spells-tbc.json) | TBC Spellbook from Wowhead `/tbc`, including Jewelcrafting and Blood Elf / Draenei racials |
 | [rules.md](rules.md) | Engine limits, modifiers, condensed ranks, stopcasting |
 | [shared.md](shared.md) | General-tab extras that need a macro: assist, focus, trinket slots, cursor items. No potion, hearth, or racial wrappers |
-| [warrior.md](warrior.md) | Warrior Action Deck macros plus optional Tazzy gear macros |
+| [warrior.md](warrior.md) | Warrior macros plus optional Tazzy gear macros |
 | [mage.md](mage.md) | Currentz fillers, burst, ports |
 | [paladin.md](paladin.md) | Seals, blessings, bubble, Alt-self heals |
 | [hunter.md](hunter.md) | Aspects, pet, Feign Death, traps, shots |
@@ -37,26 +37,12 @@ Rebuild class files and `defaults/catalog.lua` from the Macro Library: `python3 
 
 ## Reconcile rule
 
-Existing bodies remain as catalog records. Every Warrior Action Deck entry
-requires its Warrior body marker, not only a matching name. Catalog names are
-unique across the library. Place Action Deck validates the selected resolved
-deck, replaces both in-game macro tabs, loads only its unique macros on the
-General tab, and leaves the character tab empty. This rebuild keeps macro
-indexes stable. In particular, a Priest macro cannot shift onto a Warrior
-Action Slot.
-Social / RXP / Decursive stubs stay out of the authored class files. They may sit in Other when they exist in the live cache.
+Existing bodies remain as catalog records. Catalog names are
+unique across the library. Social / RXP / Decursive stubs stay out of the authored class files. They may sit in Other when they exist in the live cache.
 
-Label in every body (after `#showtooltip` when that line exists):
-
-```
-# <global|class-specific|character-specific> <CLASS> <spec> [Toon] [| key (<hotkey>)]
-```
-
-`global` = General-tab scope, not permission for every character. A racial body
-still applies only to its race. `class-specific` = that class, any toon.
-`character-specific` = one toon (name is the last token). Spec is `all`, `arms`,
-`fury`, `protection`, and so on. Warrior labels also show the recommended
-Action Deck hotkey. `key (unbound)` means the named gear macro has no shared key.
+Scope, class, spec, and character live on the catalog record. Do not put
+`# class-specific`, `# global`, or `# character-specific` comments in the body.
+Keybinds live in AceDB overlays, not in macro text.
 
 ## Slot cap (the rolodex)
 
@@ -80,7 +66,7 @@ Named weapon and shield swaps stay in **warrior-gear**.
 6. **Defensive** — Shield Wall, Evasion, Ice Block, Fade, Feign Death, bubble.
 7. **Help on target** — heal, dispel, Blessing, Innervate, BoP.
 8. **Self modifier** — Alt-self heal or buff without losing target.
-9. **Stance / form / aura** — change stance when one physical key must work from another stance page.
+9. **Stance / form / aura** — change stance when an action requires another stance.
 10. **Downrank** — `[nomod]` max rank, `[mod:shift]` cheap rank, `[mod:ctrl]` Rank 1 when needed.
 11. **Pet** — attack (`shared-pa`), follow (`shared-pf`), Spell Lock, Sacrifice.
 12. **Travel** — teleport vs portal (Shift = portal), Ghost Wolf, Travel Form, mount.

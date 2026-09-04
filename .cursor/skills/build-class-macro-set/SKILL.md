@@ -88,28 +88,18 @@ For each macro:
   newlines.
 - Use stable, unique ids and globally unique names.
 - Put `#showtooltip` on line 1 when used.
-- Add the generated scope label after it.
-- Add `| key (<hotkey>)` to the label.
-- Use the documented Class Keybind or Action Deck key.
-- Use `key (unbound)` when no shared recommendation exists.
+- Do not add a `# class-specific` (or global / character-specific) comment to the body.
+- Keep Class Keybinds in AceDB / Lua overlays, not in the macro text.
 
-Use this label form:
-
-```text
-# class-specific WARRIOR all | key (Q)
-```
-
-Do not invent an Action Deck for another class as part of a macro-set audit.
-Add or change an Action Deck only when the user requests it.
+Do not invent shipped Action Slot placements as part of a macro-set audit.
 
 ## 5. Implement and synchronize
 
 Edit `docs/macros/build_catalog.py` and the smallest necessary hand-authored
 docs, defaults, and tests.
 
-When the class already has an Action Deck, keep its macro ids, body markers,
-placements, Variant overlays, and Class Keybinds synchronized. Follow the
-Base → Class → Variant inheritance in `CONTEXT.md`.
+Keep Class Keybinds synchronized with `CONTEXT.md` Base → Class → Variant
+inheritance.
 
 Regenerate all catalog outputs:
 
@@ -128,9 +118,7 @@ Add or update tests that prove:
 - removed ids stay absent
 - macro names and normalized bodies are unique
 - no retained class macro is a plain cast without added value
-- all class labels include a recommended key or `unbound`
 - important bodies contain their required commands and conditionals
-- any existing Action Deck still identifies and places its macros safely
 
 ## 7. Verify
 
@@ -141,7 +129,7 @@ python3 docs/macros/build_catalog.py
 cd ../MacroCursor && pnpm test && pnpm build
 ```
 
-Run relevant Lua tests when addon defaults or an Action Deck changed.
+Run relevant Lua tests when addon defaults or Keybinds changed.
 
 Finish only when generation reports no over-limit bodies or dropped labels,
 all relevant tests pass, generated files match the source, and the research

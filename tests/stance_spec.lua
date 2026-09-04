@@ -69,6 +69,7 @@ local function fakeTex()
   function tex:SetBlendMode() end
   function tex:Hide() self.hidden = true end
   function tex:Show() self.hidden = false end
+  function tex:RemoveMaskTexture(mask) self.removedMask = mask end
   return tex
 end
 
@@ -84,6 +85,7 @@ local function fakeButton(name, shown, texture)
     NormalTexture = fakeTex(),
     HighlightTexture = fakeTex(),
     PushedTexture = fakeTex(),
+    IconMask = fakeTex(),
   }
   local icon = fakeTex()
   icon.texture = texture or "Interface\\Icons\\Ability_Warrior_OffensiveStance"
@@ -126,6 +128,9 @@ assert(battleIcon.points[1][1] == "TOPLEFT" and battleIcon.points[1][2] == 2,
   "stance icon insets 2px")
 assert(battleIcon.crop[1] == 0.07 and battleIcon.crop[3] == 0.07,
   "stance icon crop matches action icons")
+assert(battleIcon.removedMask == battle.IconMask,
+  "stance IconMask is removed so the crop can fill the square")
+assert(battle.IconMask.hidden, "stance IconMask stays hidden")
 assert(battle.NormalTexture.hidden or battle.NormalTexture.a == 0,
   "stance silver slot art stays hidden")
 local outer = battle.shadowUIOuter
@@ -151,5 +156,19 @@ local late, lateIcon = fakeButton("StanceButton3")
 _G.ShapeshiftBar_Update()
 assert(late.shadowUIOuter, "a later ShapeshiftBar_Update skins new Stance Buttons")
 assert(lateIcon.points[1][2] == 2, "a later update still insets the icon")
+
+local listed = fakeButton("StanceBarListed")
+listed.name = "StanceBarListed"
+_G.StanceBarListed = listed
+_G.StanceBar = {
+  actionButtons = { listed },
+  clips = true,
+}
+function _G.StanceBar:SetClipsChildren(clips) self.clips = clips end
+Addon:SkinStanceBar()
+assert(listed.shadowUIOuter, "1.15 StanceBar.actionButtons get Outer Edge")
+assert(_G.StanceBarListedIcon.crop and _G.StanceBarListedIcon.crop[1] == 0.07,
+  "1.15 StanceBar.actionButtons use the action-icon crop")
+assert(_G.StanceBar.clips == false, "1.15 StanceBar does not clip Outer Edge")
 
 print("stance_spec OK")

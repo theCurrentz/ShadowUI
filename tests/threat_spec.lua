@@ -50,8 +50,8 @@ _G.CreateFrame = function(_, _, parent)
     frame.point = { "ALL", host }
   end
   function frame:ClearAllPoints() frame.points = {} frame.point = nil frame.all = nil end
-  function frame:SetFrameLevel() end
-  function frame:GetFrameLevel() return 5 end
+  function frame:SetFrameLevel(level) frame.level = level end
+  function frame:GetFrameLevel() return frame.level or 5 end
   function frame:SetScript() end
   function frame:SetAlpha(a) frame.alpha = a end
   function frame:EnableMouse() end
@@ -105,7 +105,10 @@ _G.CreateFrame = function(_, _, parent)
   return frame
 end
 
+local portraitParent = {}
+function portraitParent:GetFrameLevel() return 29 end
 local portrait = { id = "portrait" }
+function portrait:GetParent() return portraitParent end
 _G.TargetFrame = { unit = "target", buffsOnTop = false, portrait = portrait }
 function _G.TargetFrame:GetName() return "TargetFrame" end
 function _G.TargetFrame:GetFrameLevel() return 5 end
@@ -157,6 +160,8 @@ Addon:SkinTargetThreat()
 local tab = _G.TargetFrame.shadowUIThreat
 assert(tab.font.text == "72%", "target paints threat")
 assert(tab.shown == true, "threat tab shows")
+assert(tab:GetFrameLevel() == 37,
+  "Threat Bar sits above the raised portrait parent")
 assert(tab.w == 32 and tab.h == 32, "threat tab is a round bubble")
 assert(tab.w == tab.h, "bubble stays circular like the portrait")
 assert(tab.value == nil, "threat tab is not a StatusBar fill")
@@ -190,8 +195,8 @@ assert(tab.font.justifyH == "CENTER" and tab.font.justifyV == "MIDDLE",
   "vertical and side text margins stay balanced")
 local point = tab.points[1]
 assert(point[1] == "CENTER" and point[2] == portrait and point[3] == "TOPRIGHT"
-    and point[4] == -10 and point[5] == -10,
-  "threat bubble floats on the 45-degree portrait edge")
+    and point[4] == -4 and point[5] == -4,
+  "threat bubble sits on the 45-degree portrait edge, slightly off the rim")
 assert(#tab.points == 1, "threat tab is not a full-width nameplate bar")
 
 _G.GetNumGroupMembers = function() return 0 end

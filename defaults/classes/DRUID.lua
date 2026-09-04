@@ -2,19 +2,12 @@
   Purpose: Shipped class defaults for DRUID.
   Deps: ShadowUI addon table
   Public: populates ShadowUI.Defaults.classes.DRUID
-  Notes: bar1 pages Caster (1), Cat (73), Prowl (85), and Bear (97).
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local act = Addon.Defaults.act
 
 Addon.Defaults.classes.DRUID = {
-  layout = {
-    bar1 = { stancePages = { 1, 73, 85, 97 } },
-    bar7 = { enabled = false },
-    bar8 = { enabled = false },
-    bar9 = { enabled = false },
-  },
+  layout = {},
   keybinds = {
     ["CLICK ShadowUIActionButton1:Keybind"] = "Q",
     ["CLICK ShadowUIActionButton2:Keybind"] = "E",
@@ -88,114 +81,5 @@ Addon.Defaults.classes.DRUID = {
     ["CLICK ShadowUIActionButton70:Keybind"] = "CTRL-1",
     ["CLICK ShadowUIActionButton71:Keybind"] = "CTRL-2",
     ["CLICK ShadowUIActionButton72:Keybind"] = "CTRL-3",
-  },
-  actions = {
-    [1] = act("d-wrath", "wr", { match = "Wrath" }),
-    [2] = act("d-star", "stf", { match = "Starfire" }),
-    [3] = act("d-mf", "mfire", { match = "mfire" }),
-    [4] = act("d-ff", "ff", { match = "ff" }),
-    [5] = act("d-inn", "inn", { match = "Innervate" }),
-    [7] = act("d-hib", "hib", { match = "hib" }),
-    [8] = act("spell:2893", "Abolish Poison", {
-      kind = "spell",
-      spellId = 2893,
-    }),
-    [9] = act("d-motw", "motw", { match = "Mark of the Wild" }),
-    [10] = act("d-roots", "er", { match = "er" }),
-    [11] = act("spell:22812", "Barkskin", {
-      kind = "spell",
-      spellId = 22812,
-    }),
-    [12] = act("d-rejuv", "rej", { match = "rej" }),
-    [13] = act("d-ht", "ht", { match = "ht" }),
-    [14] = act("d-swift", "sm", { match = "Swiftmend" }),
-    [15] = act("d-reb", "reb", { match = "Rebirth" }),
-    [16] = act("d-moonkin", "mk", { match = "Moonkin Form" }),
-    [17] = act("d-bear", "bear", { match = "Dire Bear Form" }),
-    [18] = act("d-cane", "cane", { match = "cane" }),
-    [19] = act("d-soothe", "soothe", { match = "soothe" }),
-    [20] = act("spell:18960", "Teleport: Moonglade", {
-      kind = "spell",
-      spellId = 18960,
-    }),
-    [21] = act("d-thorns", "thorns", { match = "thorns" }),
-    [22] = act("spell:1066", "Aquatic Form", {
-      kind = "spell",
-      spellId = 1066,
-    }),
-    [23] = act("d-ravage", "ravage", { match = "ravage" }),
-    [24] = act("spell:8690", "Hearthstone", {
-      kind = "spell",
-      spellId = 8690,
-    }),
-    [25] = act("d-tfury", "tfury", { match = "tfury" }),
-    [26] = act("spell:5225", "Track Humanoids", {
-      kind = "spell",
-      spellId = 5225,
-    }),
-    [27] = act("spell:8946", "Cure Poison", {
-      kind = "spell",
-      spellId = 8946,
-    }),
-    [28] = act("d-gotw", "gotw", { match = "gotw" }),
-    [29] = act("d-rgw", "rgw", { match = "rgw" }),
-    [30] = act("d-claw", "claw", { match = "claw" }),
-    [31] = act("d-cower", "cower", { match = "cower" }),
-    [32] = act("spell:5487", "Bear Form", {
-      kind = "spell",
-      spellId = 5487,
-    }),
-    [33] = act("d-cat", "cat", { match = "cat" }),
-    [34] = act("d-ns", "dnsw", { match = "Healing Touch" }),
-    [35] = act("spell:2782", "Remove Curse", {
-      kind = "spell",
-      spellId = 2782,
-    }),
-    [36] = act("d-tranq", "tranq", { match = "tranq" }),
-    [73] = act("d-shred", "shred", { match = "Shred" }),
-    [74] = act("d-rake", "rake", { match = "Rake" }),
-    [75] = act("d-rip", "rip", { match = "Rip" }),
-    [76] = act("d-ff", "ff", { match = "ff" }),
-    [77] = act("d-inn", "inn", { match = "Innervate" }),
-    [79] = act("d-pounce", "pounce", { match = "pounce" }),
-    [80] = act("d-cat", "cat", { match = "cat" }),
-    [81] = act("d-motw", "motw", { match = "Mark of the Wild" }),
-    [82] = act("d-dash", "dash", { match = "Dash" }),
-    [83] = act("spell:22812", "Barkskin", {
-      kind = "spell",
-      spellId = 22812,
-    }),
-    [84] = act("d-fb", "fbite", { match = "fbite" }),
-    [85] = act("d-pounce", "pounce", { match = "pounce" }),
-    [86] = act("d-rake", "rake", { match = "Rake" }),
-    [87] = act("d-rip", "rip", { match = "Rip" }),
-    [88] = act("d-ff", "ff", { match = "ff" }),
-    [89] = act("d-inn", "inn", { match = "Innervate" }),
-    [91] = act("d-prowl", "pr", { match = "Prowl" }),
-    [92] = act("d-cat", "cat", { match = "cat" }),
-    [93] = act("d-motw", "motw", { match = "Mark of the Wild" }),
-    [94] = act("d-dash", "dash", { match = "Dash" }),
-    [95] = act("spell:22812", "Barkskin", {
-      kind = "spell",
-      spellId = 22812,
-    }),
-    [96] = act("d-fb", "fbite", { match = "fbite" }),
-    [97] = act("d-maul", "ml", { match = "Maul" }),
-    [98] = act("d-swipe", "swipe", { match = "swipe" }),
-    [99] = act("d-dmr", "dmr", { match = "dmr" }),
-    [100] = act("d-bash", "bash", { match = "Bash" }),
-    [101] = act("d-charge", "fc", { match = "Feral Charge" }),
-    [103] = act("spell:5209", "Challenging Roar", {
-      kind = "spell",
-      spellId = 5209,
-    }),
-    [104] = act("d-cat", "cat", { match = "cat" }),
-    [105] = act("spell:5229", "Enrage", {
-      kind = "spell",
-      spellId = 5229,
-    }),
-    [106] = act("d-hib", "hib", { match = "hib" }),
-    [107] = act("d-fr", "fr", { match = "Frenzied Regeneration" }),
-    [108] = act("d-growl", "gr", { match = "Growl" }),
   },
 }

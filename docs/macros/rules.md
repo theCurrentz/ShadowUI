@@ -120,7 +120,7 @@ Slot 13 is the top trinket. Slot 14 is the bottom trinket. Gloves / boots / belt
 These come from the WARKEYS cache. New macros follow them.
 
 - **Melee:** `/cast` then `/startattack`. Do not require `[nostance]` if the existing set just `/cast`s the stance.
-- **Downrank:** `[nomod]` max rank, then `[mod:shift]` Rank 1 (or a mid rank). That matches Currentz, not `[mod:shift]` alone. Potion and pet follow are separate Shift binds (`G` / `SHIFT-G`, backtick / Shift-backtick), not modifiers on the same key.
+- **Downrank:** `[nomod]` max rank, then `[mod:shift]` Rank 1 (or a mid rank). That matches Currentz, not `[mod:shift]` alone. Potion and pet follow are separate Shift binds (`G` / `SHIFT-G`, backtick / Shift-backtick), not modifiers on the same key. Write `(rank 1)` with no space before the parenthesis. On Mage, copy those same conditions onto `#showtooltip` so the icon follows Shift.
 - **`/cqs`:** Cancel queued spell. Keep it on Mage fillers.
 - **Mouseover:** Keep it on decurse / dispel. `[target=mouseover,exists]` then the target.
 - **Ground:** `[@cursor]` for Flamestrike, Crystal Charge, Holy Water.
@@ -130,21 +130,7 @@ These come from the WARKEYS cache. New macros follow them.
 
 ## Comments
 
-A line that starts with `#` is a comment, except `#showtooltip`. Put the label on line 2 when `#showtooltip` is line 1:
-
-```
-#showtooltip Charge
-# class-specific WARRIOR all
-/cast Charge
-```
-
-```
-# character-specific WARRIOR all Tazzy
-/equipslot 16 Quel'Serrar
-/equipslot 17 Mirah's Song
-```
-
-`#showtooltip` must stay line 1. The label counts toward 255.
+A line that starts with `#` is a comment, except `#showtooltip`. Put `#showtooltip` on line 1 when you use it. Do not add `# class-specific`, `# global`, or `# character-specific` labels. Scope lives on the catalog record. Keybinds live in AceDB overlays.
 
 ## What not to do
 

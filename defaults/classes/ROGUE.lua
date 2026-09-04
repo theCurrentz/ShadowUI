@@ -2,17 +2,12 @@
   Purpose: Shipped class defaults for ROGUE.
   Deps: ShadowUI addon table
   Public: populates ShadowUI.Defaults.classes.ROGUE
-  Notes: bar1 pages Open (1) and Stealth (73).
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local act = Addon.Defaults.act
 
 Addon.Defaults.classes.ROGUE = {
-  layout = {
-    bar1 = { stancePages = { 1, 73 } },
-    bar7 = { enabled = false },
-  },
+  layout = {},
   keybinds = {
     ["CLICK ShadowUIActionButton1:Keybind"] = "Q",
     ["CLICK ShadowUIActionButton2:Keybind"] = "E",
@@ -86,147 +81,5 @@ Addon.Defaults.classes.ROGUE = {
     ["CLICK ShadowUIActionButton70:Keybind"] = "CTRL-1",
     ["CLICK ShadowUIActionButton71:Keybind"] = "CTRL-2",
     ["CLICK ShadowUIActionButton72:Keybind"] = "CTRL-3",
-  },
-  actions = {
-    [1] = act("r-ss", "sinister", { match = "Sinister Strike" }),
-    [2] = act("r-snd", "snd", { match = "Slice and Dice" }),
-    [3] = act("r-evis", "ev", { match = "Eviscerate" }),
-    [4] = act("r-kick", "kick", { match = "Kick" }),
-    [5] = act("r-bf", "bf", { match = "Blade Flurry" }),
-    [7] = act("r-ks", "ks", { match = "Kidney Shot" }),
-    [8] = act("r-blind", "blind", { match = "Blind" }),
-    [9] = act("r-vanish", "van", { match = "Vanish" }),
-    [10] = act("r-gouge", "g", { match = "Gouge" }),
-    [11] = act("r-eva", "eva", { match = "Evasion" }),
-    [12] = act("r-sprint", "sp", { match = "Sprint" }),
-    [13] = act("r-rup", "rup", { match = "Rupture" }),
-    [14] = act("r-stealth", "st", { match = "Stealth" }),
-    [15] = act("r-cb", "coldb", { match = "Eviscerate" }),
-    [16] = act("spell:6603", "Attack", {
-      kind = "spell",
-      spellId = 6603,
-    }),
-    [17] = act("r-ambush", "ambush", { match = "Ambush" }),
-    [18] = act("r-expose", "expose", { match = "expose" }),
-    [19] = act("r-bstab", "bstab", { match = "bstab" }),
-    [20] = act("r-feint", "feint", { match = "feint" }),
-    [21] = act("spell:1842", "Disarm Trap", {
-      kind = "spell",
-      spellId = 1842,
-    }),
-    [22] = act("spell:1725", "Distract", {
-      kind = "spell",
-      spellId = 1725,
-    }),
-    [23] = act("spell:6510", "Blinding Powder", {
-      kind = "spell",
-      spellId = 6510,
-    }),
-    [24] = act("spell:8690", "Hearthstone", {
-      kind = "spell",
-      spellId = 8690,
-    }),
-    [25] = act("spell:3420", "Crippling Poison", {
-      kind = "spell",
-      spellId = 3420,
-    }),
-    [26] = act("spell:3421", "Crippling Poison II", {
-      kind = "spell",
-      spellId = 3421,
-    }),
-    [27] = act("spell:2835", "Deadly Poison", {
-      kind = "spell",
-      spellId = 2835,
-    }),
-    [28] = act("spell:2837", "Deadly Poison II", {
-      kind = "spell",
-      spellId = 2837,
-    }),
-    [29] = act("spell:11357", "Deadly Poison III", {
-      kind = "spell",
-      spellId = 11357,
-    }),
-    [30] = act("spell:11358", "Deadly Poison IV", {
-      kind = "spell",
-      spellId = 11358,
-    }),
-    [31] = act("spell:25347", "Deadly Poison V", {
-      kind = "spell",
-      spellId = 25347,
-    }),
-    [32] = act("spell:8681", "Instant Poison", {
-      kind = "spell",
-      spellId = 8681,
-    }),
-    [33] = act("r-ar", "ar", { match = "Adrenaline Rush" }),
-    [34] = act("r-sap", "sap", { match = "sap" }),
-    [35] = act("spell:8687", "Instant Poison II", {
-      kind = "spell",
-      spellId = 8687,
-    }),
-    [36] = act("spell:8691", "Instant Poison III", {
-      kind = "spell",
-      spellId = 8691,
-    }),
-    [37] = act("spell:11341", "Instant Poison IV", {
-      kind = "spell",
-      spellId = 11341,
-    }),
-    [38] = act("spell:11342", "Instant Poison V", {
-      kind = "spell",
-      spellId = 11342,
-    }),
-    [39] = act("spell:11343", "Instant Poison VI", {
-      kind = "spell",
-      spellId = 11343,
-    }),
-    [40] = act("spell:5763", "Mind-numbing Poison", {
-      kind = "spell",
-      spellId = 5763,
-    }),
-    [41] = act("spell:8694", "Mind-numbing Poison II", {
-      kind = "spell",
-      spellId = 8694,
-    }),
-    [42] = act("spell:11400", "Mind-numbing Poison III", {
-      kind = "spell",
-      spellId = 11400,
-    }),
-    [43] = act("spell:2842", "Poisons", {
-      kind = "spell",
-      spellId = 2842,
-    }),
-    [44] = act("spell:13220", "Wound Poison", {
-      kind = "spell",
-      spellId = 13220,
-    }),
-    [45] = act("spell:13228", "Wound Poison II", {
-      kind = "spell",
-      spellId = 13228,
-    }),
-    [46] = act("spell:13229", "Wound Poison III", {
-      kind = "spell",
-      spellId = 13229,
-    }),
-    [47] = act("spell:13230", "Wound Poison IV", {
-      kind = "spell",
-      spellId = 13230,
-    }),
-    [48] = act("spell:1804", "Pick Lock", {
-      kind = "spell",
-      spellId = 1804,
-    }),
-    [49] = act("r-garrote", "garrote", { match = "garrote" }),
-    [73] = act("r-cheap", "cheap", { match = "Cheap Shot" }),
-    [74] = act("r-ambush", "ambush", { match = "Ambush" }),
-    [75] = act("r-evis", "ev", { match = "Eviscerate" }),
-    [76] = act("r-kick", "kick", { match = "Kick" }),
-    [77] = act("r-bf", "bf", { match = "Blade Flurry" }),
-    [79] = act("r-ks", "ks", { match = "Kidney Shot" }),
-    [80] = act("r-blind", "blind", { match = "Blind" }),
-    [81] = act("r-vanish", "van", { match = "Vanish" }),
-    [82] = act("r-gouge", "g", { match = "Gouge" }),
-    [83] = act("r-eva", "eva", { match = "Evasion" }),
-    [84] = act("r-sap", "sap", { match = "sap" }),
   },
 }

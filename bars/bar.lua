@@ -1,81 +1,50 @@
 --[[
   Purpose: Create and lay out standard action bar frames.
   Deps: ShadowUI:CreateBarButton(), ShadowUI:ApplyBarChrome(), ShadowUI:AttachBarDragOverlay()
-  Public: ShadowUI:FirstActionSlot(), ShadowUI:StancePageDriver(), ShadowUI:CreateBar(),
-          ShadowUI:PlaceBarButtons(), ShadowUI:UpdateBarLayout()
+  Public: ShadowUI:FirstActionSlot(), ShadowUI:CreateBar(), ShadowUI:PlaceBarButtons(),
+          ShadowUI:UpdateBarLayout()
+  Notes: PlaceBarButtons uses Gap between as space between slots. Gap above
+         and gap below on this Bar pad inside each slot and shrink the icon.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local function stancePages(cfg)
-  local pages = cfg and cfg.stancePages
-  if type(pages) ~= "table" or type(pages[1]) ~= "number" then
-    return nil
-  end
-  return pages
-end
 
--- bonusbar:1 = slots 73, :2 = 85, :3 = 97, :4 = 109. No bonus bar uses the
--- page whose first slot is 1 (caster / unstealthed), else page 1.
-local function bonusBarOfSlot(first)
-  if type(first) ~= "number" or first < 73 or (first - 73) % 12 ~= 0 then
-    return nil
-  end
-  return 1 + (first - 73) / 12
-end
-
-function Addon:StancePageDriver(pages)
-  if not pages or #pages < 2 then
-    return nil
-  end
-  local parts = {}
-  local fallback = 1
-  for i, first in ipairs(pages) do
-    local bonus = bonusBarOfSlot(first)
-    if bonus then
-      parts[#parts + 1] = { bonus = bonus, state = i }
-    end
-    if first == 1 then
-      fallback = i
-    end
-  end
-  table.sort(parts, function(a, b) return a.bonus > b.bonus end)
-  local driver = {}
-  for _, part in ipairs(parts) do
-    driver[#driver + 1] = string.format("[bonusbar:%d] %d", part.bonus, part.state)
-  end
-  driver[#driver + 1] = tostring(fallback)
-  return table.concat(driver, "; ")
-end
-
-local function configureStancePages(bar, pages)
-  if not pages then
-    return
-  end
-  bar:SetAttribute("state", 1)
-  bar:SetAttribute("_onstate-page", [[
-    self:SetAttribute("state", newstate)
-    control:ChildUpdate("state", newstate)
-  ]])
-  for i, button in ipairs(bar.buttons) do
-    for state, firstSlot in ipairs(pages) do
-      button:SetState(state, "action", firstSlot + i - 1)
-    end
-  end
-  RegisterStateDriver(bar, "page", Addon:StancePageDriver(pages))
-end
-
-function Addon:PlaceBarButtons(bar, columns, size)
+function Addon:PlaceBarButtons(bar, columns, size, gap, rowGaps)
   local count = #bar.buttons
-  columns = math.max(1, math.min(columns or count, count))
+  if self.SnapBarColumns then
+    columns = self:SnapBarColumns(count, columns or count)
+  else
+    columns = math.max(1, math.min(columns or count, count))
+  end
+  gap = gap or 0
   bar.buttonSize = size
   bar.columns = columns
-  bar:SetSize(columns * size, math.ceil(count / columns) * size)
+  bar.gap = gap
+  bar.rowGaps = rowGaps
+  local metrics
+  if self.BarGridMetrics then
+    metrics = self:BarGridMetrics(count, columns, size, gap, rowGaps)
+  else
+    local rows = math.ceil(count / columns)
+    metrics = {
+      columns = columns,
+      rows = rows,
+      width = columns * size + (columns - 1) * gap,
+      height = rows * size + (rows - 1) * gap,
+    }
+  end
+  bar:SetSize(metrics.width, metrics.height)
+  local step = size + gap
   for i, button in ipairs(bar.buttons) do
     local column = (i - 1) % columns
     local row = math.floor((i - 1) / columns)
+    local top = metrics.rowTop and metrics.rowTop[row + 1] or (row * step)
+    local pad = metrics.rowPad and metrics.rowPad[row + 1]
+    local iconSize = pad and pad.icon or size
+    local above = pad and pad.above or 0
     button:ClearAllPoints()
-    button:SetSize(size, size)
-    button:SetPoint("TOPLEFT", bar, "TOPLEFT", column * size, -row * size)
+    button:SetSize(iconSize, iconSize)
+    button:SetPoint("TOPLEFT", bar, "TOPLEFT", column * step + (size - iconSize) / 2, -(top + above))
   end
   if bar.dragOverlay and bar.dragOverlay.SetAllPoints then
     bar.dragOverlay:SetAllPoints(bar)
@@ -84,8 +53,10 @@ end
 
 function Addon:UpdateBarLayout(bar, cfg)
   local size = cfg.buttonSize or 36
-  self:PlaceBarButtons(bar, cfg.columns or #bar.buttons, size)
+  self:PlaceBarButtons(bar, cfg.columns or #bar.buttons, size, cfg.gap or 0, cfg.rowGaps)
   bar:SetScale(cfg.scale or 1)
+  bar.iconShape = cfg.iconShape or "square"
+  bar.fadeIdle = cfg.fadeIdle
   bar:ClearAllPoints()
   bar:SetPoint(
     cfg.point or "CENTER",
@@ -103,10 +74,6 @@ function Addon:UpdateBarLayout(bar, cfg)
 end
 
 function Addon:FirstActionSlot(barId, cfg)
-  local pages = stancePages(cfg)
-  if pages then
-    return pages[1]
-  end
   if cfg and type(cfg.firstSlot) == "number" then
     return cfg.firstSlot
   end
@@ -138,7 +105,6 @@ function Addon:CreateBar(barId, cfg)
     local slot = firstSlot + i - 1
     bar.buttons[i] = self:CreateBarButton(bar, slot, slot)
   end
-  configureStancePages(bar, stancePages(cfg))
 
   if self.AttachBarDragOverlay then
     self:AttachBarDragOverlay(bar)

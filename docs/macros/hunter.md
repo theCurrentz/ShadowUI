@@ -11,7 +11,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Hunter's Mark
-# class-specific HUNTER all
 /cast Hunter's Mark
 ```
 
@@ -19,7 +18,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Aspect of the Monkey; Aspect of the Hawk
 ```
 
@@ -27,7 +25,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Aimed Shot
-# class-specific HUNTER marksmanship
 /cast Aimed Shot
 ```
 
@@ -35,7 +32,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Multi-Shot
-# class-specific HUNTER marksmanship
 /cast Multi-Shot
 ```
 
@@ -43,7 +39,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot
 ```
 
@@ -51,7 +46,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Serpent Sting
-# class-specific HUNTER all
 /cast Serpent Sting
 ```
 
@@ -59,7 +53,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Concussive Shot
-# class-specific HUNTER all
 /cast Concussive Shot
 ```
 
@@ -67,7 +60,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Wing Clip(Rank 1); Wing Clip
 ```
 
@@ -75,7 +67,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Feign Death
-# class-specific HUNTER all
 /stopattack
 /stopcasting
 /cast Feign Death
@@ -85,7 +76,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Freezing Trap
-# class-specific HUNTER all
 /cast Freezing Trap
 ```
 
@@ -93,7 +83,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Rapid Fire
-# class-specific HUNTER marksmanship
 /use 13
 /cast Rapid Fire
 ```
@@ -102,7 +91,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Tranquilizing Shot
-# class-specific HUNTER all
 /cast Tranquilizing Shot
 ```
 
@@ -110,7 +98,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Mend Pet
-# class-specific HUNTER beast-mastery
 /cast Mend Pet
 ```
 
@@ -118,7 +105,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Call Pet
-# class-specific HUNTER beast-mastery
 /cast Call Pet
 ```
 
@@ -126,7 +112,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Bestial Wrath
-# class-specific HUNTER beast-mastery
 /cast Bestial Wrath
 ```
 
@@ -134,7 +119,6 @@ Mark, shots, Feign Death, pet. 18 or fewer.
 
 ```
 #showtooltip Aspect of the Cheetah
-# class-specific HUNTER all
 /cast Aspect of the Cheetah
 ```
 
@@ -146,7 +130,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Aspect of the Wild;[mod:shift]Aspect of the Wild(Rank 1)
 ```
 
@@ -154,7 +137,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Scare Beast;[mod:shift]Scare Beast(Rank 1)
 ```
 
@@ -162,7 +144,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Distracting Shot;[mod:shift]Distracting Shot(Rank 1)
 ```
 
@@ -170,7 +151,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Scorpid Sting;[mod:shift]Scorpid Sting(Rank 1)
 ```
 
@@ -178,7 +158,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Viper Sting;[mod:shift]Viper Sting(Rank 1)
 ```
 
@@ -186,7 +165,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Volley;[mod:shift]Volley(Rank 1)
 ```
 
@@ -194,7 +172,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Disengage;[mod:shift]Disengage(Rank 1)
 ```
 
@@ -202,7 +179,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Explosive Trap;[mod:shift]Explosive Trap(Rank 1)
 ```
 
@@ -210,7 +186,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [nomod]Immolation Trap;[mod:shift]Immolation Trap(Rank 1)
 ```
 
@@ -218,7 +193,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /startattack
 /cast [nomod]Mongoose Bite;[mod:shift]Mongoose Bite(Rank 1)
 ```
@@ -227,7 +201,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /startattack
 /cast [nomod]Raptor Strike;[mod:shift]Raptor Strike(Rank 1)
 ```
@@ -240,7 +213,6 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 
 ```
 #showtooltip Steady Shot
-# class-specific HUNTER all
 /cast Steady Shot
 ```
 
@@ -248,7 +220,6 @@ TBC shots, Kill Command, Misdirection, and Viper. Readiness is gone. Bestial Wra
 
 ```
 #showtooltip Kill Command
-# class-specific HUNTER beast-mastery
 /petattack
 /cast Kill Command
 ```
@@ -259,7 +230,6 @@ Friendly mouseover, then pet, then current target.
 
 ```
 #showtooltip Misdirection
-# class-specific HUNTER all
 /cast [target=mouseover,help,nodead] Misdirection; [target=pet,exists] Misdirection; Misdirection
 ```
 
@@ -267,7 +237,6 @@ Friendly mouseover, then pet, then current target.
 
 ```
 #showtooltip Snake Trap
-# class-specific HUNTER all
 /cast Snake Trap
 ```
 
@@ -277,7 +246,6 @@ Hawk normally. Shift is Viper. Ctrl is Monkey. Era `asp` has no Viper line.
 
 ```
 #showtooltip
-# class-specific HUNTER all
 /cast [mod:shift] Aspect of the Viper; [mod:ctrl] Aspect of the Monkey; Aspect of the Hawk
 ```
 
@@ -289,7 +257,6 @@ Character-specific Auden. Worg Carrier from the 372399535 account.
 
 ```
 #showtooltip
-# character-specific HUNTER beast-mastery Auden
 /cast Call Pet
 /use Worg Carrier
 ```

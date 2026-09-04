@@ -13,7 +13,6 @@ Heals. Alt self. Shift cheap rank.
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light
 ```
 
@@ -21,7 +20,6 @@ Heals. Alt self. Shift cheap rank.
 
 ```
 #showtooltip Flash of Light
-# class-specific PALADIN holy
 /cast Divine Favor
 /cast Flash of Light
 ```
@@ -30,7 +28,6 @@ Heals. Alt self. Shift cheap rank.
 
 ```
 #showtooltip Holy Shock
-# class-specific PALADIN holy
 /cast Holy Shock
 ```
 
@@ -38,7 +35,6 @@ Heals. Alt self. Shift cheap rank.
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:shift] Seal of Light; Seal of Wisdom
 ```
 
@@ -46,7 +42,6 @@ Heals. Alt self. Shift cheap rank.
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Summon Warhorse; Summon Charger
 ```
 
@@ -58,7 +53,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Greater Blessing of Might;[mod:shift]Greater Blessing of Might(Rank 1)
 ```
 
@@ -66,7 +60,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Seal of the Crusader;[mod:shift]Seal of the Crusader(Rank 1)
 ```
 
@@ -74,7 +67,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Blessing of Sacrifice;[mod:shift]Blessing of Sacrifice(Rank 1)
 ```
 
@@ -82,7 +74,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Divine Protection;[mod:shift]Divine Protection(Rank 1)
 ```
 
@@ -90,7 +81,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Fire Resistance Aura;[mod:shift]Fire Resistance Aura(Rank 1)
 ```
 
@@ -98,7 +88,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Frost Resistance Aura;[mod:shift]Frost Resistance Aura(Rank 1)
 ```
 
@@ -106,7 +95,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Shadow Resistance Aura;[mod:shift]Shadow Resistance Aura(Rank 1)
 ```
 
@@ -114,7 +102,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Blessing of Light;[mod:shift]Blessing of Light(Rank 1)
 ```
 
@@ -122,7 +109,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Greater Blessing of Wisdom;[mod:shift]Greater Blessing of Wisdom(Rank 1)
 ```
 
@@ -130,7 +116,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Holy Wrath;[mod:shift]Holy Wrath(Rank 1)
 ```
 
@@ -138,7 +123,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Redemption;[mod:shift]Redemption(Rank 1)
 ```
 
@@ -146,7 +130,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [nomod]Turn Undead;[mod:shift]Turn Undead(Rank 1)
 ```
 
@@ -158,7 +141,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Judgement
-# class-specific PALADIN retribution
 /startattack
 /cast Judgement
 ```
@@ -167,7 +149,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip
-# class-specific PALADIN retribution
 /cast [mod:shift] Seal of Command; Seal of Righteousness
 ```
 
@@ -175,7 +156,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Hammer of Justice
-# class-specific PALADIN all
 /stopcasting
 /cast Hammer of Justice
 ```
@@ -184,7 +164,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Consecration(Rank 1); Consecration
 ```
 
@@ -192,7 +171,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Hammer of Wrath
-# class-specific PALADIN all
 /cast Hammer of Wrath
 ```
 
@@ -200,7 +178,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Exorcism
-# class-specific PALADIN retribution
 /cast Exorcism
 ```
 
@@ -208,7 +185,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Repentance
-# class-specific PALADIN retribution
 /stopcasting
 /cast Repentance
 ```
@@ -217,14 +193,12 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Divine Shield
-# class-specific PALADIN all
 /cast Divine Shield
 ```
 
 ### cds — `p-cancel-ds`
 
 ```
-# class-specific PALADIN all
 /cancelaura Divine Shield
 ```
 
@@ -232,7 +206,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Blessing of Protection
-# class-specific PALADIN all
 /cast Blessing of Protection
 ```
 
@@ -240,7 +213,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Cleanse
-# class-specific PALADIN all
 /cast [mod:alt,target=player] Cleanse; [target=mouseover,exists] Cleanse; Cleanse
 ```
 
@@ -248,7 +220,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip
-# class-specific PALADIN holy
 /cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light
 ```
 
@@ -256,7 +227,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might
 ```
 
@@ -264,7 +234,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip
-# class-specific PALADIN all
 /cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura
 ```
 
@@ -272,7 +241,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Righteous Fury
-# class-specific PALADIN protection
 /cast Righteous Fury
 ```
 
@@ -280,7 +248,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Holy Shield
-# class-specific PALADIN protection
 /cast Holy Shield
 ```
 
@@ -288,7 +255,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Lay on Hands
-# class-specific PALADIN holy
 /raid Lay on Hands on %t
 /cast Lay on Hands
 ```
@@ -297,7 +263,6 @@ Alliance Era ret. Seal + judge + stun + consecrate.
 
 ```
 #showtooltip Divine Intervention
-# class-specific PALADIN all
 /raid DI on %t
 /cast Divine Intervention
 ```
@@ -310,7 +275,6 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 
 ```
 #showtooltip Crusader Strike
-# class-specific PALADIN retribution
 /startattack
 /cast Crusader Strike
 ```
@@ -319,7 +283,6 @@ TBC baseline and talent buttons. Paladin is both factions. Seal of Command stays
 
 ```
 #showtooltip Avenging Wrath
-# class-specific PALADIN all
 /use 13
 /cast Avenging Wrath
 ```
@@ -330,7 +293,6 @@ Taunt the mobs on a friendly mouseover, then the current target.
 
 ```
 #showtooltip Righteous Defense
-# class-specific PALADIN all
 /cast [target=mouseover,help,nodead][] Righteous Defense
 ```
 
@@ -338,7 +300,6 @@ Taunt the mobs on a friendly mouseover, then the current target.
 
 ```
 #showtooltip Avenger's Shield
-# class-specific PALADIN protection
 /startattack
 /cast Avenger's Shield
 ```
@@ -349,7 +310,6 @@ Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins.
 
 ```
 #showtooltip
-# class-specific PALADIN retribution
 /cast Seal of Blood
 /cast Seal of Vengeance
 /cast Seal of the Martyr
@@ -360,7 +320,6 @@ Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins.
 
 ```
 #showtooltip Turn Evil
-# class-specific PALADIN all
 /stopcasting
 /cast Turn Evil
 ```
@@ -369,7 +328,6 @@ Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins.
 
 ```
 #showtooltip Crusader Aura
-# class-specific PALADIN all
 /cast Crusader Aura
 ```
 

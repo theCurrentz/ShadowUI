@@ -11,7 +11,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Stealth
-# class-specific ROGUE all
 /cast Stealth
 ```
 
@@ -19,7 +18,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Sinister Strike
-# class-specific ROGUE combat
 /startattack
 /cast Sinister Strike
 ```
@@ -28,7 +26,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Kick
-# class-specific ROGUE all
 /stopcasting
 /cast Kick
 ```
@@ -37,7 +34,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Eviscerate
-# class-specific ROGUE all
 /cast Eviscerate
 ```
 
@@ -45,7 +41,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Slice and Dice
-# class-specific ROGUE combat
 /cast Slice and Dice
 ```
 
@@ -53,7 +48,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Rupture
-# class-specific ROGUE assassination
 /cast Rupture
 ```
 
@@ -61,7 +55,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Kidney Shot
-# class-specific ROGUE assassination
 /cast Kidney Shot
 ```
 
@@ -69,7 +62,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Gouge
-# class-specific ROGUE combat
 /stopattack
 /cast Gouge
 ```
@@ -78,7 +70,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Cheap Shot
-# class-specific ROGUE all
 /cast [nostealth] Stealth
 /cast Cheap Shot
 ```
@@ -87,7 +78,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Ambush
-# class-specific ROGUE assassination
 /cast [nostealth] Stealth
 /cast Ambush
 ```
@@ -96,7 +86,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Blade Flurry
-# class-specific ROGUE combat
 /use 13
 /cast Blade Flurry
 ```
@@ -105,7 +94,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Adrenaline Rush
-# class-specific ROGUE combat
 /cast Adrenaline Rush
 ```
 
@@ -113,7 +101,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Evasion
-# class-specific ROGUE combat
 /cast Evasion
 ```
 
@@ -121,7 +108,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Vanish
-# class-specific ROGUE subtlety
 /stopattack
 /cast Vanish
 ```
@@ -130,7 +116,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Sprint
-# class-specific ROGUE all
 /cast Sprint
 ```
 
@@ -138,7 +123,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Blind
-# class-specific ROGUE all
 /cast Blind
 ```
 
@@ -146,7 +130,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nostealth] Stealth
 /cast [mod:shift] Sap; Pick Pocket
 ```
@@ -155,7 +138,6 @@ Openers, Kick, finishers. /startattack on builders.
 
 ```
 #showtooltip Eviscerate
-# class-specific ROGUE assassination
 /cast Cold Blood
 /cast Eviscerate
 ```
@@ -168,7 +150,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)
 ```
 
@@ -176,7 +157,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)
 ```
 
@@ -184,7 +164,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /startattack
 /cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)
 ```
@@ -193,7 +172,6 @@ Downrank wrappers for trainer abilities with more than one rank. Shift is Rank 1
 
 ```
 #showtooltip
-# class-specific ROGUE all
 /cast [nomod]Feint;[mod:shift]Feint(Rank 1)
 ```
 
@@ -205,7 +183,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Cloak of Shadows
-# class-specific ROGUE all
 /stopcasting
 /cast Cloak of Shadows
 ```
@@ -214,7 +191,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Deadly Throw
-# class-specific ROGUE all
 /cast Deadly Throw
 ```
 
@@ -222,7 +198,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Shiv
-# class-specific ROGUE all
 /startattack
 /cast Shiv
 ```
@@ -231,7 +206,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Envenom
-# class-specific ROGUE assassination
 /cast Envenom
 ```
 
@@ -239,7 +213,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Shadowstep
-# class-specific ROGUE subtlety
 /cast Shadowstep
 ```
 
@@ -247,7 +220,6 @@ TBC Cloak, finishers, Shiv, and talent openers. Anesthetic Poison is an item; dr
 
 ```
 #showtooltip Mutilate
-# class-specific ROGUE assassination
 /startattack
 /cast Mutilate
 ```

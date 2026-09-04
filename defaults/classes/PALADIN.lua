@@ -5,7 +5,6 @@
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local act = Addon.Defaults.act
 
 Addon.Defaults.classes.PALADIN = {
   layout = {},
@@ -94,69 +93,5 @@ Addon.Defaults.classes.PALADIN = {
     ["CLICK ShadowUIActionButton82:Keybind"] = "ALT-SHIFT-R",
     ["CLICK ShadowUIActionButton83:Keybind"] = "ALT-SHIFT-F",
     ["CLICK ShadowUIActionButton84:Keybind"] = "ALT-SHIFT-C",
-  },
-  actions = {
-    [1] = act("p-judge", "judge", { match = "Judgement" }),
-    [2] = act("p-seal", "seal", { match = "seal" }),
-    [3] = act("p-cons", "cons", { match = "cons" }),
-    [4] = act("p-bop", "bop", { match = "Blessing of Protection" }),
-    [5] = act("shared-t13", "t13", { match = "t13" }),
-    [7] = act("p-hoj", "hoj", { match = "Hammer of Justice" }),
-    [8] = act("p-cleanse", "cl", { match = "Cleanse" }),
-    [9] = act("p-rf", "rf", { match = "Righteous Fury" }),
-    [10] = act("p-rep", "rep", { match = "Repentance" }),
-    [11] = act("p-bubble", "bubble", { match = "Divine Shield" }),
-    [12] = act("p-fol", "fol", { match = "fol" }),
-    [13] = act("p-how", "how", { match = "Hammer of Wrath" }),
-    [14] = act("p-exo", "exo", { match = "Exorcism" }),
-    [15] = act("p-might", "bom", { match = "bom" }),
-    [16] = act("p-aura", "aura", { match = "aura" }),
-    [17] = act("p-hl", "hl", { match = "hl" }),
-    [18] = act("p-gbom", "gbom", { match = "gbom" }),
-    [19] = act("p-crus", "crus", { match = "crus" }),
-    [20] = act("spell:1044", "Blessing of Freedom", {
-      kind = "spell",
-      spellId = 1044,
-    }),
-    [21] = act("p-bosac", "bosac", { match = "bosac" }),
-    [22] = act("p-dprot", "dprot", { match = "dprot" }),
-    [23] = act("p-fraura", "fraura", { match = "fraura" }),
-    [24] = act("spell:8690", "Hearthstone", {
-      kind = "spell",
-      spellId = 8690,
-    }),
-    [25] = act("p-rfaura", "rfaura", { match = "rfaura" }),
-    [26] = act("spell:25895", "Greater Blessing of Salvation", {
-      kind = "spell",
-      spellId = 25895,
-    }),
-    [27] = act("spell:20164", "Seal of Justice", {
-      kind = "spell",
-      spellId = 20164,
-    }),
-    [28] = act("p-sraura", "sraura", { match = "sraura" }),
-    [29] = act("p-bolight", "bolight", { match = "bolight" }),
-    [30] = act("p-cancel-ds", "cds", { match = "cds" }),
-    [31] = act("spell:25890", "Greater Blessing of Light", {
-      kind = "spell",
-      spellId = 25890,
-    }),
-    [32] = act("p-gbow", "gbow", { match = "gbow" }),
-    [33] = act("p-loh", "loh", { match = "Lay on Hands" }),
-    [34] = act("p-di", "di", { match = "Divine Intervention" }),
-    [35] = act("p-hwath", "hwath", { match = "hwath" }),
-    [36] = act("spell:1152", "Purify", {
-      kind = "spell",
-      spellId = 1152,
-    }),
-    [37] = act("p-redeem", "redeem", { match = "redeem" }),
-    [38] = act("p-seal-h", "sealh", { match = "sealh" }),
-    [40] = act("spell:5502", "Sense Undead", {
-      kind = "spell",
-      spellId = 5502,
-    }),
-    [41] = act("p-turnu", "turnu", { match = "turnu" }),
-    [74] = act("p-judge", "judge", { match = "Judgement" }),
-    [79] = act("p-mount", "chg", { match = "chg" }),
   },
 }

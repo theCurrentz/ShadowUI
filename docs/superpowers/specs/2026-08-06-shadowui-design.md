@@ -156,7 +156,7 @@ Minimal per-character state only:
 ### Defaults
 
 - **Base:** six reversed rows on the bottom edge; bar7 left and bar8 right as 3×4 grids
-- **Class defaults:** sparse position/paging deltas only (mage `firstSlot`, Warrior stance pages, pet) — not a second full layout. Warrior `bar1` uses slots 73–84 in Battle, 85–96 in Defensive, and 97–108 in Berserker while its physical keys stay fixed. Warrior stances, Paladin auras, Druid forms, Rogue Stealth, Priest Shadowform, and Shaman Ghost Wolf still use the Blizzard Stance Bar as the native selector.
+- **Class defaults:** sparse position deltas only (for example, mage `firstSlot`) — not a second full layout. Standard Bars keep fixed Action Slots for every class. Warrior stances, Paladin auras, Druid forms, Rogue Stealth, Priest Shadowform, and Shaman Ghost Wolf still use the Blizzard Stance Bar as the native selector.
 - Auto-enable the centered rows on apply; hide conflicting Blizzard and Bartender bar art
 
 ### Edit mode
@@ -171,7 +171,7 @@ Minimal per-character state only:
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; Cooldown Count for cooldowns of 2s or more |
+| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; gold thick-outlined uppercase Keybind labels at size 16; pale lime outlined item counts at size 15, 5px below the slot; Cooldown Count for cooldowns of 2s or more |
 | Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame keeps native Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar bubble tab on the portrait |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
 | Bags | Parked. Files stay. Blizzard bag and bank windows stay. Darken still tints those windows. |
@@ -234,7 +234,7 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 - `/shadowui` or `/sui` — open options
 - `/shadowui edit` — toggle Layout Edit Mode
 - `/shadowui binds` — toggle Keybind Edit Mode
-- `/shadowui deck` — replace the Warrior Action Deck outside combat
+- `/shadowui prune <group>` — pack Keybinds left in that Bar Group outside combat
 - `/shadowui layer base|class|variant` — set edit save target
 - `/shadowui variant <name>` — manual variant switch
 - `/shadowui variant clear` — clear manual override

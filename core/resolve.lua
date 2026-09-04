@@ -2,7 +2,8 @@
   Purpose: Merge shipped defaults with Account Base → Class → Variant then Character.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
   Public: DeepCopy, SparseMerge, ShippedClass, ResolveEffective, GetActiveVariantName,
-          WriteLayerDelta, TalentPointsFromTabInfo, GetPrimaryTalentTree
+          ResolveBarVisual, ResolveBarRowGaps, BarLayoutForApply, WriteLayerDelta, TalentPointsFromTabInfo,
+          GetPrimaryTalentTree
   Notes: ResolveEffective(classFile?, variantName?, through?) stops the merge after
          through (base, class, variant, or character). Omit through for the full merge.
 ]]
@@ -143,6 +144,93 @@ function Addon:ResolveEffective(classFile, variantName, through)
   return eff
 end
 
+local function pickVisual(barCfg, group, global, field, fallback)
+  if barCfg[field] ~= nil then
+    return barCfg[field]
+  end
+  if group and group[field] ~= nil then
+    return group[field]
+  end
+  if global and global[field] ~= nil then
+    return global[field]
+  end
+  return fallback
+end
+
+local function layoutBarGroup(layout, barCfg)
+  local groupName = barCfg and barCfg.group
+  if type(groupName) ~= "string" or groupName == "" then
+    return nil
+  end
+  local found = layout.barGroups and layout.barGroups[groupName]
+  if type(found) == "table" then
+    return found
+  end
+  return nil
+end
+
+function Addon:ResolveBarVisual(layout, barId, barCfg)
+  layout = layout or {}
+  barCfg = barCfg or layout[barId] or {}
+  local group = layoutBarGroup(layout, barCfg)
+  local global = layout.global
+  if type(global) ~= "table" then
+    global = nil
+  end
+  return {
+    gap = pickVisual(barCfg, group, global, "gap", 0),
+    iconShape = pickVisual(barCfg, group, global, "iconShape", "square"),
+    scale = pickVisual(barCfg, group, global, "scale", 1),
+    fadeIdle = pickVisual(barCfg, group, global, "fadeIdle", 1),
+  }
+end
+
+function Addon:ResolveBarRowGaps(layout, barId, barCfg)
+  layout = layout or {}
+  barCfg = barCfg or layout[barId] or {}
+  local group = layoutBarGroup(layout, barCfg)
+  local buttons = math.max(1, barCfg.buttons or 12)
+  local columns = math.max(1, barCfg.columns or buttons)
+  local rows = math.ceil(buttons / columns)
+  local above, below = 0, 0
+  if group then
+    above = group.gapAbove or 0
+    below = group.gapBelow or 0
+  elseif barCfg.gapAbove ~= nil or barCfg.gapBelow ~= nil then
+    above = barCfg.gapAbove or 0
+    below = barCfg.gapBelow or 0
+  else
+    local rg = barCfg.rowGaps and barCfg.rowGaps[1]
+    above = (rg and rg.above) or 0
+    below = (rg and rg.below) or 0
+  end
+  local out = {}
+  if above > 0 or below > 0 then
+    local pad = { above = above, below = below }
+    for row = 1, rows do
+      out[row] = pad
+    end
+  end
+  return out
+end
+
+function Addon:BarLayoutForApply(layout, barId, barCfg)
+  barCfg = barCfg or {}
+  local visual = self:ResolveBarVisual(layout, barId, barCfg)
+  local out = {}
+  for key, value in pairs(barCfg) do
+    out[key] = value
+  end
+  out.gap = visual.gap
+  out.iconShape = visual.iconShape
+  out.scale = visual.scale
+  out.fadeIdle = visual.fadeIdle
+  if self.ResolveBarRowGaps then
+    out.rowGaps = self:ResolveBarRowGaps(layout, barId, barCfg)
+  end
+  return out
+end
+
 function Addon:WriteLayerDelta(layer, section, key, patch)
   local classFile = self:GetPlayerClass()
   local db = self:GetDB()
@@ -157,7 +245,7 @@ function Addon:WriteLayerDelta(layer, section, key, patch)
     db.base[section] = db.base[section] or {}
     store = db.base[section]
   else
-    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, actions = {}, variants = {} }
+    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
     local classAcc = db.classes[classFile]
     if layer == "class" then
       classAcc[section] = classAcc[section] or {}
@@ -165,7 +253,7 @@ function Addon:WriteLayerDelta(layer, section, key, patch)
     else
       local name = self:GetActiveVariantName(classFile) or "Default"
       classAcc.variants = classAcc.variants or {}
-      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {}, actions = {} }
+      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
       local variant = classAcc.variants[name]
       variant[section] = variant[section] or {}
       store = variant[section]

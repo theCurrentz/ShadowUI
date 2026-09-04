@@ -968,8 +968,8 @@
       "icon": "inv_misc_orb_02",
       "group": "shared-core",
       "source": "plan",
-      "body": "#showtooltip\n# global ALL all\n/use 13",
-      "chars": 37
+      "body": "#showtooltip\n/use 13",
+      "chars": 20
     },
     {
       "id": "shared-t14",
@@ -981,8 +981,8 @@
       "icon": "inv_misc_orb_03",
       "group": "shared-core",
       "source": "plan",
-      "body": "#showtooltip\n# global ALL all\n/use 14",
-      "chars": 37
+      "body": "#showtooltip\n/use 14",
+      "chars": 20
     },
     {
       "id": "shared-pa",
@@ -994,8 +994,8 @@
       "icon": "ability_druid_bash",
       "group": "shared-core",
       "source": "existing",
-      "body": "# global ALL all | key (`)\n/petattack",
-      "chars": 37,
+      "body": "/petattack",
+      "chars": 10,
       "notes": "Hunter, Warlock, and any other pet class. One General-tab body."
     },
     {
@@ -1008,8 +1008,8 @@
       "icon": "ability_tracking",
       "group": "shared-core",
       "source": "existing",
-      "body": "# global ALL all | key (SHIFT-`)\n/petfollow",
-      "chars": 43,
+      "body": "/petfollow",
+      "chars": 10,
       "notes": "Shift-backtick. Split from pet attack so Shift is a bind, not a modifier."
     },
     {
@@ -1022,8 +1022,8 @@
       "icon": "ability_warrior_charge",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip [combat] Intercept; Charge\n# class-specific WARRIOR all | key (T)\n/cast [nocombat,nostance:1] Battle Stance; [combat,nostance:3] Berserker Stance\n/cast [nocombat] Charge; Intercept\n/startattack",
-      "chars": 206,
+      "body": "#showtooltip [combat] Intercept; Charge\n/cast [nocombat,nostance:1] Battle Stance; [combat,nostance:3] Berserker Stance\n/cast [nocombat] Charge; Intercept\n/startattack",
+      "chars": 167,
       "notes": "Enters Battle for Charge or Berserker for Intercept. Do not add Rend."
     },
     {
@@ -1036,8 +1036,8 @@
       "icon": "ability_racial_bloodrage",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Bloodrage\n# class-specific WARRIOR all | key (F)\n/cast Bloodrage\n/startattack",
-      "chars": 90,
+      "body": "#showtooltip Bloodrage\n/cast Bloodrage\n/startattack",
+      "chars": 51,
       "notes": "Bloodrage stays separate from Berserker Rage."
     },
     {
@@ -1050,8 +1050,8 @@
       "icon": "spell_nature_ancestralguardian",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Berserker Rage\n# class-specific WARRIOR all | key (G)\n/cast [nostance:3] Berserker Stance\n/cast Berserker Rage",
-      "chars": 123
+      "body": "#showtooltip Berserker Rage\n/cast [nostance:3] Berserker Stance\n/cast Berserker Rage",
+      "chars": 84
     },
     {
       "id": "w-b",
@@ -1063,8 +1063,8 @@
       "icon": "ability_warrior_offensivestance",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Battle Stance\n# class-specific WARRIOR all | key (moust button 1)\n/cast Battle Stance\n/startattack",
-      "chars": 111
+      "body": "#showtooltip Battle Stance\n/cast Battle Stance\n/startattack",
+      "chars": 59
     },
     {
       "id": "w-bs",
@@ -1076,8 +1076,8 @@
       "icon": "ability_racial_avatar",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Berserker Stance\n# class-specific WARRIOR all | key (mouse button 2)\n/cast Berserker Stance\n/startattack",
-      "chars": 117
+      "body": "#showtooltip Berserker Stance\n/cast Berserker Stance\n/startattack",
+      "chars": 65
     },
     {
       "id": "w-d-def",
@@ -1089,8 +1089,8 @@
       "icon": "ability_warrior_defensivestance",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Defensive Stance\n# class-specific WARRIOR all | key (mouse button 3)\n/cast Defensive Stance\n/startattack",
-      "chars": 117
+      "body": "#showtooltip Defensive Stance\n/cast Defensive Stance\n/startattack",
+      "chars": 65
     },
     {
       "id": "w-h",
@@ -1102,8 +1102,8 @@
       "icon": "ability_rogue_ambush",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Heroic Strike\n# class-specific WARRIOR all | key (1)\n/cast Heroic Strike\n/startattack",
-      "chars": 98,
+      "body": "#showtooltip Heroic Strike\n/cast Heroic Strike\n/startattack",
+      "chars": 59,
       "notes": "Uses maximum rank. Rank 3 has the same listed rage cost and is not a rage-saving option."
     },
     {
@@ -1116,8 +1116,8 @@
       "icon": "ability_warrior_cleave",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Cleave\n# class-specific WARRIOR all | key (R)\n/cast Cleave\n/startattack",
-      "chars": 84
+      "body": "#showtooltip Cleave\n/cast Cleave\n/startattack",
+      "chars": 45
     },
     {
       "id": "w-ww",
@@ -1129,8 +1129,8 @@
       "icon": "ability_whirlwind",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Whirlwind\n# class-specific WARRIOR all | key (C)\n/cast [nostance:3] Berserker Stance\n/cast Whirlwind\n/startattack",
-      "chars": 126,
+      "body": "#showtooltip Whirlwind\n/cast [nostance:3] Berserker Stance\n/cast Whirlwind\n/startattack",
+      "chars": 87,
       "notes": "Enters Berserker Stance. A stance change can require a second press."
     },
     {
@@ -1143,8 +1143,8 @@
       "icon": "inv_sword_48",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Execute\n# class-specific WARRIOR all | key (4)\n/cast [stance:2] Battle Stance\n/cast Execute\n/startattack",
-      "chars": 117,
+      "body": "#showtooltip Execute\n/cast [stance:2] Battle Stance\n/cast Execute\n/startattack",
+      "chars": 78,
       "notes": "Leaves Defensive Stance because Execute requires Battle or Berserker Stance."
     },
     {
@@ -1157,8 +1157,8 @@
       "icon": "ability_meleedamage",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Overpower\n# class-specific WARRIOR all | key (2)\n/cast [nostance:1] Battle Stance\n/cast Overpower\n/startattack",
-      "chars": 123,
+      "body": "#showtooltip Overpower\n/cast [nostance:1] Battle Stance\n/cast Overpower\n/startattack",
+      "chars": 84,
       "notes": "Enters Battle Stance. A stance change can require a second press."
     },
     {
@@ -1171,8 +1171,8 @@
       "icon": "ability_gouge",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Rend\n# class-specific WARRIOR all | key (H)\n/cast [stance:3] Battle Stance\n/cast Rend\n/startattack",
-      "chars": 111,
+      "body": "#showtooltip Rend\n/cast [stance:3] Battle Stance\n/cast Rend\n/startattack",
+      "chars": 72,
       "notes": "Leaves Berserker Stance because Rend requires Battle or Defensive Stance."
     },
     {
@@ -1185,8 +1185,8 @@
       "icon": "ability_warrior_sunder",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Sunder Armor\n# class-specific WARRIOR all | key (Q)\n/startattack\n/cast [target=mouseover,harm,nodead][] Sunder Armor",
-      "chars": 129,
+      "body": "#showtooltip Sunder Armor\n/startattack\n/cast [target=mouseover,harm,nodead][] Sunder Armor",
+      "chars": 90,
       "notes": "Uses a hostile living mouseover, then the current target. Useful for multi-target tanking."
     },
     {
@@ -1199,8 +1199,8 @@
       "icon": "ability_warrior_decisivestrike",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Slam\n# class-specific WARRIOR all | key (L)\n/cast [stance:2] Battle Stance\n/startattack\n/cast Slam",
-      "chars": 111,
+      "body": "#showtooltip Slam\n/cast [stance:2] Battle Stance\n/startattack\n/cast Slam",
+      "chars": 72,
       "notes": "Trainer-taught filler. TBC uses it on the baseline bar. Leaves Defensive Stance.",
       "gameVersion": "TBC"
     },
@@ -1214,8 +1214,8 @@
       "icon": "inv_gauntlets_04",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip [stance:3] Pummel; [equipped:Shields] Shield Bash; Pummel\n# class-specific WARRIOR all | key (G)\n/stopcasting\n/startattack\n/cast [noequipped:Shields,nostance:3] Berserker Stance\n/cast [stance:3] Pummel; [equipped:Shields] Shield Bash",
-      "chars": 246,
+      "body": "#showtooltip [stance:3] Pummel; [equipped:Shields] Shield Bash; Pummel\n/stopcasting\n/startattack\n/cast [noequipped:Shields,nostance:3] Berserker Stance\n/cast [stance:3] Pummel; [equipped:Shields] Shield Bash",
+      "chars": 207,
       "notes": "One interrupt replaces separate Pummel and Shield Bash copies. It uses Shield Bash with a shield; otherwise it enters Berserker and uses Pummel."
     },
     {
@@ -1228,8 +1228,8 @@
       "icon": "ability_warrior_challange",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARRIOR all | key (B)\n/cast [stance:1] Retaliation; [stance:2] Shield Wall; Recklessness",
-      "chars": 118,
+      "body": "#showtooltip\n/cast [stance:1] Retaliation; [stance:2] Shield Wall; Recklessness",
+      "chars": 79,
       "notes": "One major cooldown key. The current stance selects the spell."
     },
     {
@@ -1242,8 +1242,8 @@
       "icon": "spell_nature_reincarnation",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Taunt\n# class-specific WARRIOR all | key (X)\n/cast [nostance:2] Defensive Stance\n/cast [target=mouseover,harm,nodead][] Taunt",
-      "chars": 138,
+      "body": "#showtooltip Taunt\n/cast [nostance:2] Defensive Stance\n/cast [target=mouseover,harm,nodead][] Taunt",
+      "chars": 99,
       "notes": "Uses a hostile living mouseover, then the current target."
     },
     {
@@ -1256,8 +1256,8 @@
       "icon": "ability_warrior_battleshout",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip [mod:shift] Demoralizing Shout; Battle Shout\n# class-specific WARRIOR all | key (Y)\n/cast [mod:shift] Demoralizing Shout; Battle Shout",
-      "chars": 147,
+      "body": "#showtooltip [mod:shift] Demoralizing Shout; Battle Shout\n/cast [mod:shift] Demoralizing Shout; Battle Shout",
+      "chars": 108,
       "notes": "Battle Shout normally. Shift uses Demoralizing Shout."
     },
     {
@@ -1270,9 +1270,9 @@
       "icon": "ability_warrior_warcry",
       "group": "warrior-core",
       "source": "existing",
-      "body": "#showtooltip Demoralizing Shout\n# class-specific WARRIOR all | key (SHIFT-B)\n/cast Demoralizing Shout\n/startattack",
-      "chars": 114,
-      "notes": "Dedicated Action Deck copy; `w-shout` also provides Demoralizing Shout on Shift."
+      "body": "#showtooltip Demoralizing Shout\n/cast Demoralizing Shout\n/startattack",
+      "chars": 69,
+      "notes": "Dedicated Demoralizing Shout copy; `w-shout` also provides Demoralizing Shout on Shift."
     },
     {
       "id": "w-hm",
@@ -1284,8 +1284,8 @@
       "icon": "ability_shockwave",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Hamstring\n# class-specific WARRIOR all | key (`)\n/cast [stance:2] Battle Stance\n/cast Hamstring\n/startattack",
-      "chars": 121,
+      "body": "#showtooltip Hamstring\n/cast [stance:2] Battle Stance\n/cast Hamstring\n/startattack",
+      "chars": 82,
       "notes": "Leaves Defensive Stance because Hamstring requires Battle or Berserker Stance."
     },
     {
@@ -1298,8 +1298,8 @@
       "icon": "ability_warrior_disarm",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Disarm\n# class-specific WARRIOR all | key (shift-c)\n/startattack\n/cast [nostance:2] Defensive Stance\n/cast Disarm",
-      "chars": 126
+      "body": "#showtooltip Disarm\n/startattack\n/cast [nostance:2] Defensive Stance\n/cast Disarm",
+      "chars": 81
     },
     {
       "id": "w-intimid",
@@ -1311,8 +1311,8 @@
       "icon": "ability_golemthunderclap",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Intimidating Shout\n# class-specific WARRIOR all | key (shift-T)\n/cast Intimidating Shout\n/stopattack",
-      "chars": 113,
+      "body": "#showtooltip Intimidating Shout\n/cast Intimidating Shout\n/stopattack",
+      "chars": 68,
       "notes": "Stops auto-attack so the primary target is not hit immediately after the fear."
     },
     {
@@ -1325,8 +1325,8 @@
       "icon": "ability_warrior_revenge",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Revenge\n# class-specific WARRIOR all | key (2)\n/cast [nostance:2] Defensive Stance\n/cast Revenge\n/startattack",
-      "chars": 122
+      "body": "#showtooltip Revenge\n/cast [nostance:2] Defensive Stance\n/cast Revenge\n/startattack",
+      "chars": 83
     },
     {
       "id": "w-sblock",
@@ -1338,8 +1338,8 @@
       "icon": "ability_defend",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Shield Block\n# class-specific WARRIOR all | key (shift-r)\n/cast [nostance:2] Defensive Stance\n/cast Shield Block",
-      "chars": 125
+      "body": "#showtooltip Shield Block\n/cast [nostance:2] Defensive Stance\n/cast Shield Block",
+      "chars": 80
     },
     {
       "id": "w-mock",
@@ -1351,8 +1351,8 @@
       "icon": "ability_warrior_punishingblow",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Mocking Blow\n# class-specific WARRIOR all | key (shift-X)\n/cast [nostance:1] Battle Stance\n/cast [target=mouseover,harm,nodead][] Mocking Blow",
-      "chars": 155,
+      "body": "#showtooltip Mocking Blow\n/cast [nostance:1] Battle Stance\n/cast [target=mouseover,harm,nodead][] Mocking Blow",
+      "chars": 110,
       "notes": "Uses a hostile living mouseover, then the current target."
     },
     {
@@ -1365,8 +1365,8 @@
       "icon": "ability_bullrush",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Challenging Shout\n# class-specific WARRIOR all | key (X)\n/cast Challenging Shout\n/startattack",
-      "chars": 106
+      "body": "#showtooltip Challenging Shout\n/cast Challenging Shout\n/startattack",
+      "chars": 67
     },
     {
       "id": "w-tc",
@@ -1378,8 +1378,8 @@
       "icon": "spell_nature_thunderclap",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Thunder Clap\n# class-specific WARRIOR all | key (6)\n/cast [nostance:1] Battle Stance\n/cast Thunder Clap",
-      "chars": 116
+      "body": "#showtooltip Thunder Clap\n/cast [nostance:1] Battle Stance\n/cast Thunder Clap",
+      "chars": 77
     },
     {
       "id": "w-retal",
@@ -1391,8 +1391,8 @@
       "icon": "ability_warrior_challange",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Retaliation\n# class-specific WARRIOR all | key (Z)\n/cast [nostance:1] Battle Stance\n/cast Retaliation",
-      "chars": 114
+      "body": "#showtooltip Retaliation\n/cast [nostance:1] Battle Stance\n/cast Retaliation",
+      "chars": 75
     },
     {
       "id": "w-reck",
@@ -1404,8 +1404,8 @@
       "icon": "ability_criticalstrike",
       "group": "warrior-core",
       "source": "plan",
-      "body": "#showtooltip Recklessness\n# class-specific WARRIOR all | key (Z)\n/cast [nostance:3] Berserker Stance\n/cast Recklessness",
-      "chars": 119
+      "body": "#showtooltip Recklessness\n/cast [nostance:3] Berserker Stance\n/cast Recklessness",
+      "chars": 80
     },
     {
       "id": "w-sw",
@@ -1417,8 +1417,8 @@
       "icon": "ability_warrior_shieldwall",
       "group": "warrior-core",
       "source": "hybrid",
-      "body": "#showtooltip Shield Wall\n# class-specific WARRIOR all | key (Z)\n/cast [nostance:2] Defensive Stance\n/cast Shield Wall",
-      "chars": 117,
+      "body": "#showtooltip Shield Wall\n/cast [nostance:2] Defensive Stance\n/cast Shield Wall",
+      "chars": 78,
       "notes": "Requires an equipped shield. Named equip copies stay in the gear kit."
     },
     {
@@ -1431,8 +1431,8 @@
       "icon": "ability_rogue_slicedice",
       "group": "warrior-arms",
       "source": "plan",
-      "body": "#showtooltip Sweeping Strikes\n# class-specific WARRIOR arms | key (T)\n/cast [nostance:1] Battle Stance\n/cast Sweeping Strikes",
-      "chars": 125
+      "body": "#showtooltip Sweeping Strikes\n/cast [nostance:1] Battle Stance\n/cast Sweeping Strikes",
+      "chars": 85
     },
     {
       "id": "w-ms",
@@ -1444,8 +1444,8 @@
       "icon": "ability_warrior_savageblow",
       "group": "warrior-arms",
       "source": "existing",
-      "body": "#showtooltip Mortal Strike\n# class-specific WARRIOR arms | key (1)\n/cast Mortal Strike\n/startattack",
-      "chars": 99
+      "body": "#showtooltip Mortal Strike\n/cast Mortal Strike\n/startattack",
+      "chars": 59
     },
     {
       "id": "w-deathwish",
@@ -1457,8 +1457,8 @@
       "icon": "spell_shadow_deathpact",
       "group": "warrior-fury",
       "source": "plan",
-      "body": "#showtooltip Death Wish\n# class-specific WARRIOR fury | key (T)\n/cast Death Wish\n/startattack",
-      "chars": 93
+      "body": "#showtooltip Death Wish\n/cast Death Wish\n/startattack",
+      "chars": 53
     },
     {
       "id": "w-bt",
@@ -1470,8 +1470,8 @@
       "icon": "spell_nature_bloodlust",
       "group": "warrior-fury",
       "source": "existing",
-      "body": "#showtooltip Bloodthirst\n# class-specific WARRIOR fury | key (1)\n/cast Bloodthirst\n/startattack",
-      "chars": 95
+      "body": "#showtooltip Bloodthirst\n/cast Bloodthirst\n/startattack",
+      "chars": 55
     },
     {
       "id": "w-ls",
@@ -1483,8 +1483,8 @@
       "icon": "spell_holy_ashestoashes",
       "group": "warrior-prot",
       "source": "plan",
-      "body": "#showtooltip Last Stand\n# class-specific WARRIOR protection | key (T)\n/stopcasting\n/cast Last Stand",
-      "chars": 99,
+      "body": "#showtooltip Last Stand\n/stopcasting\n/cast Last Stand",
+      "chars": 53,
       "notes": "Stops a cast or queued spell so the emergency defensive can fire immediately."
     },
     {
@@ -1497,8 +1497,8 @@
       "icon": "inv_potion_69",
       "group": "warrior-gear",
       "source": "existing",
-      "body": "# character-specific WARRIOR fury Tazzy | key (T)\n/use Diamond Flask\n/cast Death Wish",
-      "chars": 85,
+      "body": "/use Diamond Flask\n/cast Death Wish",
+      "chars": 35,
       "character": "Tazzy",
       "notes": "Uses Diamond Flask, then Death Wish. The flask can consume the first press; press again after the global cooldown."
     },
@@ -1512,8 +1512,8 @@
       "icon": "inv_sword_39",
       "group": "warrior-gear",
       "source": "existing",
-      "body": "# character-specific WARRIOR all Tazzy | key (unbound)\n/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 Mirah's Song",
-      "chars": 120,
+      "body": "/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 Mirah's Song",
+      "chars": 65,
       "character": "Tazzy",
       "notes": "Cancels a queued attack, then equips the dual-wield threat set."
     },
@@ -1527,8 +1527,8 @@
       "icon": "inv_shield_04",
       "group": "warrior-gear",
       "source": "existing",
-      "body": "# character-specific WARRIOR all Tazzy | key (unbound)\n/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 Buru's Skull Fragment",
-      "chars": 129,
+      "body": "/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 Buru's Skull Fragment",
+      "chars": 74,
       "character": "Tazzy",
       "notes": "Cancels a queued attack, then equips the alternate shield set. The one-handed weapon goes on before the shield."
     },
@@ -1542,8 +1542,8 @@
       "icon": "inv_shield_06",
       "group": "warrior-gear",
       "source": "existing",
-      "body": "# character-specific WARRIOR all Tazzy | key (unbound)\n/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 The Immovable Object",
-      "chars": 128,
+      "body": "/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 The Immovable Object",
+      "chars": 73,
       "character": "Tazzy",
       "notes": "Cancels a queued attack, then equips the mitigation shield set."
     },
@@ -1557,8 +1557,8 @@
       "icon": "ability_warrior_shieldwall",
       "group": "warrior-gear",
       "source": "existing",
-      "body": "#showtooltip Shield Wall\n# character-specific WARRIOR all Tazzy | key (unbound)\n/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 The Immovable Object\n/cast [nostance:2] Defensive Stance\n/cast Shield Wall",
-      "chars": 207,
+      "body": "#showtooltip Shield Wall\n/stopcasting\n/equipslot 16 Quel'Serrar\n/equipslot 17 The Immovable Object\n/cast [nostance:2] Defensive Stance\n/cast Shield Wall",
+      "chars": 152,
       "character": "Tazzy",
       "notes": "Cancels a queued attack, equips the mitigation set, enters Defensive Stance, then uses Shield Wall. Combat swaps can require repeated presses."
     },
@@ -1572,8 +1572,8 @@
       "icon": "spell_frost_frostbolt02",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE frost\n/cqs\n/cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)",
-      "chars": 97
+      "body": "#showtooltip [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)\n/cqs\n/cast [nomod]Frostbolt;[mod:shift]Frostbolt(rank 1)",
+      "chars": 115
     },
     {
       "id": "m-fireball",
@@ -1585,8 +1585,8 @@
       "icon": "spell_fire_flamebolt",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip Fireball\n# class-specific MAGE fire | key (2)\n/cqs\n/cast [mod:shift] Combustion\n/use [mod:shift] Mind Quickening Gem\n/use [mod:shift] Talisman of Ephemeral Power\n/use [mod:shift] Zandalarian Hero Charm\n/cast Fireball;",
-      "chars": 230
+      "body": "#showtooltip [mod:shift] Combustion; Fireball\n/cqs\n/cast [mod:shift] Combustion\n/use [mod:shift] Mind Quickening Gem\n/use [mod:shift] Talisman of Ephemeral Power\n/use [mod:shift] Zandalarian Hero Charm\n/cast Fireball;",
+      "chars": 217
     },
     {
       "id": "m-blast",
@@ -1598,8 +1598,8 @@
       "icon": "spell_fire_fireball",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE fire\n/cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)",
-      "chars": 93
+      "body": "#showtooltip [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)\n/cast [nomod]Fire Blast;[mod:shift]Fire Blast(rank 1)",
+      "chars": 114
     },
     {
       "id": "m-ae",
@@ -1611,8 +1611,8 @@
       "icon": "spell_nature_wispsplode",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE arcane\n/cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)",
-      "chars": 107
+      "body": "#showtooltip [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)\n/cast [nomod]Arcane Explosion;[mod:shift]Arcane Explosion(rank 1)",
+      "chars": 138
     },
     {
       "id": "m-am",
@@ -1624,8 +1624,8 @@
       "icon": "spell_nature_starfall",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip Arcane Missiles\n# class-specific MAGE arcane\n/cast [nochanneling:Arcane Missiles] Arcane Missiles",
-      "chars": 110
+      "body": "#showtooltip Arcane Missiles\n/cast [nochanneling:Arcane Missiles] Arcane Missiles",
+      "chars": 81
     },
     {
       "id": "m-blizz",
@@ -1637,8 +1637,8 @@
       "icon": "spell_frost_icestorm",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE frost\n/cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)",
-      "chars": 90
+      "body": "#showtooltip [nomod]Blizzard;[mod:shift]Blizzard(rank 1)\n/cast [nomod]Blizzard;[mod:shift]Blizzard(rank 1)",
+      "chars": 106
     },
     {
       "id": "m-cone",
@@ -1650,8 +1650,8 @@
       "icon": "spell_frost_glacier",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE frost\n/cast [nomod]Cone of Cold; [mod:shift] Cone of Cold(rank 1)",
-      "chars": 100
+      "body": "#showtooltip [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)\n/cast [nomod]Cone of Cold;[mod:shift]Cone of Cold(rank 1)",
+      "chars": 122
     },
     {
       "id": "m-fs",
@@ -1663,8 +1663,8 @@
       "icon": "spell_fire_selfdestruct",
       "group": "mage-filler",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE fire\n/use [mod:alt] Talisman of Ephemeral Power\n/use [mod:alt] Zandalarian Hero Charm\n/cast [mod:alt] Arcane Power\n/cast [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike",
-      "chars": 218
+      "body": "#showtooltip [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike\n/use [mod:alt] Talisman of Ephemeral Power\n/use [mod:alt] Zandalarian Hero Charm\n/cast [mod:alt] Arcane Power\n/cast [mod:shift,@cursor] Flamestrike(Rank 5); [@cursor] Flamestrike",
+      "chars": 254
     },
     {
       "id": "m-scorch",
@@ -1676,8 +1676,8 @@
       "icon": "spell_fire_soulburn",
       "group": "mage-filler",
       "source": "plan",
-      "body": "#showtooltip Scorch\n# class-specific MAGE fire\n/cast Scorch",
-      "chars": 59
+      "body": "#showtooltip Scorch\n/cast Scorch",
+      "chars": 32
     },
     {
       "id": "m-pyro",
@@ -1689,8 +1689,8 @@
       "icon": "spell_fire_fireball02",
       "group": "mage-filler",
       "source": "plan",
-      "body": "#showtooltip Pyroblast\n# class-specific MAGE fire\n/cast Presence of Mind\n/cast Pyroblast",
-      "chars": 88
+      "body": "#showtooltip Pyroblast\n/cast Presence of Mind\n/cast Pyroblast",
+      "chars": 61
     },
     {
       "id": "m-wand",
@@ -1702,8 +1702,8 @@
       "icon": "spell_shadow_shadowbolt",
       "group": "mage-currentz",
       "source": "existing",
-      "body": "#showtooltip\n# character-specific MAGE all Currentz\n/equip Touch of Chaos\n/cast shoot",
-      "chars": 85,
+      "body": "#showtooltip\n/equip Touch of Chaos\n/cast shoot",
+      "chars": 46,
       "character": "Currentz"
     },
     {
@@ -1716,8 +1716,8 @@
       "icon": "spell_frost_iceshock",
       "group": "mage-control",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE all\n/stopcasting\n#/cast [target=mouseover,exists] Counterspell\n/cast Counterspell",
-      "chars": 116,
+      "body": "#showtooltip\n/stopcasting\n#/cast [target=mouseover,exists] Counterspell\n/cast Counterspell",
+      "chars": 90,
       "notes": "Mouseover stays commented, as on disk."
     },
     {
@@ -1730,8 +1730,8 @@
       "icon": "spell_frost_iceshock",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip Counterspell\n# class-specific MAGE all\n/stopcasting\n/cast [target=focus,harm,nodead] Counterspell; Counterspell",
-      "chars": 124
+      "body": "#showtooltip Counterspell\n/stopcasting\n/cast [target=focus,harm,nodead] Counterspell; Counterspell",
+      "chars": 98
     },
     {
       "id": "m-sheep",
@@ -1743,8 +1743,8 @@
       "icon": "spell_nature_polymorph",
       "group": "mage-control",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)",
-      "chars": 90
+      "body": "#showtooltip [nomod]Polymorph;[mod:shift]Polymorph(rank 1)\n/cast [nomod]Polymorph;[mod:shift]Polymorph(rank 1)",
+      "chars": 110
     },
     {
       "id": "m-decurse",
@@ -1756,8 +1756,8 @@
       "icon": "spell_nature_removecurse",
       "group": "mage-control",
       "source": "existing",
-      "body": "#showtooltip Remove Lesser Curse\n# class-specific MAGE all\n/cast [target=mouseover,exists] Remove Lesser Curse\n/cast Remove Lesser Curse",
-      "chars": 136
+      "body": "#showtooltip Remove Lesser Curse\n/cast [target=mouseover,exists] Remove Lesser Curse\n/cast Remove Lesser Curse",
+      "chars": 110
     },
     {
       "id": "m-ib",
@@ -1769,8 +1769,8 @@
       "icon": "spell_frost_frost",
       "group": "mage-control",
       "source": "existing",
-      "body": "#showtooltip Ice block\n# class-specific MAGE frost\n/stopcasting\n/cast Ice block\n/cancelaura Ice block",
-      "chars": 101
+      "body": "#showtooltip Ice block\n/stopcasting\n/cast Ice block\n/cancelaura Ice block",
+      "chars": 73
     },
     {
       "id": "m-ms",
@@ -1782,8 +1782,8 @@
       "icon": "spell_shadow_detectlesserinvisibility",
       "group": "mage-control",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE all\n/stopcasting\n/cast mana shield",
-      "chars": 69
+      "body": "#showtooltip\n/stopcasting\n/cast mana shield",
+      "chars": 43
     },
     {
       "id": "m-nova",
@@ -1795,8 +1795,8 @@
       "icon": "spell_frost_frostnova",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip Frost Nova\n# class-specific MAGE frost | key (V / ALT-SHIFT-Q)\n/cast [mod:shift] Frost Nova;Frost Nova (rank 1)",
-      "chars": 124
+      "body": "#showtooltip [mod:shift] Frost Nova; Frost Nova(rank 1)\n/cast [mod:shift] Frost Nova; Frost Nova(rank 1)",
+      "chars": 104
     },
     {
       "id": "m-barrier",
@@ -1808,8 +1808,8 @@
       "icon": "spell_ice_lament",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip Ice Barrier\n# class-specific MAGE frost\n/cast Ice Barrier",
-      "chars": 70
+      "body": "#showtooltip Ice Barrier\n/cast Ice Barrier",
+      "chars": 42
     },
     {
       "id": "m-ward",
@@ -1821,8 +1821,8 @@
       "icon": "spell_frost_frostward",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip [mod:shift] Fire Ward; Frost Ward\n# class-specific MAGE all | key (BUTTON3)\n/cast [mod:shift] Fire Ward; Frost Ward",
-      "chars": 128
+      "body": "#showtooltip [mod:shift] Fire Ward; Frost Ward\n/cast [mod:shift] Fire Ward; Frost Ward",
+      "chars": 86
     },
     {
       "id": "m-slowfall",
@@ -1834,8 +1834,8 @@
       "icon": "spell_magic_featherfall",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip Slow Fall\n# class-specific MAGE all | key (8)\n/cast Slow Fall",
-      "chars": 74
+      "body": "#showtooltip Slow Fall\n/cast Slow Fall",
+      "chars": 38
     },
     {
       "id": "m-dampen",
@@ -1847,8 +1847,8 @@
       "icon": "spell_nature_abolishmagic",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [mod:shift] Amplify Magic; Dampen Magic",
-      "chars": 84
+      "body": "#showtooltip [mod:shift] Amplify Magic; Dampen Magic\n/cast [mod:shift] Amplify Magic; Dampen Magic",
+      "chars": 98
     },
     {
       "id": "m-csnap",
@@ -1860,8 +1860,8 @@
       "icon": "spell_frost_wizardmark",
       "group": "mage-control",
       "source": "plan",
-      "body": "#showtooltip Cold Snap\n# class-specific MAGE frost\n/cast Cold Snap",
-      "chars": 66
+      "body": "#showtooltip Cold Snap\n/cast Cold Snap",
+      "chars": 38
     },
     {
       "id": "m-nef",
@@ -1873,8 +1873,8 @@
       "icon": "spell_holy_excorcism_02",
       "group": "mage-control",
       "source": "existing",
-      "body": "# class-specific MAGE fire\n/use [@cursor] Stratholme Holy Water\n/cast Blast Wave",
-      "chars": 80
+      "body": "/use [@cursor] Stratholme Holy Water\n/cast Blast Wave",
+      "chars": 53
     },
     {
       "id": "m-sw",
@@ -1886,8 +1886,8 @@
       "icon": "spell_arcane_teleportstormwind",
       "group": "mage-ports-alliance",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind;",
-      "chars": 104
+      "body": "#showtooltip [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind\n/cast [nomod] Teleport: Stormwind; [mod:shift] Portal: Stormwind",
+      "chars": 136
     },
     {
       "id": "m-if",
@@ -1899,8 +1899,8 @@
       "icon": "spell_arcane_teleportironforge",
       "group": "mage-ports-alliance",
       "source": "existing",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge;",
-      "chars": 104
+      "body": "#showtooltip [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge\n/cast [nomod] Teleport: Ironforge; [mod:shift] Portal: Ironforge",
+      "chars": 136
     },
     {
       "id": "m-dar",
@@ -1912,8 +1912,8 @@
       "icon": "spell_arcane_teleportdarnassus",
       "group": "mage-ports-alliance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus;",
-      "chars": 104
+      "body": "#showtooltip [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus\n/cast [nomod] Teleport: Darnassus; [mod:shift] Portal: Darnassus",
+      "chars": 136
     },
     {
       "id": "m-org",
@@ -1925,8 +1925,8 @@
       "icon": "spell_arcane_teleportorgrimmar",
       "group": "mage-ports-horde",
       "source": "existing",
-      "body": "# class-specific MAGE all\n/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar;",
-      "chars": 91
+      "body": "#showtooltip [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar\n/cast [nomod] Teleport: Orgrimmar; [mod:shift] Portal: Orgrimmar",
+      "chars": 136
     },
     {
       "id": "m-uc",
@@ -1938,8 +1938,8 @@
       "icon": "spell_arcane_teleportundercity",
       "group": "mage-ports-horde",
       "source": "existing",
-      "body": "# class-specific MAGE all\n/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity;",
-      "chars": 91
+      "body": "#showtooltip [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity\n/cast [nomod] Teleport: Undercity; [mod:shift] Portal: Undercity",
+      "chars": 136
     },
     {
       "id": "m-tb",
@@ -1951,8 +1951,8 @@
       "icon": "spell_arcane_teleportthunderbluff",
       "group": "mage-ports-horde",
       "source": "existing",
-      "body": "# class-specific MAGE all\n/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff;",
-      "chars": 99
+      "body": "#showtooltip [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff\n/cast [nomod] Teleport: Thunder bluff; [mod:shift] Portal: Thunder bluff",
+      "chars": 152
     },
     {
       "id": "p-judge",
@@ -1964,8 +1964,8 @@
       "icon": "spell_holy_righteousfury",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Judgement\n# class-specific PALADIN retribution\n/startattack\n/cast Judgement",
-      "chars": 88
+      "body": "#showtooltip Judgement\n/startattack\n/cast Judgement",
+      "chars": 51
     },
     {
       "id": "p-seal",
@@ -1977,8 +1977,8 @@
       "icon": "ability_thunderbolt",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN retribution\n/cast [mod:shift] Seal of Command; Seal of Righteousness",
-      "chars": 106
+      "body": "#showtooltip\n/cast [mod:shift] Seal of Command; Seal of Righteousness",
+      "chars": 69
     },
     {
       "id": "p-hoj",
@@ -1990,8 +1990,8 @@
       "icon": "spell_holy_sealofmight",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Hammer of Justice\n# class-specific PALADIN all\n/stopcasting\n/cast Hammer of Justice",
-      "chars": 96
+      "body": "#showtooltip Hammer of Justice\n/stopcasting\n/cast Hammer of Justice",
+      "chars": 67
     },
     {
       "id": "p-cons",
@@ -2003,8 +2003,8 @@
       "icon": "spell_holy_innerfire",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [mod:shift] Consecration(Rank 1); Consecration",
-      "chars": 94
+      "body": "#showtooltip\n/cast [mod:shift] Consecration(Rank 1); Consecration",
+      "chars": 65
     },
     {
       "id": "p-how",
@@ -2016,8 +2016,8 @@
       "icon": "ability_thunderclap",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Hammer of Wrath\n# class-specific PALADIN all\n/cast Hammer of Wrath",
-      "chars": 79
+      "body": "#showtooltip Hammer of Wrath\n/cast Hammer of Wrath",
+      "chars": 50
     },
     {
       "id": "p-exo",
@@ -2029,8 +2029,8 @@
       "icon": "spell_holy_excorcism_02",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Exorcism\n# class-specific PALADIN retribution\n/cast Exorcism",
-      "chars": 73
+      "body": "#showtooltip Exorcism\n/cast Exorcism",
+      "chars": 36
     },
     {
       "id": "p-rep",
@@ -2042,8 +2042,8 @@
       "icon": "spell_holy_prayerofhealing",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Repentance\n# class-specific PALADIN retribution\n/stopcasting\n/cast Repentance",
-      "chars": 90
+      "body": "#showtooltip Repentance\n/stopcasting\n/cast Repentance",
+      "chars": 53
     },
     {
       "id": "p-bubble",
@@ -2055,8 +2055,8 @@
       "icon": "spell_holy_divineintervention",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Divine Shield\n# class-specific PALADIN all\n/cast Divine Shield",
-      "chars": 75
+      "body": "#showtooltip Divine Shield\n/cast Divine Shield",
+      "chars": 46
     },
     {
       "id": "p-cancel-ds",
@@ -2068,8 +2068,8 @@
       "icon": "spell_holy_divineintervention",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "# class-specific PALADIN all\n/cancelaura Divine Shield",
-      "chars": 54
+      "body": "/cancelaura Divine Shield",
+      "chars": 25
     },
     {
       "id": "p-bop",
@@ -2081,8 +2081,8 @@
       "icon": "spell_holy_sealofprotection",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Blessing of Protection\n# class-specific PALADIN all\n/cast Blessing of Protection",
-      "chars": 93
+      "body": "#showtooltip Blessing of Protection\n/cast Blessing of Protection",
+      "chars": 64
     },
     {
       "id": "p-cleanse",
@@ -2094,8 +2094,8 @@
       "icon": "spell_holy_purify",
       "group": "paladin-ret",
       "source": "hybrid",
-      "body": "#showtooltip Cleanse\n# class-specific PALADIN all\n/cast [mod:alt,target=player] Cleanse; [target=mouseover,exists] Cleanse; Cleanse",
-      "chars": 131
+      "body": "#showtooltip Cleanse\n/cast [mod:alt,target=player] Cleanse; [target=mouseover,exists] Cleanse; Cleanse",
+      "chars": 102
     },
     {
       "id": "p-fol",
@@ -2107,8 +2107,8 @@
       "icon": "spell_holy_flashheal",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN holy\n/cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light",
-      "chars": 174
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Flash of Light; [mod:shift] Flash of Light(Rank 4); [mod:ctrl] Flash of Light(Rank 1); Flash of Light",
+      "chars": 144
     },
     {
       "id": "p-might",
@@ -2120,8 +2120,8 @@
       "icon": "spell_holy_fistofjustice",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might",
-      "chars": 131
+      "body": "#showtooltip\n/cast [mod:shift] Blessing of Salvation; [mod:ctrl] Blessing of Wisdom; Blessing of Might",
+      "chars": 102
     },
     {
       "id": "p-aura",
@@ -2133,8 +2133,8 @@
       "icon": "spell_holy_devotionaura",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura",
-      "chars": 122
+      "body": "#showtooltip\n/cast [mod:shift] Devotion Aura; [mod:ctrl] Retribution Aura; Concentration Aura",
+      "chars": 93
     },
     {
       "id": "p-rf",
@@ -2146,8 +2146,8 @@
       "icon": "spell_holy_sealoffury",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Righteous Fury\n# class-specific PALADIN protection\n/cast Righteous Fury",
-      "chars": 84
+      "body": "#showtooltip Righteous Fury\n/cast Righteous Fury",
+      "chars": 48
     },
     {
       "id": "p-hs",
@@ -2159,8 +2159,8 @@
       "icon": "spell_holy_blessingofprotection",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Holy Shield\n# class-specific PALADIN protection\n/cast Holy Shield",
-      "chars": 78
+      "body": "#showtooltip Holy Shield\n/cast Holy Shield",
+      "chars": 42
     },
     {
       "id": "p-loh",
@@ -2172,8 +2172,8 @@
       "icon": "spell_holy_layonhands",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Lay on Hands\n# class-specific PALADIN holy\n/raid Lay on Hands on %t\n/cast Lay on Hands",
-      "chars": 99
+      "body": "#showtooltip Lay on Hands\n/raid Lay on Hands on %t\n/cast Lay on Hands",
+      "chars": 69
     },
     {
       "id": "p-di",
@@ -2185,8 +2185,8 @@
       "icon": "spell_nature_timestop",
       "group": "paladin-ret",
       "source": "plan",
-      "body": "#showtooltip Divine Intervention\n# class-specific PALADIN all\n/raid DI on %t\n/cast Divine Intervention",
-      "chars": 102
+      "body": "#showtooltip Divine Intervention\n/raid DI on %t\n/cast Divine Intervention",
+      "chars": 73
     },
     {
       "id": "p-hl",
@@ -2198,8 +2198,8 @@
       "icon": "spell_holy_holybolt",
       "group": "paladin-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN holy\n/cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light",
-      "chars": 127
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Holy Light; [mod:shift] Holy Light(Rank 1); Holy Light",
+      "chars": 97
     },
     {
       "id": "p-df",
@@ -2211,8 +2211,8 @@
       "icon": "spell_holy_flashheal",
       "group": "paladin-holy",
       "source": "plan",
-      "body": "#showtooltip Flash of Light\n# class-specific PALADIN holy\n/cast Divine Favor\n/cast Flash of Light",
-      "chars": 97
+      "body": "#showtooltip Flash of Light\n/cast Divine Favor\n/cast Flash of Light",
+      "chars": 67
     },
     {
       "id": "p-shock",
@@ -2224,8 +2224,8 @@
       "icon": "spell_holy_searinglight",
       "group": "paladin-holy",
       "source": "plan",
-      "body": "#showtooltip Holy Shock\n# class-specific PALADIN holy\n/cast Holy Shock",
-      "chars": 70
+      "body": "#showtooltip Holy Shock\n/cast Holy Shock",
+      "chars": 40
     },
     {
       "id": "p-seal-h",
@@ -2237,8 +2237,8 @@
       "icon": "spell_holy_righteousnessaura",
       "group": "paladin-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN holy\n/cast [mod:shift] Seal of Light; Seal of Wisdom",
-      "chars": 90
+      "body": "#showtooltip\n/cast [mod:shift] Seal of Light; Seal of Wisdom",
+      "chars": 60
     },
     {
       "id": "p-mount",
@@ -2250,8 +2250,8 @@
       "icon": "spell_nature_swiftness",
       "group": "paladin-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [mod:shift] Summon Warhorse; Summon Charger",
-      "chars": 91
+      "body": "#showtooltip\n/cast [mod:shift] Summon Warhorse; Summon Charger",
+      "chars": 62
     },
     {
       "id": "h-mark",
@@ -2263,8 +2263,8 @@
       "icon": "ability_hunter_snipershot",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Hunter's Mark\n# class-specific HUNTER all\n/cast Hunter's Mark",
-      "chars": 74
+      "body": "#showtooltip Hunter's Mark\n/cast Hunter's Mark",
+      "chars": 46
     },
     {
       "id": "h-aspect",
@@ -2276,8 +2276,8 @@
       "icon": "spell_nature_ravenform",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [mod:shift] Aspect of the Monkey; Aspect of the Hawk",
-      "chars": 99
+      "body": "#showtooltip\n/cast [mod:shift] Aspect of the Monkey; Aspect of the Hawk",
+      "chars": 71
     },
     {
       "id": "h-aimed",
@@ -2289,8 +2289,8 @@
       "icon": "inv_spear_07",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Aimed Shot\n# class-specific HUNTER marksmanship\n/cast Aimed Shot",
-      "chars": 77
+      "body": "#showtooltip Aimed Shot\n/cast Aimed Shot",
+      "chars": 40
     },
     {
       "id": "h-multi",
@@ -2302,8 +2302,8 @@
       "icon": "ability_upgrademoonglaive",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Multi-Shot\n# class-specific HUNTER marksmanship\n/cast Multi-Shot",
-      "chars": 77
+      "body": "#showtooltip Multi-Shot\n/cast Multi-Shot",
+      "chars": 40
     },
     {
       "id": "h-arcane",
@@ -2315,8 +2315,8 @@
       "icon": "ability_impalingbolt",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot",
-      "chars": 91
+      "body": "#showtooltip\n/cast [mod:shift] Arcane Shot(Rank 1); Arcane Shot",
+      "chars": 63
     },
     {
       "id": "h-sting",
@@ -2328,8 +2328,8 @@
       "icon": "ability_hunter_quickshot",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Serpent Sting\n# class-specific HUNTER all\n/cast Serpent Sting",
-      "chars": 74
+      "body": "#showtooltip Serpent Sting\n/cast Serpent Sting",
+      "chars": 46
     },
     {
       "id": "h-conc",
@@ -2341,8 +2341,8 @@
       "icon": "spell_frost_stun",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Concussive Shot\n# class-specific HUNTER all\n/cast Concussive Shot",
-      "chars": 78
+      "body": "#showtooltip Concussive Shot\n/cast Concussive Shot",
+      "chars": 50
     },
     {
       "id": "h-clip",
@@ -2354,8 +2354,8 @@
       "icon": "ability_rogue_trip",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [mod:shift] Wing Clip(Rank 1); Wing Clip",
-      "chars": 87
+      "body": "#showtooltip\n/cast [mod:shift] Wing Clip(Rank 1); Wing Clip",
+      "chars": 59
     },
     {
       "id": "h-fd",
@@ -2367,8 +2367,8 @@
       "icon": "ability_rogue_feigndeath",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Feign Death\n# class-specific HUNTER all\n/stopattack\n/stopcasting\n/cast Feign Death",
-      "chars": 95
+      "body": "#showtooltip Feign Death\n/stopattack\n/stopcasting\n/cast Feign Death",
+      "chars": 67
     },
     {
       "id": "h-trap",
@@ -2380,8 +2380,8 @@
       "icon": "spell_frost_chainsofice",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Freezing Trap\n# class-specific HUNTER all\n/cast Freezing Trap",
-      "chars": 74
+      "body": "#showtooltip Freezing Trap\n/cast Freezing Trap",
+      "chars": 46
     },
     {
       "id": "h-rapid",
@@ -2393,8 +2393,8 @@
       "icon": "ability_hunter_runningshot",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Rapid Fire\n# class-specific HUNTER marksmanship\n/use 13\n/cast Rapid Fire",
-      "chars": 85
+      "body": "#showtooltip Rapid Fire\n/use 13\n/cast Rapid Fire",
+      "chars": 48
     },
     {
       "id": "h-tranq",
@@ -2406,8 +2406,8 @@
       "icon": "spell_nature_drowsy",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Tranquilizing Shot\n# class-specific HUNTER all\n/cast Tranquilizing Shot",
-      "chars": 84
+      "body": "#showtooltip Tranquilizing Shot\n/cast Tranquilizing Shot",
+      "chars": 56
     },
     {
       "id": "h-mend",
@@ -2419,8 +2419,8 @@
       "icon": "ability_hunter_mendpet",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Mend Pet\n# class-specific HUNTER beast-mastery\n/cast Mend Pet",
-      "chars": 74
+      "body": "#showtooltip Mend Pet\n/cast Mend Pet",
+      "chars": 36
     },
     {
       "id": "h-call",
@@ -2432,8 +2432,8 @@
       "icon": "ability_hunter_beastcall",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Call Pet\n# class-specific HUNTER beast-mastery\n/cast Call Pet",
-      "chars": 74
+      "body": "#showtooltip Call Pet\n/cast Call Pet",
+      "chars": 36
     },
     {
       "id": "h-bw",
@@ -2445,8 +2445,8 @@
       "icon": "ability_druid_ferociousbite",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Bestial Wrath\n# class-specific HUNTER beast-mastery\n/cast Bestial Wrath",
-      "chars": 84
+      "body": "#showtooltip Bestial Wrath\n/cast Bestial Wrath",
+      "chars": 46
     },
     {
       "id": "h-cheetah",
@@ -2458,8 +2458,8 @@
       "icon": "ability_mount_jungletiger",
       "group": "hunter-core",
       "source": "plan",
-      "body": "#showtooltip Aspect of the Cheetah\n# class-specific HUNTER all\n/cast Aspect of the Cheetah",
-      "chars": 90
+      "body": "#showtooltip Aspect of the Cheetah\n/cast Aspect of the Cheetah",
+      "chars": 62
     },
     {
       "id": "h-worg",
@@ -2471,8 +2471,8 @@
       "icon": "ability_hunter_beastcall",
       "group": "hunter-auden",
       "source": "existing",
-      "body": "#showtooltip\n# character-specific HUNTER beast-mastery Auden\n/cast Call Pet\n/use Worg Carrier",
-      "chars": 93,
+      "body": "#showtooltip\n/cast Call Pet\n/use Worg Carrier",
+      "chars": 45,
       "character": "Auden"
     },
     {
@@ -2485,8 +2485,8 @@
       "icon": "ability_stealth",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Stealth\n# class-specific ROGUE all\n/cast Stealth",
-      "chars": 61
+      "body": "#showtooltip Stealth\n/cast Stealth",
+      "chars": 34
     },
     {
       "id": "r-ss",
@@ -2498,8 +2498,8 @@
       "icon": "spell_shadow_ritualofsacrifice",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Sinister Strike\n# class-specific ROGUE combat\n/startattack\n/cast Sinister Strike",
-      "chars": 93
+      "body": "#showtooltip Sinister Strike\n/startattack\n/cast Sinister Strike",
+      "chars": 63
     },
     {
       "id": "r-kick",
@@ -2511,8 +2511,8 @@
       "icon": "ability_kick",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Kick\n# class-specific ROGUE all\n/stopcasting\n/cast Kick",
-      "chars": 68
+      "body": "#showtooltip Kick\n/stopcasting\n/cast Kick",
+      "chars": 41
     },
     {
       "id": "r-evis",
@@ -2524,8 +2524,8 @@
       "icon": "ability_rogue_eviscerate",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Eviscerate\n# class-specific ROGUE all\n/cast Eviscerate",
-      "chars": 67
+      "body": "#showtooltip Eviscerate\n/cast Eviscerate",
+      "chars": 40
     },
     {
       "id": "r-snd",
@@ -2537,8 +2537,8 @@
       "icon": "ability_rogue_slicedice",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Slice and Dice\n# class-specific ROGUE combat\n/cast Slice and Dice",
-      "chars": 78
+      "body": "#showtooltip Slice and Dice\n/cast Slice and Dice",
+      "chars": 48
     },
     {
       "id": "r-rup",
@@ -2550,8 +2550,8 @@
       "icon": "ability_rogue_rupture",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Rupture\n# class-specific ROGUE assassination\n/cast Rupture",
-      "chars": 71
+      "body": "#showtooltip Rupture\n/cast Rupture",
+      "chars": 34
     },
     {
       "id": "r-ks",
@@ -2563,8 +2563,8 @@
       "icon": "ability_rogue_kidneyshot",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Kidney Shot\n# class-specific ROGUE assassination\n/cast Kidney Shot",
-      "chars": 79
+      "body": "#showtooltip Kidney Shot\n/cast Kidney Shot",
+      "chars": 42
     },
     {
       "id": "r-gouge",
@@ -2576,8 +2576,8 @@
       "icon": "ability_gouge",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Gouge\n# class-specific ROGUE combat\n/stopattack\n/cast Gouge",
-      "chars": 72
+      "body": "#showtooltip Gouge\n/stopattack\n/cast Gouge",
+      "chars": 42
     },
     {
       "id": "r-cheap",
@@ -2589,8 +2589,8 @@
       "icon": "ability_cheapshot",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Cheap Shot\n# class-specific ROGUE all\n/cast [nostealth] Stealth\n/cast Cheap Shot",
-      "chars": 93
+      "body": "#showtooltip Cheap Shot\n/cast [nostealth] Stealth\n/cast Cheap Shot",
+      "chars": 66
     },
     {
       "id": "r-ambush",
@@ -2602,8 +2602,8 @@
       "icon": "ability_rogue_ambush",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Ambush\n# class-specific ROGUE assassination\n/cast [nostealth] Stealth\n/cast Ambush",
-      "chars": 95
+      "body": "#showtooltip Ambush\n/cast [nostealth] Stealth\n/cast Ambush",
+      "chars": 58
     },
     {
       "id": "r-bf",
@@ -2615,8 +2615,8 @@
       "icon": "ability_warrior_punishingblow",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Blade Flurry\n# class-specific ROGUE combat\n/use 13\n/cast Blade Flurry",
-      "chars": 82
+      "body": "#showtooltip Blade Flurry\n/use 13\n/cast Blade Flurry",
+      "chars": 52
     },
     {
       "id": "r-ar",
@@ -2628,8 +2628,8 @@
       "icon": "spell_shadow_shadowworddominate",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Adrenaline Rush\n# class-specific ROGUE combat\n/cast Adrenaline Rush",
-      "chars": 80
+      "body": "#showtooltip Adrenaline Rush\n/cast Adrenaline Rush",
+      "chars": 50
     },
     {
       "id": "r-eva",
@@ -2641,8 +2641,8 @@
       "icon": "spell_shadow_shadowward",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Evasion\n# class-specific ROGUE combat\n/cast Evasion",
-      "chars": 64
+      "body": "#showtooltip Evasion\n/cast Evasion",
+      "chars": 34
     },
     {
       "id": "r-vanish",
@@ -2654,8 +2654,8 @@
       "icon": "ability_vanish",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Vanish\n# class-specific ROGUE subtlety\n/stopattack\n/cast Vanish",
-      "chars": 76
+      "body": "#showtooltip Vanish\n/stopattack\n/cast Vanish",
+      "chars": 44
     },
     {
       "id": "r-sprint",
@@ -2667,8 +2667,8 @@
       "icon": "ability_rogue_sprint",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Sprint\n# class-specific ROGUE all\n/cast Sprint",
-      "chars": 59
+      "body": "#showtooltip Sprint\n/cast Sprint",
+      "chars": 32
     },
     {
       "id": "r-blind",
@@ -2680,8 +2680,8 @@
       "icon": "spell_shadow_mindsteal",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Blind\n# class-specific ROGUE all\n/cast Blind",
-      "chars": 57
+      "body": "#showtooltip Blind\n/cast Blind",
+      "chars": 30
     },
     {
       "id": "r-sap",
@@ -2693,8 +2693,8 @@
       "icon": "ability_sap",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific ROGUE all\n/cast [nostealth] Stealth\n/cast [mod:shift] Sap; Pick Pocket",
-      "chars": 100
+      "body": "#showtooltip\n/cast [nostealth] Stealth\n/cast [mod:shift] Sap; Pick Pocket",
+      "chars": 73
     },
     {
       "id": "r-cb",
@@ -2706,8 +2706,8 @@
       "icon": "spell_ice_lament",
       "group": "rogue-combat",
       "source": "plan",
-      "body": "#showtooltip Eviscerate\n# class-specific ROGUE assassination\n/cast Cold Blood\n/cast Eviscerate",
-      "chars": 94
+      "body": "#showtooltip Eviscerate\n/cast Cold Blood\n/cast Eviscerate",
+      "chars": 57
     },
     {
       "id": "pr-fh",
@@ -2719,8 +2719,8 @@
       "icon": "spell_holy_flashheal",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal",
-      "chars": 157
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Flash Heal; [mod:shift] Flash Heal(Rank 4); [mod:ctrl] Flash Heal(Rank 1); Flash Heal",
+      "chars": 128
     },
     {
       "id": "pr-gh",
@@ -2732,8 +2732,8 @@
       "icon": "spell_holy_greaterheal",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Greater Heal; [mod:shift] Greater Heal(Rank 1); Greater Heal",
-      "chars": 132
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Greater Heal; [mod:shift] Greater Heal(Rank 1); Greater Heal",
+      "chars": 103
     },
     {
       "id": "pr-renew",
@@ -2745,8 +2745,8 @@
       "icon": "spell_holy_renew",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Renew; [mod:shift] Renew(Rank 3); Renew",
-      "chars": 111
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Renew; [mod:shift] Renew(Rank 3); Renew",
+      "chars": 82
     },
     {
       "id": "pr-pws",
@@ -2758,8 +2758,8 @@
       "icon": "spell_holy_powerwordshield",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST discipline\n/cast [mod:alt,target=player] Power Word: Shield; [mod:shift] Power Word: Shield(Rank 1); Power Word: Shield",
-      "chars": 156
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Power Word: Shield; [mod:shift] Power Word: Shield(Rank 1); Power Word: Shield",
+      "chars": 121
     },
     {
       "id": "pr-poh",
@@ -2771,8 +2771,8 @@
       "icon": "spell_holy_prayerofhealing02",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Prayer of Healing\n# class-specific PRIEST holy\n/cast Inner Focus\n/cast Prayer of Healing",
-      "chars": 101
+      "body": "#showtooltip Prayer of Healing\n/cast Inner Focus\n/cast Prayer of Healing",
+      "chars": 72
     },
     {
       "id": "pr-dispel",
@@ -2784,8 +2784,8 @@
       "icon": "spell_holy_dispelmagic",
       "group": "priest-holy",
       "source": "hybrid",
-      "body": "#showtooltip Dispel Magic\n# class-specific PRIEST discipline\n/cast [mod:alt,target=player] Dispel Magic; [target=mouseover,exists] Dispel Magic; Dispel Magic",
-      "chars": 157
+      "body": "#showtooltip Dispel Magic\n/cast [mod:alt,target=player] Dispel Magic; [target=mouseover,exists] Dispel Magic; Dispel Magic",
+      "chars": 122
     },
     {
       "id": "pr-fade",
@@ -2797,8 +2797,8 @@
       "icon": "spell_magic_lesserinvisibilty",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Fade\n# class-specific PRIEST all\n/cast Fade",
-      "chars": 56
+      "body": "#showtooltip Fade\n/cast Fade",
+      "chars": 28
     },
     {
       "id": "pr-scream",
@@ -2810,8 +2810,8 @@
       "icon": "spell_shadow_psychicscream",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Psychic Scream\n# class-specific PRIEST shadow\n/cast Psychic Scream",
-      "chars": 79
+      "body": "#showtooltip Psychic Scream\n/cast Psychic Scream",
+      "chars": 48
     },
     {
       "id": "pr-fw",
@@ -2823,8 +2823,8 @@
       "icon": "spell_holy_excorcism",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Fear Ward\n# class-specific PRIEST discipline\n/raid Fear Ward on %t\n/cast [mod:alt,target=player] Fear Ward; Fear Ward",
-      "chars": 130
+      "body": "#showtooltip Fear Ward\n/raid Fear Ward on %t\n/cast [mod:alt,target=player] Fear Ward; Fear Ward",
+      "chars": 95
     },
     {
       "id": "pr-fort",
@@ -2836,8 +2836,8 @@
       "icon": "spell_holy_wordfortitude",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Power Word: Fortitude\n# class-specific PRIEST discipline\n/cast [mod:alt,target=player] Power Word: Fortitude; Power Word: Fortitude",
-      "chars": 144
+      "body": "#showtooltip Power Word: Fortitude\n/cast [mod:alt,target=player] Power Word: Fortitude; Power Word: Fortitude",
+      "chars": 109
     },
     {
       "id": "pr-rez",
@@ -2849,8 +2849,8 @@
       "icon": "spell_holy_resurrection",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Resurrection\n# class-specific PRIEST holy\n/cast Resurrection",
-      "chars": 73
+      "body": "#showtooltip Resurrection\n/cast Resurrection",
+      "chars": 44
     },
     {
       "id": "pr-if",
@@ -2862,8 +2862,8 @@
       "icon": "spell_holy_innerfire",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Inner Fire\n# class-specific PRIEST discipline\n/cast Inner Fire",
-      "chars": 75
+      "body": "#showtooltip Inner Fire\n/cast Inner Fire",
+      "chars": 40
     },
     {
       "id": "pr-nova",
@@ -2875,8 +2875,8 @@
       "icon": "spell_holy_holynova",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST holy\n/cast [mod:shift] Holy Nova(Rank 1); Holy Nova",
-      "chars": 88
+      "body": "#showtooltip\n/cast [mod:shift] Holy Nova(Rank 1); Holy Nova",
+      "chars": 59
     },
     {
       "id": "pr-wand",
@@ -2888,8 +2888,8 @@
       "icon": "ability_shootwand",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Shoot\n# class-specific PRIEST all\n/cast Shoot",
-      "chars": 58
+      "body": "#showtooltip Shoot\n/cast Shoot",
+      "chars": 30
     },
     {
       "id": "pr-abolish",
@@ -2901,8 +2901,8 @@
       "icon": "spell_nature_nullifydisease",
       "group": "priest-holy",
       "source": "hybrid",
-      "body": "#showtooltip Abolish Disease\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Abolish Disease; [target=mouseover,exists] Abolish Disease; Abolish Disease",
-      "chars": 163
+      "body": "#showtooltip Abolish Disease\n/cast [mod:alt,target=player] Abolish Disease; [target=mouseover,exists] Abolish Disease; Abolish Disease",
+      "chars": 134
     },
     {
       "id": "pr-pof",
@@ -2914,8 +2914,8 @@
       "icon": "spell_holy_prayeroffortitude",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Prayer of Fortitude\n# class-specific PRIEST discipline\n/cast Prayer of Fortitude",
-      "chars": 93
+      "body": "#showtooltip Prayer of Fortitude\n/cast Prayer of Fortitude",
+      "chars": 58
     },
     {
       "id": "pr-spirit",
@@ -2927,8 +2927,8 @@
       "icon": "spell_holy_prayerofspirit",
       "group": "priest-holy",
       "source": "plan",
-      "body": "#showtooltip Prayer of Spirit\n# class-specific PRIEST discipline\n/cast Prayer of Spirit",
-      "chars": 87
+      "body": "#showtooltip Prayer of Spirit\n/cast Prayer of Spirit",
+      "chars": 52
     },
     {
       "id": "pr-swp",
@@ -2940,8 +2940,8 @@
       "icon": "spell_shadow_shadowwordpain",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST shadow\n/cast [mod:shift] Shadow Word: Pain(Rank 1); Shadow Word: Pain",
-      "chars": 106
+      "body": "#showtooltip\n/cast [mod:shift] Shadow Word: Pain(Rank 1); Shadow Word: Pain",
+      "chars": 75
     },
     {
       "id": "pr-mf",
@@ -2953,8 +2953,8 @@
       "icon": "spell_shadow_siphonmana",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Mind Flay\n# class-specific PRIEST shadow\n/cast Mind Flay",
-      "chars": 69
+      "body": "#showtooltip Mind Flay\n/cast Mind Flay",
+      "chars": 38
     },
     {
       "id": "pr-mb",
@@ -2966,8 +2966,8 @@
       "icon": "spell_shadow_unholyfrenzy",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Mind Blast\n# class-specific PRIEST shadow\n/cast Mind Blast",
-      "chars": 71
+      "body": "#showtooltip Mind Blast\n/cast Mind Blast",
+      "chars": 40
     },
     {
       "id": "pr-ve",
@@ -2979,8 +2979,8 @@
       "icon": "spell_shadow_unsummonbuilding",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Vampiric Embrace\n# class-specific PRIEST shadow\n/cast Vampiric Embrace",
-      "chars": 83
+      "body": "#showtooltip Vampiric Embrace\n/cast Vampiric Embrace",
+      "chars": 52
     },
     {
       "id": "pr-sf",
@@ -2992,8 +2992,8 @@
       "icon": "spell_shadow_shadowform",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Shadowform\n# class-specific PRIEST shadow\n/cast Shadowform",
-      "chars": 71
+      "body": "#showtooltip Shadowform\n/cast Shadowform",
+      "chars": 40
     },
     {
       "id": "pr-silence",
@@ -3005,8 +3005,8 @@
       "icon": "spell_shadow_impphaseshift",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Silence\n# class-specific PRIEST shadow\n/stopcasting\n/cast Silence",
-      "chars": 78
+      "body": "#showtooltip Silence\n/stopcasting\n/cast Silence",
+      "chars": 47
     },
     {
       "id": "pr-shackle",
@@ -3018,8 +3018,8 @@
       "icon": "spell_nature_slow",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Shackle Undead\n# class-specific PRIEST shadow\n/stopcasting\n/cast Shackle Undead",
-      "chars": 92
+      "body": "#showtooltip Shackle Undead\n/stopcasting\n/cast Shackle Undead",
+      "chars": 61
     },
     {
       "id": "pr-healform",
@@ -3031,8 +3031,8 @@
       "icon": "spell_holy_flashheal",
       "group": "priest-shadow",
       "source": "plan",
-      "body": "#showtooltip Flash Heal\n# class-specific PRIEST shadow\n/cancelaura Shadowform\n/cast [mod:alt,target=player] Flash Heal; Flash Heal",
-      "chars": 130
+      "body": "#showtooltip Flash Heal\n/cancelaura Shadowform\n/cast [mod:alt,target=player] Flash Heal; Flash Heal",
+      "chars": 99
     },
     {
       "id": "s-es",
@@ -3044,8 +3044,8 @@
       "icon": "spell_nature_earthshock",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Earth Shock\n# class-specific SHAMAN all\n/stopcasting\n/cast [mod:shift] Earth Shock(Rank 1); Earth Shock",
-      "chars": 116
+      "body": "#showtooltip Earth Shock\n/stopcasting\n/cast [mod:shift] Earth Shock(Rank 1); Earth Shock",
+      "chars": 88
     },
     {
       "id": "s-shock",
@@ -3057,8 +3057,8 @@
       "icon": "spell_fire_flameshock",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN enhancement\n/cast [mod:shift] Frost Shock; Flame Shock",
-      "chars": 91
+      "body": "#showtooltip\n/cast [mod:shift] Frost Shock; Flame Shock",
+      "chars": 55
     },
     {
       "id": "s-ss",
@@ -3070,8 +3070,8 @@
       "icon": "ability_shaman_stormstrike",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Stormstrike\n# class-specific SHAMAN enhancement\n/startattack\n/cast Stormstrike",
-      "chars": 91
+      "body": "#showtooltip Stormstrike\n/startattack\n/cast Stormstrike",
+      "chars": 55
     },
     {
       "id": "s-lb",
@@ -3083,8 +3083,8 @@
       "icon": "spell_nature_lightning",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN elemental\n/cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt",
-      "chars": 103
+      "body": "#showtooltip\n/cast [mod:shift] Lightning Bolt(Rank 1); Lightning Bolt",
+      "chars": 69
     },
     {
       "id": "s-cl",
@@ -3096,8 +3096,8 @@
       "icon": "spell_nature_chainlightning",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Chain Lightning\n# class-specific SHAMAN elemental\n/cast Chain Lightning",
-      "chars": 84
+      "body": "#showtooltip Chain Lightning\n/cast Chain Lightning",
+      "chars": 50
     },
     {
       "id": "s-ls",
@@ -3109,8 +3109,8 @@
       "icon": "spell_nature_lightningshield",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Lightning Shield\n# class-specific SHAMAN all\n/cast Lightning Shield",
-      "chars": 80
+      "body": "#showtooltip Lightning Shield\n/cast Lightning Shield",
+      "chars": 52
     },
     {
       "id": "s-wf",
@@ -3122,8 +3122,8 @@
       "icon": "spell_nature_cyclone",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN enhancement\n/cast [mod:shift] Flametongue Weapon; Windfury Weapon",
-      "chars": 102
+      "body": "#showtooltip\n/cast [mod:shift] Flametongue Weapon; Windfury Weapon",
+      "chars": 66
     },
     {
       "id": "s-lhw",
@@ -3135,8 +3135,8 @@
       "icon": "spell_nature_healingway",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN restoration\n/cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave",
-      "chars": 200
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Lesser Healing Wave; [mod:shift] Lesser Healing Wave(Rank 4); [mod:ctrl] Lesser Healing Wave(Rank 1); Lesser Healing Wave",
+      "chars": 164
     },
     {
       "id": "s-hw",
@@ -3148,8 +3148,8 @@
       "icon": "spell_nature_magicimmunity",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN restoration\n/cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave",
-      "chars": 139
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Healing Wave; [mod:shift] Healing Wave(Rank 1); Healing Wave",
+      "chars": 103
     },
     {
       "id": "s-ns",
@@ -3161,8 +3161,8 @@
       "icon": "spell_nature_ravenform",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Healing Wave\n# class-specific SHAMAN restoration\n/cast Nature's Swiftness\n/cast Healing Wave",
-      "chars": 105
+      "body": "#showtooltip Healing Wave\n/cast Nature's Swiftness\n/cast Healing Wave",
+      "chars": 69
     },
     {
       "id": "s-purge",
@@ -3174,8 +3174,8 @@
       "icon": "spell_nature_purge",
       "group": "shaman-enhance",
       "source": "hybrid",
-      "body": "#showtooltip Purge\n# class-specific SHAMAN elemental\n/cast [target=mouseover,exists] Purge; Purge",
-      "chars": 97
+      "body": "#showtooltip Purge\n/cast [target=mouseover,exists] Purge; Purge",
+      "chars": 63
     },
     {
       "id": "s-wolf",
@@ -3187,8 +3187,8 @@
       "icon": "spell_nature_spiritwolf",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Ghost Wolf\n# class-specific SHAMAN all\n/cast Ghost Wolf",
-      "chars": 68
+      "body": "#showtooltip Ghost Wolf\n/cast Ghost Wolf",
+      "chars": 40
     },
     {
       "id": "s-ground",
@@ -3200,8 +3200,8 @@
       "icon": "spell_nature_groundingtotem",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [mod:shift] Grounding Totem; Windfury Totem",
-      "chars": 90
+      "body": "#showtooltip\n/cast [mod:shift] Grounding Totem; Windfury Totem",
+      "chars": 62
     },
     {
       "id": "s-tremor",
@@ -3213,8 +3213,8 @@
       "icon": "spell_nature_tremortotem",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Tremor Totem\n# class-specific SHAMAN all\n/cast Tremor Totem",
-      "chars": 72
+      "body": "#showtooltip Tremor Totem\n/cast Tremor Totem",
+      "chars": 44
     },
     {
       "id": "s-mana",
@@ -3226,8 +3226,8 @@
       "icon": "spell_nature_manaregentotem",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Mana Spring Totem\n# class-specific SHAMAN all\n/cast Mana Spring Totem",
-      "chars": 82
+      "body": "#showtooltip Mana Spring Totem\n/cast Mana Spring Totem",
+      "chars": 54
     },
     {
       "id": "s-str",
@@ -3239,8 +3239,8 @@
       "icon": "spell_nature_earthbindtotem",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Strength of Earth Totem\n# class-specific SHAMAN enhancement\n/cast Strength of Earth Totem",
-      "chars": 102
+      "body": "#showtooltip Strength of Earth Totem\n/cast Strength of Earth Totem",
+      "chars": 66
     },
     {
       "id": "s-tide",
@@ -3252,8 +3252,8 @@
       "icon": "spell_frost_summonwaterelemental",
       "group": "shaman-enhance",
       "source": "plan",
-      "body": "#showtooltip Mana Tide Totem\n# class-specific SHAMAN restoration\n/cast Mana Tide Totem",
-      "chars": 86
+      "body": "#showtooltip Mana Tide Totem\n/cast Mana Tide Totem",
+      "chars": 50
     },
     {
       "id": "s-cure",
@@ -3265,8 +3265,8 @@
       "icon": "spell_nature_nullifypoison",
       "group": "shaman-enhance",
       "source": "hybrid",
-      "body": "#showtooltip Cure Poison\n# class-specific SHAMAN restoration\n/cast [mod:alt,target=player] Cure Poison; [target=mouseover,exists] Cure Poison; Cure Poison",
-      "chars": 154
+      "body": "#showtooltip Cure Poison\n/cast [mod:alt,target=player] Cure Poison; [target=mouseover,exists] Cure Poison; Cure Poison",
+      "chars": 118
     },
     {
       "id": "l-tap",
@@ -3278,8 +3278,8 @@
       "icon": "spell_shadow_burningspirit",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [mod:shift] Life Tap(Rank 1); Life Tap",
-      "chars": 86
+      "body": "#showtooltip\n/cast [mod:shift] Life Tap(Rank 1); Life Tap",
+      "chars": 57
     },
     {
       "id": "l-sb",
@@ -3291,8 +3291,8 @@
       "icon": "spell_shadow_shadowbolt",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK destruction\n/cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt",
-      "chars": 100
+      "body": "#showtooltip\n/cast [mod:shift] Shadow Bolt(Rank 1); Shadow Bolt",
+      "chars": 63
     },
     {
       "id": "l-imm",
@@ -3304,8 +3304,8 @@
       "icon": "spell_fire_immolation",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Immolate\n# class-specific WARLOCK destruction\n/cast Immolate",
-      "chars": 73
+      "body": "#showtooltip Immolate\n/cast Immolate",
+      "chars": 36
     },
     {
       "id": "l-corr",
@@ -3317,8 +3317,8 @@
       "icon": "spell_shadow_abominationexplosion",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK affliction\n/cast [mod:shift] Corruption(Rank 1); Corruption",
-      "chars": 97
+      "body": "#showtooltip\n/cast [mod:shift] Corruption(Rank 1); Corruption",
+      "chars": 61
     },
     {
       "id": "l-coa",
@@ -3330,8 +3330,8 @@
       "icon": "spell_shadow_curseofsargeras",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK affliction\n/cast [mod:shift] Curse of Agony; Curse of the Elements",
-      "chars": 104
+      "body": "#showtooltip\n/cast [mod:shift] Curse of Agony; Curse of the Elements",
+      "chars": 68
     },
     {
       "id": "l-fear",
@@ -3343,8 +3343,8 @@
       "icon": "spell_shadow_possession",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK affliction\n/stopcasting\n/cast [mod:shift] Fear(Rank 1); Fear",
-      "chars": 98
+      "body": "#showtooltip\n/stopcasting\n/cast [mod:shift] Fear(Rank 1); Fear",
+      "chars": 62
     },
     {
       "id": "l-lock",
@@ -3356,8 +3356,8 @@
       "icon": "spell_shadow_mindrot",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Spell Lock\n# class-specific WARLOCK demonology\n/stopcasting\n/cast Spell Lock",
-      "chars": 89
+      "body": "#showtooltip Spell Lock\n/stopcasting\n/cast Spell Lock",
+      "chars": 53
     },
     {
       "id": "l-sum",
@@ -3369,8 +3369,8 @@
       "icon": "spell_shadow_twilight",
       "group": "warlock-core",
       "source": "existing",
-      "body": "# class-specific WARLOCK all\n/ra Summoning %t\n/rw Summoning %t, click!\n/cast Ritual of Summoning",
-      "chars": 96
+      "body": "/ra Summoning %t\n/rw Summoning %t, click!\n/cast Ritual of Summoning",
+      "chars": 67
     },
     {
       "id": "l-ss",
@@ -3382,8 +3382,8 @@
       "icon": "inv_misc_orb_04",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Major Soulstone\n# class-specific WARLOCK all\n/raid Soulstone on %t\n/use Major Soulstone",
-      "chars": 100
+      "body": "#showtooltip Major Soulstone\n/raid Soulstone on %t\n/use Major Soulstone",
+      "chars": 71
     },
     {
       "id": "l-sac",
@@ -3395,8 +3395,8 @@
       "icon": "spell_shadow_sacrificialshield",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Sacrifice\n# class-specific WARLOCK demonology\n/cast Sacrifice",
-      "chars": 74
+      "body": "#showtooltip Sacrifice\n/cast Sacrifice",
+      "chars": 38
     },
     {
       "id": "l-banish",
@@ -3408,8 +3408,8 @@
       "icon": "spell_shadow_cripple",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Banish\n# class-specific WARLOCK demonology\n/stopcasting\n/cast Banish",
-      "chars": 81
+      "body": "#showtooltip Banish\n/stopcasting\n/cast Banish",
+      "chars": 45
     },
     {
       "id": "l-coil",
@@ -3421,8 +3421,8 @@
       "icon": "spell_shadow_deathcoil",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Death Coil\n# class-specific WARLOCK affliction\n/cast Death Coil",
-      "chars": 76
+      "body": "#showtooltip Death Coil\n/cast Death Coil",
+      "chars": 40
     },
     {
       "id": "l-fel",
@@ -3434,8 +3434,8 @@
       "icon": "spell_shadow_summonfelhunter",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK demonology\n/cast [mod:shift] Summon Succubus; Summon Felhunter",
-      "chars": 100
+      "body": "#showtooltip\n/cast [mod:shift] Summon Succubus; Summon Felhunter",
+      "chars": 64
     },
     {
       "id": "l-armor",
@@ -3447,8 +3447,8 @@
       "icon": "spell_shadow_ragingscream",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Demon Armor\n# class-specific WARLOCK all\n/cast Demon Armor",
-      "chars": 71
+      "body": "#showtooltip Demon Armor\n/cast Demon Armor",
+      "chars": 42
     },
     {
       "id": "l-drain",
@@ -3460,8 +3460,8 @@
       "icon": "spell_shadow_haunting",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK affliction\n/cast [mod:shift] Drain Soul(Rank 1); Drain Soul",
-      "chars": 97
+      "body": "#showtooltip\n/cast [mod:shift] Drain Soul(Rank 1); Drain Soul",
+      "chars": 61
     },
     {
       "id": "l-shadowburn",
@@ -3473,8 +3473,8 @@
       "icon": "spell_shadow_scourgebuild",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Shadowburn\n# class-specific WARLOCK destruction\n/cast Shadowburn",
-      "chars": 77
+      "body": "#showtooltip Shadowburn\n/cast Shadowburn",
+      "chars": 40
     },
     {
       "id": "l-wand",
@@ -3486,8 +3486,8 @@
       "icon": "ability_shootwand",
       "group": "warlock-core",
       "source": "plan",
-      "body": "#showtooltip Shoot\n# class-specific WARLOCK all\n/cast Shoot",
-      "chars": 59
+      "body": "#showtooltip Shoot\n/cast Shoot",
+      "chars": 30
     },
     {
       "id": "d-shred",
@@ -3499,8 +3499,8 @@
       "icon": "spell_shadow_vampiricaura",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Shred\n# class-specific DRUID feral\n/startattack\n/cast Shred",
-      "chars": 72
+      "body": "#showtooltip Shred\n/startattack\n/cast Shred",
+      "chars": 43
     },
     {
       "id": "d-fb",
@@ -3512,8 +3512,8 @@
       "icon": "ability_druid_ferociousbite",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID feral\n/cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite",
-      "chars": 98
+      "body": "#showtooltip\n/cast [mod:shift] Ferocious Bite(Rank 1); Ferocious Bite",
+      "chars": 69
     },
     {
       "id": "d-rip",
@@ -3525,8 +3525,8 @@
       "icon": "ability_ghoulfrenzy",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Rip\n# class-specific DRUID feral\n/cast Rip",
-      "chars": 55
+      "body": "#showtooltip Rip\n/cast Rip",
+      "chars": 26
     },
     {
       "id": "d-rake",
@@ -3538,8 +3538,8 @@
       "icon": "ability_druid_disembowel",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Rake\n# class-specific DRUID feral\n/startattack\n/cast Rake",
-      "chars": 70
+      "body": "#showtooltip Rake\n/startattack\n/cast Rake",
+      "chars": 41
     },
     {
       "id": "d-prowl",
@@ -3551,8 +3551,8 @@
       "icon": "ability_druid_prowl",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Prowl\n# class-specific DRUID feral\n/cast [noform:3] Cat Form\n/cast Prowl",
-      "chars": 85
+      "body": "#showtooltip Prowl\n/cast [noform:3] Cat Form\n/cast Prowl",
+      "chars": 56
     },
     {
       "id": "d-maul",
@@ -3564,8 +3564,8 @@
       "icon": "ability_druid_maul",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Maul\n# class-specific DRUID feral\n/startattack\n/cast Maul",
-      "chars": 70
+      "body": "#showtooltip Maul\n/startattack\n/cast Maul",
+      "chars": 41
     },
     {
       "id": "d-growl",
@@ -3577,8 +3577,8 @@
       "icon": "ability_physical_taunt",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Growl\n# class-specific DRUID feral\n/cast [noform:1] Dire Bear Form\n/cast Growl",
-      "chars": 91
+      "body": "#showtooltip Growl\n/cast [noform:1] Dire Bear Form\n/cast Growl",
+      "chars": 62
     },
     {
       "id": "d-bash",
@@ -3590,8 +3590,8 @@
       "icon": "ability_druid_bash",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Bash\n# class-specific DRUID feral\n/stopcasting\n/cast Bash",
-      "chars": 70
+      "body": "#showtooltip Bash\n/stopcasting\n/cast Bash",
+      "chars": 41
     },
     {
       "id": "d-ff",
@@ -3603,8 +3603,8 @@
       "icon": "spell_nature_faeriefire",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [form:1/3] Faerie Fire (Feral); Faerie Fire",
-      "chars": 89
+      "body": "#showtooltip\n/cast [form:1/3] Faerie Fire (Feral); Faerie Fire",
+      "chars": 62
     },
     {
       "id": "d-charge",
@@ -3616,8 +3616,8 @@
       "icon": "ability_hunter_pet_bear",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Feral Charge\n# class-specific DRUID feral\n/cast Feral Charge",
-      "chars": 73
+      "body": "#showtooltip Feral Charge\n/cast Feral Charge",
+      "chars": 44
     },
     {
       "id": "d-fr",
@@ -3629,8 +3629,8 @@
       "icon": "ability_bullrush",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Frenzied Regeneration\n# class-specific DRUID feral\n/cast Frenzied Regeneration",
-      "chars": 91
+      "body": "#showtooltip Frenzied Regeneration\n/cast Frenzied Regeneration",
+      "chars": 62
     },
     {
       "id": "d-dash",
@@ -3642,8 +3642,8 @@
       "icon": "ability_druid_dash",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Dash\n# class-specific DRUID feral\n/cast Dash",
-      "chars": 57
+      "body": "#showtooltip Dash\n/cast Dash",
+      "chars": 28
     },
     {
       "id": "d-cat",
@@ -3655,8 +3655,8 @@
       "icon": "ability_druid_catform",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID feral\n/cast [mod:shift] Travel Form; Cat Form",
-      "chars": 81
+      "body": "#showtooltip\n/cast [mod:shift] Travel Form; Cat Form",
+      "chars": 52
     },
     {
       "id": "d-bear",
@@ -3668,8 +3668,8 @@
       "icon": "ability_racial_bearform",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Dire Bear Form\n# class-specific DRUID feral\n/cast Dire Bear Form",
-      "chars": 77
+      "body": "#showtooltip Dire Bear Form\n/cast Dire Bear Form",
+      "chars": 48
     },
     {
       "id": "d-ht",
@@ -3681,8 +3681,8 @@
       "icon": "spell_nature_healingtouch",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID restoration\n/cancelform\n/cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch",
-      "chars": 187
+      "body": "#showtooltip\n/cancelform\n/cast [mod:alt,target=player] Healing Touch; [mod:shift] Healing Touch(Rank 4); [mod:ctrl] Healing Touch(Rank 1); Healing Touch",
+      "chars": 152
     },
     {
       "id": "d-inn",
@@ -3694,8 +3694,8 @@
       "icon": "spell_nature_lightning",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Innervate\n# class-specific DRUID restoration\n/cancelform\n/raid Innervate on %t\n/cast [mod:alt,target=player] Innervate; Innervate",
-      "chars": 142
+      "body": "#showtooltip Innervate\n/cancelform\n/raid Innervate on %t\n/cast [mod:alt,target=player] Innervate; Innervate",
+      "chars": 107
     },
     {
       "id": "d-reb",
@@ -3707,8 +3707,8 @@
       "icon": "spell_nature_reincarnation",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Rebirth\n# class-specific DRUID restoration\n/cancelform\n/raid {rt8} Rebirth on %t {rt8}\n/cast Rebirth",
-      "chars": 113
+      "body": "#showtooltip Rebirth\n/cancelform\n/raid {rt8} Rebirth on %t {rt8}\n/cast Rebirth",
+      "chars": 78
     },
     {
       "id": "d-motw",
@@ -3720,8 +3720,8 @@
       "icon": "spell_nature_regeneration",
       "group": "druid-feral",
       "source": "plan",
-      "body": "#showtooltip Mark of the Wild\n# class-specific DRUID restoration\n/cancelform\n/cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild",
-      "chars": 141
+      "body": "#showtooltip Mark of the Wild\n/cancelform\n/cast [mod:alt,target=player] Mark of the Wild; Mark of the Wild",
+      "chars": 106
     },
     {
       "id": "d-mf",
@@ -3733,8 +3733,8 @@
       "icon": "spell_nature_starfall",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID balance\n/cast [mod:shift] Moonfire(Rank 1); Moonfire",
-      "chars": 88
+      "body": "#showtooltip\n/cast [mod:shift] Moonfire(Rank 1); Moonfire",
+      "chars": 57
     },
     {
       "id": "d-wrath",
@@ -3746,8 +3746,8 @@
       "icon": "spell_nature_abolishmagic",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip Wrath\n# class-specific DRUID balance\n/cast Wrath",
-      "chars": 61
+      "body": "#showtooltip Wrath\n/cast Wrath",
+      "chars": 30
     },
     {
       "id": "d-star",
@@ -3759,8 +3759,8 @@
       "icon": "spell_arcane_starfire",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip Starfire\n# class-specific DRUID balance\n/cast Starfire",
-      "chars": 67
+      "body": "#showtooltip Starfire\n/cast Starfire",
+      "chars": 36
     },
     {
       "id": "d-moonkin",
@@ -3772,8 +3772,8 @@
       "icon": "spell_nature_forceofnature",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip Moonkin Form\n# class-specific DRUID balance\n/cast Moonkin Form",
-      "chars": 75
+      "body": "#showtooltip Moonkin Form\n/cast Moonkin Form",
+      "chars": 44
     },
     {
       "id": "d-roots",
@@ -3785,8 +3785,8 @@
       "icon": "spell_nature_stranglevines",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID balance\n/cancelform\n/cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots",
-      "chars": 116
+      "body": "#showtooltip\n/cancelform\n/cast [mod:shift] Entangling Roots(Rank 1); Entangling Roots",
+      "chars": 85
     },
     {
       "id": "d-rejuv",
@@ -3798,8 +3798,8 @@
       "icon": "spell_nature_rejuvenation",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID restoration\n/cancelform\n/cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation",
-      "chars": 150
+      "body": "#showtooltip\n/cancelform\n/cast [mod:alt,target=player] Rejuvenation; [mod:shift] Rejuvenation(Rank 3); Rejuvenation",
+      "chars": 115
     },
     {
       "id": "d-swift",
@@ -3811,8 +3811,8 @@
       "icon": "inv_relics_idolofrejuvenation",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip Swiftmend\n# class-specific DRUID restoration\n/cancelform\n/cast Swiftmend",
-      "chars": 85
+      "body": "#showtooltip Swiftmend\n/cancelform\n/cast Swiftmend",
+      "chars": 50
     },
     {
       "id": "d-ns",
@@ -3824,8 +3824,8 @@
       "icon": "spell_nature_ravenform",
       "group": "druid-balance",
       "source": "plan",
-      "body": "#showtooltip Healing Touch\n# class-specific DRUID restoration\n/cancelform\n/cast Nature's Swiftness\n/cast Healing Touch",
-      "chars": 118
+      "body": "#showtooltip Healing Touch\n/cancelform\n/cast Nature's Swiftness\n/cast Healing Touch",
+      "chars": 83
     },
     {
       "id": "shared-gotn",
@@ -3837,8 +3837,8 @@
       "icon": "spell_holy_holyprotection",
       "group": "shared-tbc",
       "source": "plan",
-      "body": "#showtooltip Gift of the Naaru\n# global ALL all\n/cast [mod:alt,target=player] Gift of the Naaru; Gift of the Naaru",
-      "chars": 114,
+      "body": "#showtooltip Gift of the Naaru\n/cast [mod:alt,target=player] Gift of the Naaru; Gift of the Naaru",
+      "chars": 97,
       "notes": "Draenei heal. Alt self.",
       "gameVersion": "TBC"
     },
@@ -3852,8 +3852,8 @@
       "icon": "spell_shadow_teleport",
       "group": "shared-tbc",
       "source": "plan",
-      "body": "#showtooltip Arcane Torrent\n# global ALL all\n/stopcasting\n/cast Arcane Torrent",
-      "chars": 78,
+      "body": "#showtooltip Arcane Torrent\n/stopcasting\n/cast Arcane Torrent",
+      "chars": 61,
       "notes": "Blood Elf interrupt. Stops a queued spell first.",
       "gameVersion": "TBC"
     },
@@ -3867,8 +3867,8 @@
       "icon": "ability_warrior_rallyingcry",
       "group": "warrior-tbc",
       "source": "plan",
-      "body": "#showtooltip Commanding Shout\n# class-specific WARRIOR all\n/cast Commanding Shout\n/startattack",
-      "chars": 94,
+      "body": "#showtooltip Commanding Shout\n/cast Commanding Shout\n/startattack",
+      "chars": 65,
       "notes": "Health shout. Battle Shout stays on `w-shout`.",
       "gameVersion": "TBC"
     },
@@ -3882,8 +3882,8 @@
       "icon": "ability_warrior_victoryrush",
       "group": "warrior-tbc",
       "source": "plan",
-      "body": "#showtooltip Intervene\n# class-specific WARRIOR all\n/cast [nostance:2] Defensive Stance\n/cast [target=mouseover,help,nodead][] Intervene",
-      "chars": 136,
+      "body": "#showtooltip Intervene\n/cast [nostance:2] Defensive Stance\n/cast [target=mouseover,help,nodead][] Intervene",
+      "chars": 107,
       "notes": "Enters Defensive Stance. Uses a friendly living mouseover, then the current target.",
       "gameVersion": "TBC"
     },
@@ -3897,8 +3897,8 @@
       "icon": "ability_warrior_shieldreflection",
       "group": "warrior-tbc",
       "source": "plan",
-      "body": "#showtooltip Spell Reflection\n# class-specific WARRIOR all\n/stopcasting\n/cast [nostance:2] Defensive Stance\n/cast Spell Reflection",
-      "chars": 130,
+      "body": "#showtooltip Spell Reflection\n/stopcasting\n/cast [nostance:2] Defensive Stance\n/cast Spell Reflection",
+      "chars": 101,
       "notes": "Requires an equipped shield. Enters Defensive Stance.",
       "gameVersion": "TBC"
     },
@@ -3912,8 +3912,8 @@
       "icon": "ability_warrior_devastate",
       "group": "warrior-tbc",
       "source": "plan",
-      "body": "#showtooltip Victory Rush\n# class-specific WARRIOR all\n/cast [stance:2] Battle Stance\n/cast Victory Rush\n/startattack",
-      "chars": 117,
+      "body": "#showtooltip Victory Rush\n/cast [stance:2] Battle Stance\n/cast Victory Rush\n/startattack",
+      "chars": 88,
       "notes": "Leaves Defensive Stance. Usable after a killing blow.",
       "gameVersion": "TBC"
     },
@@ -3927,8 +3927,8 @@
       "icon": "spell_holy_crusaderstrike",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Crusader Strike\n# class-specific PALADIN retribution\n/startattack\n/cast Crusader Strike",
-      "chars": 100,
+      "body": "#showtooltip Crusader Strike\n/startattack\n/cast Crusader Strike",
+      "chars": 63,
       "gameVersion": "TBC"
     },
     {
@@ -3941,8 +3941,8 @@
       "icon": "spell_holy_avenginewrath",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Avenging Wrath\n# class-specific PALADIN all\n/use 13\n/cast Avenging Wrath",
-      "chars": 85,
+      "body": "#showtooltip Avenging Wrath\n/use 13\n/cast Avenging Wrath",
+      "chars": 56,
       "gameVersion": "TBC"
     },
     {
@@ -3955,8 +3955,8 @@
       "icon": "inv_shoulder_37",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Righteous Defense\n# class-specific PALADIN all\n/cast [target=mouseover,help,nodead][] Righteous Defense",
-      "chars": 116,
+      "body": "#showtooltip Righteous Defense\n/cast [target=mouseover,help,nodead][] Righteous Defense",
+      "chars": 87,
       "notes": "Taunt the mobs on a friendly mouseover, then the current target.",
       "gameVersion": "TBC"
     },
@@ -3970,8 +3970,8 @@
       "icon": "spell_holy_avengersshield",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Avenger's Shield\n# class-specific PALADIN protection\n/startattack\n/cast Avenger's Shield",
-      "chars": 101,
+      "body": "#showtooltip Avenger's Shield\n/startattack\n/cast Avenger's Shield",
+      "chars": 65,
       "gameVersion": "TBC"
     },
     {
@@ -3984,8 +3984,8 @@
       "icon": "spell_holy_sealofblood",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN retribution\n/cast Seal of Blood\n/cast Seal of Vengeance\n/cast Seal of the Martyr\n/cast Seal of Corruption",
-      "chars": 143,
+      "body": "#showtooltip\n/cast Seal of Blood\n/cast Seal of Vengeance\n/cast Seal of the Martyr\n/cast Seal of Corruption",
+      "chars": 106,
       "notes": "Horde Blood / Martyr. Alliance Vengeance / Corruption. First learned seal wins.",
       "gameVersion": "TBC"
     },
@@ -3999,8 +3999,8 @@
       "icon": "spell_holy_turnundead",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Turn Evil\n# class-specific PALADIN all\n/stopcasting\n/cast Turn Evil",
-      "chars": 80,
+      "body": "#showtooltip Turn Evil\n/stopcasting\n/cast Turn Evil",
+      "chars": 51,
       "gameVersion": "TBC"
     },
     {
@@ -4013,8 +4013,8 @@
       "icon": "spell_holy_crusaderaura",
       "group": "paladin-tbc",
       "source": "plan",
-      "body": "#showtooltip Crusader Aura\n# class-specific PALADIN all\n/cast Crusader Aura",
-      "chars": 75,
+      "body": "#showtooltip Crusader Aura\n/cast Crusader Aura",
+      "chars": 46,
       "gameVersion": "TBC"
     },
     {
@@ -4027,8 +4027,8 @@
       "icon": "ability_hunter_steadyshot",
       "group": "hunter-tbc",
       "source": "plan",
-      "body": "#showtooltip Steady Shot\n# class-specific HUNTER all\n/cast Steady Shot",
-      "chars": 70,
+      "body": "#showtooltip Steady Shot\n/cast Steady Shot",
+      "chars": 42,
       "gameVersion": "TBC"
     },
     {
@@ -4041,8 +4041,8 @@
       "icon": "ability_hunter_killcommand",
       "group": "hunter-tbc",
       "source": "plan",
-      "body": "#showtooltip Kill Command\n# class-specific HUNTER beast-mastery\n/petattack\n/cast Kill Command",
-      "chars": 93,
+      "body": "#showtooltip Kill Command\n/petattack\n/cast Kill Command",
+      "chars": 55,
       "gameVersion": "TBC"
     },
     {
@@ -4055,8 +4055,8 @@
       "icon": "ability_hunter_misdirection",
       "group": "hunter-tbc",
       "source": "plan",
-      "body": "#showtooltip Misdirection\n# class-specific HUNTER all\n/cast [target=mouseover,help,nodead] Misdirection; [target=pet,exists] Misdirection; Misdirection",
-      "chars": 151,
+      "body": "#showtooltip Misdirection\n/cast [target=mouseover,help,nodead] Misdirection; [target=pet,exists] Misdirection; Misdirection",
+      "chars": 123,
       "notes": "Friendly mouseover, then pet, then current target.",
       "gameVersion": "TBC"
     },
@@ -4070,8 +4070,8 @@
       "icon": "ability_hunter_snaketrap",
       "group": "hunter-tbc",
       "source": "plan",
-      "body": "#showtooltip Snake Trap\n# class-specific HUNTER all\n/cast Snake Trap",
-      "chars": 68,
+      "body": "#showtooltip Snake Trap\n/cast Snake Trap",
+      "chars": 40,
       "gameVersion": "TBC"
     },
     {
@@ -4084,8 +4084,8 @@
       "icon": "ability_hunter_aspectoftheviper",
       "group": "hunter-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [mod:shift] Aspect of the Viper; [mod:ctrl] Aspect of the Monkey; Aspect of the Hawk",
-      "chars": 131,
+      "body": "#showtooltip\n/cast [mod:shift] Aspect of the Viper; [mod:ctrl] Aspect of the Monkey; Aspect of the Hawk",
+      "chars": 103,
       "notes": "Hawk normally. Shift is Viper. Ctrl is Monkey. Era `asp` has no Viper line.",
       "gameVersion": "TBC"
     },
@@ -4099,8 +4099,8 @@
       "icon": "spell_shadow_nethercloak",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Cloak of Shadows\n# class-specific ROGUE all\n/stopcasting\n/cast Cloak of Shadows",
-      "chars": 92,
+      "body": "#showtooltip Cloak of Shadows\n/stopcasting\n/cast Cloak of Shadows",
+      "chars": 65,
       "gameVersion": "TBC"
     },
     {
@@ -4113,8 +4113,8 @@
       "icon": "inv_throwingknife_06",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Deadly Throw\n# class-specific ROGUE all\n/cast Deadly Throw",
-      "chars": 71,
+      "body": "#showtooltip Deadly Throw\n/cast Deadly Throw",
+      "chars": 44,
       "gameVersion": "TBC"
     },
     {
@@ -4127,8 +4127,8 @@
       "icon": "inv_throwingknife_04",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Shiv\n# class-specific ROGUE all\n/startattack\n/cast Shiv",
-      "chars": 68,
+      "body": "#showtooltip Shiv\n/startattack\n/cast Shiv",
+      "chars": 41,
       "gameVersion": "TBC"
     },
     {
@@ -4141,8 +4141,8 @@
       "icon": "ability_rogue_disembowel",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Envenom\n# class-specific ROGUE assassination\n/cast Envenom",
-      "chars": 71,
+      "body": "#showtooltip Envenom\n/cast Envenom",
+      "chars": 34,
       "gameVersion": "TBC"
     },
     {
@@ -4155,8 +4155,8 @@
       "icon": "ability_rogue_shadowstep",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Shadowstep\n# class-specific ROGUE subtlety\n/cast Shadowstep",
-      "chars": 72,
+      "body": "#showtooltip Shadowstep\n/cast Shadowstep",
+      "chars": 40,
       "gameVersion": "TBC"
     },
     {
@@ -4169,8 +4169,8 @@
       "icon": "ability_rogue_shadowstrikes",
       "group": "rogue-tbc",
       "source": "plan",
-      "body": "#showtooltip Mutilate\n# class-specific ROGUE assassination\n/startattack\n/cast Mutilate",
-      "chars": 86,
+      "body": "#showtooltip Mutilate\n/startattack\n/cast Mutilate",
+      "chars": 49,
       "gameVersion": "TBC"
     },
     {
@@ -4183,8 +4183,8 @@
       "icon": "spell_shadow_demonicfortitude",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Shadow Word: Death\n# class-specific PRIEST all\n/cast Shadow Word: Death",
-      "chars": 84,
+      "body": "#showtooltip Shadow Word: Death\n/cast Shadow Word: Death",
+      "chars": 56,
       "gameVersion": "TBC"
     },
     {
@@ -4197,8 +4197,8 @@
       "icon": "spell_holy_prayerofmendingtga",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Prayer of Mending\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending",
-      "chars": 126,
+      "body": "#showtooltip Prayer of Mending\n/cast [mod:alt,target=player] Prayer of Mending; Prayer of Mending",
+      "chars": 97,
       "gameVersion": "TBC"
     },
     {
@@ -4211,8 +4211,8 @@
       "icon": "spell_holy_circleofrenewal",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Circle of Healing\n# class-specific PRIEST holy\n/cast [mod:alt,target=player] Circle of Healing; Circle of Healing",
-      "chars": 126,
+      "body": "#showtooltip Circle of Healing\n/cast [mod:alt,target=player] Circle of Healing; Circle of Healing",
+      "chars": 97,
       "gameVersion": "TBC"
     },
     {
@@ -4225,8 +4225,8 @@
       "icon": "spell_holy_painsupression",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Pain Suppression\n# class-specific PRIEST discipline\n/raid Pain Suppression on %t\n/cast [mod:alt,target=player] Pain Suppression; Pain Suppression",
-      "chars": 158,
+      "body": "#showtooltip Pain Suppression\n/raid Pain Suppression on %t\n/cast [mod:alt,target=player] Pain Suppression; Pain Suppression",
+      "chars": 123,
       "gameVersion": "TBC"
     },
     {
@@ -4239,8 +4239,8 @@
       "icon": "spell_arcane_massdispel",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Mass Dispel\n# class-specific PRIEST all\n/stopcasting\n/cast Mass Dispel",
-      "chars": 83,
+      "body": "#showtooltip Mass Dispel\n/stopcasting\n/cast Mass Dispel",
+      "chars": 55,
       "gameVersion": "TBC"
     },
     {
@@ -4253,8 +4253,8 @@
       "icon": "spell_shadow_shadowfiend",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Shadowfiend\n# class-specific PRIEST all\n/cast Shadowfiend",
-      "chars": 70,
+      "body": "#showtooltip Shadowfiend\n/cast Shadowfiend",
+      "chars": 42,
       "gameVersion": "TBC"
     },
     {
@@ -4267,8 +4267,8 @@
       "icon": "spell_holy_blindingheal",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Binding Heal\n# class-specific PRIEST holy\n/cast Binding Heal",
-      "chars": 73,
+      "body": "#showtooltip Binding Heal\n/cast Binding Heal",
+      "chars": 44,
       "gameVersion": "TBC"
     },
     {
@@ -4281,8 +4281,8 @@
       "icon": "spell_holy_stoicism",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Vampiric Touch\n# class-specific PRIEST shadow\n/cast Vampiric Touch",
-      "chars": 79,
+      "body": "#showtooltip Vampiric Touch\n/cast Vampiric Touch",
+      "chars": 48,
       "gameVersion": "TBC"
     },
     {
@@ -4295,8 +4295,8 @@
       "icon": "spell_arcane_studentofmagic",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Consume Magic\n# class-specific PRIEST all\n/stopcasting\n/cast Consume Magic",
-      "chars": 87,
+      "body": "#showtooltip Consume Magic\n/stopcasting\n/cast Consume Magic",
+      "chars": 59,
       "notes": "Blood Elf priest racial.",
       "gameVersion": "TBC"
     },
@@ -4310,8 +4310,8 @@
       "icon": "spell_holy_chastise",
       "group": "priest-tbc",
       "source": "plan",
-      "body": "#showtooltip Chastise\n# class-specific PRIEST all\n/stopcasting\n/cast Chastise",
-      "chars": 77,
+      "body": "#showtooltip Chastise\n/stopcasting\n/cast Chastise",
+      "chars": 49,
       "notes": "Dwarf and Draenei priest racial.",
       "gameVersion": "TBC"
     },
@@ -4325,8 +4325,8 @@
       "icon": "spell_nature_bloodlust",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN enhancement\n/cast Bloodlust\n/cast Heroism",
-      "chars": 78,
+      "body": "#showtooltip\n/cast Bloodlust\n/cast Heroism",
+      "chars": 42,
       "notes": "Horde Bloodlust. Alliance Heroism. First learned spell wins.",
       "gameVersion": "TBC"
     },
@@ -4340,8 +4340,8 @@
       "icon": "ability_shaman_watershield",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [mod:shift] Lightning Shield; Water Shield",
-      "chars": 89,
+      "body": "#showtooltip\n/cast [mod:shift] Lightning Shield; Water Shield",
+      "chars": 61,
       "gameVersion": "TBC"
     },
     {
@@ -4354,8 +4354,8 @@
       "icon": "spell_nature_skinofearth",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Earth Shield\n# class-specific SHAMAN restoration\n/cast [mod:alt,target=player] Earth Shield; Earth Shield",
-      "chars": 118,
+      "body": "#showtooltip Earth Shield\n/cast [mod:alt,target=player] Earth Shield; Earth Shield",
+      "chars": 82,
       "gameVersion": "TBC"
     },
     {
@@ -4368,8 +4368,8 @@
       "icon": "spell_nature_shamanrage",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Shamanistic Rage\n# class-specific SHAMAN enhancement\n/cast Shamanistic Rage",
-      "chars": 88,
+      "body": "#showtooltip Shamanistic Rage\n/cast Shamanistic Rage",
+      "chars": 52,
       "gameVersion": "TBC"
     },
     {
@@ -4382,8 +4382,8 @@
       "icon": "spell_nature_slowingtotem",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Wrath of Air Totem\n# class-specific SHAMAN all\n/cast Wrath of Air Totem",
-      "chars": 84,
+      "body": "#showtooltip Wrath of Air Totem\n/cast Wrath of Air Totem",
+      "chars": 56,
       "gameVersion": "TBC"
     },
     {
@@ -4396,8 +4396,8 @@
       "icon": "spell_fire_totemofwrath",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Totem of Wrath\n# class-specific SHAMAN elemental\n/cast Totem of Wrath",
-      "chars": 82,
+      "body": "#showtooltip Totem of Wrath\n/cast Totem of Wrath",
+      "chars": 48,
       "gameVersion": "TBC"
     },
     {
@@ -4410,8 +4410,8 @@
       "icon": "spell_nature_earthelemental_totem",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Earth Elemental Totem\n# class-specific SHAMAN all\n/cast Earth Elemental Totem",
-      "chars": 90,
+      "body": "#showtooltip Earth Elemental Totem\n/cast Earth Elemental Totem",
+      "chars": 62,
       "gameVersion": "TBC"
     },
     {
@@ -4424,8 +4424,8 @@
       "icon": "spell_fire_elemental_totem",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Fire Elemental Totem\n# class-specific SHAMAN all\n/cast Fire Elemental Totem",
-      "chars": 88,
+      "body": "#showtooltip Fire Elemental Totem\n/cast Fire Elemental Totem",
+      "chars": 60,
       "gameVersion": "TBC"
     },
     {
@@ -4438,8 +4438,8 @@
       "icon": "spell_unused",
       "group": "shaman-tbc",
       "source": "plan",
-      "body": "#showtooltip Totemic Call\n# class-specific SHAMAN all\n/cast Totemic Call",
-      "chars": 72,
+      "body": "#showtooltip Totemic Call\n/cast Totemic Call",
+      "chars": 44,
       "gameVersion": "TBC"
     },
     {
@@ -4452,8 +4452,8 @@
       "icon": "spell_frost_frostblast",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Ice Lance\n# class-specific MAGE frost\n/cast Ice Lance",
-      "chars": 66,
+      "body": "#showtooltip Ice Lance\n/cast Ice Lance",
+      "chars": 38,
       "gameVersion": "TBC"
     },
     {
@@ -4466,8 +4466,8 @@
       "icon": "spell_arcane_arcane02",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Spellsteal\n# class-specific MAGE all\n/stopcasting\n/cast Spellsteal",
-      "chars": 79,
+      "body": "#showtooltip Spellsteal\n/stopcasting\n/cast Spellsteal",
+      "chars": 53,
       "gameVersion": "TBC"
     },
     {
@@ -4480,8 +4480,8 @@
       "icon": "ability_mage_invisibility",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Invisibility\n# class-specific MAGE all\n/stopcasting\n/cast Invisibility",
-      "chars": 83,
+      "body": "#showtooltip Invisibility\n/stopcasting\n/cast Invisibility",
+      "chars": 57,
       "gameVersion": "TBC"
     },
     {
@@ -4494,8 +4494,8 @@
       "icon": "ability_mage_moltenarmor",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Molten Armor\n# class-specific MAGE all\n/cast Molten Armor",
-      "chars": 70,
+      "body": "#showtooltip Molten Armor\n/cast Molten Armor",
+      "chars": 44,
       "gameVersion": "TBC"
     },
     {
@@ -4508,8 +4508,8 @@
       "icon": "spell_arcane_blast",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Arcane Blast\n# class-specific MAGE arcane\n/cqs\n/cast Arcane Blast",
-      "chars": 78,
+      "body": "#showtooltip Arcane Blast\n/cqs\n/cast Arcane Blast",
+      "chars": 49,
       "gameVersion": "TBC"
     },
     {
@@ -4522,8 +4522,8 @@
       "icon": "spell_nature_slow",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Slow\n# class-specific MAGE arcane\n/cast Slow",
-      "chars": 57,
+      "body": "#showtooltip Slow\n/cast Slow",
+      "chars": 28,
       "gameVersion": "TBC"
     },
     {
@@ -4536,8 +4536,8 @@
       "icon": "inv_misc_head_dragon_01",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Dragon's Breath\n# class-specific MAGE fire\n/cast Dragon's Breath",
-      "chars": 77,
+      "body": "#showtooltip Dragon's Breath\n/cast Dragon's Breath",
+      "chars": 50,
       "gameVersion": "TBC"
     },
     {
@@ -4550,8 +4550,8 @@
       "icon": "spell_frost_summonwaterelemental_2",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Summon Water Elemental\n# class-specific MAGE frost\n/cast Summon Water Elemental",
-      "chars": 92,
+      "body": "#showtooltip Summon Water Elemental\n/cast Summon Water Elemental",
+      "chars": 64,
       "gameVersion": "TBC"
     },
     {
@@ -4564,8 +4564,8 @@
       "icon": "spell_arcane_massdispel",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Ritual of Refreshment\n# class-specific MAGE all\n/cast Ritual of Refreshment",
-      "chars": 88,
+      "body": "#showtooltip Ritual of Refreshment\n/cast Ritual of Refreshment",
+      "chars": 62,
       "gameVersion": "TBC"
     },
     {
@@ -4578,8 +4578,8 @@
       "icon": "inv_misc_gem_stone_01",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip Conjure Mana Emerald\n# class-specific MAGE all\n/cast Conjure Mana Emerald",
-      "chars": 86,
+      "body": "#showtooltip Conjure Mana Emerald\n/cast Conjure Mana Emerald",
+      "chars": 60,
       "gameVersion": "TBC"
     },
     {
@@ -4592,8 +4592,8 @@
       "icon": "spell_arcane_portalexodar",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar;",
-      "chars": 98,
+      "body": "#showtooltip [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar\n/cast [nomod] Teleport: Exodar; [mod:shift] Portal: Exodar",
+      "chars": 124,
       "gameVersion": "TBC"
     },
     {
@@ -4606,8 +4606,8 @@
       "icon": "spell_arcane_portalsilvermoon",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon;",
-      "chars": 106,
+      "body": "#showtooltip [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon\n/cast [nomod] Teleport: Silvermoon; [mod:shift] Portal: Silvermoon",
+      "chars": 140,
       "gameVersion": "TBC"
     },
     {
@@ -4620,8 +4620,8 @@
       "icon": "spell_arcane_portalshattrath",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath;",
-      "chars": 104,
+      "body": "#showtooltip [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath\n/cast [nomod] Teleport: Shattrath; [mod:shift] Portal: Shattrath",
+      "chars": 136,
       "gameVersion": "TBC"
     },
     {
@@ -4634,8 +4634,8 @@
       "icon": "spell_arcane_portaltheramore",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore;",
-      "chars": 104,
+      "body": "#showtooltip [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore\n/cast [nomod] Teleport: Theramore; [mod:shift] Portal: Theramore",
+      "chars": 136,
       "gameVersion": "TBC"
     },
     {
@@ -4648,8 +4648,8 @@
       "icon": "spell_arcane_portalstonard",
       "group": "mage-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard;",
-      "chars": 100,
+      "body": "#showtooltip [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard\n/cast [nomod] Teleport: Stonard; [mod:shift] Portal: Stonard",
+      "chars": 128,
       "gameVersion": "TBC"
     },
     {
@@ -4662,8 +4662,8 @@
       "icon": "spell_fire_burnout",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Incinerate\n# class-specific WARLOCK destruction\n/cast Incinerate",
-      "chars": 77,
+      "body": "#showtooltip Incinerate\n/cast Incinerate",
+      "chars": 40,
       "gameVersion": "TBC"
     },
     {
@@ -4676,8 +4676,8 @@
       "icon": "spell_shadow_felarmour",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [mod:shift] Demon Armor; Fel Armor",
-      "chars": 82,
+      "body": "#showtooltip\n/cast [mod:shift] Demon Armor; Fel Armor",
+      "chars": 53,
       "gameVersion": "TBC"
     },
     {
@@ -4690,8 +4690,8 @@
       "icon": "spell_arcane_arcane01",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Soulshatter\n# class-specific WARLOCK all\n/cast Soulshatter",
-      "chars": 71,
+      "body": "#showtooltip Soulshatter\n/cast Soulshatter",
+      "chars": 42,
       "gameVersion": "TBC"
     },
     {
@@ -4704,8 +4704,8 @@
       "icon": "spell_shadow_shadesofdarkness",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Ritual of Souls\n# class-specific WARLOCK all\n/cast Ritual of Souls",
-      "chars": 79,
+      "body": "#showtooltip Ritual of Souls\n/cast Ritual of Souls",
+      "chars": 50,
       "gameVersion": "TBC"
     },
     {
@@ -4718,8 +4718,8 @@
       "icon": "spell_shadow_seedofdestruction",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Seed of Corruption\n# class-specific WARLOCK affliction\n/cast Seed of Corruption",
-      "chars": 92,
+      "body": "#showtooltip Seed of Corruption\n/cast Seed of Corruption",
+      "chars": 56,
       "gameVersion": "TBC"
     },
     {
@@ -4732,8 +4732,8 @@
       "icon": "spell_shadow_unstableaffliction_3",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Unstable Affliction\n# class-specific WARLOCK affliction\n/cast Unstable Affliction",
-      "chars": 94,
+      "body": "#showtooltip Unstable Affliction\n/cast Unstable Affliction",
+      "chars": 58,
       "gameVersion": "TBC"
     },
     {
@@ -4746,8 +4746,8 @@
       "icon": "spell_shadow_shadowfury",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Shadowfury\n# class-specific WARLOCK destruction\n/stopcasting\n/cast Shadowfury",
-      "chars": 90,
+      "body": "#showtooltip Shadowfury\n/stopcasting\n/cast Shadowfury",
+      "chars": 53,
       "gameVersion": "TBC"
     },
     {
@@ -4760,8 +4760,8 @@
       "icon": "spell_shadow_summonfelguard",
       "group": "warlock-tbc",
       "source": "plan",
-      "body": "#showtooltip Summon Felguard\n# class-specific WARLOCK demonology\n/cast Summon Felguard",
-      "chars": 86,
+      "body": "#showtooltip Summon Felguard\n/cast Summon Felguard",
+      "chars": 50,
       "gameVersion": "TBC"
     },
     {
@@ -4774,8 +4774,8 @@
       "icon": "ability_druid_mangle2",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID feral\n/startattack\n/cast [form:3] Mangle (Cat); Mangle (Bear)",
-      "chars": 97,
+      "body": "#showtooltip\n/startattack\n/cast [form:3] Mangle (Cat); Mangle (Bear)",
+      "chars": 68,
       "gameVersion": "TBC"
     },
     {
@@ -4788,8 +4788,8 @@
       "icon": "inv_misc_herb_felblossom",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip Lifebloom\n# class-specific DRUID restoration\n/cancelform\n/cast [mod:alt,target=player] Lifebloom; Lifebloom",
-      "chars": 120,
+      "body": "#showtooltip Lifebloom\n/cancelform\n/cast [mod:alt,target=player] Lifebloom; Lifebloom",
+      "chars": 85,
       "gameVersion": "TBC"
     },
     {
@@ -4802,8 +4802,8 @@
       "icon": "spell_nature_earthbind",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip Cyclone\n# class-specific DRUID balance\n/stopcasting\n/cast Cyclone",
-      "chars": 78,
+      "body": "#showtooltip Cyclone\n/stopcasting\n/cast Cyclone",
+      "chars": 47,
       "gameVersion": "TBC"
     },
     {
@@ -4816,8 +4816,8 @@
       "icon": "ability_druid_flightform",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [mod:shift] Swift Flight Form; Flight Form",
-      "chars": 88,
+      "body": "#showtooltip\n/cast [mod:shift] Swift Flight Form; Flight Form",
+      "chars": 61,
       "gameVersion": "TBC"
     },
     {
@@ -4830,8 +4830,8 @@
       "icon": "ability_druid_lacerate",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip Lacerate\n# class-specific DRUID feral\n/startattack\n/cast Lacerate",
-      "chars": 78,
+      "body": "#showtooltip Lacerate\n/startattack\n/cast Lacerate",
+      "chars": 49,
       "gameVersion": "TBC"
     },
     {
@@ -4844,8 +4844,8 @@
       "icon": "ability_druid_mangle-tga",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip Maim\n# class-specific DRUID feral\n/cast Maim",
-      "chars": 57,
+      "body": "#showtooltip Maim\n/cast Maim",
+      "chars": 28,
       "gameVersion": "TBC"
     },
     {
@@ -4858,8 +4858,8 @@
       "icon": "ability_druid_treeoflife",
       "group": "druid-tbc",
       "source": "plan",
-      "body": "#showtooltip Tree of Life\n# class-specific DRUID restoration\n/cast Tree of Life",
-      "chars": 79,
+      "body": "#showtooltip Tree of Life\n/cast Tree of Life",
+      "chars": 44,
       "gameVersion": "TBC"
     },
     {
@@ -4872,8 +4872,8 @@
       "icon": "spell_holy_greaterblessingofkings",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Greater Blessing of Might;[mod:shift]Greater Blessing of Might(Rank 1)",
-      "chars": 125
+      "body": "#showtooltip\n/cast [nomod]Greater Blessing of Might;[mod:shift]Greater Blessing of Might(Rank 1)",
+      "chars": 96
     },
     {
       "id": "p-crus",
@@ -4885,8 +4885,8 @@
       "icon": "spell_holy_holysmite",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Seal of the Crusader;[mod:shift]Seal of the Crusader(Rank 1)",
-      "chars": 115
+      "body": "#showtooltip\n/cast [nomod]Seal of the Crusader;[mod:shift]Seal of the Crusader(Rank 1)",
+      "chars": 86
     },
     {
       "id": "p-bosac",
@@ -4898,8 +4898,8 @@
       "icon": "spell_holy_sealofsacrifice",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Blessing of Sacrifice;[mod:shift]Blessing of Sacrifice(Rank 1)",
-      "chars": 117
+      "body": "#showtooltip\n/cast [nomod]Blessing of Sacrifice;[mod:shift]Blessing of Sacrifice(Rank 1)",
+      "chars": 88
     },
     {
       "id": "p-dprot",
@@ -4911,8 +4911,8 @@
       "icon": "spell_holy_restoration",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Divine Protection;[mod:shift]Divine Protection(Rank 1)",
-      "chars": 109
+      "body": "#showtooltip\n/cast [nomod]Divine Protection;[mod:shift]Divine Protection(Rank 1)",
+      "chars": 80
     },
     {
       "id": "p-fraura",
@@ -4924,8 +4924,8 @@
       "icon": "spell_fire_sealoffire",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Fire Resistance Aura;[mod:shift]Fire Resistance Aura(Rank 1)",
-      "chars": 115
+      "body": "#showtooltip\n/cast [nomod]Fire Resistance Aura;[mod:shift]Fire Resistance Aura(Rank 1)",
+      "chars": 86
     },
     {
       "id": "p-rfaura",
@@ -4937,8 +4937,8 @@
       "icon": "spell_frost_wizardmark",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Frost Resistance Aura;[mod:shift]Frost Resistance Aura(Rank 1)",
-      "chars": 117
+      "body": "#showtooltip\n/cast [nomod]Frost Resistance Aura;[mod:shift]Frost Resistance Aura(Rank 1)",
+      "chars": 88
     },
     {
       "id": "p-sraura",
@@ -4950,8 +4950,8 @@
       "icon": "spell_shadow_sealofkings",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Shadow Resistance Aura;[mod:shift]Shadow Resistance Aura(Rank 1)",
-      "chars": 119
+      "body": "#showtooltip\n/cast [nomod]Shadow Resistance Aura;[mod:shift]Shadow Resistance Aura(Rank 1)",
+      "chars": 90
     },
     {
       "id": "p-bolight",
@@ -4963,8 +4963,8 @@
       "icon": "spell_holy_prayerofhealing02",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Blessing of Light;[mod:shift]Blessing of Light(Rank 1)",
-      "chars": 109
+      "body": "#showtooltip\n/cast [nomod]Blessing of Light;[mod:shift]Blessing of Light(Rank 1)",
+      "chars": 80
     },
     {
       "id": "p-gbow",
@@ -4976,8 +4976,8 @@
       "icon": "spell_holy_greaterblessingofwisdom",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Greater Blessing of Wisdom;[mod:shift]Greater Blessing of Wisdom(Rank 1)",
-      "chars": 127
+      "body": "#showtooltip\n/cast [nomod]Greater Blessing of Wisdom;[mod:shift]Greater Blessing of Wisdom(Rank 1)",
+      "chars": 98
     },
     {
       "id": "p-hwath",
@@ -4989,8 +4989,8 @@
       "icon": "spell_holy_excorcism",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Holy Wrath;[mod:shift]Holy Wrath(Rank 1)",
-      "chars": 95
+      "body": "#showtooltip\n/cast [nomod]Holy Wrath;[mod:shift]Holy Wrath(Rank 1)",
+      "chars": 66
     },
     {
       "id": "p-redeem",
@@ -5002,8 +5002,8 @@
       "icon": "spell_holy_resurrection",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Redemption;[mod:shift]Redemption(Rank 1)",
-      "chars": 95
+      "body": "#showtooltip\n/cast [nomod]Redemption;[mod:shift]Redemption(Rank 1)",
+      "chars": 66
     },
     {
       "id": "p-turnu",
@@ -5015,8 +5015,8 @@
       "icon": "spell_holy_turnundead",
       "group": "paladin-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PALADIN all\n/cast [nomod]Turn Undead;[mod:shift]Turn Undead(Rank 1)",
-      "chars": 97
+      "body": "#showtooltip\n/cast [nomod]Turn Undead;[mod:shift]Turn Undead(Rank 1)",
+      "chars": 68
     },
     {
       "id": "h-wild",
@@ -5028,8 +5028,8 @@
       "icon": "spell_nature_protectionformnature",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Aspect of the Wild;[mod:shift]Aspect of the Wild(Rank 1)",
-      "chars": 110
+      "body": "#showtooltip\n/cast [nomod]Aspect of the Wild;[mod:shift]Aspect of the Wild(Rank 1)",
+      "chars": 82
     },
     {
       "id": "h-scare",
@@ -5041,8 +5041,8 @@
       "icon": "ability_druid_cower",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Scare Beast;[mod:shift]Scare Beast(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Scare Beast;[mod:shift]Scare Beast(Rank 1)",
+      "chars": 68
     },
     {
       "id": "h-dshot",
@@ -5054,8 +5054,8 @@
       "icon": "spell_arcane_blink",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Distracting Shot;[mod:shift]Distracting Shot(Rank 1)",
-      "chars": 106
+      "body": "#showtooltip\n/cast [nomod]Distracting Shot;[mod:shift]Distracting Shot(Rank 1)",
+      "chars": 78
     },
     {
       "id": "h-scorpid",
@@ -5067,8 +5067,8 @@
       "icon": "ability_hunter_criticalshot",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Scorpid Sting;[mod:shift]Scorpid Sting(Rank 1)",
-      "chars": 100
+      "body": "#showtooltip\n/cast [nomod]Scorpid Sting;[mod:shift]Scorpid Sting(Rank 1)",
+      "chars": 72
     },
     {
       "id": "h-viper",
@@ -5080,8 +5080,8 @@
       "icon": "ability_hunter_aimedshot",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Viper Sting;[mod:shift]Viper Sting(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Viper Sting;[mod:shift]Viper Sting(Rank 1)",
+      "chars": 68
     },
     {
       "id": "h-volley",
@@ -5093,8 +5093,8 @@
       "icon": "ability_marksmanship",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Volley;[mod:shift]Volley(Rank 1)",
-      "chars": 86
+      "body": "#showtooltip\n/cast [nomod]Volley;[mod:shift]Volley(Rank 1)",
+      "chars": 58
     },
     {
       "id": "h-diseng",
@@ -5106,8 +5106,8 @@
       "icon": "ability_rogue_feint",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Disengage;[mod:shift]Disengage(Rank 1)",
-      "chars": 92
+      "body": "#showtooltip\n/cast [nomod]Disengage;[mod:shift]Disengage(Rank 1)",
+      "chars": 64
     },
     {
       "id": "h-etrap",
@@ -5119,8 +5119,8 @@
       "icon": "spell_fire_selfdestruct",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Explosive Trap;[mod:shift]Explosive Trap(Rank 1)",
-      "chars": 102
+      "body": "#showtooltip\n/cast [nomod]Explosive Trap;[mod:shift]Explosive Trap(Rank 1)",
+      "chars": 74
     },
     {
       "id": "h-itrap",
@@ -5132,8 +5132,8 @@
       "icon": "spell_fire_flameshock",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/cast [nomod]Immolation Trap;[mod:shift]Immolation Trap(Rank 1)",
-      "chars": 104
+      "body": "#showtooltip\n/cast [nomod]Immolation Trap;[mod:shift]Immolation Trap(Rank 1)",
+      "chars": 76
     },
     {
       "id": "h-mongo",
@@ -5145,8 +5145,8 @@
       "icon": "ability_hunter_swiftstrike",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/startattack\n/cast [nomod]Mongoose Bite;[mod:shift]Mongoose Bite(Rank 1)",
-      "chars": 113
+      "body": "#showtooltip\n/startattack\n/cast [nomod]Mongoose Bite;[mod:shift]Mongoose Bite(Rank 1)",
+      "chars": 85
     },
     {
       "id": "h-raptor",
@@ -5158,8 +5158,8 @@
       "icon": "ability_meleedamage",
       "group": "hunter-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific HUNTER all\n/startattack\n/cast [nomod]Raptor Strike;[mod:shift]Raptor Strike(Rank 1)",
-      "chars": 113
+      "body": "#showtooltip\n/startattack\n/cast [nomod]Raptor Strike;[mod:shift]Raptor Strike(Rank 1)",
+      "chars": 85
     },
     {
       "id": "r-expose",
@@ -5171,8 +5171,8 @@
       "icon": "ability_warrior_riposte",
       "group": "rogue-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific ROGUE all\n/cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)",
-      "chars": 97
+      "body": "#showtooltip\n/cast [nomod]Expose Armor;[mod:shift]Expose Armor(Rank 1)",
+      "chars": 70
     },
     {
       "id": "r-garrote",
@@ -5184,8 +5184,8 @@
       "icon": "ability_rogue_garrote",
       "group": "rogue-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific ROGUE all\n/cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)",
-      "chars": 87
+      "body": "#showtooltip\n/cast [nomod]Garrote;[mod:shift]Garrote(Rank 1)",
+      "chars": 60
     },
     {
       "id": "r-bstab",
@@ -5197,8 +5197,8 @@
       "icon": "ability_backstab",
       "group": "rogue-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific ROGUE all\n/startattack\n/cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)",
-      "chars": 102
+      "body": "#showtooltip\n/startattack\n/cast [nomod]Backstab;[mod:shift]Backstab(Rank 1)",
+      "chars": 75
     },
     {
       "id": "r-feint",
@@ -5210,8 +5210,8 @@
       "icon": "ability_rogue_feint",
       "group": "rogue-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific ROGUE all\n/cast [nomod]Feint;[mod:shift]Feint(Rank 1)",
-      "chars": 83
+      "body": "#showtooltip\n/cast [nomod]Feint;[mod:shift]Feint(Rank 1)",
+      "chars": 56
     },
     {
       "id": "pr-egrace",
@@ -5223,8 +5223,8 @@
       "icon": "spell_holy_elunesgrace",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)",
-      "chars": 100
+      "body": "#showtooltip\n/cast [nomod]Elune's Grace;[mod:shift]Elune's Grace(Rank 1)",
+      "chars": 72
     },
     {
       "id": "pr-fback",
@@ -5236,8 +5236,8 @@
       "icon": "spell_shadow_ritualofsacrifice",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)",
-      "chars": 90
+      "body": "#showtooltip\n/cast [nomod]Feedback;[mod:shift]Feedback(Rank 1)",
+      "chars": 62
     },
     {
       "id": "pr-mburn",
@@ -5249,8 +5249,8 @@
       "icon": "spell_shadow_manaburn",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)",
-      "chars": 92
+      "body": "#showtooltip\n/cast [nomod]Mana Burn;[mod:shift]Mana Burn(Rank 1)",
+      "chars": 64
     },
     {
       "id": "pr-shards",
@@ -5262,8 +5262,8 @@
       "icon": "spell_arcane_starfire",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)",
-      "chars": 94
+      "body": "#showtooltip\n/cast [nomod]Starshards;[mod:shift]Starshards(Rank 1)",
+      "chars": 66
     },
     {
       "id": "pr-dpray",
@@ -5275,8 +5275,8 @@
       "icon": "spell_holy_restoration",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)",
-      "chars": 106
+      "body": "#showtooltip\n/cast [nomod]Desperate Prayer;[mod:shift]Desperate Prayer(Rank 1)",
+      "chars": 78
     },
     {
       "id": "pr-heal",
@@ -5288,8 +5288,8 @@
       "icon": "spell_holy_heal02",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal",
-      "chars": 107
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Heal; [mod:shift] Heal(Rank 1); Heal",
+      "chars": 79
     },
     {
       "id": "pr-hfire",
@@ -5301,8 +5301,8 @@
       "icon": "spell_holy_searinglight",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)",
-      "chars": 92
+      "body": "#showtooltip\n/cast [nomod]Holy Fire;[mod:shift]Holy Fire(Rank 1)",
+      "chars": 64
     },
     {
       "id": "pr-lheal",
@@ -5314,8 +5314,8 @@
       "icon": "spell_holy_lesserheal",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal",
-      "chars": 128
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Lesser Heal; [mod:shift] Lesser Heal(Rank 1); Lesser Heal",
+      "chars": 100
     },
     {
       "id": "pr-smite",
@@ -5327,8 +5327,8 @@
       "icon": "spell_holy_holysmite",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Smite;[mod:shift]Smite(Rank 1)",
-      "chars": 84
+      "body": "#showtooltip\n/cast [nomod]Smite;[mod:shift]Smite(Rank 1)",
+      "chars": 56
     },
     {
       "id": "pr-dplague",
@@ -5340,8 +5340,8 @@
       "icon": "spell_shadow_blackplague",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)",
-      "chars": 106
+      "body": "#showtooltip\n/cast [nomod]Devouring Plague;[mod:shift]Devouring Plague(Rank 1)",
+      "chars": 78
     },
     {
       "id": "pr-hexw",
@@ -5353,8 +5353,8 @@
       "icon": "spell_shadow_fingerofdeath",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)",
-      "chars": 104
+      "body": "#showtooltip\n/cast [nomod]Hex of Weakness;[mod:shift]Hex of Weakness(Rank 1)",
+      "chars": 76
     },
     {
       "id": "pr-mc",
@@ -5366,8 +5366,8 @@
       "icon": "spell_shadow_shadowworddominate",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)",
-      "chars": 98
+      "body": "#showtooltip\n/cast [nomod]Mind Control;[mod:shift]Mind Control(Rank 1)",
+      "chars": 70
     },
     {
       "id": "pr-msoothe",
@@ -5379,8 +5379,8 @@
       "icon": "spell_holy_mindsooth",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Mind Soothe;[mod:shift]Mind Soothe(Rank 1)",
+      "chars": 68
     },
     {
       "id": "pr-mvis",
@@ -5392,8 +5392,8 @@
       "icon": "spell_holy_mindvision",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Mind Vision;[mod:shift]Mind Vision(Rank 1)",
+      "chars": 68
     },
     {
       "id": "pr-sprot",
@@ -5405,8 +5405,8 @@
       "icon": "spell_shadow_antishadow",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)",
-      "chars": 108
+      "body": "#showtooltip\n/cast [nomod]Shadow Protection;[mod:shift]Shadow Protection(Rank 1)",
+      "chars": 80
     },
     {
       "id": "pr-sguard",
@@ -5418,8 +5418,8 @@
       "icon": "spell_nature_lightningshield",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Shadowguard;[mod:shift]Shadowguard(Rank 1)",
+      "chars": 68
     },
     {
       "id": "pr-tow",
@@ -5431,8 +5431,8 @@
       "icon": "spell_shadow_deadofnight",
       "group": "priest-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific PRIEST all\n/cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)",
-      "chars": 108
+      "body": "#showtooltip\n/cast [nomod]Touch of Weakness;[mod:shift]Touch of Weakness(Rank 1)",
+      "chars": 80
     },
     {
       "id": "s-fnt",
@@ -5444,8 +5444,8 @@
       "icon": "spell_fire_sealoffire",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Fire Nova Totem;[mod:shift]Fire Nova Totem(Rank 1)",
-      "chars": 104
+      "body": "#showtooltip\n/cast [nomod]Fire Nova Totem;[mod:shift]Fire Nova Totem(Rank 1)",
+      "chars": 76
     },
     {
       "id": "s-magma",
@@ -5457,8 +5457,8 @@
       "icon": "spell_fire_selfdestruct",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Magma Totem;[mod:shift]Magma Totem(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/cast [nomod]Magma Totem;[mod:shift]Magma Totem(Rank 1)",
+      "chars": 68
     },
     {
       "id": "s-sear",
@@ -5470,8 +5470,8 @@
       "icon": "spell_fire_searingtotem",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Searing Totem;[mod:shift]Searing Totem(Rank 1)",
-      "chars": 100
+      "body": "#showtooltip\n/cast [nomod]Searing Totem;[mod:shift]Searing Totem(Rank 1)",
+      "chars": 72
     },
     {
       "id": "s-sclaw",
@@ -5483,8 +5483,8 @@
       "icon": "spell_nature_stoneclawtotem",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Stoneclaw Totem;[mod:shift]Stoneclaw Totem(Rank 1)",
-      "chars": 104
+      "body": "#showtooltip\n/cast [nomod]Stoneclaw Totem;[mod:shift]Stoneclaw Totem(Rank 1)",
+      "chars": 76
     },
     {
       "id": "s-frtot",
@@ -5496,8 +5496,8 @@
       "icon": "spell_fireresistancetotem_01",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Fire Resistance Totem;[mod:shift]Fire Resistance Totem(Rank 1)",
-      "chars": 116
+      "body": "#showtooltip\n/cast [nomod]Fire Resistance Totem;[mod:shift]Fire Resistance Totem(Rank 1)",
+      "chars": 88
     },
     {
       "id": "s-fttot",
@@ -5509,8 +5509,8 @@
       "icon": "spell_nature_guardianward",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Flametongue Totem;[mod:shift]Flametongue Totem(Rank 1)",
-      "chars": 108
+      "body": "#showtooltip\n/cast [nomod]Flametongue Totem;[mod:shift]Flametongue Totem(Rank 1)",
+      "chars": 80
     },
     {
       "id": "s-rftot",
@@ -5522,8 +5522,8 @@
       "icon": "spell_frostresistancetotem_01",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Frost Resistance Totem;[mod:shift]Frost Resistance Totem(Rank 1)",
-      "chars": 118
+      "body": "#showtooltip\n/cast [nomod]Frost Resistance Totem;[mod:shift]Frost Resistance Totem(Rank 1)",
+      "chars": 90
     },
     {
       "id": "s-fbrand",
@@ -5535,8 +5535,8 @@
       "icon": "spell_frost_frostbrand",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Frostbrand Weapon;[mod:shift]Frostbrand Weapon(Rank 1)",
-      "chars": 108
+      "body": "#showtooltip\n/cast [nomod]Frostbrand Weapon;[mod:shift]Frostbrand Weapon(Rank 1)",
+      "chars": 80
     },
     {
       "id": "s-goa",
@@ -5548,8 +5548,8 @@
       "icon": "spell_nature_invisibilitytotem",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Grace of Air Totem;[mod:shift]Grace of Air Totem(Rank 1)",
-      "chars": 110
+      "body": "#showtooltip\n/cast [nomod]Grace of Air Totem;[mod:shift]Grace of Air Totem(Rank 1)",
+      "chars": 82
     },
     {
       "id": "s-nrtot",
@@ -5561,8 +5561,8 @@
       "icon": "spell_nature_natureresistancetotem",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Nature Resistance Totem;[mod:shift]Nature Resistance Totem(Rank 1)",
-      "chars": 120
+      "body": "#showtooltip\n/cast [nomod]Nature Resistance Totem;[mod:shift]Nature Resistance Totem(Rank 1)",
+      "chars": 92
     },
     {
       "id": "s-rbit",
@@ -5574,8 +5574,8 @@
       "icon": "spell_nature_rockbiter",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Rockbiter Weapon;[mod:shift]Rockbiter Weapon(Rank 1)",
-      "chars": 106
+      "body": "#showtooltip\n/cast [nomod]Rockbiter Weapon;[mod:shift]Rockbiter Weapon(Rank 1)",
+      "chars": 78
     },
     {
       "id": "s-sskin",
@@ -5587,8 +5587,8 @@
       "icon": "spell_nature_stoneskintotem",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Stoneskin Totem;[mod:shift]Stoneskin Totem(Rank 1)",
-      "chars": 104
+      "body": "#showtooltip\n/cast [nomod]Stoneskin Totem;[mod:shift]Stoneskin Totem(Rank 1)",
+      "chars": 76
     },
     {
       "id": "s-wwall",
@@ -5600,8 +5600,8 @@
       "icon": "spell_nature_earthbind",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Windwall Totem;[mod:shift]Windwall Totem(Rank 1)",
-      "chars": 102
+      "body": "#showtooltip\n/cast [nomod]Windwall Totem;[mod:shift]Windwall Totem(Rank 1)",
+      "chars": 74
     },
     {
       "id": "s-aspirit",
@@ -5613,8 +5613,8 @@
       "icon": "spell_nature_regenerate",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Ancestral Spirit;[mod:shift]Ancestral Spirit(Rank 1)",
-      "chars": 106
+      "body": "#showtooltip\n/cast [nomod]Ancestral Spirit;[mod:shift]Ancestral Spirit(Rank 1)",
+      "chars": 78
     },
     {
       "id": "s-cheal",
@@ -5626,8 +5626,8 @@
       "icon": "spell_nature_healingwavegreater",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [mod:alt,target=player] Chain Heal; [mod:shift] Chain Heal(Rank 1); Chain Heal",
-      "chars": 125
+      "body": "#showtooltip\n/cast [mod:alt,target=player] Chain Heal; [mod:shift] Chain Heal(Rank 1); Chain Heal",
+      "chars": 97
     },
     {
       "id": "s-hstot",
@@ -5639,8 +5639,8 @@
       "icon": "inv_spear_04",
       "group": "shaman-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific SHAMAN all\n/cast [nomod]Healing Stream Totem;[mod:shift]Healing Stream Totem(Rank 1)",
-      "chars": 114
+      "body": "#showtooltip\n/cast [nomod]Healing Stream Totem;[mod:shift]Healing Stream Totem(Rank 1)",
+      "chars": 86
     },
     {
       "id": "m-ai",
@@ -5652,8 +5652,8 @@
       "icon": "spell_holy_magicalsentry",
       "group": "mage-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all | key (ALT-SHIFT-3)\n/cast Arcane Intellect;",
-      "chars": 82
+      "body": "#showtooltip\n/cast Arcane Intellect;",
+      "chars": 36
     },
     {
       "id": "m-cf",
@@ -5665,8 +5665,8 @@
       "icon": "inv_misc_food_73cinnamonroll",
       "group": "mage-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all | key (ALT-6)\n/cast Conjure Food",
-      "chars": 71
+      "body": "#showtooltip\n/cast Conjure Food",
+      "chars": 31
     },
     {
       "id": "m-cw",
@@ -5678,8 +5678,8 @@
       "icon": "inv_drink_18",
       "group": "mage-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all\n/cast Conjure Water",
-      "chars": 58
+      "body": "#showtooltip\n/cast Conjure Water",
+      "chars": 32
     },
     {
       "id": "m-ma",
@@ -5691,8 +5691,8 @@
       "icon": "spell_magearmor",
       "group": "mage-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all | key (ALT-Q)\n/cast Mage Armor;",
-      "chars": 70
+      "body": "#showtooltip\n/cast Mage Armor;",
+      "chars": 30
     },
     {
       "id": "m-ia",
@@ -5704,8 +5704,8 @@
       "icon": "spell_frost_frostarmor02",
       "group": "mage-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific MAGE all | key (ALT-SHIFT-1)\n/cast Ice Armor;",
-      "chars": 75
+      "body": "#showtooltip\n/cast Ice Armor;",
+      "chars": 29
     },
     {
       "id": "l-cor",
@@ -5717,8 +5717,8 @@
       "icon": "spell_shadow_unholystrength",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Curse of Recklessness;[mod:shift]Curse of Recklessness(Rank 1)",
-      "chars": 117
+      "body": "#showtooltip\n/cast [nomod]Curse of Recklessness;[mod:shift]Curse of Recklessness(Rank 1)",
+      "chars": 88
     },
     {
       "id": "l-cosh",
@@ -5730,8 +5730,8 @@
       "icon": "spell_shadow_curseofachimonde",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Curse of Shadow;[mod:shift]Curse of Shadow(Rank 1)",
-      "chars": 105
+      "body": "#showtooltip\n/cast [nomod]Curse of Shadow;[mod:shift]Curse of Shadow(Rank 1)",
+      "chars": 76
     },
     {
       "id": "l-cot",
@@ -5743,8 +5743,8 @@
       "icon": "spell_shadow_curseoftounges",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Curse of Tongues;[mod:shift]Curse of Tongues(Rank 1)",
-      "chars": 107
+      "body": "#showtooltip\n/cast [nomod]Curse of Tongues;[mod:shift]Curse of Tongues(Rank 1)",
+      "chars": 78
     },
     {
       "id": "l-cowk",
@@ -5756,8 +5756,8 @@
       "icon": "spell_shadow_curseofmannoroth",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Curse of Weakness;[mod:shift]Curse of Weakness(Rank 1)",
-      "chars": 109
+      "body": "#showtooltip\n/cast [nomod]Curse of Weakness;[mod:shift]Curse of Weakness(Rank 1)",
+      "chars": 80
     },
     {
       "id": "l-dlife",
@@ -5769,8 +5769,8 @@
       "icon": "spell_shadow_lifedrain02",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Drain Life;[mod:shift]Drain Life(Rank 1)",
-      "chars": 95
+      "body": "#showtooltip\n/cast [nomod]Drain Life;[mod:shift]Drain Life(Rank 1)",
+      "chars": 66
     },
     {
       "id": "l-dmana",
@@ -5782,8 +5782,8 @@
       "icon": "spell_shadow_siphonmana",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Drain Mana;[mod:shift]Drain Mana(Rank 1)",
-      "chars": 95
+      "body": "#showtooltip\n/cast [nomod]Drain Mana;[mod:shift]Drain Mana(Rank 1)",
+      "chars": 66
     },
     {
       "id": "l-howl",
@@ -5795,8 +5795,8 @@
       "icon": "spell_shadow_deathscream",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Howl of Terror;[mod:shift]Howl of Terror(Rank 1)",
-      "chars": 103
+      "body": "#showtooltip\n/cast [nomod]Howl of Terror;[mod:shift]Howl of Terror(Rank 1)",
+      "chars": 74
     },
     {
       "id": "l-dskin",
@@ -5808,8 +5808,8 @@
       "icon": "spell_shadow_ragingscream",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Demon Skin;[mod:shift]Demon Skin(Rank 1)",
-      "chars": 95
+      "body": "#showtooltip\n/cast [nomod]Demon Skin;[mod:shift]Demon Skin(Rank 1)",
+      "chars": 66
     },
     {
       "id": "l-hfunnel",
@@ -5821,8 +5821,8 @@
       "icon": "spell_shadow_lifedrain",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Health Funnel;[mod:shift]Health Funnel(Rank 1)",
-      "chars": 101
+      "body": "#showtooltip\n/cast [nomod]Health Funnel;[mod:shift]Health Funnel(Rank 1)",
+      "chars": 72
     },
     {
       "id": "l-sward",
@@ -5834,8 +5834,8 @@
       "icon": "spell_shadow_antishadow",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Shadow Ward;[mod:shift]Shadow Ward(Rank 1)",
-      "chars": 97
+      "body": "#showtooltip\n/cast [nomod]Shadow Ward;[mod:shift]Shadow Ward(Rank 1)",
+      "chars": 68
     },
     {
       "id": "l-subj",
@@ -5847,8 +5847,8 @@
       "icon": "spell_shadow_enslavedemon",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Subjugate Demon;[mod:shift]Subjugate Demon(Rank 1)",
-      "chars": 105
+      "body": "#showtooltip\n/cast [nomod]Subjugate Demon;[mod:shift]Subjugate Demon(Rank 1)",
+      "chars": 76
     },
     {
       "id": "l-hell",
@@ -5860,8 +5860,8 @@
       "icon": "spell_fire_incinerate",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Hellfire;[mod:shift]Hellfire(Rank 1)",
-      "chars": 91
+      "body": "#showtooltip\n/cast [nomod]Hellfire;[mod:shift]Hellfire(Rank 1)",
+      "chars": 62
     },
     {
       "id": "l-rof",
@@ -5873,8 +5873,8 @@
       "icon": "spell_shadow_rainoffire",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Rain of Fire;[mod:shift]Rain of Fire(Rank 1)",
-      "chars": 99
+      "body": "#showtooltip\n/cast [nomod]Rain of Fire;[mod:shift]Rain of Fire(Rank 1)",
+      "chars": 70
     },
     {
       "id": "l-spain",
@@ -5886,8 +5886,8 @@
       "icon": "spell_fire_soulburn",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Searing Pain;[mod:shift]Searing Pain(Rank 1)",
-      "chars": 99
+      "body": "#showtooltip\n/cast [nomod]Searing Pain;[mod:shift]Searing Pain(Rank 1)",
+      "chars": 70
     },
     {
       "id": "l-sfire",
@@ -5899,8 +5899,8 @@
       "icon": "spell_fire_fireball02",
       "group": "warlock-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific WARLOCK all\n/cast [nomod]Soul Fire;[mod:shift]Soul Fire(Rank 1)",
-      "chars": 93
+      "body": "#showtooltip\n/cast [nomod]Soul Fire;[mod:shift]Soul Fire(Rank 1)",
+      "chars": 64
     },
     {
       "id": "d-hib",
@@ -5912,8 +5912,8 @@
       "icon": "spell_nature_sleep",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)",
-      "chars": 103
+      "body": "#showtooltip\n/cancelform\n/cast [nomod]Hibernate;[mod:shift]Hibernate(Rank 1)",
+      "chars": 76
     },
     {
       "id": "d-cane",
@@ -5925,8 +5925,8 @@
       "icon": "spell_nature_cyclone",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)",
-      "chars": 91
+      "body": "#showtooltip\n/cast [nomod]Hurricane;[mod:shift]Hurricane(Rank 1)",
+      "chars": 64
     },
     {
       "id": "d-soothe",
@@ -5938,8 +5938,8 @@
       "icon": "ability_hunter_beastsoothe",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)",
-      "chars": 111
+      "body": "#showtooltip\n/cancelform\n/cast [nomod]Soothe Animal;[mod:shift]Soothe Animal(Rank 1)",
+      "chars": 84
     },
     {
       "id": "d-thorns",
@@ -5951,8 +5951,8 @@
       "icon": "spell_nature_thorns",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)",
-      "chars": 97
+      "body": "#showtooltip\n/cancelform\n/cast [nomod]Thorns;[mod:shift]Thorns(Rank 1)",
+      "chars": 70
     },
     {
       "id": "d-claw",
@@ -5964,8 +5964,8 @@
       "icon": "ability_druid_rake",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/startattack\n/cast [nomod]Claw;[mod:shift]Claw(Rank 1)",
-      "chars": 94
+      "body": "#showtooltip\n/startattack\n/cast [nomod]Claw;[mod:shift]Claw(Rank 1)",
+      "chars": 67
     },
     {
       "id": "d-cower",
@@ -5977,8 +5977,8 @@
       "icon": "ability_druid_cower",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Cower;[mod:shift]Cower(Rank 1)",
-      "chars": 83
+      "body": "#showtooltip\n/cast [nomod]Cower;[mod:shift]Cower(Rank 1)",
+      "chars": 56
     },
     {
       "id": "d-dmr",
@@ -5990,8 +5990,8 @@
       "icon": "classic_ability_druid_demoralizingroar",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)",
-      "chars": 107
+      "body": "#showtooltip\n/cast [nomod]Demoralizing Roar;[mod:shift]Demoralizing Roar(Rank 1)",
+      "chars": 80
     },
     {
       "id": "d-pounce",
@@ -6003,8 +6003,8 @@
       "icon": "ability_druid_supriseattack",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)",
-      "chars": 85
+      "body": "#showtooltip\n/cast [nomod]Pounce;[mod:shift]Pounce(Rank 1)",
+      "chars": 58
     },
     {
       "id": "d-ravage",
@@ -6016,8 +6016,8 @@
       "icon": "ability_druid_ravage",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)",
-      "chars": 85
+      "body": "#showtooltip\n/cast [nomod]Ravage;[mod:shift]Ravage(Rank 1)",
+      "chars": 58
     },
     {
       "id": "d-swipe",
@@ -6029,8 +6029,8 @@
       "icon": "inv_misc_monsterclaw_03",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/startattack\n/cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)",
-      "chars": 96
+      "body": "#showtooltip\n/startattack\n/cast [nomod]Swipe;[mod:shift]Swipe(Rank 1)",
+      "chars": 69
     },
     {
       "id": "d-tfury",
@@ -6042,8 +6042,8 @@
       "icon": "ability_mount_jungletiger",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)",
-      "chars": 97
+      "body": "#showtooltip\n/cast [nomod]Tiger's Fury;[mod:shift]Tiger's Fury(Rank 1)",
+      "chars": 70
     },
     {
       "id": "d-gotw",
@@ -6055,8 +6055,8 @@
       "icon": "spell_nature_regeneration",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)",
-      "chars": 117
+      "body": "#showtooltip\n/cancelform\n/cast [nomod]Gift of the Wild;[mod:shift]Gift of the Wild(Rank 1)",
+      "chars": 90
     },
     {
       "id": "d-rgw",
@@ -6068,8 +6068,8 @@
       "icon": "spell_nature_resistnature",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth",
-      "chars": 130
+      "body": "#showtooltip\n/cancelform\n/cast [mod:alt,target=player] Regrowth; [mod:shift] Regrowth(Rank 1); Regrowth",
+      "chars": 103
     },
     {
       "id": "d-tranq",
@@ -6081,8 +6081,8 @@
       "icon": "spell_nature_tranquility",
       "group": "druid-ranks",
       "source": "plan",
-      "body": "#showtooltip\n# class-specific DRUID all\n/cancelform\n/cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)",
-      "chars": 107
+      "body": "#showtooltip\n/cancelform\n/cast [nomod]Tranquility;[mod:shift]Tranquility(Rank 1)",
+      "chars": 80
     },
     {
       "id": "ingame-other-Virene-sb",
@@ -6154,8 +6154,8 @@
       "icon": "ability_warrior_battleshout",
       "group": "other-WARRIOR",
       "source": "ingame",
-      "body": "#showtooltip Battle Shout\n# class-specific WARRIOR all | key (B)\n/cast Battle Shout\n/startattack",
-      "chars": 96,
+      "body": "#showtooltip Battle Shout\n/cast Battle Shout\n/startattack",
+      "chars": 57,
       "notes": "Imported from in-game macros-cache.txt."
     },
     {
@@ -6168,7 +6168,7 @@
       "icon": "135939",
       "group": "other-account",
       "source": "ingame",
-      "body": "/w Stinkytoez ——————————————————\n/w Stinkytoez {star} • • Requesting Power Infusion • • {star}\n/w Stinkytoez ——————————————————\n/cast Fireball",
+      "body": "/w Stinkytoez \u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n/w Stinkytoez {star} \u2022 \u2022 Requesting Power Infusion \u2022 \u2022 {star}\n/w Stinkytoez \u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n/cast Fireball",
       "chars": 142,
       "notes": "Imported from in-game macros-cache.txt."
     }

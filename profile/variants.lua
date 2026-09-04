@@ -10,7 +10,7 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 local function classVariants(self, classFile)
   classFile = classFile or self:GetPlayerClass()
   local db = self:GetDB()
-  db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, actions = {}, variants = {} }
+  db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
   local classAcc = db.classes[classFile]
   classAcc.variants = classAcc.variants or {}
   return classAcc
@@ -18,7 +18,7 @@ end
 
 function Addon:EnsureVariant(name, classFile)
   local classAcc = classVariants(self, classFile)
-  classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {}, actions = {} }
+  classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
   return classAcc.variants[name]
 end
 
