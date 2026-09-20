@@ -295,7 +295,7 @@ assert(_G.ChatFrame1EditBoxLeft.shown == false, "Blizzard chat input left art st
 assert(_G.ChatFrame1EditBoxMid.shown == false, "Blizzard chat input mid art stays hidden")
 assert(_G.ChatFrame1EditBoxRight.shown == false, "Blizzard chat input right art stays hidden")
 assert(edit.fontSize == 16, "chat input font size matches chat")
-assert(math.abs(fade.a - 0.5) < 0.001, "chat fill starts at idle alpha")
+assert(math.abs(fade.a - 0.72) < 0.001, "chat fill starts at idle alpha")
 assert(chat.alpha == 1, "chat text does not fade with the background")
 assert(chat.clamped == true, "chat stays clamped to the screen")
 assert(chat.clampInsets[1] == 35 and chat.clampInsets[2] == -35
@@ -353,7 +353,7 @@ for _, fn in ipairs(chat.scripts.OnEnter) do
   fn(chat)
 end
 Addon:TickFade(0.6)
-assert(math.abs(fade.a - 0.95) < 0.001, "mouse enter darkens the chat fill")
+assert(math.abs(fade.a - 1) < 0.001, "mouse enter darkens the chat fill")
 assert(chat.alpha == 1, "mouse enter does not fade chat text")
 assert(chat.fading == true, "mouse enter does not disable chat message fade")
 assert(chat.resetFades == 1, "mouse enter shows faded chat messages")
@@ -363,20 +363,20 @@ for _, fn in ipairs(chat.scripts.OnLeave) do
 end
 Addon:TickFade(20)
 Addon:TickFade(2.5)
-assert(math.abs(fade.a - 0.5) < 0.001, "after 20s with no use, chat fill slow-fades to idle")
+assert(math.abs(fade.a - 0.72) < 0.001, "after 20s with no use, chat fill slow-fades to idle")
 assert(chat.fading == true, "chat messages fade again when the frame is not in use")
 
 for _, fn in ipairs(chat.scripts.OnMouseDown) do
   fn(chat)
 end
 Addon:TickFade(0.6)
-assert(math.abs(fade.a - 0.95) < 0.001, "mouse down darkens the chat fill")
+assert(math.abs(fade.a - 1) < 0.001, "mouse down darkens the chat fill")
 assert(chat.fading == true, "mouse down does not disable chat message fade")
 assert(chat.resetFades == 2, "mouse down shows faded chat messages")
 
 _G.ChatFrame1EditBox:Show()
 Addon:TickFade(0)
-assert(math.abs(fade.a - 0.95) < 0.001, "edit box keeps the chat fill active")
+assert(math.abs(fade.a - 1) < 0.001, "edit box keeps the chat fill active")
 assert(chat.fading == true, "edit box does not disable chat message fade")
 assert(chat.resetFades == 3, "edit box shows faded chat messages")
 assert(_G.ChatFrame2.resetFades == 1, "edit box shows faded messages in every chat window")
@@ -384,11 +384,11 @@ for _, fn in ipairs(chat.scripts.OnLeave) do
   fn(chat)
 end
 Addon:TickFade(20)
-assert(math.abs(fade.a - 0.95) < 0.001, "edit box blocks the linger fade")
+assert(math.abs(fade.a - 1) < 0.001, "edit box blocks the linger fade")
 _G.ChatFrame1EditBox:Hide()
 Addon:TickFade(20)
 Addon:TickFade(2.5)
-assert(math.abs(fade.a - 0.5) < 0.001, "hiding the edit box starts the linger fade")
+assert(math.abs(fade.a - 0.72) < 0.001, "hiding the edit box starts the linger fade")
 assert(chat.fading == true, "hiding the edit box lets stale chat messages fade")
 
 for _, fn in ipairs(_G.ChatFrame2.scripts.OnEnter) do
@@ -396,7 +396,7 @@ for _, fn in ipairs(_G.ChatFrame2.scripts.OnEnter) do
 end
 assert(_G.ChatFrame2.resetFades == 2, "Combat Log mouse enter shows faded messages")
 assert(_G.ChatFrame2.fading == true, "Combat Log mouse enter does not disable fade")
-assert(math.abs(fade.a - 0.5) < 0.001, "Combat Log enter does not darken General fill")
+assert(math.abs(fade.a - 0.72) < 0.001, "Combat Log enter does not darken General fill")
 
 local whisper = _G.FCF_OpenTemporaryWindow()
 assert(whisper.fading == true, "whisper window messages fade after 1 minute")
@@ -429,7 +429,8 @@ local _, _, _, br = pixel(255, 0)
 local _, _, _, tl = pixel(0, 255)
 local _, _, _, tr = pixel(255, 255)
 assert(bl == 255, "bottom-left of the fade is solid black alpha")
-assert(br <= 12 and tl <= 12 and tr <= 12, "top and right of the fade stay near transparent")
+assert(br >= 32 and br <= 38 and tl >= 32 and tl <= 38 and tr >= 32 and tr <= 38,
+  "top and right of the fade stay slightly black")
 assert(bl > br and bl > tl, "the fade is darkest at the bottom-left")
 
 print("chat_spec OK")

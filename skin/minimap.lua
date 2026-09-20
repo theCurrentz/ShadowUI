@@ -6,7 +6,7 @@
            Time is Blizzard TimeManagerClockButton, restyled under the map.
            GameTimeFrame stays hidden. The mouse wheel zooms. After 5 seconds
            the map zooms out. The player can drag every minimap icon.
-  Deps: ShadowUI:LockVertex(), ShadowUI:DarkenFrameRegions(), ShadowUI:ApplyOuterChrome(),
+  Deps: ShadowUI:LockVertex(), ShadowUI:ApplyOuterChrome(),
         ShadowUI:SkinTime()
   Public: ShadowUI:SkinMinimap()
 ]]
@@ -401,6 +401,11 @@ local function isEdgeIcon(frame)
     return true
   end
   if name:find("ItemRack", 1, true) then
+    if name == "ItemRackMenuFrame" or name == "ItemRackFrame"
+        or name:find("ItemRackMenu", 1, true)
+        or name:find("ItemRackButton", 1, true) then
+      return false
+    end
     return true
   end
   if name:find("MinimapButton", 1, true) then
@@ -782,9 +787,4 @@ function Addon:SkinMinimap()
   for _, name in ipairs(DARKEN) do
     self:LockVertex(_G[name], self.DARKEN_BLACK)
   end
-  self:DarkenFrameRegions(_G.MiniMapTrackingButton, self.DARKEN_BLACK)
-  self:DarkenFrameRegions(_G.MiniMapTrackingFrame, self.DARKEN_BLACK)
-  self:DarkenFrameRegions(_G.MiniMapMailFrame, self.DARKEN_BLACK)
-  self:DarkenFrameRegions(_G.LFGMinimapFrame, self.DARKEN_BLACK)
-  self:DarkenFrameRegions(_G.MiniMapLFGFrame, self.DARKEN_BLACK)
 end

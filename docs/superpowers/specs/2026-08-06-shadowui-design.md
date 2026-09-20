@@ -171,7 +171,7 @@ Minimal per-character state only:
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; gold thick-outlined uppercase Keybind labels at size 16; pale lime outlined item counts at size 15, 5px below the slot; Cooldown Count for cooldowns of 2s or more |
+| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; gold thick-outlined uppercase Keybind labels at size 16; pale lime outlined item counts at size 15, inset inside the slot; Cooldown Count for cooldowns of 2s or more; the Action Slot icon is grayed out while that cooldown runs |
 | Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame keeps native Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar bubble tab on the portrait |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
 | Bags | Parked. Files stay. Blizzard bag and bank windows stay. Darken still tints those windows. |
@@ -241,6 +241,7 @@ On login (`PLAYER_LOGIN` / safe `PLAYER_ENTERING_WORLD`):
 
 ### Options panel (AceConfig)
 
+- Darken chrome on the AceConfigDialog host (ChatFrame fill, no DialogBox parchment)
 - Active variant list/create/rename/delete
 - Talent-tree binding per variant
 - Current edit layer indicator

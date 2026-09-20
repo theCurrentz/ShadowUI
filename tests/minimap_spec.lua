@@ -212,6 +212,24 @@ _G.MinimapBackdrop = fakeFrame("MinimapBackdrop")
 _G.MiniMapTrackingBorder = fakeFrame("MiniMapTrackingBorder")
 _G.MiniMapMailFrame = fakeFrame("MiniMapMailFrame")
 _G.MiniMapTrackingFrame = fakeFrame("MiniMapTrackingFrame")
+local function fakeIconTexture(name)
+  local tex = { name = name, r = 1, g = 1, b = 1 }
+  function tex:GetName() return self.name end
+  function tex:SetVertexColor(r, g, b)
+    self.r, self.g, self.b = r, g, b
+  end
+  function tex:IsObjectType(kind) return kind == "Texture" end
+  function tex:SetTexture() end
+  return tex
+end
+_G.MiniMapMailIcon = fakeIconTexture("MiniMapMailIcon")
+_G.MiniMapTrackingIcon = fakeIconTexture("MiniMapTrackingIcon")
+function _G.MiniMapMailFrame:GetRegions()
+  return _G.MiniMapMailIcon
+end
+function _G.MiniMapTrackingFrame:GetRegions()
+  return _G.MiniMapTrackingIcon
+end
 _G.MinimapZoneTextButton = fakeFrame("MinimapZoneTextButton")
 _G.MinimapZoneText = fakeFontString("MinimapZoneText")
 _G.GameTimeFrame = fakeFrame("GameTimeFrame")
@@ -320,6 +338,12 @@ assert(_G.MiniMapTrackingBorder.r == 0.05, "tracking ring is Lorti darkest")
 local mail = _G.MiniMapMailFrame.points[1]
 assert(mail and mail[1] == "CENTER" and mail[2] == map, "mail icon is parented to the square map")
 assert(mail[4] > 0 and mail[5] < 0, "mail sits on the south-east square corner, not the circle")
+assert(_G.MiniMapMailIcon.r == 1 and _G.MiniMapMailIcon.g == 1 and _G.MiniMapMailIcon.b == 1,
+  "mail glyph is not painted Darken black")
+assert(_G.MiniMapTrackingIcon.r == 1 and _G.MiniMapTrackingIcon.g == 1 and _G.MiniMapTrackingIcon.b == 1,
+  "tracking glyph is not painted Darken black")
+assert(not _G.MiniMapMailFrame.hidden, "mail host stays able to Show")
+assert(_G.MiniMapMailFrame.Show ~= _G.MiniMapMailFrame.Hide, "mail Show is not replaced")
 local track = _G.MiniMapTrackingFrame.points[1]
 assert(track[4] < 0 and track[5] > 0, "tracking sits on the north-west square corner, not the circle")
 
@@ -437,6 +461,18 @@ assert(lateRack.parent == map, "LibDBIcon ItemRack parks from IconCreated")
 local lateRackPark = lateRack.points[#lateRack.points]
 assert(lateRackPark and lateRackPark[1] == "CENTER" and lateRackPark[2] == map,
   "LibDBIcon ItemRack sits on the square path after IconCreated")
+
+-- ItemRack set menu is named ItemRackMenuFrame. It must not park as a
+-- Minimap Icon when it is a child of the map.
+local rackMenu = fakeFrame("ItemRackMenuFrame")
+_G.ItemRackMenuFrame = rackMenu
+rackMenu:SetParent(map)
+rackMenu:SetPoint("TOPLEFT", map, "BOTTOMLEFT", 0, 0)
+Addon:SkinMinimap()
+assert(rackMenu.parent == map, "ItemRack set menu is not a Minimap Icon")
+local rackMenuPark = rackMenu.points[#rackMenu.points]
+assert(rackMenuPark and rackMenuPark[3] == "BOTTOMLEFT",
+  "ItemRack set menu keeps its dock on the map")
 
 -- Tracking button stays on MiniMapTracking so SexyMap-style mouse propagate works.
 local trackBtn = fakeFrame("MiniMapTrackingButton")

@@ -186,7 +186,7 @@ function Addon:CaptureCurrentLoadout(isBackup)
     class = self:GetPlayerClass(),
     version = self:GetVersion(),
     capturedAt = now(),
-    activeVariant = self.GetActiveVariantName and self:GetActiveVariantName() or nil,
+    activeProfile = self.GetActiveProfileName and self:GetActiveProfileName() or nil,
     backup = isBackup == true,
     layout = copy(self, cfg.layout or {}),
     keybinds = {},
@@ -608,11 +608,11 @@ local function applyLayout(self, plan)
   if #plan.layoutOps == 0 then
     return
   end
-  local char = self:GetCharDB()
-  char.layout = char.layout or {}
-  local inherited = (self:ResolveEffective(nil, nil, "variant").layout or {})
+  local profile = self:GetProfile()
+  profile.layout = profile.layout or {}
+  local inherited = (self:ResolveShipped().layout or {})
   for _, operation in ipairs(plan.layoutOps) do
-    local target = char.layout[operation.id] or {}
+    local target = profile.layout[operation.id] or {}
     local baseline = inherited[operation.id] or {}
     for field, desired in pairs(operation.fields) do
       if same(desired, baseline[field]) then
@@ -621,7 +621,7 @@ local function applyLayout(self, plan)
         target[field] = copy(self, desired)
       end
     end
-    char.layout[operation.id] = next(target) and target or nil
+    profile.layout[operation.id] = next(target) and target or nil
   end
 end
 
@@ -629,9 +629,9 @@ local function applyKeybinds(self, plan)
   if #plan.keybindOps == 0 then
     return
   end
-  local char = self:GetCharDB()
-  char.keybinds = char.keybinds or {}
-  local baselineCfg = self:ResolveEffective(nil, nil, "variant")
+  local profile = self:GetProfile()
+  profile.keybinds = profile.keybinds or {}
+  local baselineCfg = self:ResolveShipped()
   local baseline = baselineCfg.keybinds or {}
   if self.MergeBindingTables and self.CollectClientActionBinds then
     baseline = self:MergeBindingTables(self:CollectClientActionBinds(), baseline)
@@ -642,7 +642,7 @@ local function applyKeybinds(self, plan)
     copiedSlots[operation.slot] = true
   end
 
-  -- A copied key must win over an inherited or Character bind on another slot.
+  -- A copied key must win over an inherited or Profile bind on another slot.
   -- Write a tombstone for an unselected collision before writing the new map.
   local collisionSlots = {}
   for _, operation in ipairs(plan.keybindOps) do
@@ -653,7 +653,7 @@ local function applyKeybinds(self, plan)
           collisionSlots[slot] = true
         end
       end
-      for name, key in pairs(char.keybinds) do
+      for name, key in pairs(profile.keybinds) do
         local slot = self:SlotFromBindingName(name)
         if key == desired and slot and slot ~= operation.slot and not copiedSlots[slot] then
           collisionSlots[slot] = true
@@ -662,28 +662,28 @@ local function applyKeybinds(self, plan)
     end
   end
   for slot in pairs(collisionSlots) do
-    for name in pairs(char.keybinds) do
+    for name in pairs(profile.keybinds) do
       if self:SlotFromBindingName(name) == slot then
-        char.keybinds[name] = nil
+        profile.keybinds[name] = nil
       end
     end
-    char.keybinds[bindName(slot)] = false
+    profile.keybinds[bindName(slot)] = false
   end
 
   for _, operation in ipairs(plan.keybindOps) do
-    for name in pairs(char.keybinds) do
+    for name in pairs(profile.keybinds) do
       if self:SlotFromBindingName(name) == operation.slot then
-        char.keybinds[name] = nil
+        profile.keybinds[name] = nil
       end
     end
     local desired = operation.key
     local name = bindName(operation.slot)
     if desired == baselineSlots[operation.slot] then
-      char.keybinds[name] = nil
+      profile.keybinds[name] = nil
     elseif desired and desired ~= "" then
-      char.keybinds[name] = desired
+      profile.keybinds[name] = desired
     else
-      char.keybinds[name] = false
+      profile.keybinds[name] = false
     end
   end
 end

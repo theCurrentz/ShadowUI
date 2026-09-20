@@ -1,9 +1,9 @@
 -- Options panel exposes Global gap and shape, Bar Groups, and Bar gap pads.
 -- Each Bar group writes enabled, scale, gap, fade idle, shape, Group, gap above,
--- and gap below on the selected Layer. A Bar is one Row. Missing Layout entries
+-- and gap below on the active Profile. A Bar is one Row. Missing Layout entries
 -- inherit Global, then defaults.
--- Micro Cluster fade and shape write Character. Experience bar fade idle
--- writes Character. Stance is not a Bar group.
+-- Micro Cluster fade and shape write Character. Experience bar show and
+-- fade idle write Character. Stance is not a Bar group.
 -- Cooldown Manager is a Layout host group, not a Bar group.
 -- Run: lua tests/options_bars_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -36,24 +36,10 @@ local layout = {
   possess = { enabled = true },
   player = { x = 0 },
 }
-local baseLayout = {
-  bar1 = { enabled = true },
-  bar2 = { enabled = true },
-  bar9 = { enabled = true },
-  pet = { enabled = true },
-  possess = { enabled = true },
-  player = { x = 0 },
-}
-local char = { editLayer = "class" }
+local char = { activeProfile = "Default" }
 local writes = {}
 local applied = 0
 
-function Addon:ResolveEffective(_, _, through)
-  if through == "base" then
-    return { layout = baseLayout }
-  end
-  return { layout = layout }
-end
 function Addon:GetCharDB()
   return char
 end
@@ -61,34 +47,40 @@ function Addon:ApplyAll()
   applied = applied + 1
 end
 function Addon:GetDB()
-  return { classes = { MAGE = { variants = {} } } }
+  return {
+    defaultProfile = "Default",
+    profiles = { Default = { layout = {}, keybinds = {} } },
+  }
 end
 function Addon:GetPlayerClass()
   return "MAGE"
 end
-function Addon:GetActiveVariantName() end
-function Addon:SetVariant() end
-function Addon:CreateVariant() end
-function Addon:RenameVariant() end
-function Addon:DeleteVariant() end
-function Addon:SetEditLayer() end
+function Addon:GetActiveProfileName() return "Default" end
+function Addon:SetActiveProfile() end
+function Addon:CreateProfile() end
+function Addon:RenameProfile() end
+function Addon:DeleteProfile() end
+function Addon:SetDefaultProfile() end
+function Addon:ProfileValues()
+  return { Default = "Default" }
+end
+function Addon:GetProfile()
+  return Addon:GetDB().profiles.Default
+end
 function Addon:ToggleEditMode() end
 function Addon:ToggleKeybindMode() end
 function Addon:SetActionSlotHardLock() end
 
 assert(loadfile(root .. "core/resolve.lua"))()
-function Addon:ResolveEffective(_, _, through)
-  if through == "base" then
-    return { layout = baseLayout }
-  end
+function Addon:ResolveEffective()
   return { layout = layout }
 end
-function Addon:WriteLayerDelta(layer, section, key, patch)
-  writes[#writes + 1] = { layer = layer, section = section, key = key, patch = patch }
+function Addon:WriteProfileDelta(section, key, patch)
+  writes[#writes + 1] = { section = section, key = key, patch = patch }
   if section ~= "layout" then
     return
   end
-  local store = char.editLayer == "base" and baseLayout or layout
+  local store = layout
   if type(patch) ~= "table" then
     store[key] = patch
     return
@@ -125,12 +117,7 @@ assert(bars.args.bar3.args.scale.get() == 1, "missing Bar scale reads as 1")
 assert(bars.args.bar3.args.gap.get() == 0, "missing Bar gap reads as 0")
 assert(bars.args.bar3.args.fadeIdle.get() == 1, "missing Bar fade idle reads as 1")
 assert(bars.args.bar3.args.iconShape.get() == "square", "missing Bar shape reads as square")
-assert(bars.args.bar9.args.enabled.get() == false, "Class Layer reads Class enabled")
-char.editLayer = "base"
-assert(bars.args.bar9.args.enabled.get() == true, "Base Layer reads Base enabled")
-assert(bars.args.bar2.args.enabled.get() == true, "Base Layer does not use Class enabled")
-char.editLayer = "class"
-assert(bars.args.bar9.args.enabled.get() == false, "Class Layer again reads Class enabled")
+assert(bars.args.bar9.args.enabled.get() == false, "disabled Bar 9 reads as off")
 assert(bars.args.bar10, "highest standard Bar has a group")
 assert(bars.args.pet, "Pet Bar has a group")
 assert(bars.args.pet.args.gap.type == "range", "Pet Bar has a Gap between slider")
@@ -199,12 +186,13 @@ assert(registered.args.general.args.microFadeIdle, "options expose Micro Cluster
 assert(registered.args.general.args.microIconShape, "options expose Micro Cluster shape")
 assert(registered.args.general.args.microFadeIdle.get() == 1, "Micro Cluster fade idle defaults to 1")
 assert(registered.args.general.args.microIconShape.get() == "square", "Micro Cluster shape defaults to square")
+assert(registered.args.general.args.showExperienceBar, "options expose Experience bar toggle")
+assert(registered.args.general.args.showExperienceBar.get() == true, "Experience bar toggle defaults to on")
 assert(registered.args.general.args.xpFadeIdle, "options expose Experience bar fade idle")
 assert(registered.args.general.args.xpFadeIdle.get() == 1, "Experience bar fade idle defaults to 1")
 
 bars.args.bar9.args.enabled.set(nil, true)
-assert(#writes == 1, "toggle writes one Layer delta")
-assert(writes[1].layer == "class", "toggle writes the selected Layer")
+assert(#writes == 1, "toggle writes one Profile delta")
 assert(writes[1].section == "layout", "toggle writes Layout")
 assert(writes[1].key == "bar9", "toggle writes the Bar id")
 assert(writes[1].patch.enabled == true, "on writes enabled true")
@@ -227,12 +215,10 @@ assert(writes[5].patch.fadeIdle == 0.4, "fade idle writes Layout.fadeIdle")
 
 bars.args.bar1.args.iconShape.set(nil, "circle")
 assert(writes[6].patch.iconShape == "circle", "shape writes Layout.iconShape")
-assert(writes[6].layer == "class", "shape writes the selected Layer")
 
 bars.args.bar1.args.gap.set(nil, 2)
 assert(writes[7].key == "bar1", "gap writes the Bar id")
 assert(writes[7].patch.gap == 2, "gap writes Layout.gap")
-assert(writes[7].layer == "class", "gap writes the selected Layer")
 assert(applied == 7, "gap applies Layout")
 
 registered.args.general.args.microFadeIdle.set(nil, 0.3)
@@ -242,7 +228,9 @@ registered.args.general.args.microIconShape.set(nil, "diamond")
 assert(char.microIconShape == "diamond", "Micro Cluster shape writes Character")
 registered.args.general.args.xpFadeIdle.set(nil, 0.2)
 assert(char.xpFadeIdle == 0.2, "Experience bar fade idle writes Character")
-assert(#writes == 7, "Character fade controls do not write a Layer delta")
+registered.args.general.args.showExperienceBar.set(nil, false)
+assert(char.showExperienceBar == false, "Experience bar toggle writes Character")
+assert(#writes == 7, "Character fade controls do not write a Profile delta")
 
 local n = #writes
 bars.args.global.args.gap.set(nil, 4)
@@ -293,40 +281,35 @@ function Addon:GetPlayerClass()
   return "WARRIOR"
 end
 local warriorDB = {
-  classes = {
-    WARRIOR = {
-      layout = {},
-      keybinds = {},
-      variants = { Custom = { layout = {}, keybinds = {} } },
-    },
+  defaultProfile = "Default",
+  profiles = {
+    Default = { layout = {}, keybinds = {} },
+    Custom = { layout = {}, keybinds = {} },
   },
 }
 function Addon:GetDB()
   return warriorDB
 end
-Addon.Defaults = {
-  classes = {
-    WARRIOR = {
-      variants = {
-        Arms = { talentTree = 1 },
-        Fury = { talentTree = 2 },
-        Protection = { talentTree = 3 },
-      },
-    },
-  },
-}
-local values = registered.args.variants.args.active.values()
-assert(values.Fury == "Fury", "options list shipped Fury")
-assert(values.Arms == "Arms", "options list shipped Arms")
-assert(values.Protection == "Protection", "options list shipped Protection")
-assert(values.Custom == "Custom", "options list account Variant overlay")
+function Addon:GetActiveProfileName()
+  return char.activeProfile or warriorDB.defaultProfile
+end
+function Addon:ProfileValues()
+  local values = {}
+  for name in pairs(warriorDB.profiles) do
+    values[name] = name
+  end
+  return values
+end
+local values = registered.args.profiles.args.active.values()
+assert(values.Default == "Default", "options list Default")
+assert(values.Custom == "Custom", "options list Custom")
 
-assert(loadfile(root .. "profile/variants.lua"))()
-assert(Addon:DeleteVariant("Custom", "WARRIOR") == true, "delete removes account overlay")
-assert(warriorDB.classes.WARRIOR.variants.Custom == nil, "account overlay is gone")
-assert(Addon:DeleteVariant("Fury", "WARRIOR") == false, "delete does not remove a shipped-only name")
-values = registered.args.variants.args.active.values()
-assert(values.Fury == "Fury", "shipped Fury remains after delete")
-assert(values.Custom == nil, "deleted account overlay leaves the list")
+assert(loadfile(root .. "profile/profiles.lua"))()
+assert(Addon:DeleteProfile("Custom") == true, "delete removes a spare Profile")
+assert(warriorDB.profiles.Custom == nil, "deleted Profile is gone")
+assert(Addon:DeleteProfile("Default") == false, "delete does not remove the last Profile")
+values = registered.args.profiles.args.active.values()
+assert(values.Default == "Default", "Default remains after delete")
+assert(values.Custom == nil, "deleted Profile leaves the list")
 
 print("options_bars_spec OK")

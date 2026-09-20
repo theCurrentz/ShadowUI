@@ -1,5 +1,6 @@
 -- ShadowUI action buttons show remaining cooldown seconds (OmniCC-style count).
 -- Counts hide for the GCD and other cooldowns shorter than 2s. The swipe stays.
+-- An ability on a 2s+ cooldown is grayed out on the Action Slot. GCD stays full color.
 -- Run: lua tests/cooldown_count_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -51,7 +52,11 @@ end
 function cooldown:GetParent()
   return button
 end
-button = { cooldown = cooldown }
+local icon = { desaturated = false }
+function icon:SetDesaturated(on)
+  icon.desaturated = on and true or false
+end
+button = { cooldown = cooldown, icon = icon }
 function button:CreateFontString()
   count = {
     shown = false,
@@ -89,9 +94,17 @@ assert(count.shadowX == 1 and count.shadowY == -1, "cooldown count uses a drop s
 cooldown:SetCooldown(10, 30)
 cooldown.scripts.OnUpdate(cooldown)
 assert(count.text == "28", "action button paints remaining cooldown seconds")
+assert(icon.desaturated == true, "a 2s+ cooldown grays the Action Slot icon")
 
 cooldown:SetCooldown(10, 1.5)
 cooldown.scripts.OnUpdate(cooldown)
 assert(count.shown == false, "GCD swipe has no count")
+assert(icon.desaturated == false, "GCD does not gray the Action Slot icon")
+
+cooldown:SetCooldown(10, 30)
+cooldown.scripts.OnUpdate(cooldown)
+_G.GetTime = function() return 50 end
+cooldown.scripts.OnUpdate(cooldown)
+assert(icon.desaturated == false, "a finished cooldown restores the Action Slot icon")
 
 print("cooldown_count_spec OK")

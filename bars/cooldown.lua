@@ -1,9 +1,10 @@
 --[[
   Purpose: Paint remaining cooldown seconds on ShadowUI action buttons (OmniCC gap).
   Text is yellow with an outline. The GCD swipe stays. Counts hide below 2s so GCD has no number.
+  A 2s+ cooldown also grays the Action Slot icon.
   Deps: LibActionButton cooldown region
   Public: ShadowUI:FormatCooldownCount(), ShadowUI:CooldownCountState(),
-          ShadowUI:SkinCooldownCount()
+          ShadowUI:PaintActionSlotCooldownIcon(), ShadowUI:SkinCooldownCount()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -37,12 +38,21 @@ function Addon:CooldownCountState(now, startTime, duration, minDuration)
   }
 end
 
+function Addon:PaintActionSlotCooldownIcon(button, onCooldown)
+  local icon = button and (button.icon or button.Icon)
+  if not icon or not icon.SetDesaturated then
+    return
+  end
+  icon:SetDesaturated(onCooldown and true or false)
+end
+
 local function paint(button, cooldown)
   local fs = button.shadowUICooldownCount
   local startTime = cooldown.shadowUIStart
   local duration = cooldown.shadowUIDuration
   local now = GetTime and GetTime() or 0
   local state = Addon:CooldownCountState(now, startTime, duration)
+  Addon:PaintActionSlotCooldownIcon(button, state ~= nil)
   if not state then
     if fs and fs.Hide then
       fs:Hide()
@@ -92,19 +102,20 @@ function Addon:SkinCooldownCount(button)
       fs:SetShadowColor(0, 0, 0, 1)
     end
   end
-  if cooldown.shadowUICountHooked then
-    return
+  if not cooldown.shadowUICountHooked then
+    cooldown.shadowUICountHooked = true
+    if cooldown.SetCooldown and hooksecurefunc then
+      hooksecurefunc(cooldown, "SetCooldown", function(self, startTime, duration)
+        self.shadowUIStart = startTime
+        self.shadowUIDuration = duration
+        paint(self:GetParent() or button, self)
+      end)
+    end
+    if cooldown.SetScript then
+      cooldown:SetScript("OnUpdate", function(self)
+        paint(self:GetParent() or button, self)
+      end)
+    end
   end
-  cooldown.shadowUICountHooked = true
-  if cooldown.SetCooldown and hooksecurefunc then
-    hooksecurefunc(cooldown, "SetCooldown", function(self, startTime, duration)
-      self.shadowUIStart = startTime
-      self.shadowUIDuration = duration
-    end)
-  end
-  if cooldown.SetScript then
-    cooldown:SetScript("OnUpdate", function(self)
-      paint(self:GetParent() or button, self)
-    end)
-  end
+  paint(button, cooldown)
 end

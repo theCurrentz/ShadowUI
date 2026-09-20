@@ -175,11 +175,8 @@ assert(overflowNext[4].action.id == "c" and overflowNext[4].key == "3", "overflo
 assert(overflow.held.id == "d" and overflow.held.fromSlot == 14, "the last slot of a full row stays on the cursor")
 
 local writes, messages, placed, picked, cursor = {}, {}, {}, {}, nil
-function Addon:GetCharDB()
-  return { editLayer = "class" }
-end
-function Addon:WriteLayerDelta(layer, section, key, patch)
-  writes[#writes + 1] = { layer = layer, section = section, key = key, patch = patch }
+function Addon:WriteProfileDelta(section, key, patch)
+  writes[#writes + 1] = { section = section, key = key, patch = patch }
 end
 function Addon:Print(msg)
   messages[#messages + 1] = msg
@@ -228,7 +225,8 @@ assert(messages[#messages] == "Shifted keybinds left and pruned gaps.",
   "Shift and Prune reports success")
 local bindWrite, actionWrite = 0, 0
 for _, write in ipairs(writes) do
-  assert(write.layer == "class", "Shift and Prune writes the selected Layer")
+  assert(write.section == "keybinds" or write.section == "actions",
+    "Shift and Prune writes the active Profile")
   if write.section == "keybinds" then
     bindWrite = bindWrite + 1
   elseif write.section == "actions" then

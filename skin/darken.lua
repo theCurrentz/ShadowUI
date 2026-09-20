@@ -13,6 +13,8 @@ local unpack = unpack or table.unpack
 Addon.DARKEN_BLACK = { 0.05, 0.05, 0.05 }
 Addon.DARKEN_GREY = { 0.35, 0.35, 0.35 }
 Addon.DARKEN_BAR = { 0.2, 0.2, 0.2 }
+-- Target/Focus Frame Art. Darker than bar grey, not 0.05 black.
+Addon.DARKEN_SOFT = { 0.14, 0.14, 0.14 }
 
 local function sameColor(nr, ng, nb, color)
   return nr == color[1] and ng == color[2] and nb == color[3]

@@ -229,11 +229,8 @@ assert(grip.shown == true, "resize grip shows in Layout Edit Mode")
 assert(grip.mouse == true, "resize grip receives the drag")
 
 local patch
-function Addon:GetCharDB()
-  return { editLayer = "variant" }
-end
-function Addon:WriteLayerDelta(layer, section, key, value)
-  patch = { layer = layer, section = section, key = key, value = value }
+function Addon:WriteProfileDelta(section, key, value)
+  patch = { section = section, key = key, value = value }
 end
 function Addon:ApplyAll()
   self.applied = (self.applied or 0) + 1
@@ -257,9 +254,9 @@ _G.GetCursorPosition = function() return cursorX, cursorY end
 bar.left, bar.bottom = 0, 400
 cursorX, cursorY = 108, 292
 grip.script_OnMouseDown(grip, "LeftButton")
-local updater = grip.script_OnUpdate or overlay.script_OnUpdate
-assert(updater, "resize grip tracks the cursor")
-updater(grip)
+local ticker = Addon.editDragTicker
+assert(ticker and ticker.script_OnUpdate, "resize grip tracks the cursor")
+ticker.script_OnUpdate(ticker)
 assert(bar.columns == 3, "drag consolidates to 3 columns")
 assert(bar.width == 108 and bar.height == 144, "drag expands to 4 rows")
 assert(bar.scale == 1, "resize does not change scale")
@@ -273,23 +270,37 @@ assert(patch.value.scale == nil, "mouse up does not write scale")
 
 Addon:UpdateBarLayout(bar, { buttons = 12, buttonSize = 36, columns = 12, scale = 1, x = 0, y = 0 })
 bar.left, bar.bottom = 0, 400
-cursorX, cursorY = 426, 404
+-- Top-centre of the 12-wide row (width 432, height 36) hits the resize grip.
+cursorX, cursorY = 216, 428
 overlay.script_OnMouseDown(overlay, "LeftButton")
 cursorX, cursorY = 108, 292
-updater = overlay.script_OnUpdate or grip.script_OnUpdate
-assert(updater, "overlay tracks a corner resize")
-updater(overlay)
-assert(bar.columns == 3, "overlay corner drag consolidates to 3 columns")
-assert(bar.width == 108 and bar.height == 144, "overlay corner drag expands to 4 rows")
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
+assert(bar.columns == 3, "overlay grip drag consolidates to 3 columns")
+assert(bar.width == 108 and bar.height == 144, "overlay grip drag expands to 4 rows")
 overlay.script_OnMouseUp(overlay, "LeftButton")
 assert(patch.value.columns == 3, "overlay mouse up writes the new columns")
+
+local side = Addon:CreateBar("bar7", {
+  buttons = 12, buttonSize = 36, columns = 3, scale = 1, x = 0, y = 0, point = "BOTTOM",
+})
+Addon.editMode = true
+Addon:UpdateBarLayout(side, { buttons = 12, buttonSize = 36, columns = 3, scale = 1, x = 0, y = 0 })
+side.left, side.bottom = 100, 0
+-- Bottom-right of a 3x4 sits on the stack seam. That click must move, not resize.
+cursorX, cursorY = 204, 6
+side.dragOverlay.script_OnMouseDown(side.dragOverlay, "LeftButton")
+cursorX, cursorY = 250, 80
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
+assert(side.columns == 3, "Bar 7 body drag keeps 3 columns")
+assert(side.width == 108 and side.height == 144, "Bar 7 body drag does not grow the grid")
+assert(side.left ~= 100, "Bar 7 follows the pointer")
+side.dragOverlay.script_OnMouseUp(side.dragOverlay, "LeftButton")
 
 Addon:UpdateBarLayout(bar, { buttons = 12, buttonSize = 36, columns = 12, scale = 1.2, x = 0, y = 0 })
 bar.left, bar.bottom = 0, 400
 cursorX, cursorY = 259.2, 356.8
 grip.script_OnMouseDown(grip, "LeftButton")
-updater = grip.script_OnUpdate or overlay.script_OnUpdate
-updater(grip)
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
 assert(bar.columns == 6, "scaled drag still consolidates columns")
 assert(bar.scale == 1.2, "resize leaves scale in place")
 assert(math.abs(bar.bottom - 356.8) < 0.01, "scaled resize keeps the top-left")

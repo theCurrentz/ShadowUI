@@ -82,6 +82,7 @@ _G.PaperDollFrame = fakeFrame("PaperDollFrame", {
 _G.TargetFrame = {
   borderTexture = fakeTex("TargetFrameBorder"),
 }
+function _G.TargetFrame:GetName() return "TargetFrame" end
 _G.ReputationWatchBar = {
   StatusBar = {
     WatchBarTexture0 = fakeTex("WatchBarTexture0"),
@@ -101,7 +102,8 @@ end
 eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "player frame chrome is Lorti darkest")
 eq(_G.PetFrameTexture, 0.05, 0.05, 0.05, "pet frame chrome is Lorti darkest")
 eq(_G.PartyMemberFrame1Texture, 0.05, 0.05, 0.05, "party frame chrome is Lorti darkest")
-eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "target frame chrome is Lorti darkest")
+eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "target frame chrome is soft Darken, not 0.05 black")
+eq(_G.TargetFrameTextureFrameTexture, 0.14, 0.14, 0.14, "target Frame Art uses soft Darken")
 eq(_G.LootFrameTitleBg, 0.05, 0.05, 0.05, "loot title is Lorti darkest")
 eq(_G.MainMenuXPBarTexture0, 0.2, 0.2, 0.2, "XP bar art is Lorti bar grey")
 eq(_G.MainMenuBarLeftEndCap, 0.35, 0.35, 0.35, "gryphon art is Lorti window grey")
@@ -116,16 +118,15 @@ eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "Blizzard cannot reset the player fr
 
 _G.TargetFrame.borderTexture:SetVertexColor(1, 1, 1)
 _G.TargetFrame_CheckClassification(_G.TargetFrame)
-eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "target classification keeps the dark chrome")
+eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "target classification keeps the soft Darken")
 
 _G.PlayerFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
 eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "SetTexture cannot reset the player frame color")
 _G.TargetFrame.borderTexture:SetAtlas("UI-HUD-UnitFrame-Target-PortraitOn")
-eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "SetAtlas cannot reset the target frame color")
+eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "SetAtlas cannot reset the target frame color")
 
-function _G.TargetFrame:GetName() return "TargetFrame" end
 _G.TargetFrameMixin.CheckClassification(_G.TargetFrame)
-eq(_G.TargetFrame.borderTexture, 0.05, 0.05, 0.05, "1.15 mixin classification keeps the dark chrome")
+eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "1.15 mixin classification keeps the soft Darken")
 
 local modern = fakeTex("ModernPlayerTexture")
 _G.PlayerFrame = { PlayerFrameContainer = { FrameTexture = modern } }

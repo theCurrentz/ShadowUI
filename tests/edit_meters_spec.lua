@@ -9,7 +9,8 @@ _G.InCombatLockdown = function() return false end
 _G.UIParent = { name = "UIParent", width = 1920, height = 1080, level = 0, strata = "MEDIUM" }
 function _G.UIParent:GetWidth() return self.width end
 function _G.UIParent:GetHeight() return self.height end
-_G.GetCursorPosition = function() return 0, 0 end
+local cursorX, cursorY = 0, 0
+_G.GetCursorPosition = function() return cursorX, cursorY end
 _G.IsShiftKeyDown = function() return false end
 
 local function fakeTex(parent)
@@ -140,13 +141,14 @@ end
 local account = {
   base = { layout = {}, keybinds = {} },
   classes = {
-    MAGE = { layout = {}, keybinds = {}, variants = { Default = { layout = {}, keybinds = {} } } },
+    MAGE = { layout = {}, keybinds = {} },
   },
 }
-local char = { editLayer = "class", activeVariant = "Default", variantManual = true }
+local char = { activeProfile = "Default" }
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
 function Addon:GetPlayerClass() return "MAGE" end
+function Addon:GetProfile() return account.classes.MAGE end
 function Addon:ApplyAll()
   self.applied = (self.applied or 0) + 1
 end
@@ -158,6 +160,7 @@ function Addon:ResolveEffective()
 end
 
 assert(loadfile(root .. "core/resolve.lua"))()
+function Addon:GetProfile() return account.classes.MAGE end
 assert(loadfile(root .. "bars/grid.lua"))()
 assert(loadfile(root .. "edit/mode.lua"))()
 assert(loadfile(root .. "edit/frames.lua"))()
@@ -205,24 +208,36 @@ assert(group.resizable == true, "Cast group can resize in Layout Edit Mode")
 
 range.left, range.bottom = 100, 50
 rangeOverlay.script_OnMouseDown(rangeOverlay, "LeftButton")
-assert(rangeOverlay.script_OnUpdate, "Range drag follows the cursor so it can snap to centre")
+local ticker = Addon.editDragTicker
+assert(ticker and ticker.script_OnUpdate, "Range drag follows the cursor so it can snap to centre")
 assert(range.moving ~= true, "Range does not use Blizzard StartMoving")
 rangeOverlay.script_OnMouseUp(rangeOverlay, "LeftButton")
 assert(account.classes.MAGE.layout.range, "range persist writes Layout")
 assert(account.classes.MAGE.layout.range.point == "BOTTOMLEFT", "range persist uses the grid origin")
 assert(math.abs(account.classes.MAGE.layout.range.x - 97.2) < 0.01, "range persist snaps x")
-assert(math.abs(account.classes.MAGE.layout.range.y - 64.8) < 0.01, "range persist snaps y")
+assert(math.abs(account.classes.MAGE.layout.range.y - 48.6) < 0.01, "range persist snaps y")
+
+range.left, range.bottom = 100, 50
+cursorX, cursorY = 100, 50
+rangeOverlay.script_OnMouseDown(rangeOverlay, "LeftButton")
+cursorX, cursorY = 200, 80
+ticker.script_OnUpdate(ticker)
+assert(math.abs((range.left or 0) - 194.4) < 0.01, "Range moves with the pointer before mouse up")
+rangeOverlay.script_OnMouseUp(rangeOverlay, "LeftButton")
 
 local grip = castOverlay.resizeGrip
 group.left, group.bottom = 200, 80
 group.width, group.height = 200, 20
+cursorX, cursorY = 400, 80
 grip.script_OnMouseDown(grip, "LeftButton")
-assert(group.sizing == true, "resize grip starts Cast Bar sizing")
-assert(group.sizeEdge == "BOTTOMRIGHT", "Cast Bar resizes from the bottom-right")
+assert(group.sizing ~= true, "Cast Bar resize does not use Blizzard StartSizing")
+cursorX, cursorY = 400, 56
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
+assert(group.height == 44, "Cast Bar height follows the pointer before mouse up")
 grip.script_OnMouseUp(grip, "LeftButton")
 assert(account.classes.MAGE.layout.cast, "cast persist writes Layout")
 assert(math.abs(account.classes.MAGE.layout.cast.width - 194.4) < 0.01, "cast persist snaps width")
-assert(account.classes.MAGE.layout.cast.height == 20, "cast persist snaps height to 4px")
+assert(account.classes.MAGE.layout.cast.height == 44, "cast persist snaps height to 4px")
 
 cd.width, cd.height = 4 * 32.4 + 3 * 4, 2 * 32.4 + 4
 cd.left, cd.bottom = 100, 50
@@ -248,19 +263,31 @@ local visLeft = Addon:HostVisualRect(range, "range")
 assert(math.abs(visLeft - (100 + (112 - 48) / 2)) < 0.01,
   "Range numbers stay geometrically centred in the host")
 
-range.left, range.bottom = 890, 500
+range.left, range.bottom = 900, 516
 Addon:SetEditSession("layout")
 Addon:PersistHostPosition(range, "range")
 assert(account.classes.MAGE.layout.range.point == "CENTER", "a Range host near the cross stores CENTER")
-assert(math.abs(account.classes.MAGE.layout.range.x) < 0.01, "Range x is 0 on the vertical midline")
-assert(math.abs(account.classes.MAGE.layout.range.y) < 0.01, "Range y is 0 on the horizontal midline")
+assert(math.abs(account.classes.MAGE.layout.range.x + 4.2) < 0.01,
+  "Range x sits on the snap-grid midline")
+assert(math.abs(account.classes.MAGE.layout.range.y + 5.4) < 0.01,
+  "Range y sits on the snap-grid midline")
 
 range.left, range.bottom = 100, 50
+cursorX, cursorY = 140, 80
 rangeOverlay.script_OnMouseDown(rangeOverlay, "LeftButton")
 local chip = _G.ShadowUIEditReadout
 assert(chip and chip.shown == true, "drag shows an x/y readout")
+assert(chip.mouse == false, "readout does not eat the drag")
+assert(chip.level >= 600, "readout sits above the Layer picker")
 assert(chip.fontString.text:find("×", 1, true), "readout shows frame size")
 assert(chip.fontString.text:find("Range", 1, true), "readout names the host")
+local chipPoint = chip.points[#chip.points]
+assert(chipPoint and chipPoint[1] == "BOTTOMLEFT", "readout parks in screen space")
+assert(chipPoint[4] == 156 and chipPoint[5] == 96, "readout sits beside the pointer")
+cursorX, cursorY = 200, 90
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
+chipPoint = chip.points[#chip.points]
+assert(chipPoint[4] == 216 and chipPoint[5] == 106, "readout follows the pointer")
 rangeOverlay.script_OnMouseUp(rangeOverlay, "LeftButton")
 assert(chip.shown == false, "mouse up hides the readout")
 

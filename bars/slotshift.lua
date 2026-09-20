@@ -2,7 +2,7 @@
   Purpose: Shift and Prune packs Keybinds left in one Bar Group and drops gaps
            with no Keybind. Shift+Alt drag inserts the action and Keybind and
            shifts that row right.
-  Deps: ShadowUI addon table, live Action Slots, WriteLayerDelta
+  Deps: ShadowUI addon table, live Action Slots, WriteProfileDelta
   Public: SlotDropKind, OrderedHudButtons, PruneWouldChange, ShiftAndPrune,
           InsertHudSlot, CollectHudButtons, ShiftAndPruneBars, InsertBarSlot,
           HookButtonForSlotShift, WithUnlockedActionBars
@@ -505,9 +505,8 @@ function Addon:ApplySlotMoves(moves, held)
 end
 
 function Addon:WriteHudOverlays(bindOverlay)
-  local layer = self:GetCharDB().editLayer
   for name, key in pairs(bindOverlay or {}) do
-    self:WriteLayerDelta(layer, "keybinds", name, key)
+    self:WriteProfileDelta("keybinds", name, key)
   end
 end
 

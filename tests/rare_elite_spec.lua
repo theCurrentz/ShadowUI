@@ -1,9 +1,9 @@
--- Classic maps rare-elite to the elite dragon. ShadowUI overlays a cropped,
--- smaller slice of that dragon just right of the portrait so the hidden
--- targeting-frame well cannot stretch over the compact bars.
+-- Classic maps rare-elite to the elite dragon. ShadowUI swaps the native
+-- Frame Art atlas. It does not crop a second overlay; that paints gold bar
+-- glyphs on the portrait.
 -- Run: lua tests/rare_elite_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
-local Addon = { DARKEN_BLACK = { 0.05, 0.05, 0.05 } }
+local Addon = { DARKEN_BLACK = { 0.05, 0.05, 0.05 }, DARKEN_SOFT = { 0.14, 0.14, 0.14 } }
 _G.LibStub = function()
   return { GetAddon = function() return Addon end }
 end
@@ -27,41 +27,25 @@ assert(
   Addon:RareEliteTexture("worldboss") == "Interface\\TargetingFrame\\UI-TargetingFrame-Elite",
   "world boss uses the gold dragon"
 )
-assert(Addon:RareEliteTexture("normal") == nil, "normal has no dragon overlay")
-assert(Addon:RareEliteTexture("minus") == nil, "minus has no dragon overlay")
+assert(Addon:RareEliteTexture("normal") == nil, "normal has no elite atlas")
+assert(Addon:RareEliteTexture("minus") == nil, "minus has no elite atlas")
 
-local tex = { path = "Interface\\TargetingFrame\\UI-TargetingFrame-Elite" }
+local tex = {
+  path = "Interface\\TargetingFrame\\UI-TargetingFrame-Elite",
+}
 function tex:SetTexture(path) self.path = path end
-local portrait = { name = "portrait" }
+local created = 0
 local class = "rareelite"
+_G.TargetFrameTextureFrameTexture = tex
 _G.TargetFrame = {
   unit = "target",
   borderTexture = tex,
-  portrait = portrait,
+  shadowUIDragon = { shown = true, Hide = function(self) self.shown = false end },
+  shadowUIDragonEdge = { shown = true, Hide = function(self) self.shown = false end },
 }
 function _G.TargetFrame:GetName() return "TargetFrame" end
-function _G.TargetFrame:CreateTexture(_, layer, _, sub)
-  local overlay = {
-    layer = layer,
-    sub = sub,
-    points = {},
-    shown = true,
-  }
-  function overlay:SetTexture(path) overlay.path = path end
-  function overlay:SetTexCoord(...) overlay.texCoord = { ... } end
-  function overlay:SetSize(w, h) overlay.w, overlay.h = w, h end
-  function overlay:SetDrawLayer(layer, sub)
-    overlay.layer = layer
-    overlay.sub = sub
-  end
-  function overlay:SetVertexColor(r, g, b, a)
-    overlay.r, overlay.g, overlay.b, overlay.a = r, g, b, a
-  end
-  function overlay:ClearAllPoints() overlay.points = {} end
-  function overlay:SetPoint(...) overlay.points[#overlay.points + 1] = { ... } end
-  function overlay:Show() overlay.shown = true end
-  function overlay:Hide() overlay.shown = false end
-  return overlay
+function _G.TargetFrame:CreateTexture()
+  created = created + 1
 end
 _G.UnitClassification = function(unit)
   return unit == "target" and class or "normal"
@@ -69,39 +53,21 @@ end
 
 Addon:SkinRareElite(_G.TargetFrame)
 assert(tex.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Rare-Elite",
-  "hidden native border still swaps to Rare-Elite")
-local dragon = _G.TargetFrame.shadowUIDragon
-assert(dragon, "rare-elite paints a dragon overlay around the portrait")
-assert(dragon.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Rare-Elite",
-  "overlay uses the winged silver dragon")
-assert(dragon.shown == true, "rare-elite dragon overlay is shown")
-assert(dragon.w == 64 and dragon.h == 64,
-  "dragon overlay is smaller than the native targeting-frame")
-assert(dragon.points[1][1] == "LEFT" and dragon.points[1][2] == portrait
-    and dragon.points[1][3] == "RIGHT" and dragon.points[1][4] == -8
-    and dragon.points[1][5] == 0,
-  "dragon overlay sits just right of the portrait")
-assert(dragon.texCoord[1] == 0.484375 and dragon.texCoord[2] == 0.09375
-    and dragon.texCoord[3] == 1 and dragon.texCoord[4] == 0,
-  "target dragon overlay is a flipped crop of the portrait-side atlas")
-assert(dragon.r == 1 and dragon.g == 1 and dragon.b == 1,
-  "dragon overlay keeps native gold/silver colour")
-assert(dragon.layer == "BACKGROUND" and dragon.sub == -8,
-  "dragon overlay sits behind the meter well so the 12px bar art cannot ghost")
+  "native Frame Art swaps to Rare-Elite")
+assert(created == 0, "must not crop a second targeting-frame atlas")
+assert(_G.TargetFrame.shadowUIDragon.shown == false,
+  "stale dragon overlay hides so gold bar glyphs cannot stay")
+assert(_G.TargetFrame.shadowUIDragonEdge.shown == false,
+  "stale Darken rim hides")
 
 class = "rare"
 Addon:SkinRareElite(_G.TargetFrame)
-assert(dragon.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Rare",
+assert(tex.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Rare",
   "rare swaps to the silver dragon")
-assert(dragon.shown == true, "rare dragon overlay stays shown")
 
 class = "elite"
 Addon:SkinRareElite(_G.TargetFrame)
-assert(dragon.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Elite",
+assert(tex.path == "Interface\\TargetingFrame\\UI-TargetingFrame-Elite",
   "elite swaps to the gold dragon")
-
-class = "normal"
-Addon:SkinRareElite(_G.TargetFrame)
-assert(dragon.shown == false, "a normal target hides the dragon overlay")
 
 print("rare_elite_spec OK")

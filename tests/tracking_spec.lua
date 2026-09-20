@@ -306,4 +306,27 @@ local ticks = host.shadowUITicks
 assert(ticks and #ticks == 19, "XP bar keeps 5% tick marks")
 assert(ticks[1].w == 1, "XP ticks stay 1px")
 
+function Addon:GetCharDB()
+  return { showExperienceBar = false }
+end
+Addon:SkinTrackingBars()
+assert(main.shown == false, "Character can hide the Experience bar")
+assert(host.shown == false, "XP cover hides with the Experience bar")
+assert(secondary.shown == true, "reputation stays when the Experience bar is hidden")
+assert(secondary.points[#secondary.points][2] == _G.UIParent
+  and secondary.points[#secondary.points][3] == "TOP",
+  "reputation docks to screen top when the Experience bar is hidden")
+main:Show()
+assert(main.shown == false, "Blizzard cannot Show a hidden Experience bar")
+
+function Addon:GetCharDB()
+  return { showExperienceBar = true }
+end
+Addon:SkinTrackingBars()
+assert(main.shown == true, "Character can show the Experience bar again")
+assert(host.shown == true, "XP cover shows with the Experience bar")
+assert(secondary.points[#secondary.points][2] == main
+  and secondary.points[#secondary.points][3] == "BOTTOM",
+  "reputation sits under XP when the Experience bar is shown")
+
 print("tracking_spec OK")

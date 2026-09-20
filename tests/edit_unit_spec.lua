@@ -157,13 +157,14 @@ _G.StanceBarFrame = fakeUnit("StanceBarFrame", 108, 36)
 local account = {
   base = { layout = {}, keybinds = {} },
   classes = {
-    MAGE = { layout = {}, keybinds = {}, variants = { Default = { layout = {}, keybinds = {} } } },
+    MAGE = { layout = {}, keybinds = {} },
   },
 }
-local char = { editLayer = "class", activeVariant = "Default", variantManual = true }
+local char = { activeProfile = "Default" }
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
 function Addon:GetPlayerClass() return "MAGE" end
+function Addon:GetProfile() return account.classes.MAGE end
 function Addon:ApplyAll()
   self.applied = (self.applied or 0) + 1
   if self.SkinUnitFrames then
@@ -178,6 +179,7 @@ function Addon:ResolveEffective()
 end
 
 assert(loadfile(root .. "core/resolve.lua"))()
+function Addon:GetProfile() return account.classes.MAGE end
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/darken.lua"))()
 assert(loadfile(root .. "skin/frames.lua"))()
@@ -205,17 +207,21 @@ assert(stanceOverlay.fontString and stanceOverlay.fontString.text == "Stance", "
 assert(playerOverlay.fill and playerOverlay.fill.g > 0.4, "player overlay fill is HUD blue")
 
 playerOverlay.script_OnMouseDown(playerOverlay, "LeftButton")
-assert(_G.PlayerFrame.moving == true, "mouse down starts the Player Frame move")
-assert(_G.PlayerFrame.movable == true, "ShadowUI edit can move the Player Frame")
+assert(_G.PlayerFrame.moving ~= true, "Player Frame drag does not use Blizzard StartMoving")
+assert(_G.PlayerFrame._shadowUIDragging == true, "ShadowUI edit can move the Player Frame")
+cursor.x, cursor.y = 200, 80
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
+assert(math.abs((_G.PlayerFrame.left or 0) - 194.4) < 0.01,
+  "Player Frame follows the pointer before mouse up")
 _G.PlayerFrame:SetPoint("CENTER", _G.UIParent, "CENTER", 16, -4)
 assert(_G.PlayerFrame.points[#_G.PlayerFrame.points][4] == 16, "park does not fight a ShadowUI drag")
-_G.PlayerFrame.left, _G.PlayerFrame.bottom = 100, 50
+cursor.x, cursor.y = 100, 50
 playerOverlay.script_OnMouseUp(playerOverlay, "LeftButton")
-assert(_G.PlayerFrame.moving == false, "mouse up stops the Player Frame move")
+assert(_G.PlayerFrame._shadowUIDragging == false, "mouse up ends the Player Frame drag")
 assert(account.classes.MAGE.layout.player, "player persist writes Layout")
 assert(account.classes.MAGE.layout.player.point == "BOTTOMLEFT", "player persist uses the grid origin")
 assert(math.abs(account.classes.MAGE.layout.player.x - 97.2) < 0.01, "player persist snaps x")
-assert(math.abs(account.classes.MAGE.layout.player.y - 64.8) < 0.01, "player persist snaps y")
+assert(math.abs(account.classes.MAGE.layout.player.y - 48.6) < 0.01, "player persist snaps y")
 
 _G.PlayerFrame:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 16, -4)
 local parked = _G.PlayerFrame.points[#_G.PlayerFrame.points]
@@ -240,9 +246,7 @@ _G.IsShiftKeyDown = function() return true end
 cursor.x, cursor.y = 120, 60
 stanceOverlay.script_OnMouseDown(stanceOverlay, "LeftButton")
 cursor.x, cursor.y = 160, 90
-if stanceOverlay.script_OnUpdate then
-  stanceOverlay.script_OnUpdate()
-end
+Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
 assert(_G.StanceBar.left == 80 and _G.StanceBar.bottom == 50,
   "Layout Edit Mode drags the Stance Bar with the cursor")
 stanceOverlay.script_OnMouseUp(stanceOverlay, "LeftButton")

@@ -46,7 +46,7 @@ function Addon:CreateKeybindHelp()
   text:SetPoint("LEFT", 10, 0)
   text:SetPoint("RIGHT", -10, 0)
   text:SetJustifyH("CENTER")
-  text:SetText("Hover a button, then press a key. Escape clears. Writes go to the selected Layer.")
+  text:SetText("Hover a button, then press a key. Escape clears. Writes go to the active Profile.")
   help:Hide()
   self.keybindHelp = help
   return help

@@ -1,9 +1,9 @@
 --[[
-  Purpose: AceConfig panel for variants, Character controls, Bars, Bar Groups,
+  Purpose: AceConfig panel for Profiles, Character controls, Bars, Bar Groups,
            Cooldown Manager, Experience bar fade, Loadout Snapshots, edit
-           sessions, Layers, and resets.
+           sessions (layout, keybinds, unit frames), and resets.
   Deps: AceConfig-3.0, AceConfigDialog-3.0, options/nav.lua, options/scroll.lua,
-        profile/loadout/edit-layer helpers
+        profile/loadout helpers
   Public: ShadowUI:OpenOptions()
 ]]
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -12,34 +12,17 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local function clean(value)
   return type(value) == "string" and value:match("^%s*(.-)%s*$") or ""
 end
-local function classData()
-  local db = Addon:GetDB()
-  local class = Addon:GetPlayerClass()
-  db.classes[class] = db.classes[class] or { layout = {}, keybinds = {}, variants = {} }
-  return db.classes[class]
-end
 local function activeName()
-  return Addon:GetActiveVariantName()
+  return Addon:GetActiveProfileName()
 end
-local function activeVariant()
-  local name = activeName()
-  return name and classData().variants[name]
+local function activeProfile()
+  return Addon:GetProfile()
 end
-local function shippedVariants()
-  local defaults = Addon.Defaults
-  local class = Addon:GetPlayerClass()
-  local shipped = defaults and defaults.classes and defaults.classes[class]
-  return shipped and shipped.variants or {}
-end
-local function variantValues()
-  local values = {}
-  for name in pairs(shippedVariants()) do
-    values[name] = name
+local function profileValues()
+  if Addon.ProfileValues then
+    return Addon:ProfileValues()
   end
-  for name in pairs(classData().variants) do
-    values[name] = name
-  end
-  return values
+  return {}
 end
 local HOST_LAYOUT = {
   player = true, target = true, cast = true, range = true, stance = true, cooldown = true,
@@ -78,8 +61,7 @@ local function shippedBarLayout(id)
   return base and base[id]
 end
 local function layerLayout()
-  local layer = Addon:GetCharDB().editLayer or "variant"
-  return (Addon:ResolveEffective(nil, nil, layer).layout or {})
+  return (Addon:ResolveEffective().layout or {})
 end
 local function layerBar(id)
   return layerLayout()[id]
@@ -116,7 +98,7 @@ local function barGroupValues()
   return values
 end
 local function writeBarPatch(id, patch)
-  Addon:WriteLayerDelta(Addon:GetCharDB().editLayer, "layout", id, patch)
+  Addon:WriteProfileDelta("layout", id, patch)
   Addon:ApplyAll()
 end
 local function barTogglePatch(id, value)
@@ -162,7 +144,7 @@ local function barGroupArgs()
     local barArgs = {
       enabled = {
         type = "toggle", name = "Enabled", order = 1,
-        desc = "On shows the Bar. Off hides it. Reads and writes the selected Layer.",
+        desc = "On shows the Bar. Off hides it. Reads and writes the active Profile.",
         get = function()
           local bar = layerBar(id)
           return not bar or bar.enabled ~= false
@@ -189,7 +171,7 @@ local function barGroupArgs()
       },
       scale = {
         type = "range", name = "Scale", order = 2,
-        desc = "Bar scale on the selected Layer. Layout Edit Mode does not change scale.",
+        desc = "Bar scale on the active Profile. Layout Edit Mode does not change scale.",
         min = 0.6, max = 1.4, step = 0.05,
         get = function()
           return barVisual(id).scale
@@ -222,7 +204,7 @@ local function barGroupArgs()
       },
       iconShape = {
         type = "select", name = "Shape", order = 5,
-        desc = "Action Slot icon shape on the selected Layer.",
+          desc = "Action Slot icon shape on the active Profile.",
         values = ICON_SHAPES,
         get = function()
           return barVisual(id).iconShape
@@ -402,7 +384,7 @@ local function barGroupsArgs()
         },
         shiftAndPrune = {
           type = "execute", name = "Shift and Prune", order = 5.5,
-          desc = "Pack Keybinds left on Bars in this Bar Group and drop gaps with no Keybind. Actions on those Keybinds move with them. The pack wraps to the next row and continues onto the next Bar in this Bar Group. Writes go to the selected Layer. Out of combat only.",
+          desc = "Pack Keybinds left on Bars in this Bar Group and drop gaps with no Keybind. Actions on those Keybinds move with them. The pack wraps to the next row and continues onto the next Bar in this Bar Group. Writes go to the active Profile. Out of combat only.",
           confirm = true,
           func = function()
             local groupName = name()
@@ -589,19 +571,10 @@ local function previewLoadout()
   end
   return plan
 end
-local function resetLayer()
-  local layer = Addon:GetCharDB().editLayer or "variant"
-  local db = Addon:GetDB()
-  if layer == "base" then
-    db.base = { layout = {}, keybinds = {} }
-  elseif layer == "class" then
-    local class = classData()
-    class.layout, class.keybinds = {}, {}
-  else
-    local variant = activeVariant()
-    if variant then
-      variant.layout, variant.keybinds = {}, {}
-    end
+local function resetProfile()
+  local profile = activeProfile()
+  if profile then
+    profile.layout, profile.keybinds, profile.actions = {}, {}, {}
   end
   Addon:ApplyAll()
 end
@@ -674,6 +647,15 @@ local options = {
         Addon:ApplyAll()
       end,
     },
+    showExperienceBar = {
+      type = "toggle", name = "Show Experience bar", order = 16.25,
+      desc = "On: park the Experience bar at the top of the screen. Off: hide it. Reputation stays.",
+      get = function() return Addon:GetCharDB().showExperienceBar ~= false end,
+      set = function(_, value)
+        Addon:GetCharDB().showExperienceBar = value and true or false
+        Addon:ApplyAll()
+      end,
+    },
     xpFadeIdle = {
       type = "range", name = "Experience bar fade idle", order = 16.3,
       desc = "Idle alpha for the Experience bar. 1 keeps the bar fully visible.",
@@ -690,16 +672,9 @@ local options = {
         Addon:ApplyAll()
       end,
     },
-    layer = {
-      type = "select", name = "Current edit layer", order = 17,
-      desc = "Writes and Action bar controls use this Layer: Base, Class, Variant, or Character.",
-      values = { base = "Base", class = "Class", variant = "Variant", character = "Character" },
-      get = function() return Addon:GetCharDB().editLayer or "variant" end,
-      set = function(_, value) Addon:SetEditLayer(value) end,
-    },
         editLayout = {
           type = "execute", name = "Edit layout", order = 21,
-          desc = "Move Bars on the snap grid. Hold Shift to skip snap. Writes go to the selected Layer.",
+          desc = "Move Bars on the snap grid. Hold Shift to skip snap. Writes go to the active Profile.",
           func = function()
             AceConfigDialog:Close("ShadowUI")
             Addon:ToggleEditMode()
@@ -707,65 +682,96 @@ local options = {
         },
         editKeybinds = {
           type = "execute", name = "Edit keybinds", order = 22,
-          desc = "Hover a button and press a key. Writes go to the selected Layer. Does not write SavedBindings.",
+          desc = "Hover a button and press a key. Writes go to the active Profile. Does not write SavedBindings.",
           func = function()
             AceConfigDialog:Close("ShadowUI")
             Addon:ToggleKeybindMode()
           end,
         },
+        editUnitFrames = {
+          type = "execute", name = "Edit unit frames", order = 23,
+          desc = "Open the Unit Frames builder in this panel. Writes go to the active Profile.",
+          func = function()
+            if Addon.OpenUnitFrameDesigner then
+              Addon:OpenUnitFrameDesigner()
+            end
+          end,
+        },
         resetLayer = {
-          type = "execute", name = "Reset selected layer deltas", order = 30,
-          confirm = true, func = resetLayer,
+          type = "execute", name = "Reset active Profile", order = 30,
+          desc = "Clear Layout, Keybinds, and Action Deck overlays on the active Profile. Shipped defaults remain.",
+          confirm = true, func = resetProfile,
         },
         resetAccount = {
-          type = "execute", name = "Reset account profile", order = 40,
-          desc = "Clear account overrides. Shipped defaults remain.",
+          type = "execute", name = "Reset all Profiles", order = 40,
+          desc = "Clear saved Profiles. Shipped defaults remain.",
           confirm = true,
           func = function() Addon.db:ResetProfile(); Addon:ApplyAll() end,
         },
       },
     },
-    variants = {
-      type = "group", name = "Variants", order = 10,
+    unitFrames = {
+      type = "group", name = "Unit Frames", order = 8,
+      desc = "Visual builder for Player Frame and Target Frame Widgets.",
+      args = {
+        studio = {
+          type = "input", name = " ", order = 1, width = "full",
+          desc = "Tree, canvas, and inspector for Unit Frame geometry.",
+          dialogControl = "ShadowUI-UnitStudio",
+          get = function() return "" end,
+          set = function() end,
+        },
+      },
+    },
+    profiles = {
+      type = "group", name = "Profiles", order = 10,
       args = {
         active = {
-          type = "select", name = "Active variant", order = 10,
-          values = variantValues, get = activeName,
-          set = function(_, value) Addon:SetVariant(value, true) end,
+          type = "select", name = "Active Profile", order = 10,
+          desc = "This Character uses this Profile. Edit Mode writes to it.",
+          values = profileValues, get = activeName,
+          set = function(_, value) Addon:SetActiveProfile(value) end,
         },
         create = {
-          type = "input", name = "Create variant", order = 20,
+          type = "input", name = "Save as new Profile", order = 20,
+          desc = "Copy the active Profile under a custom name and switch to it.",
           set = function(_, value)
             value = clean(value)
-            if value ~= "" then Addon:CreateVariant(value); Addon:SetVariant(value, true) end
+            if value ~= "" and Addon:CreateProfile(value) then
+              Addon:SetActiveProfile(value)
+            end
           end,
         },
         rename = {
-          type = "input", name = "Rename active variant", order = 30,
-          disabled = function() return not activeVariant() end,
+          type = "input", name = "Rename active Profile", order = 30,
+          disabled = function() return not activeName() end,
           set = function(_, value)
             value = clean(value)
             local current = activeName()
-            if value ~= "" and current and Addon:RenameVariant(current, value) then Addon:ApplyAll() end
+            if value ~= "" and current and Addon:RenameProfile(current, value) then Addon:ApplyAll() end
+          end,
+        },
+        setDefault = {
+          type = "execute", name = "Set as Default Profile", order = 35,
+          desc = "Characters with no selection use this Profile.",
+          func = function()
+            Addon:SetDefaultProfile(activeName())
           end,
         },
         delete = {
-          type = "execute", name = "Delete active variant", order = 40,
-          disabled = function() return not activeVariant() end,
+          type = "execute", name = "Delete active Profile", order = 40,
+          disabled = function()
+            local values = profileValues()
+            local count = 0
+            for _ in pairs(values) do
+              count = count + 1
+            end
+            return count <= 1
+          end,
           confirm = true,
           func = function()
             local current = activeName()
-            if current and Addon:DeleteVariant(current) then Addon:ApplyAll() end
-          end,
-        },
-        talent = {
-          type = "select", name = "Talent tree", order = 50,
-          values = { [0] = "None", [1] = "Tree 1", [2] = "Tree 2", [3] = "Tree 3" },
-          disabled = function() return not activeVariant() end,
-          get = function() return activeVariant() and activeVariant().talentTree or 0 end,
-          set = function(_, value)
-            activeVariant().talentTree = value ~= 0 and value or nil
-            Addon:ApplyAll()
+            if current and Addon:DeleteProfile(current) then Addon:ApplyAll() end
           end,
         },
       },
@@ -779,7 +785,7 @@ local options = {
       args = {
         enabled = {
           type = "toggle", name = "Enabled", order = 1,
-          desc = "On shows the Cooldown Manager. Off hides it. Reads and writes the selected Layer.",
+          desc = "On shows the Cooldown Manager. Off hides it. Reads and writes the active Profile.",
           get = function()
             local cfg = cooldownLayout()
             return cfg.enabled ~= false
@@ -790,7 +796,7 @@ local options = {
         },
         scale = {
           type = "range", name = "Scale", order = 2,
-          desc = "Cooldown Manager scale on the selected Layer.",
+          desc = "Cooldown Manager scale on the active Profile.",
           min = 0.6, max = 1.4, step = 0.05,
           get = function()
             return cooldownLayout().scale or 1
@@ -994,7 +1000,7 @@ function Addon:OpenOptions()
     self:MarkOptionsSearch(options)
     AceConfig:RegisterOptionsTable("ShadowUI", options)
     if AceConfigDialog.SetDefaultSize then
-      AceConfigDialog:SetDefaultSize("ShadowUI", 840, 560)
+      AceConfigDialog:SetDefaultSize("ShadowUI", 960, 640)
     end
     self._optionsRegistered = true
   end

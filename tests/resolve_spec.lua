@@ -9,22 +9,13 @@ assert(loadfile(root .. "core/resolve.lua"))()
 local account, char
 local function reset()
   account = {
-    base = { layout = { bar1 = { y = 40 } }, keybinds = {} },
-    classes = {
-      DRUID = {
-        layout = { bar1 = { scale = 1.1, fadeIdle = 0.5, iconShape = "circle" } },
-        keybinds = {},
-        variants = {
-          Feral = {
-            talentTree = 2,
-            layout = { bar1 = { scale = 1.2, fadeIdle = 0.2, iconShape = "diamond" } },
-            keybinds = {},
-          },
-        },
-      },
+    defaultProfile = "Default",
+    profiles = {
+      Default = { layout = { bar1 = { y = 40 } }, keybinds = {} },
+      Raid = { layout = { bar1 = { scale = 1.2, fadeIdle = 0.2, iconShape = "diamond" } }, keybinds = {} },
     },
   }
-  char = { activeVariant = nil, editLayer = "variant", variantManual = false }
+  char = { activeProfile = nil }
 end
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
@@ -42,29 +33,28 @@ end
 reset()
 
 -- Sparse merge keeps untouched fields and copies nested tables by value.
-local eff = Addon:ResolveEffective("DRUID", "Feral")
-assert(eff.layout.bar1.x == 0, "base x survives")
-assert(eff.layout.bar1.y == 40, "account base wins over shipped base")
-assert(eff.layout.bar1.scale == 1.2, "variant wins over class")
-assert(eff.layout.bar1.fadeIdle == 0.2, "variant fadeIdle wins over class")
-assert(eff.layout.bar1.iconShape == "diamond", "variant iconShape wins over class")
+char.activeProfile = "Raid"
+local eff = Addon:ResolveEffective("DRUID")
+assert(eff.layout.bar1.x == 0, "shipped x survives")
+assert(eff.layout.bar1.y == 0, "inactive Default Profile does not merge")
+assert(eff.layout.bar1.scale == 1.2, "active Profile wins over shipped")
+assert(eff.layout.bar1.fadeIdle == 0.2, "Profile fadeIdle wins")
+assert(eff.layout.bar1.iconShape == "diamond", "Profile iconShape wins")
 assert(eff.layout.bar1.enabled == true, "shipped flag survives")
 assert(eff.layout.pet.x == 10, "shipped class delta merges")
-local throughBase = Addon:ResolveEffective("DRUID", "Feral", "base")
-assert(throughBase.layout.bar1.y == 40, "through Base keeps account Base")
-assert(throughBase.layout.bar1.scale == 1, "through Base skips Class and Variant")
-assert(throughBase.layout.bar1.fadeIdle == 1, "through Base keeps shipped fadeIdle")
-assert(throughBase.layout.bar1.iconShape == "square", "through Base keeps shipped shape")
-assert(throughBase.layout.pet == nil, "through Base skips shipped Class")
-local throughClass = Addon:ResolveEffective("DRUID", "Feral", "class")
-assert(throughClass.layout.bar1.scale == 1.1, "through Class keeps Class")
-assert(throughClass.layout.bar1.scale ~= 1.2, "through Class skips Variant")
-assert(throughClass.layout.bar1.fadeIdle == 0.5, "through Class keeps Class fadeIdle")
-assert(throughClass.layout.bar1.iconShape == "circle", "through Class keeps Class shape")
-assert(throughClass.layout.pet.x == 10, "through Class keeps shipped Class")
+local shipped = Addon:ResolveShipped("DRUID")
+assert(shipped.layout.bar1.y == 0, "shipped skips Profiles")
+assert(shipped.layout.bar1.scale == 1, "shipped keeps base scale")
+assert(shipped.layout.pet.x == 10, "shipped keeps Class")
 Addon.Defaults.base.layout.bar1.x = 99
 assert(eff.layout.bar1.x == 0, "resolve does not alias shipped defaults")
 Addon.Defaults.base.layout.bar1.x = 0
+
+assert(Addon:GetActiveProfileName() == "Raid", "Character selection wins")
+char.activeProfile = nil
+assert(Addon:GetActiveProfileName() == "Default", "missing selection uses Default Profile")
+char.activeProfile = "Missing"
+assert(Addon:GetActiveProfileName() == "Default", "unknown selection uses Default Profile")
 
 -- Talent point slot differs by client: 3rd on Classic Era, 5th when modernized.
 assert(Addon:TalentPointsFromTabInfo("Feral", "tex", 31, "bg", 0, true) == 31, "classic shape")
@@ -92,91 +82,34 @@ assert(Addon:GetPrimaryTalentTree() == nil, "no points spent means no tree")
 _G.GetNumTalentTabs, _G.GetTalentTabInfo = nil, nil
 assert(Addon:GetPrimaryTalentTree() == nil, "missing talent API does not error")
 
--- Variant selection: talent bind when automatic, stored name when manual.
-stubTalents({ { "Balance", "tex", 8 }, { "Feral", "tex", 31 } })
-assert(Addon:GetActiveVariantName("DRUID") == "Feral", "talent tree selects variant")
-char.variantManual, char.activeVariant = true, "Balance"
-assert(Addon:GetActiveVariantName("DRUID") == "Balance", "manual override wins")
-
--- Layer writes land in the selected layer only.
+-- Profile writes land on the active Profile only.
 reset()
-Addon:WriteLayerDelta("base", "layout", "bar1", { x = 5 })
-assert(account.base.layout.bar1.x == 5 and account.base.layout.bar1.y == 40, "base patch merges")
-Addon:WriteLayerDelta("class", "layout", "bar2", { x = 7 })
-assert(account.classes.DRUID.layout.bar2.x == 7, "class patch merges")
-char.variantManual, char.activeVariant = true, "Feral"
-Addon:WriteLayerDelta("variant", "layout", "bar1", { y = 9 })
-assert(account.classes.DRUID.variants.Feral.layout.bar1.y == 9, "variant patch merges")
-assert(account.classes.DRUID.variants.Feral.layout.bar1.scale == 1.2, "variant keeps siblings")
+char.activeProfile = "Raid"
+Addon:WriteProfileDelta("layout", "bar1", { y = 9 })
+assert(account.profiles.Raid.layout.bar1.y == 9, "Profile patch merges")
+assert(account.profiles.Raid.layout.bar1.scale == 1.2, "Profile keeps siblings")
+assert(account.profiles.Default.layout.bar1.y == 40, "other Profile is unchanged")
 
--- Scalar Keybind writes replace the binding name; false is a tombstone.
-Addon:WriteLayerDelta("base", "keybinds", "CLICK ShadowUIActionButton1:Keybind", "Q")
-assert(account.base.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q", "base keybind is a string")
-Addon:WriteLayerDelta("base", "keybinds", "CLICK ShadowUIActionButton1:Keybind", false)
-assert(account.base.keybinds["CLICK ShadowUIActionButton1:Keybind"] == false, "false unbinds on the layer")
+Addon:WriteProfileDelta("keybinds", "CLICK ShadowUIActionButton1:Keybind", "Q")
+assert(account.profiles.Raid.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q",
+  "Profile keybind is a string")
+Addon:WriteProfileDelta("keybinds", "CLICK ShadowUIActionButton1:Keybind", false)
+assert(account.profiles.Raid.keybinds["CLICK ShadowUIActionButton1:Keybind"] == false,
+  "false unbinds on the Profile")
 
--- Shipped Class Variants merge without an account row and do not leak onto effective config.
+-- Shipped variants do not leak onto effective config.
 reset()
 Addon.Defaults.classes.WARRIOR = {
   layout = {},
-  keybinds = {
-    ["CLICK ShadowUIActionButton3:Keybind"] = "3",
-    ["CLICK ShadowUIActionButton13:Keybind"] = "Q",
-  },
+  keybinds = { ["CLICK ShadowUIActionButton3:Keybind"] = "3" },
   variants = {
-    Fury = {
-      talentTree = 2,
-      layout = {},
-      keybinds = { ["CLICK ShadowUIActionButton1:Keybind"] = "1" },
-    },
-    Protection = {
-      talentTree = 3,
-      layout = {},
-      keybinds = { ["CLICK ShadowUIActionButton12:Keybind"] = "H" },
-    },
+    Fury = { keybinds = { ["CLICK ShadowUIActionButton1:Keybind"] = "1" } },
   },
 }
-account.classes.WARRIOR = { layout = {}, keybinds = {}, variants = {} }
-char.variantManual, char.activeVariant = false, nil
-local fury = Addon:ResolveEffective("WARRIOR", "Fury")
-assert(fury.keybinds["CLICK ShadowUIActionButton3:Keybind"] == "3", "shipped Class Keybind survives")
-assert(fury.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "1", "shipped Fury Variant Keybind merges")
-assert(fury.keybinds["CLICK ShadowUIActionButton12:Keybind"] == nil, "other Variant keys stay off Fury")
-assert(fury.variants == nil, "shipped variants table does not leak onto effective config")
-local prot = Addon:ResolveEffective("WARRIOR", "Protection")
-assert(prot.keybinds["CLICK ShadowUIActionButton12:Keybind"] == "H", "Protection Variant adds H")
-assert(prot.keybinds["CLICK ShadowUIActionButton1:Keybind"] == nil, "Fury keys stay off Protection")
-
-stubTalents({
-  { "Arms", "tex", 0, "bg", 0, true },
-  { "Fury", "tex", 31, "bg", 0, true },
-  { "Protection", "tex", 0, "bg", 0, true },
-})
-assert(Addon:GetActiveVariantName("WARRIOR") == "Fury", "shipped talent tree selects Variant with empty account variants")
-
--- Character Layer is a sparse last overlay. through Variant skips it.
-reset()
-char.layout = { bar1 = { scale = 1.5 } }
-char.keybinds = { ["CLICK ShadowUIActionButton1:Keybind"] = "F1" }
-account.classes.DRUID.variants.Feral.keybinds = {
-  ["CLICK ShadowUIActionButton1:Keybind"] = "1",
-}
-local withChar = Addon:ResolveEffective("DRUID", "Feral")
-assert(withChar.layout.bar1.scale == 1.5, "Character Layout wins over Variant")
-assert(withChar.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "F1",
-  "Character Keybind wins over Variant")
-local throughVariant = Addon:ResolveEffective("DRUID", "Feral", "variant")
-assert(throughVariant.layout.bar1.scale == 1.2, "through Variant skips Character")
-assert(throughVariant.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "1",
-  "through Variant keeps Variant Keybind")
-
-reset()
-Addon:WriteLayerDelta("character", "layout", "bar1", { x = 11 })
-assert(char.layout.bar1.x == 11, "character Layout patch writes CharDB")
-assert(account.base.layout.bar1.x == nil, "character Layout does not write Account")
-Addon:WriteLayerDelta("character", "keybinds", "CLICK ShadowUIActionButton2:Keybind", "E")
-assert(char.keybinds["CLICK ShadowUIActionButton2:Keybind"] == "E",
-  "character Keybind writes CharDB")
+local warrior = Addon:ResolveEffective("WARRIOR")
+assert(warrior.keybinds["CLICK ShadowUIActionButton3:Keybind"] == "3", "shipped Class Keybind survives")
+assert(warrior.keybinds["CLICK ShadowUIActionButton1:Keybind"] == nil, "shipped Variant Keybind stays off")
+assert(warrior.variants == nil, "shipped variants table does not leak onto effective config")
 
 -- Bar visual fields inherit Bar → Bar Group → Global → defaults.
 local visualLayout = {
@@ -219,9 +152,6 @@ assert(empty.gap == 0 and empty.iconShape == "square", "no Global uses shipped v
 local applied = Addon:BarLayoutForApply(visualLayout, "bar1", visualLayout.bar1)
 assert(applied.gap == 2 and applied.group == "Main", "apply layout keeps Bar fields and fills visuals")
 
--- A Bar Group's gap above / gap below pads every member Bar the same, so stacked
--- Bars keep one icon size. Per-Bar gapAbove / gapBelow apply only when ungrouped.
--- A 3x4 Bar is still one Row: the same pads apply on every grid line inside it.
 local stackLayout = {
   barGroups = { Stack = { gapAbove = 2, gapBelow = 6 } },
   bar1 = { group = "Stack", buttons = 12, columns = 12, gapAbove = 9, gapBelow = 9 },

@@ -150,11 +150,17 @@ function Addon:CreateBarButton(parent, id)
   return button
 end
 function Addon:GetCharDB()
-  return { editLayer = "variant" }
+  return { activeProfile = "Raid" }
+end
+function Addon:WriteProfileDelta() end
+function Addon:GetDB()
+  return { defaultProfile = "Default", profiles = { Default = {}, Raid = {} } }
+end
+function Addon:GetActiveProfileName()
+  return "Raid"
 end
 function Addon:Print() end
 function Addon:ApplyAll() self.applied = (self.applied or 0) + 1 end
-function Addon:WriteLayerDelta() end
 function Addon:ResolveEffective()
   return { layout = { bar1 = { buttons = 2, buttonSize = 36, columns = 2, x = 0, y = 0 } } }
 end
@@ -193,9 +199,22 @@ bar.left, bar.bottom = 100, 50
 Addon:SnapFrameToGrid(bar)
 assert(bar.points[#bar.points][1] == "BOTTOMLEFT", "snap uses the screen bottom-left origin")
 assert(math.abs(bar.points[#bar.points][4] - 97.2) < 0.01, "100 snaps to 97.2")
-assert(math.abs(bar.points[#bar.points][5] - 64.8) < 0.01, "50 snaps to 64.8")
+assert(math.abs(bar.points[#bar.points][5] - 48.6) < 0.01, "50 snaps to 48.6")
 
 overlay.script_OnMouseDown(overlay, "LeftButton")
+overlay.script_OnMouseUp(overlay, "LeftButton")
+
+bar.left, bar.bottom = 100, 50
+local cursorX, cursorY = 100, 50
+_G.GetCursorPosition = function() return cursorX, cursorY end
+overlay.script_OnMouseDown(overlay, "LeftButton")
+cursorX, cursorY = 200, 80
+local ticker = Addon.editDragTicker
+assert(ticker and ticker.shown == true and ticker.script_OnUpdate,
+  "a dedicated ticker follows the cursor while the mouse is down")
+ticker.script_OnUpdate(ticker)
+assert(math.abs((bar.left or 0) - 194.4) < 0.01, "the Bar moves with the pointer before mouse up")
+assert(math.abs((bar.bottom or 0) - 81) < 0.01, "the Bar snaps y while it follows the pointer")
 overlay.script_OnMouseUp(overlay, "LeftButton")
 
 local grid = Addon:CreateEditGrid()
@@ -213,33 +232,45 @@ assert(grid.shown == true, "grid shows in Layout Edit Mode")
 assert(grid.vCenter and grid.hCenter, "grid paints centre guides")
 assert(grid.vCenter.r > 0.7 and grid.vCenter.b > 0.7 and grid.vCenter.g < 0.5,
   "centre guides are magenta")
--- 1920×1080: pixel centre is 960×540. Magenta marks that centre, not the 32.4 grid.
-assert(grid.vCenter.points[1][4] == 960, "vertical centre sits on the screen midline")
-assert(grid.hCenter.points[1][5] == 540, "horizontal centre sits on the screen midline")
+-- 1920×1080: nearest 16.2 snap to pixel centre is 955.8×534.6.
+assert(math.abs(grid.vCenter.points[1][4] - 955.8) < 0.01,
+  "vertical centre sits on a snap-grid line")
+assert(math.abs(grid.hCenter.points[1][5] - 534.6) < 0.01,
+  "horizontal centre sits on a snap-grid line")
+local onMagenta
+for _, line in ipairs(grid.lines) do
+  if line.points[1] and line.points[1][1] == "TOPLEFT"
+      and math.abs((line.points[1][4] or 0) - 955.8) < 0.01 then
+    onMagenta = true
+    break
+  end
+end
+assert(onMagenta, "magenta vertical guide shares a white grid line")
 
 local near = CreateFrame("Frame", "ShadowUICenterSnap", UIParent)
 near:SetSize(200, 80)
 near.left, near.bottom = 856, 50
 Addon:SnapFrameToGrid(near)
-assert(math.abs(near.points[#near.points][4] - 860) < 0.01,
-  "a host near the midline snaps so its visual centre hits screen centre")
-assert(math.abs(near.points[#near.points][5] - 64.8) < 0.01,
-  "off-centre y still uses the 32.4 grid")
+assert(math.abs(near.points[#near.points][4] - 855.8) < 0.01,
+  "a host near the midline snaps so its visual centre hits the grid midline")
+assert(math.abs(near.points[#near.points][5] - 48.6) < 0.01,
+  "off-centre y still uses the 16.2 grid")
 
 local onGrid = CreateFrame("Frame", "ShadowUIGridThenCenter", UIParent)
 onGrid:SetSize(200, 80)
-onGrid.left, onGrid.bottom = 874.8, 50
+onGrid.left, onGrid.bottom = 868, 50
 Addon:SnapFrameToGrid(onGrid)
-assert(math.abs(onGrid.points[#onGrid.points][4] - 860) < 0.01,
-  "within one grid cell of the midline, centre wins over the 32.4 line")
+assert(math.abs(onGrid.points[#onGrid.points][4] - 855.8) < 0.01,
+  "within one grid cell of the midline, centre wins over the neighbouring line")
 
 assert(Addon:FormatEditReadout("Range", "CENTER", 0, -96, 112, 36)
     == "Range\nCENTER 0, -96\n112 × 36",
   "drag readout shows point, x/y, and frame size")
 
 local picker = Addon.layerPicker
-assert(picker, "layer picker shows in Layout Edit Mode")
+assert(picker, "profile HUD shows in Layout Edit Mode")
 assert(picker.title.text == "Layout Edit Mode", "picker uses the HUD title")
+assert(picker.profile, "picker names the active Profile")
 assert(picker.done, "picker has a Done control")
 assert(picker.done.mouse == true, "Done receives mouse")
 assert(picker.done.clicks, "Done registers for clicks")

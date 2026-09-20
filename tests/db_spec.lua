@@ -80,10 +80,12 @@ assert(rogueLegacy.point == nil and rogueLegacy.relativeTo == nil
   and rogueLegacy.relativePoint == nil and rogueLegacy.x == nil and rogueLegacy.y == nil,
   "Rogue bar1 no longer follows MainMenuBarArtFrame")
 assert(rogueLegacy.enabled == true, "Rogue enabled state stays")
-local rogueEffective = Addon:ResolveEffective("ROGUE", nil, "class")
+local rogueEffective = Addon:ResolveEffective("ROGUE")
 assert(rogueEffective.layout.bar1.enabled == true
   and rogueEffective.layout.bar1.relativeTo == "UIParent",
   "Rogue effective bar1 stays enabled on a visible parent")
+assert(account.profiles.Default.layout.bar1.y == -800,
+  "legacy Account Base copies into the Default Profile")
 
 local variantLegacy = account.classes.ROGUE.variants.Combat.layout.bar3
 assert(variantLegacy.relativeTo == nil and variantLegacy.fadeIdle == 0.2,

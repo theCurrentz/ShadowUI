@@ -42,4 +42,13 @@ end
 Addon:SlashCommand("xpstack")
 assert(dumped == 1, "/shadowui xpstack dumps the live Tracking XP host")
 
+local unitToggles = 0
+function Addon:ToggleUnitFrameMode()
+  unitToggles = unitToggles + 1
+end
+Addon:SlashCommand("units")
+assert(unitToggles == 1, "/shadowui units opens Unit Frame Designer")
+Addon:SlashCommand("frames")
+assert(unitToggles == 2, "/shadowui frames is the same command")
+
 print("slash_spec OK")

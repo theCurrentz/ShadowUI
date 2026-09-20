@@ -1,23 +1,31 @@
 --[[
   Purpose: Layout Edit Mode (grid drag; Shift skips snap; persist nearest UIParent point)
            and session switching for Keybind Edit Mode.
-  Deps: ShadowUI:WriteLayerDelta(), ShadowUI:ApplyAll(), bar frames, edit/keybinds.lua
-  Public: SetEditSession(), ApplyEditSession(), ToggleEditMode(), ToggleKeybindMode(),
+  Deps: ShadowUI:WriteProfileDelta(), ShadowUI:ApplyAll(), bar frames, edit/keybinds.lua
+          Public: SetEditSession(), ApplyEditSession(), ToggleEditMode(), ToggleKeybindMode(),
+          ToggleUnitFrameMode(),
           RelativeScreenAnchor(), HostVisualRect(), SnapVisualToGrid(), SnapFrameToGrid(),
+          EditCursor(), StartEditDragTick(), StopEditDragTick(), PlaceEditReadoutAtCursor(),
           FormatEditReadout(), PaintEditReadout(), HideEditReadout(),
           PersistBarPosition(bar, withGrid?), PersistHostPosition(), SnapFrameSize(),
           OnRegenDisabled()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local GRID_SIZE = 36 * 0.9
+local BUTTON_SIZE = 36 * 0.9
+local GRID_SIZE = BUTTON_SIZE / 2
 
 local function snap(value)
   return math.floor((value or 0) / GRID_SIZE + 0.5) * GRID_SIZE
 end
 
+local function midGrid(span)
+  return snap((span or 0) / 2)
+end
+
 local function shiftSkipsSnap()
-  return IsShiftKeyDown and IsShiftKeyDown() == true
+  -- Classic returns 1/nil; Lua `1 == true` is false, so do not test equality.
+  return IsShiftKeyDown ~= nil and not not IsShiftKeyDown()
 end
 
 function Addon:SnapValue(value)
@@ -199,13 +207,13 @@ function Addon:SnapVisualToGrid(left, bottom, width, height)
   local screenW = UIParent and UIParent.GetWidth and UIParent:GetWidth()
   local screenH = UIParent and UIParent.GetHeight and UIParent:GetHeight()
   if screenW and width and width > 0 then
-    local centerLeft = screenW / 2 - width / 2
+    local centerLeft = midGrid(screenW) - width / 2
     if math.abs(left - centerLeft) <= GRID_SIZE then
       x = centerLeft
     end
   end
   if screenH and height and height > 0 then
-    local centerBottom = screenH / 2 - height / 2
+    local centerBottom = midGrid(screenH) - height / 2
     if math.abs(bottom - centerBottom) <= GRID_SIZE then
       y = centerBottom
     end
@@ -274,6 +282,63 @@ function Addon:EditReadoutForFrame(frame)
   return point, x, y, width, height
 end
 
+function Addon:EditCursor()
+  local scale = 1
+  if UIParent and UIParent.GetEffectiveScale then
+    scale = UIParent:GetEffectiveScale() or 1
+  end
+  if not scale or scale == 0 then
+    scale = 1
+  end
+  local cx, cy = 0, 0
+  if GetCursorPosition then
+    cx, cy = GetCursorPosition()
+  end
+  return cx / scale, cy / scale
+end
+
+function Addon:EnsureEditDragTicker()
+  if self.editDragTicker then
+    return self.editDragTicker
+  end
+  if not CreateFrame then
+    return nil
+  end
+  -- A Frame (not the clicked Button) so OnUpdate still runs while the mouse is down.
+  local ticker = CreateFrame("Frame", "ShadowUIEditDragTicker", UIParent)
+  ticker:Hide()
+  ticker:EnableMouse(false)
+  ticker:SetFrameStrata("TOOLTIP")
+  self.editDragTicker = ticker
+  return ticker
+end
+
+function Addon:StartEditDragTick(onTick)
+  local ticker = self:EnsureEditDragTicker()
+  if not ticker then
+    return
+  end
+  ticker:SetScript("OnUpdate", function()
+    if onTick then
+      onTick()
+    end
+  end)
+  if ticker.Show then
+    ticker:Show()
+  end
+end
+
+function Addon:StopEditDragTick()
+  local ticker = self.editDragTicker
+  if not ticker then
+    return
+  end
+  ticker:SetScript("OnUpdate", nil)
+  if ticker.Hide then
+    ticker:Hide()
+  end
+end
+
 function Addon:EnsureEditReadout()
   if self.editReadout then
     return self.editReadout
@@ -283,9 +348,9 @@ function Addon:EnsureEditReadout()
   end
   local chip = CreateFrame("Frame", "ShadowUIEditReadout", UIParent, "BackdropTemplate")
   chip:SetSize(220, 54)
-  chip:SetPoint("TOP", UIParent, "TOP", 0, -88)
+  chip:EnableMouse(false)
   chip:SetFrameStrata("FULLSCREEN_DIALOG")
-  chip:SetFrameLevel(310)
+  chip:SetFrameLevel(600)
   if chip.SetBackdrop then
     chip:SetBackdrop({
       bgFile = "Interface\\Buttons\\WHITE8X8",
@@ -307,6 +372,38 @@ function Addon:EnsureEditReadout()
   return chip
 end
 
+local READOUT_GAP = 16
+
+function Addon:PlaceEditReadoutAtCursor()
+  local chip = self.editReadout
+  if not chip or not chip.SetPoint then
+    return
+  end
+  local cx, cy = self:EditCursor()
+  local width = (chip.GetWidth and chip:GetWidth()) or 220
+  local height = (chip.GetHeight and chip:GetHeight()) or 54
+  local screenW = UIParent and UIParent.GetWidth and UIParent:GetWidth()
+  local screenH = UIParent and UIParent.GetHeight and UIParent:GetHeight()
+  local x = cx + READOUT_GAP
+  local y = cy + READOUT_GAP
+  if screenW and x + width > screenW then
+    x = cx - READOUT_GAP - width
+  end
+  if screenH and y + height > screenH then
+    y = cy - READOUT_GAP - height
+  end
+  if x < 0 then
+    x = 0
+  end
+  if y < 0 then
+    y = 0
+  end
+  if chip.ClearAllPoints then
+    chip:ClearAllPoints()
+  end
+  chip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
+end
+
 function Addon:PaintEditReadout(frame, name)
   local chip = self:EnsureEditReadout()
   if not chip then
@@ -316,6 +413,7 @@ function Addon:PaintEditReadout(frame, name)
   if chip.fontString and chip.fontString.SetText then
     chip.fontString:SetText(self:FormatEditReadout(name, point, x, y, width, height))
   end
+  self:PlaceEditReadoutAtCursor()
   if chip.Show then
     chip:Show()
   end
@@ -367,7 +465,7 @@ local function drawGrid(grid)
   local index = 0
   local width = grid:GetWidth() or 0
   local height = grid:GetHeight() or 0
-  -- Multiply from an integer index so lines share SnapValue coords (32.4 is not exact).
+  -- Multiply from an integer index so lines share SnapValue coords (16.2 is not exact).
   for i = 0, math.floor(width / GRID_SIZE) do
     index = index + 1
     addLine(grid, index, true, i * GRID_SIZE)
@@ -379,8 +477,8 @@ local function drawGrid(grid)
   for i = index + 1, #grid.lines do
     grid.lines[i]:Hide()
   end
-  addCenter(grid, "vCenter", true, width / 2)
-  addCenter(grid, "hCenter", false, height / 2)
+  addCenter(grid, "vCenter", true, midGrid(width))
+  addCenter(grid, "hCenter", false, midGrid(height))
 end
 
 function Addon:CreateEditGrid()
@@ -398,29 +496,33 @@ function Addon:CreateEditGrid()
 end
 
 function Addon:SetEditSession(session)
-  if session ~= "layout" and session ~= "keybinds" then
+  if session ~= "layout" and session ~= "keybinds" and session ~= "units" then
     session = nil
   end
   self.editSession = session
   self.editMode = session == "layout"
   self.keybindMode = session == "keybinds"
+  self.unitFrameMode = session == "units"
   return session
 end
 
 function Addon:ApplyEditSession(reapply)
   local grid = self.editGrid or self:CreateEditGrid()
-  grid:SetShown(self.editMode == true)
+  grid:SetShown(self.editMode == true or self.unitFrameMode == true)
   if self.editSession then
     self:ShowLayerPicker()
   elseif self.layerPicker then
     self.layerPicker:Hide()
   end
-  if (reapply or self.editMode) and self.ApplyAll then
+  if (reapply or self.editMode or self.unitFrameMode) and self.ApplyAll then
     self:ApplyAll()
   end
   self:RefreshBarDragOverlays()
   if self.RefreshUnitDragOverlays then
     self:RefreshUnitDragOverlays()
+  end
+  if self.RefreshUnitDesignerOverlays then
+    self:RefreshUnitDesignerOverlays()
   end
   if self.ApplyKeybindSession then
     self:ApplyKeybindSession()
@@ -454,7 +556,7 @@ function Addon:SnapFrameSize(frame)
   end
   local width = snap(frame:GetWidth())
   local height = math.floor((frame:GetHeight() or 0) / 4 + 0.5) * 4
-  local minWidth = GRID_SIZE * 4
+  local minWidth = BUTTON_SIZE * 4
   if width < minWidth then
     width = minWidth
   end
@@ -486,7 +588,7 @@ function Addon:PersistHostPosition(frame, layoutId, withSize)
       local shipped = self.Defaults and self.Defaults.base and self.Defaults.base.layout
       shipped = shipped and shipped.cooldown or {}
       local max = math.max(1, live.max or shipped.max or 8)
-      local size = live.buttonSize or shipped.buttonSize or GRID_SIZE
+      local size = live.buttonSize or shipped.buttonSize or BUTTON_SIZE
       local gap = live.gap
       if gap == nil then
         gap = shipped.gap or 4
@@ -502,7 +604,7 @@ function Addon:PersistHostPosition(frame, layoutId, withSize)
       patch.height = height
     end
   end
-  self:WriteLayerDelta(self:GetCharDB().editLayer, "layout", layoutId, patch)
+  self:WriteProfileDelta("layout", layoutId, patch)
   self:ApplyAll()
 end
 
@@ -518,7 +620,7 @@ function Addon:PersistBarPosition(bar, withGrid)
   if withGrid and bar.columns then
     patch.columns = bar.columns
   end
-  self:WriteLayerDelta(self:GetCharDB().editLayer, "layout", bar.barId, patch)
+  self:WriteProfileDelta("layout", bar.barId, patch)
   self:ApplyAll()
 end
 
@@ -533,6 +635,24 @@ function Addon:ToggleEditMode()
     return
   end
   self:SetEditSession("layout")
+  self:ApplyEditSession(false)
+end
+
+function Addon:ToggleUnitFrameMode()
+  if self.OpenUnitFrameDesigner then
+    self:OpenUnitFrameDesigner()
+    return
+  end
+  if self.editSession ~= "units" and InCombatLockdown() then
+    self:Print("Cannot edit unit frames in combat.")
+    return
+  end
+  if self.editSession == "units" then
+    self:SetEditSession(nil)
+    self:ApplyEditSession(true)
+    return
+  end
+  self:SetEditSession("units")
   self:ApplyEditSession(false)
 end
 
@@ -560,6 +680,8 @@ function Addon:OnRegenDisabled()
   self:ApplyEditSession(true)
   if session == "keybinds" then
     self:Print("Keybind Edit Mode closed for combat.")
+  elseif session == "units" then
+    self:Print("Unit Frame Designer closed for combat.")
   else
     self:Print("Layout Edit Mode closed for combat.")
   end

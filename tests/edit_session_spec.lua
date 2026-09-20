@@ -17,14 +17,15 @@ function _G.UIParent:GetHeight() return self.height end
 local account = {
   base = { layout = {}, keybinds = {} },
   classes = {
-    MAGE = { layout = {}, keybinds = {}, variants = { Default = { layout = {}, keybinds = {} } } },
+    MAGE = { layout = {}, keybinds = {} },
   },
 }
-local char = { editLayer = "class", activeVariant = "Default", variantManual = true }
+local char = { activeProfile = "Default" }
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
 function Addon:GetPlayerClass() return "MAGE" end
-function Addon:GetActiveVariantName() return "Default" end
+function Addon:GetProfile() return account.classes.MAGE end
+function Addon:GetActiveProfileName() return "Default" end
 function Addon:ApplyAll() self.applied = (self.applied or 0) + 1 end
 function Addon:ApplyKeybinds() self.keybindsApplied = (self.keybindsApplied or 0) + 1 end
 function Addon:ResolveEffective()
@@ -50,6 +51,11 @@ assert(Addon.editMode == false, "keybind session disables bar drag")
 assert(Addon.keybindMode == true, "keybind session enables hover-bind")
 assert(Addon:SetEditSession(nil) == nil, "nil ends the session")
 assert(Addon.editMode == false and Addon.keybindMode == false, "no session means play mode")
+assert(Addon:SetEditSession("units") == "units", "units session is Unit Frame Designer")
+assert(Addon.unitFrameMode == true, "units session enables Widget edit")
+assert(Addon.editMode == false and Addon.keybindMode == false, "units session is not layout or keybind")
+assert(Addon:SetEditSession("layout") == "layout", "layout replaces units")
+assert(Addon.unitFrameMode == false, "layout session clears Unit Frame Designer")
 assert(Addon:SetEditSession("frames") == nil, "unknown session is play mode")
 
 local button = {
@@ -82,7 +88,7 @@ local persisted = {
 }
 Addon:PersistBarPosition(persisted)
 assert(account.classes.MAGE.layout.bar1.point == "BOTTOMLEFT", "a host near the origin stores BOTTOMLEFT")
-assert(account.classes.MAGE.layout.bar1.x == 32.4, "layout persist snaps to the 32.4 grid")
+assert(account.classes.MAGE.layout.bar1.x == 32.4, "layout persist snaps to the 16.2 grid")
 assert(account.classes.MAGE.layout.bar1.y == 64.8, "layout persist snaps y")
 
 local shiftHeld = false
@@ -92,6 +98,15 @@ persisted.left, persisted.bottom = 100, 50
 Addon:PersistBarPosition(persisted)
 assert(account.classes.MAGE.layout.bar1.x == 100, "Shift persist keeps x off the snap grid")
 assert(account.classes.MAGE.layout.bar1.y == 50, "Shift persist keeps y off the snap grid")
+
+-- Classic IsShiftKeyDown returns 1/nil, not a boolean.
+shiftHeld = 1
+persisted.left, persisted.bottom = 101, 53
+Addon:PersistBarPosition(persisted)
+assert(account.classes.MAGE.layout.bar1.x == 101, "Shift as 1 still skips the snap grid on x")
+assert(account.classes.MAGE.layout.bar1.y == 53, "Shift as 1 still skips the snap grid on y")
+
+shiftHeld = false
 
 local function host(id, left, bottom, width, height)
   return {
@@ -115,15 +130,16 @@ end
 Addon:PersistBarPosition(host("bar6", 765.6, 0, 388.8, 32.4))
 assert(account.classes.MAGE.layout.bar6.point == "BOTTOM", "a bottom-centre Bar stores BOTTOM")
 assert(account.classes.MAGE.layout.bar6.relativePoint == "BOTTOM", "BOTTOM parks on UIParent BOTTOM")
-assert(math.abs(account.classes.MAGE.layout.bar6.x) < 0.01, "bottom-centre x stays on the vertical midline")
+assert(math.abs(account.classes.MAGE.layout.bar6.x + 4.2) < 0.01,
+  "bottom-centre x stays on the snap-grid midline")
 assert(account.classes.MAGE.layout.bar6.y == 0, "bottom-centre y stays on the screen edge")
 
--- 20px inset from the right on 1920 stays 20px inset on a wider screen.
-Addon:PersistBarPosition(host("bar8", 1700, 40, 200, 80))
+-- Near the right edge on 1920: persist BOTTOMRIGHT so the inset holds on a wider screen.
+Addon:PersistBarPosition(host("bar8", 1701, 32.4, 200, 80))
 local right = account.classes.MAGE.layout.bar8
 assert(right.point == "BOTTOMRIGHT", "a host near the right edge stores BOTTOMRIGHT")
-assert(right.x == -20 and right.y == 40, "BOTTOMRIGHT stores the inset from that corner")
+assert(right.x == -19 and right.y == 32.4, "BOTTOMRIGHT stores the inset from that corner")
 local leftOnWide = 2560 + right.x - 200
-assert(2560 - (leftOnWide + 200) == 20, "the same inset holds when the screen grows")
+assert(2560 - (leftOnWide + 200) == 19, "the same inset holds when the screen grows")
 
 print("edit_session_spec OK")

@@ -10,8 +10,8 @@
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 local FONT_SIZE = 16
-local IDLE = 0.5
-local ACTIVE = 0.95
+local IDLE = 0.72
+local ACTIVE = 1
 local LINGER = 20
 local ENTER = 0.6
 local LEAVE = 2.5

@@ -1,6 +1,7 @@
 -- ItemRack worn-item and menu buttons get the same 0.05 chrome as action
 -- icons, plus a 4px Lorti Outer Edge. The minimap ItemRack icon stays on the
--- square map and does not get a second edge.
+-- square map and does not get a second edge. The set menu stays on UIParent
+-- after ItemRack docks it to that icon, so the square map does not clip it.
 -- Run: lua tests/itemrack_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -86,8 +87,18 @@ Addon:SkinItemRack()
 local worn, wornIcon = fakeButton("ItemRackButton13")
 local menu, menuIcon = fakeButton("ItemRackMenu1")
 local minimap = fakeButton("LibDBIcon10_ItemRack")
+_G.UIParent = { name = "UIParent" }
+local menuFrame = { parent = _G.UIParent }
+function menuFrame:SetParent(parent) self.parent = parent end
+function menuFrame:GetParent() return self.parent end
+function menuFrame:SetFrameStrata(strata) self.strata = strata end
+_G.ItemRackMenuFrame = menuFrame
 _G.ItemRack = {
   CreateMenuButton = function() end,
+  DockWindows = function(_, relativeTo)
+    menuFrame:SetParent(relativeTo)
+    menuFrame:SetFrameStrata("HIGH")
+  end,
 }
 
 assert(loadfile(root .. "skin/itemrack.lua"))()
@@ -114,6 +125,10 @@ assert(menu.shadowUIOuter, "ItemRack menu buttons keep a Lorti Outer Edge")
 assert(menuIcon.points[1][2] == 2, "ItemRack menu icon insets 2px")
 assert(not minimap.shadowUIOuter,
   "minimap ItemRack icon does not get a second Outer Edge")
+_G.ItemRack.DockWindows("TOPRIGHT", minimap)
+assert(menuFrame.parent == _G.UIParent,
+  "ItemRack set menu leaves the square minimap after dock")
+assert(menuFrame.strata == "HIGH", "ItemRack set menu stays HIGH over the map")
 
 local late = fakeButton("ItemRackMenu2")
 _G.ItemRack.CreateMenuButton(2, "12345")

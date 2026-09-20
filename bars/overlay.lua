@@ -1,6 +1,7 @@
 --[[
   Purpose: HUD overlay drag and column/row resize for Bars in Layout Edit Mode.
-  Deps: ShadowUI:PlaceBarButtons(), ShadowUI:NearestBarLayout(), ShadowUI:PersistBarPosition()
+  Deps: ShadowUI:PlaceBarButtons(), ShadowUI:NearestBarLayout(), ShadowUI:PersistBarPosition(),
+        ShadowUI:StartEditDragTick()
   Public: ShadowUI:SelectEditOverlay(), ShadowUI:UpdateBarDragOverlay(),
           ShadowUI:AttachBarDragOverlay()
 ]]
@@ -32,13 +33,30 @@ local function paintOverlay(overlay, selected)
   end
 end
 
+local function overlayName(overlay)
+  local fs = overlay and overlay.fontString
+  if not fs then
+    return nil
+  end
+  if fs.GetText then
+    return fs:GetText()
+  end
+  return fs.text
+end
+
 function Addon:SelectEditOverlay(overlay)
   local seen = false
+  local selectedFrame
+  local selectedName
   for _, bar in pairs(self.bars or {}) do
     if bar.dragOverlay then
       local selected = bar.dragOverlay == overlay
       seen = seen or selected
       paintOverlay(bar.dragOverlay, selected)
+      if selected then
+        selectedFrame = bar
+        selectedName = overlayName(bar.dragOverlay) or barLabel(bar.barId)
+      end
     end
   end
   for _, host in pairs(self.unitHosts or {}) do
@@ -46,10 +64,36 @@ function Addon:SelectEditOverlay(overlay)
       local selected = host.overlay == overlay
       seen = seen or selected
       paintOverlay(host.overlay, selected)
+      if selected then
+        selectedFrame = host.frame or host.overlay.host
+        selectedName = overlayName(host.overlay)
+      end
     end
+  end
+  for _, chips in pairs(self.widgetDesignerChips or {}) do
+    for _, chip in pairs(chips) do
+      if chip then
+        local selected = chip == overlay
+        seen = seen or selected
+        paintOverlay(chip, selected)
+        if selected then
+          selectedFrame = chip
+          selectedName = overlayName(chip)
+        end
+      end
+    end
+  end
+  if overlay and overlay.widgetId and self.SelectUnitDesignerWidget then
+    self:SelectUnitDesignerWidget(overlay.frameId, overlay.widgetId, true)
+    return
   end
   if overlay and not seen then
     paintOverlay(overlay, true)
+    selectedFrame = overlay.bar or overlay.host
+    selectedName = overlayName(overlay)
+  end
+  if overlay and self.PaintEditReadout then
+    self:PaintEditReadout(selectedFrame or overlay.bar or overlay.host, selectedName)
   end
 end
 
@@ -94,7 +138,6 @@ function Addon:AttachBarDragOverlay(bar)
   dragOverlay:SetFrameLevel(200)
   dragOverlay:SetAllPoints(bar)
   dragOverlay:EnableMouse(false)
-  dragOverlay:RegisterForDrag("LeftButton")
   if dragOverlay.SetBackdrop then
     dragOverlay:SetBackdrop({
       bgFile = "Interface\\Buttons\\WHITE8X8",
@@ -116,7 +159,11 @@ function Addon:AttachBarDragOverlay(bar)
   local drag
   local sizing
   local endPointer
+  local tick
   local function cursor()
+    if Addon.EditCursor then
+      return Addon:EditCursor()
+    end
     local scale = 1
     if UIParent.GetEffectiveScale then
       scale = UIParent:GetEffectiveScale() or 1
@@ -126,6 +173,20 @@ function Addon:AttachBarDragOverlay(bar)
       cx, cy = GetCursorPosition()
     end
     return cx / scale, cy / scale
+  end
+  local function startTick()
+    if Addon.StartEditDragTick then
+      Addon:StartEditDragTick(tick)
+    else
+      dragOverlay:SetScript("OnUpdate", tick)
+    end
+  end
+  local function stopTick()
+    if Addon.StopEditDragTick then
+      Addon:StopEditDragTick()
+    else
+      dragOverlay:SetScript("OnUpdate", nil)
+    end
   end
   local function barScale()
     local scale = (bar.GetScale and bar:GetScale()) or 1
@@ -140,11 +201,14 @@ function Addon:AttachBarDragOverlay(bar)
     local left = (bar.GetLeft and bar:GetLeft()) or 0
     local bottom = (bar.GetBottom and bar:GetBottom()) or 0
     local width = ((bar.GetWidth and bar:GetWidth()) or 0) * scale
+    local height = ((bar.GetHeight and bar:GetHeight()) or 0) * scale
     local size = 12
-    return cx >= left + width - size
-      and cx <= left + width
-      and cy >= bottom
-      and cy <= bottom + size
+    local mid = left + width / 2
+    -- Top-centre so a 3x4 Bar (Bar 7 / Bar 8) can be dragged on the stack seam.
+    return cx >= mid - size / 2
+      and cx <= mid + size / 2
+      and cy >= bottom + height - size
+      and cy <= bottom + height
   end
   local function dragToCursor()
     if not drag then
@@ -189,7 +253,7 @@ function Addon:AttachBarDragOverlay(bar)
       Addon:PaintEditReadout(bar, barLabel(bar.barId))
     end
   end
-  local function tick()
+  tick = function()
     if sizing then
       sizeToCursor()
     elseif drag then
@@ -203,7 +267,7 @@ function Addon:AttachBarDragOverlay(bar)
     if not drag then
       return
     end
-    dragOverlay:SetScript("OnUpdate", nil)
+    stopTick()
     dragToCursor()
     drag = nil
     if Addon.PersistBarPosition then
@@ -217,7 +281,7 @@ function Addon:AttachBarDragOverlay(bar)
     if not sizing then
       return
     end
-    dragOverlay:SetScript("OnUpdate", nil)
+    stopTick()
     sizeToCursor()
     sizing = nil
     if Addon.PersistBarPosition then
@@ -251,7 +315,7 @@ function Addon:AttachBarDragOverlay(bar)
       left = bar.GetLeft and bar:GetLeft() or 0,
       top = top,
     }
-    dragOverlay:SetScript("OnUpdate", tick)
+    startTick()
     sizeToCursor()
   end
   local function beginMove(_, button)
@@ -268,14 +332,14 @@ function Addon:AttachBarDragOverlay(bar)
       dx = (bar.GetLeft and bar:GetLeft() or 0) - cx,
       dy = (bar.GetBottom and bar:GetBottom() or 0) - cy,
     }
-    dragOverlay:SetScript("OnUpdate", tick)
+    startTick()
     dragToCursor()
   end
   dragOverlay:SetScript("OnMouseDown", beginMove)
   dragOverlay:SetScript("OnMouseUp", endPointer)
   local grip = CreateFrame("Frame", overlayName .. "Size", dragOverlay)
   grip:SetSize(12, 12)
-  grip:SetPoint("BOTTOMRIGHT", dragOverlay, "BOTTOMRIGHT", 0, 0)
+  grip:SetPoint("TOP", dragOverlay, "TOP", 0, 0)
   grip:SetFrameLevel((dragOverlay.GetFrameLevel and dragOverlay:GetFrameLevel() or 200) + 5)
   grip:EnableMouse(true)
   local gripFill = grip:CreateTexture(nil, "ARTWORK")

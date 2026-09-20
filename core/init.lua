@@ -3,7 +3,7 @@
   Deps: AceAddon-3.0, AceEvent-3.0, AceConsole-3.0; modules loaded later by TOC
   Public: ShadowUI addon table, ShadowUI:GetVersion(), ShadowUI:GetPlayerClass(),
           ShadowUI:ApplyAll(), ShadowUI:ApplyAutoLoot(), ShadowUI:ApplyCooldownManager(),
-          ShadowUI:OnRegenEnabled(), ShadowUI:OnPressCastEvent()
+          ShadowUI:ApplyUnitFrames(), ShadowUI:OnRegenEnabled(), ShadowUI:OnPressCastEvent()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("ShadowUI", "AceEvent-3.0", "AceConsole-3.0")
@@ -90,6 +90,7 @@ function Addon:ApplyAll()
   step("bars", self.ApplyBars)
   step("keybinds", self.ApplyKeybinds)
   step("auto loot", self.ApplyAutoLoot)
+  step("unit frames", self.ApplyUnitFrames)
   step("skins", self.ApplySkins)
   step("cast bar", self.ApplyCastBar)
   step("mana ticker", self.ApplyManaTicker)
@@ -120,18 +121,18 @@ function Addon:SlashCommand(input)
     self:ToggleEditMode()
   elseif cmd == "binds" or cmd == "bind" or cmd == "keybind" then
     self:ToggleKeybindMode()
+  elseif cmd == "units" or cmd == "frames" or cmd == "unit" then
+    self:ToggleUnitFrameMode()
   elseif cmd == "prune" or cmd == "shift" then
     self:ShiftAndPruneBars(rest)
-  elseif cmd == "layer" then
-    self:SetEditLayer(rest)
-  elseif cmd == "variant" then
-    self:HandleVariantCommand(rest)
+  elseif cmd == "profile" then
+    self:HandleProfileCommand(rest)
   elseif cmd == "loadout" then
     self:HandleLoadoutCommand(rest)
   elseif cmd == "xpstack" then
     self:DumpXPStack()
   else
-    self:Print("Usage: /shadowui [edit|binds|prune <group>|layer|variant|loadout|xpstack]")
+    self:Print("Usage: /shadowui [edit|binds|units|prune <group>|profile|loadout|xpstack]")
   end
 end
 
@@ -160,6 +161,7 @@ function Addon:ClearSlotShiftFrom() end
 function Addon:ApplyBarChrome(bar) end
 function Addon:ApplyOuterChrome(host) end
 function Addon:PaintOuterChrome(outer) end
+function Addon:ApplyUnitFrames() end
 function Addon:ApplySkins() end
 function Addon:ApplyCastBar() end
 function Addon:ApplyManaTicker() end
@@ -175,9 +177,9 @@ function Addon:OnTalentUpdate() end
 function Addon:OpenOptions() end
 function Addon:ToggleEditMode() end
 function Addon:ToggleKeybindMode() end
+function Addon:ToggleUnitFrameMode() end
 function Addon:SetEditSession(session) end
 function Addon:HookButtonForKeybinds(button) end
 function Addon:OnRegenDisabled() end
-function Addon:SetEditLayer(layer) end
-function Addon:HandleVariantCommand(rest) end
+function Addon:HandleProfileCommand(rest) end
 function Addon:HandleLoadoutCommand(rest) end

@@ -217,8 +217,8 @@ assert(countLabel.font and countLabel.font[2] == 15 and countLabel.font[3] == "O
 assert(countLabel.color and countLabel.color[1] == 0.7 and countLabel.color[2] == 0.88
   and countLabel.color[3] == 0.55 and countLabel.color[4] == 0.75, "item count is pale lime")
 assert(countLabel.points and countLabel.points[1] and countLabel.points[1][1] == "BOTTOMRIGHT"
-  and countLabel.points[1][3] == -5,
-  "item count sits below the bottom edge of the Action Slot")
+  and countLabel.points[1][2] == -3 and countLabel.points[1][3] == 3,
+  "item count sits inside the Action Slot")
 assert(Addon:PressGlowAlpha(0) == 0, "press overlay snaps off with no fade")
 assert(Addon:PressGlowAlpha(0, 0.04) > 0, "PressGlowAlpha still maps a duration when given one")
 assert(not Addon:BindingKeyIsDown("SHIFT-Q"), "idle keybind is not held")

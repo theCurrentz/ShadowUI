@@ -1,6 +1,8 @@
 --[[
   Purpose: Apply Lorti icon chrome and Outer Edge to ItemRack worn-item and menu
-           buttons. The minimap ItemRack icon stays on the square map.
+           buttons. The minimap ItemRack icon stays on the square map. After
+           ItemRack docks the set menu to that icon, keep the menu on UIParent
+           so the square map does not clip it.
   Deps: ShadowUI:ApplyOuterChrome(); optional ItemRack
   Public: ShadowUI:SkinItemRackButton(), ShadowUI:SkinItemRack()
 ]]
@@ -77,6 +79,10 @@ function Addon:SkinItemRackButton(button)
     chrome:Show()
   end
   self:ApplyOuterChrome(button)
+  local outer = button.shadowUIOuter
+  if outer and outer.EnableMouse then
+    outer:EnableMouse(false)
+  end
   strip(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()))
   strip(button.Border)
   strip(button.SlotBackground)
@@ -102,10 +108,30 @@ function Addon:SkinItemRackButton(button)
   skinCooldown(button)
 end
 
+local function keepSetMenuOnUIParent()
+  local menu = _G.ItemRackMenuFrame
+  local host = _G.UIParent
+  if not menu or not host then
+    return
+  end
+  if menu.SetParent then
+    menu:SetParent(host)
+  end
+  if menu.SetFrameStrata then
+    menu:SetFrameStrata("HIGH")
+  end
+  if menu.SetToplevel then
+    menu:SetToplevel(true)
+  end
+end
+
 local function watchLateButtons()
   local rack = _G.ItemRack
   if hooksecurefunc and rack and not Addon._itemRackHook then
     Addon._itemRackHook = true
+    if rack.DockWindows then
+      hooksecurefunc(rack, "DockWindows", keepSetMenuOnUIParent)
+    end
     if rack.CreateMenuButton then
       hooksecurefunc(rack, "CreateMenuButton", function()
         Addon:SkinItemRack()
@@ -154,5 +180,6 @@ function Addon:SkinItemRack()
     self:SkinItemRackButton(_G["ItemRackMenu" .. i])
     i = i + 1
   end
+  keepSetMenuOnUIParent()
   watchLateButtons()
 end

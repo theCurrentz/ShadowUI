@@ -1,6 +1,8 @@
 --[[
   Purpose: Darken unit-frame chrome the Lorti way and park player/target from Layout.
-  Classic maps rare-elite to elite art. SkinRareElite uses the Rare-Elite dragon.
+  Classic maps rare-elite to elite art. Target Frame Art uses soft Darken so
+  original chrome and the dragon still show. SkinRareElite only swaps the native
+  atlas. It does not crop a second overlay.
   1.15.9 CheckClassification lives on TargetFrameMixin, not a global.
   CheckClassification also sizes TargetFrameBackground over half the health slot.
   paintTarget hides that well so it cannot cover an empty health bar.
@@ -29,9 +31,7 @@ local BLACK_NAMES = {
   "PlayerFrameAlternatePowerBarLeftBorder",
   "PlayerFrameAlternatePowerBarRightBorder",
   "PetFrameTexture",
-  "TargetFrameTextureFrameTexture",
   "TargetFrameToTTextureFrameTexture",
-  "FocusFrameTextureFrameTexture",
   "FocusFrameToTTextureFrameTexture",
   "CastingBarFrameBorder",
   "MirrorTimer1Border",
@@ -46,6 +46,12 @@ local BLACK_NAMES = {
 function Addon:RareEliteTexture(classification)
   if classification == "rareelite" then
     return "Interface\\TargetingFrame\\UI-TargetingFrame-Rare-Elite"
+  end
+  if classification == "rare" then
+    return "Interface\\TargetingFrame\\UI-TargetingFrame-Rare"
+  end
+  if classification == "elite" or classification == "worldboss" then
+    return "Interface\\TargetingFrame\\UI-TargetingFrame-Elite"
   end
 end
 
@@ -67,11 +73,23 @@ local function setBorderTexture(frame, path)
   end
 end
 
+local function hideDragon(frame)
+  local dragon = frame.shadowUIDragon
+  if dragon and dragon.Hide then
+    dragon:Hide()
+  end
+  local edge = frame.shadowUIDragonEdge
+  if edge and edge.Hide then
+    edge:Hide()
+  end
+end
+
 function Addon:SkinRareElite(frame)
   frame = type(frame) == "table" and frame or _G.TargetFrame
   if not frame or not UnitClassification then
     return
   end
+  hideDragon(frame)
   local unit = frame.unit or "target"
   local path = self:RareEliteTexture(UnitClassification(unit))
   if path then
@@ -91,7 +109,7 @@ local function hideStay(region)
   end
 end
 
-local function darkenContainer(frame)
+local function darkenContainer(frame, color)
   if not frame then
     return
   end
@@ -99,8 +117,9 @@ local function darkenContainer(frame)
   if not container then
     return
   end
-  Addon:LockVertex(container.FrameTexture, Addon.DARKEN_BLACK)
-  Addon:LockVertex(container.VehicleFrameTexture, Addon.DARKEN_BLACK)
+  color = color or Addon.DARKEN_BLACK
+  Addon:LockVertex(container.FrameTexture, color)
+  Addon:LockVertex(container.VehicleFrameTexture, color)
 end
 
 local function paintTarget(frame)
@@ -109,14 +128,15 @@ local function paintTarget(frame)
     return
   end
   Addon:SkinRareElite(frame)
-  Addon:LockVertex(frame.borderTexture, Addon.DARKEN_BLACK)
+  local soft = Addon.DARKEN_SOFT or Addon.DARKEN_BAR
+  Addon:LockVertex(frame.borderTexture, soft)
   local name = frame.GetName and frame:GetName()
   if name then
-    Addon:LockVertex(_G[name .. "TextureFrameTexture"], Addon.DARKEN_BLACK)
-    Addon:LockVertex(_G[name .. "Texture"], Addon.DARKEN_BLACK)
+    Addon:LockVertex(_G[name .. "TextureFrameTexture"], soft)
+    Addon:LockVertex(_G[name .. "Texture"], soft)
     hideStay(_G[name .. "Background"])
   end
-  darkenContainer(frame)
+  darkenContainer(frame, soft)
   -- CheckClassification sizes this well to 25px from y=-26. Health is 12px at
   -- y=-45, so the well covers only the top half of an empty health slot.
   hideStay(frame.Background)

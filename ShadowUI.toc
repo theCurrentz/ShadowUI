@@ -1,6 +1,6 @@
 ## Interface: 11509
 ## Title: ShadowUI
-## Notes: Opinionated Classic Era bars, chrome, and cast bar. Version Era. Class-profiled Base → Class → Variant layouts.
+## Notes: Opinionated Classic Era bars, chrome, and cast bar. Version Era. Named Profiles for Layout, Keybinds, and Action Deck.
 ## Author: Parker Westfall
 ## Version: 0.1.0
 ## SavedVariables: ShadowUIDB
@@ -15,6 +15,8 @@ core\easing.lua
 core\keybinds.lua
 
 defaults\base.lua
+units\layout.lua
+defaults\units.lua
 defaults\catalog.lua
 defaults\cooldowns.lua
 defaults\classes\WARRIOR.lua
@@ -37,6 +39,9 @@ bars\pet.lua
 bars\special.lua
 bars\manager.lua
 bars\cdmanager.lua
+
+units\frame.lua
+units\apply.lua
 
 cast\castbar.lua
 cast\gcd.lua
@@ -76,12 +81,14 @@ skin\extra.lua
 
 edit\mode.lua
 edit\frames.lua
+edit\units.lua
 edit\keybinds.lua
 edit\layer.lua
 
-profile\variants.lua
+profile\profiles.lua
 profile\loadouts.lua
 
 options\nav.lua
 options\config.lua
 options\scroll.lua
+options\chrome.lua

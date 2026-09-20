@@ -3,7 +3,8 @@
            XP uses a left-right purple-to-magenta fill like the retail
            experience bar. The native fill stays hidden so the gradient
            does not paint twice. Classic overlay art stays hidden. Fade idle
-           registers the XP cover with FadeDriver.
+           registers the XP cover with FadeDriver. Character can hide the
+           Experience bar; reputation stays parked.
   Deps: MainStatusTrackingBarContainer, SecondaryStatusTrackingBarContainer,
         StatusTrackingBarManager; MainMenuExpBar fallback;
         ShadowUI:ApplyStatusBarGradient(), ShadowUI:ApplyXPFade(),
@@ -43,6 +44,42 @@ end
 
 local function isShown(frame)
   return not frame.IsShown or frame:IsShown()
+end
+
+local function showExperienceBar()
+  local get = Addon.GetCharDB
+  if not get then
+    return true
+  end
+  local char = get(Addon)
+  return not char or char.showExperienceBar ~= false
+end
+
+local function keepHidden(frame)
+  if not frame or frame._shadowUIXPKeepHidden then
+    return
+  end
+  frame._shadowUIXPKeepHidden = true
+  if hooksecurefunc and frame.Show then
+    hooksecurefunc(frame, "Show", function(self)
+      if showExperienceBar() then
+        return
+      end
+      if self.Hide then
+        self:Hide()
+      end
+    end)
+  end
+end
+
+local function hideExperienceHost(frame)
+  if not frame then
+    return
+  end
+  keepHidden(frame)
+  if frame.Hide then
+    frame:Hide()
+  end
 end
 
 local function place(bar, relative, relativePoint, height)
@@ -703,6 +740,7 @@ function Addon:SkinTrackingBars()
   local rep = _G.ReputationWatchBar
   local relative = UIParent
   local relativePoint = "TOP"
+  local showXP = showExperienceBar()
 
   local mgr = _G.StatusTrackingBarManager
   if mgr then
@@ -717,16 +755,32 @@ function Addon:SkinTrackingBars()
     end
   end
 
-  if main and isShown(main) then
-    place(main, UIParent, "TOP", HEIGHT)
-    pcall(paintXP, main, shownXPFrame(main))
-    relative = main
-    relativePoint = "BOTTOM"
-  elseif exp and isShown(exp) then
-    place(exp, UIParent, "TOP", HEIGHT)
-    pcall(paintXP, exp, exp)
-    relative = exp
-    relativePoint = "BOTTOM"
+  if not showXP then
+    hideExperienceHost(main)
+    hideExperienceHost(exp)
+    hideExperienceHost(main and main.shadowUIXPHost)
+    hideExperienceHost(exp and exp.shadowUIXPHost)
+    hideExperienceHost(_G.ShadowUIXPHost)
+  elseif main then
+    if main.Show then
+      main:Show()
+    end
+    if isShown(main) then
+      place(main, UIParent, "TOP", HEIGHT)
+      pcall(paintXP, main, shownXPFrame(main))
+      relative = main
+      relativePoint = "BOTTOM"
+    end
+  elseif exp then
+    if exp.Show then
+      exp:Show()
+    end
+    if isShown(exp) then
+      place(exp, UIParent, "TOP", HEIGHT)
+      pcall(paintXP, exp, exp)
+      relative = exp
+      relativePoint = "BOTTOM"
+    end
   end
 
   if secondary and isShown(secondary) then

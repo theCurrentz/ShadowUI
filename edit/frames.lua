@@ -3,7 +3,7 @@
            the Blizzard Stance Bar, and the Cooldown Manager. Cooldown wrap resize
            snaps columns like a Bar.
   Deps: ShadowUI:SnapFrameToGrid(), ShadowUI:PersistHostPosition(),
-        ShadowUI:SnapFrameSize(), ShadowUI:SelectEditOverlay()
+        ShadowUI:SnapFrameSize(), ShadowUI:SelectEditOverlay(), ShadowUI:StartEditDragTick()
   Public: ShadowUI:RefreshUnitDragOverlays()
 ]]
 
@@ -105,12 +105,12 @@ end
 local HOSTS = {
   { id = "player", global = "PlayerFrame", overlay = "ShadowUIPlayerDrag", label = "Player" },
   { id = "target", global = "TargetFrame", overlay = "ShadowUITargetDrag", label = "Target" },
-  { id = "stance", overlay = "ShadowUIStanceDrag", label = "Stance", cursorDrag = true,
+  { id = "stance", overlay = "ShadowUIStanceDrag", label = "Stance",
     resolve = resolveStanceHost },
   { id = "cast", overlay = "ShadowUICastDrag", label = "Cast", resizable = true,
     resolve = function() return Addon.castGroup end,
     visual = function() return Addon.castBar or Addon.castGroup end },
-  { id = "range", overlay = "ShadowUIRangeDrag", label = "Range", cursorDrag = true,
+  { id = "range", overlay = "ShadowUIRangeDrag", label = "Range",
     resolve = function() return Addon.rangeDisplay end },
   { id = "cooldown", overlay = "ShadowUICooldownDrag", label = "Cooldowns",
     gridResize = true,
@@ -139,7 +139,6 @@ local function createOverlay(host, spec)
   overlay:SetFrameLevel(200)
   overlay:SetAllPoints(visual or host)
   overlay:EnableMouse(false)
-  overlay:RegisterForDrag("LeftButton")
   if overlay.SetBackdrop then
     overlay:SetBackdrop({
       bgFile = "Interface\\Buttons\\WHITE8X8",
@@ -160,14 +159,19 @@ local function createOverlay(host, spec)
   overlay.fontString = label
   overlay.host = host
   overlay.hostId = spec.id
-  local moving = false
   local sizing = false
   local drag
+  local origin
   local endMove
+  local endSize
+  local tick
   local function currentHost()
     return overlay.host or host
   end
   local function cursor()
+    if Addon.EditCursor then
+      return Addon:EditCursor()
+    end
     local scale = 1
     if UIParent and UIParent.GetEffectiveScale then
       scale = UIParent:GetEffectiveScale() or 1
@@ -177,6 +181,20 @@ local function createOverlay(host, spec)
       cx, cy = GetCursorPosition()
     end
     return cx / scale, cy / scale
+  end
+  local function startTick()
+    if Addon.StartEditDragTick then
+      Addon:StartEditDragTick(tick)
+    else
+      overlay:SetScript("OnUpdate", tick)
+    end
+  end
+  local function stopTick()
+    if Addon.StopEditDragTick then
+      Addon:StopEditDragTick()
+    else
+      overlay:SetScript("OnUpdate", nil)
+    end
   end
   local function placeHost(target, x, y)
     local clear = target.ClearAllPointsBase or target.ClearAllPoints
@@ -224,8 +242,108 @@ local function createOverlay(host, spec)
       Addon:PaintEditReadout(target, spec.label)
     end
   end
+  local function hostScale(target)
+    target = target or currentHost()
+    local scale = (target and target.GetScale and target:GetScale()) or 1
+    if scale == 0 then
+      return 1
+    end
+    return scale
+  end
+  local function sizeGridToCursor()
+    local target = currentHost()
+    if not origin or not target or not Addon.NearestBarLayout then
+      return
+    end
+    local cx, cy = cursor()
+    local live = (Addon.ResolveEffective and Addon:ResolveEffective()) or {}
+    live = live.layout and live.layout.cooldown or {}
+    local shipped = Addon.Defaults and Addon.Defaults.base and Addon.Defaults.base.layout
+    shipped = shipped and shipped.cooldown or {}
+    local max = math.max(1, live.max or shipped.max or 8)
+    local size = live.buttonSize or shipped.buttonSize or 36 * 0.9
+    local gap = live.gap
+    if gap == nil then
+      gap = shipped.gap or 4
+    end
+    local layout = Addon:NearestBarLayout(max, size, cx - origin.left, origin.top - cy, gap)
+    target._previewColumns = layout.columns
+    target:ClearAllPoints()
+    target:SetSize(layout.width, layout.height)
+    target:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", origin.left,
+      origin.top - layout.height * hostScale(target))
+    overlay:SetAllPoints(target)
+    if Addon.RefreshCooldownManager then
+      Addon:RefreshCooldownManager()
+    end
+    if Addon.PaintEditReadout then
+      Addon:PaintEditReadout(target, spec.label)
+    end
+  end
+  local function sizeHostToCursor()
+    local target = currentHost()
+    if not origin or not target then
+      return
+    end
+    local cx, cy = cursor()
+    local scale = hostScale(target)
+    local width = (cx - origin.left) / scale
+    local height = (origin.top - cy) / scale
+    local minW, minH, maxW, maxH = 36 * 0.9 * 4, 12, 36 * 0.9 * 16, 72
+    if not (IsShiftKeyDown and IsShiftKeyDown()) then
+      if Addon.SnapValue then
+        width = Addon:SnapValue(width)
+      end
+      height = math.floor((height or 0) / 4 + 0.5) * 4
+    end
+    if width < minW then
+      width = minW
+    end
+    if width > maxW then
+      width = maxW
+    end
+    if height < minH then
+      height = minH
+    end
+    if height > maxH then
+      height = maxH
+    end
+    if target.ClearAllPoints then
+      target:ClearAllPoints()
+    end
+    if target.SetSize then
+      target:SetSize(width, height)
+    end
+    placeHost(target, origin.left, origin.top - height * scale)
+    if spec.visual then
+      overlay:SetAllPoints(spec.visual() or target)
+    else
+      overlay:SetAllPoints(target)
+    end
+    if Addon.PaintEditReadout then
+      Addon:PaintEditReadout(target, spec.label)
+    end
+  end
+  tick = function()
+    if sizing then
+      if spec.gridResize then
+        sizeGridToCursor()
+      else
+        sizeHostToCursor()
+      end
+    elseif drag then
+      dragToCursor()
+    end
+    if (sizing or drag) and IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
+      if sizing then
+        endSize()
+      else
+        endMove()
+      end
+    end
+  end
   local function beginMove()
-    if not Addon.editMode or moving or sizing or drag then
+    if not Addon.editMode or sizing or drag then
       return
     end
     local target = currentHost()
@@ -239,56 +357,27 @@ local function createOverlay(host, spec)
     if Addon.SelectEditOverlay then
       Addon:SelectEditOverlay(overlay)
     end
-    if spec.cursorDrag then
-      local cx, cy = cursor()
-      local left = target.GetLeft and target:GetLeft()
-      local bottom = target.GetBottom and target:GetBottom()
-      if left == nil or bottom == nil then
-        left, bottom = stanceOverlayRect(target)
-      end
-      drag = {
-        dx = (left or 0) - cx,
-        dy = (bottom or 0) - cy,
-      }
-      overlay:SetScript("OnUpdate", function()
-        dragToCursor()
-        if IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
-          endMove()
-        end
-      end)
-      dragToCursor()
-      return
+    local cx, cy = cursor()
+    local left = target.GetLeft and target:GetLeft()
+    local bottom = target.GetBottom and target:GetBottom()
+    if left == nil or bottom == nil then
+      left, bottom = stanceOverlayRect(target)
     end
-    moving = true
-    target:StartMoving()
-    overlay:SetScript("OnUpdate", function()
-      if Addon.PaintEditReadout then
-        Addon:PaintEditReadout(target, spec.label)
-      end
-      if IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
-        endMove()
-      end
-    end)
+    drag = {
+      dx = (left or 0) - cx,
+      dy = (bottom or 0) - cy,
+    }
+    startTick()
+    dragToCursor()
   end
   endMove = function()
     local target = currentHost()
-    if spec.cursorDrag then
-      if not drag then
-        return
-      end
-      overlay:SetScript("OnUpdate", nil)
-      dragToCursor()
-      drag = nil
-    else
-      if not moving then
-        return
-      end
-      moving = false
-      overlay:SetScript("OnUpdate", nil)
-      if target and target.StopMovingOrSizing then
-        target:StopMovingOrSizing()
-      end
+    if not drag then
+      return
     end
+    stopTick()
+    dragToCursor()
+    drag = nil
     if Addon.PersistHostPosition then
       Addon:PersistHostPosition(target, spec.id)
     end
@@ -305,131 +394,68 @@ local function createOverlay(host, spec)
     end
   end)
   overlay:SetScript("OnMouseUp", endMove)
-  overlay:SetScript("OnDragStart", beginMove)
-  overlay:SetScript("OnDragStop", endMove)
   if spec.resizable or spec.gridResize then
     local grip = CreateFrame("Button", spec.overlay .. "Size", overlay)
     grip:SetSize(12, 12)
     grip:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
     grip:SetFrameLevel((overlay.GetFrameLevel and overlay:GetFrameLevel() or 200) + 1)
     grip:EnableMouse(true)
-    grip:RegisterForDrag("LeftButton")
     local gripFill = grip:CreateTexture(nil, "ARTWORK")
     gripFill:SetAllPoints(grip)
     gripFill:SetColorTexture(1, 1, 1, 0.85)
     overlay.resizeGrip = grip
-    local origin
-    local endSize
-    local function cursor()
-      local scale = 1
-      if UIParent and UIParent.GetEffectiveScale then
-        scale = UIParent:GetEffectiveScale() or 1
-      end
-      local cx, cy = 0, 0
-      if GetCursorPosition then
-        cx, cy = GetCursorPosition()
-      end
-      return cx / scale, cy / scale
-    end
-    local function hostScale()
-      local scale = (host.GetScale and host:GetScale()) or 1
-      if scale == 0 then
-        return 1
-      end
-      return scale
-    end
-    local function sizeGridToCursor()
-      if not origin or not Addon.NearestBarLayout then
+    local function beginSize()
+      if not Addon.editMode or sizing or drag then
         return
       end
-      local cx, cy = cursor()
-      local live = (Addon.ResolveEffective and Addon:ResolveEffective()) or {}
-      live = live.layout and live.layout.cooldown or {}
-      local shipped = Addon.Defaults and Addon.Defaults.base and Addon.Defaults.base.layout
-      shipped = shipped and shipped.cooldown or {}
-      local max = math.max(1, live.max or shipped.max or 8)
-      local size = live.buttonSize or shipped.buttonSize or 36 * 0.9
-      local gap = live.gap
-      if gap == nil then
-        gap = shipped.gap or 4
-      end
-      local layout = Addon:NearestBarLayout(max, size, cx - origin.left, origin.top - cy, gap)
-      host._previewColumns = layout.columns
-      host:ClearAllPoints()
-      host:SetSize(layout.width, layout.height)
-      host:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", origin.left,
-        origin.top - layout.height * hostScale())
-      overlay:SetAllPoints(host)
-      if Addon.RefreshCooldownManager then
-        Addon:RefreshCooldownManager()
-      end
-      if Addon.PaintEditReadout then
-        Addon:PaintEditReadout(host, spec.label)
-      end
-    end
-    local function beginSize()
-      if not Addon.editMode or moving or sizing then
+      local target = currentHost()
+      if not target then
         return
       end
       sizing = true
-      host._shadowUIDragging = true
+      target._shadowUIDragging = true
       if Addon.SelectEditOverlay then
         Addon:SelectEditOverlay(overlay)
       end
+      local top = target.GetTop and target:GetTop()
+      if not top then
+        local scale = hostScale(target)
+        top = (target.GetBottom and target:GetBottom() or 0)
+          + ((target.GetHeight and target:GetHeight() or 0) * scale)
+      end
+      origin = {
+        left = target.GetLeft and target:GetLeft() or 0,
+        top = top,
+      }
+      startTick()
       if spec.gridResize then
-        local top = host.GetTop and host:GetTop()
-        if not top then
-          local scale = hostScale()
-          top = (host.GetBottom and host:GetBottom() or 0)
-            + ((host.GetHeight and host:GetHeight() or 0) * scale)
-        end
-        origin = {
-          left = host.GetLeft and host:GetLeft() or 0,
-          top = top,
-        }
-        overlay:SetScript("OnUpdate", function()
-          sizeGridToCursor()
-          if IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
-            endSize()
-          end
-        end)
         sizeGridToCursor()
-        return
+      else
+        sizeHostToCursor()
       end
-      if host.SetResizable then
-        host:SetResizable(true)
-      end
-      if host.StartSizing then
-        host:StartSizing("BOTTOMRIGHT")
-      end
-      overlay:SetScript("OnUpdate", function()
-        if Addon.PaintEditReadout then
-          Addon:PaintEditReadout(host, spec.label)
-        end
-        if IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
-          endSize()
-        end
-      end)
     end
     endSize = function()
       if not sizing then
         return
       end
+      local target = currentHost()
       sizing = false
-      overlay:SetScript("OnUpdate", nil)
+      stopTick()
       if spec.gridResize then
         sizeGridToCursor()
-        origin = nil
-      elseif host.StopMovingOrSizing then
-        host:StopMovingOrSizing()
+      else
+        sizeHostToCursor()
       end
+      origin = nil
       if Addon.PersistHostPosition then
-        Addon:PersistHostPosition(host, spec.id, true)
+        Addon:PersistHostPosition(target, spec.id, true)
       end
       if Addon.HideEditReadout then
         Addon:HideEditReadout()
       end
-      host._shadowUIDragging = false
+      if target then
+        target._shadowUIDragging = false
+      end
     end
     grip:SetScript("OnMouseDown", function(_, button)
       if button == "LeftButton" then
@@ -437,8 +463,6 @@ local function createOverlay(host, spec)
       end
     end)
     grip:SetScript("OnMouseUp", endSize)
-    grip:SetScript("OnDragStart", beginSize)
-    grip:SetScript("OnDragStop", endSize)
   end
   overlay:Hide()
   paint(overlay)

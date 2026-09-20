@@ -85,7 +85,7 @@ function Addon:GetDB() return db end
 function Addon:GetCharDB() return char end
 function Addon:GetPlayerClass() return player.class end
 function Addon:GetVersion() return player.version end
-function Addon:GetActiveVariantName() return "Fury" end
+function Addon:GetActiveProfileName() return "Fury" end
 function Addon:Print(text) messages[#messages + 1] = text end
 function Addon:SlotFromBindingName(name)
   return tonumber((name or ""):match("ShadowUIActionButton(%d+)"))
@@ -126,8 +126,10 @@ local sourceCfg = {
 sourceCfg.layout.player = { point = "CENTER", x = -200, y = -179 }
 local targetCfg = { layout = warriorLayout(), keybinds = {} }
 local inheritedCfg = { layout = warriorLayout(), keybinds = {} }
-function Addon:ResolveEffective(_, _, through)
-  if through == "variant" then return inheritedCfg end
+local profileStore = { layout = {}, keybinds = {} }
+function Addon:GetProfile() return profileStore end
+function Addon:ResolveShipped() return inheritedCfg end
+function Addon:ResolveEffective()
   return sourceMode and sourceCfg or targetCfg
 end
 
@@ -190,8 +192,8 @@ assert(Addon:ApplyLoadoutPlan(sameClass) == true, "same-Class Loadout applies")
 assert(runtimeActions[1] and runtimeActions[1].type == "spell", "spell is placed on its fixed slot")
 assert(runtimeActions[2] and runtimeActions[2].type == "macro", "created macro is placed")
 assert(runtimeActions[13] and runtimeActions[13].type == "item", "the next fixed Bar applies")
-assert(char.layout.bar1 and char.layout.bar1.x == 1, "visual Layout difference writes to Character")
-assert(char.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q", "Keybind writes to Character")
+assert(profileStore.layout.bar1 and profileStore.layout.bar1.x == 1, "visual Layout difference writes to the Profile")
+assert(profileStore.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q", "Keybind writes to the Profile")
 assert(db.loadouts[Addon:BackupLoadoutKey()].backup == true, "apply saves a rolling target backup")
 
 local restoreOptions = Addon:DefaultLoadoutOptions()
@@ -202,7 +204,7 @@ assert(#restorePlan.keybindOps == 120, "backup restore includes disabled Bars")
 assert(Addon:RestoreLoadoutBackup() == true, "rolling backup restores")
 assert(runtimeActions[1] == nil and runtimeActions[2] == nil and runtimeActions[13] == nil,
   "backup restores prior empty Actions")
-assert(char.layout.bar1 and char.layout.bar1.x == 99, "backup restores prior target Layout")
+assert(profileStore.layout.bar1 and profileStore.layout.bar1.x == 99, "backup restores prior target Layout")
 assert(#targetMacros == 1, "restore keeps new Character macros that other slots can use")
 sameClass = Addon:BuildLoadoutPlan(sourceKey, Addon:DefaultLoadoutOptions())
 assert(Addon:ApplyLoadoutPlan(sameClass) == true, "source can apply again after restore")
@@ -218,6 +220,7 @@ player.class = "MAGE"
 targetCfg.layout = standardLayout()
 inheritedCfg.layout = standardLayout()
 char.layout, char.keybinds = {}, {}
+profileStore.layout, profileStore.keybinds = {}, {}
 options = Addon:DefaultLoadoutOptions()
 local unmapped = Addon:BuildLoadoutPlan(sourceKey, options)
 local warnedForPage = false

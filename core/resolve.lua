@@ -1,11 +1,10 @@
 --[[
-  Purpose: Merge shipped defaults with Account Base → Class → Variant then Character.
+  Purpose: Merge shipped Class defaults with the active Account Profile.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
-  Public: DeepCopy, SparseMerge, ShippedClass, ResolveEffective, GetActiveVariantName,
-          ResolveBarVisual, ResolveBarRowGaps, BarLayoutForApply, WriteLayerDelta, TalentPointsFromTabInfo,
+  Public: DeepCopy, SparseMerge, ShippedClass, EnsureProfiles, GetActiveProfileName,
+          GetProfile, ResolveShipped, ResolveEffective, ResolveBarVisual, ResolveBarRowGaps,
+          BarLayoutForApply, WriteProfileDelta, WriteLayerDelta, TalentPointsFromTabInfo,
           GetPrimaryTalentTree
-  Notes: ResolveEffective(classFile?, variantName?, through?) stops the merge after
-         through (base, class, variant, or character). Omit through for the full merge.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -39,37 +38,56 @@ function Addon:ShippedClass(classFile)
   return (shipped.classes or {})[classFile] or {}
 end
 
-local function matchTalentTree(variants, tree)
-  if type(variants) ~= "table" or not tree then
-    return nil
-  end
-  for name, variant in pairs(variants) do
-    if variant and variant.talentTree == tree then
-      return name
-    end
-  end
-  return nil
+local FALLBACK_PROFILE = "Default"
+
+local function emptyProfile()
+  return { layout = {}, keybinds = {}, actions = {} }
 end
 
-function Addon:GetActiveVariantName(classFile)
-  classFile = classFile or self:GetPlayerClass()
+local function profileFields(src)
+  if type(src) ~= "table" then
+    return { layout = {}, keybinds = {} }
+  end
+  return { layout = src.layout or {}, keybinds = src.keybinds or {} }
+end
+
+function Addon:EnsureProfiles()
+  local db = self:GetDB()
+  db.profiles = db.profiles or {}
+  if type(db.defaultProfile) ~= "string" or db.defaultProfile == "" then
+    db.defaultProfile = FALLBACK_PROFILE
+  end
+  if not next(db.profiles) then
+    db.profiles[db.defaultProfile] = emptyProfile()
+  elseif not db.profiles[db.defaultProfile] then
+    local name = next(db.profiles)
+    db.defaultProfile = name
+  end
+end
+
+function Addon:GetActiveProfileName()
+  self:EnsureProfiles()
+  local db = self:GetDB()
   local char = self:GetCharDB()
-  if char.variantManual and char.activeVariant then
-    return char.activeVariant
+  local selected = char.activeProfile
+  if type(selected) == "string" and db.profiles[selected] then
+    return selected
   end
-  local tree = self:GetPrimaryTalentTree()
-  if tree then
-    local classAcc = self:GetDB().classes[classFile]
-    local accountName = matchTalentTree(classAcc and classAcc.variants, tree)
-    if accountName then
-      return accountName
-    end
-    local shippedName = matchTalentTree(self:ShippedClass(classFile).variants, tree)
-    if shippedName then
-      return shippedName
-    end
+  return db.defaultProfile
+end
+
+function Addon:GetProfile(name)
+  self:EnsureProfiles()
+  name = name or self:GetActiveProfileName()
+  local db = self:GetDB()
+  local profile = db.profiles[name]
+  if not profile then
+    return nil
   end
-  return char.activeVariant
+  profile.layout = profile.layout or {}
+  profile.keybinds = profile.keybinds or {}
+  profile.actions = profile.actions or {}
+  return profile
 end
 
 -- Classic Era returns (name, texture, pointsSpent, ...) while modernized clients
@@ -95,51 +113,21 @@ function Addon:GetPrimaryTalentTree()
   return best
 end
 
-function Addon:ResolveEffective(classFile, variantName, through)
+function Addon:ResolveShipped(classFile)
   classFile = classFile or self:GetPlayerClass()
-  variantName = variantName or self:GetActiveVariantName(classFile)
-  if through ~= "base" and through ~= "class" and through ~= "variant" then
-    through = "character"
-  end
-
   local shipped = self.Defaults or { base = { layout = {}, keybinds = {} }, classes = {} }
-  local account = self:GetDB()
-  local char = self:GetCharDB()
-
-  local function layerFields(src)
-    if type(src) ~= "table" then
-      return { layout = {}, keybinds = {} }
-    end
-    return { layout = src.layout or {}, keybinds = src.keybinds or {} }
-  end
-
-  local includeClass = through ~= "base"
-  local includeVariant = through == "variant" or through == "character"
-  local includeCharacter = through == "character"
-
   local eff = { layout = {}, keybinds = {} }
   self:SparseMerge(eff, shipped.base or {})
   local shippedClass = (shipped.classes or {})[classFile] or {}
-  if includeClass then
-    self:SparseMerge(eff, layerFields(shippedClass))
-  end
-  local shippedVariant = includeVariant and variantName and shippedClass.variants and shippedClass.variants[variantName]
-  if shippedVariant then
-    self:SparseMerge(eff, layerFields(shippedVariant))
-  end
-  self:SparseMerge(eff, account.base or {})
-  local classAcc = account.classes[classFile]
-  if classAcc then
-    if includeClass then
-      self:SparseMerge(eff, layerFields(classAcc))
-    end
-    local variant = includeVariant and variantName and classAcc.variants and classAcc.variants[variantName]
-    if variant then
-      self:SparseMerge(eff, layerFields(variant))
-    end
-  end
-  if includeCharacter then
-    self:SparseMerge(eff, layerFields(char))
+  self:SparseMerge(eff, profileFields(shippedClass))
+  return eff
+end
+
+function Addon:ResolveEffective(classFile, profileName)
+  local eff = self:ResolveShipped(classFile)
+  local profile = self:GetProfile(profileName)
+  if profile then
+    self:SparseMerge(eff, profileFields(profile))
   end
   return eff
 end
@@ -231,35 +219,13 @@ function Addon:BarLayoutForApply(layout, barId, barCfg)
   return out
 end
 
-function Addon:WriteLayerDelta(layer, section, key, patch)
-  local classFile = self:GetPlayerClass()
-  local db = self:GetDB()
-  local char = self:GetCharDB()
-  layer = layer or char.editLayer or "variant"
-
-  local store
-  if layer == "character" then
-    char[section] = char[section] or {}
-    store = char[section]
-  elseif layer == "base" then
-    db.base[section] = db.base[section] or {}
-    store = db.base[section]
-  else
-    db.classes[classFile] = db.classes[classFile] or { layout = {}, keybinds = {}, variants = {} }
-    local classAcc = db.classes[classFile]
-    if layer == "class" then
-      classAcc[section] = classAcc[section] or {}
-      store = classAcc[section]
-    else
-      local name = self:GetActiveVariantName(classFile) or "Default"
-      classAcc.variants = classAcc.variants or {}
-      classAcc.variants[name] = classAcc.variants[name] or { layout = {}, keybinds = {} }
-      local variant = classAcc.variants[name]
-      variant[section] = variant[section] or {}
-      store = variant[section]
-    end
+function Addon:WriteProfileDelta(section, key, patch)
+  local profile = self:GetProfile()
+  if not profile then
+    return
   end
-
+  profile[section] = profile[section] or {}
+  local store = profile[section]
   -- Layout patches are tables. Keybinds are strings, or false to unbind.
   if type(patch) ~= "table" then
     store[key] = patch
@@ -269,4 +235,8 @@ function Addon:WriteLayerDelta(layer, section, key, patch)
     store[key] = {}
   end
   self:SparseMerge(store[key], patch)
+end
+
+function Addon:WriteLayerDelta(_, section, key, patch)
+  self:WriteProfileDelta(section, key, patch)
 end

@@ -7,7 +7,7 @@
            A player cast or channel on that Action Slot keeps the overlay until it
            completes. The icon size does not change. Macro names stay hidden.
            Keybind labels are gold thick-outlined uppercase text. Item counts are
-           pale lime outlined text 5px below the Action Slot.
+           pale lime outlined text inset inside the Action Slot.
   Deps: ShadowUI addon table, LibActionButton-1.0
   Public: ShadowUI:CreateBarButton(parent, id, actionSlot), ShadowUI:SkinBarButton(),
           ShadowUI:ShouldShowEmptyActionSlots(), ShadowUI:PaintEmptySlotVisibility(),
@@ -49,7 +49,8 @@ local SLOT_LABEL_LIME = { 0.7, 0.88, 0.55, 0.75 }
 local HOTKEY_SIZE = 16
 local HOTKEY_FLAGS = "THICKOUTLINE"
 local COUNT_SIZE = 15
-local COUNT_OFFSET_Y = -5
+local COUNT_OFFSET_X = -3
+local COUNT_OFFSET_Y = 3
 local MOUSE_BUTTONS = {
   "LeftButton", "RightButton", "MiddleButton", "Button4", "Button5",
 }
@@ -441,7 +442,7 @@ local CONFIG = {
       position = {
         anchor = "BOTTOMRIGHT",
         relAnchor = "BOTTOMRIGHT",
-        offsetX = -2,
+        offsetX = COUNT_OFFSET_X,
         offsetY = COUNT_OFFSET_Y,
       },
       justifyH = "RIGHT",
@@ -538,7 +539,7 @@ local function paintCountLabel(fs)
     fs:ClearAllPoints()
   end
   if fs.SetPoint then
-    fs:SetPoint("BOTTOMRIGHT", -2, COUNT_OFFSET_Y)
+    fs:SetPoint("BOTTOMRIGHT", COUNT_OFFSET_X, COUNT_OFFSET_Y)
   end
 end
 

@@ -231,7 +231,7 @@ function Addon:BindingSlotFromButton(button)
   return nil
 end
 
-function Addon:FreeKeyOnLayer(layer, key, keepName)
+function Addon:FreeKeyOnLayer(_, key, keepName)
   if not key or key == "" then
     return
   end
@@ -241,7 +241,7 @@ function Addon:FreeKeyOnLayer(layer, key, keepName)
   )
   for name, bound in pairs(merged) do
     if bound == key and name ~= keepName then
-      self:WriteLayerDelta(layer, "keybinds", name, false)
+      self:WriteProfileDelta("keybinds", name, false)
     end
   end
 end
@@ -254,9 +254,8 @@ function Addon:BindButtonKey(button, key)
   if not name or type(key) ~= "string" or key == "" or key == "ESCAPE" then
     return false
   end
-  local layer = self:GetCharDB().editLayer
-  self:FreeKeyOnLayer(layer, key, name)
-  self:WriteLayerDelta(layer, "keybinds", name, key)
+  self:FreeKeyOnLayer(nil, key, name)
+  self:WriteProfileDelta("keybinds", name, key)
   self:ApplyKeybinds(self:ResolveEffective())
   return true
 end
@@ -269,7 +268,7 @@ function Addon:ClearButtonBinds(button)
   if not name then
     return false
   end
-  self:WriteLayerDelta(self:GetCharDB().editLayer, "keybinds", name, false)
+  self:WriteProfileDelta("keybinds", name, false)
   self:ApplyKeybinds(self:ResolveEffective())
   return true
 end

@@ -1,11 +1,11 @@
 # ShadowUI
 
-Opinionated Classic Era and TBC UI. It replaces default action bars, applies one chrome treatment, and shows fixed combat meters. Layout, Keybinds, and the Action Deck inherit Base → Class → Variant → Character. Version selects Era or TBC.
+Opinionated Classic Era and TBC UI. It replaces default action bars, applies one chrome treatment, and shows fixed combat meters. Layout, Keybinds, and the Action Deck live on a named Profile. Version selects Era or TBC.
 
 ## Inheritance
 
 **Version**:
-The client flavor: Era or TBC. Catalog, Spellbook, live WTF, and the in-game TOC follow Version. It sits outside the Layer stack.
+The client flavor: Era or TBC. Catalog, Spellbook, live WTF, and the in-game TOC follow Version. It sits outside Profiles.
 _Avoid_: expansion, flavor, interface, mode, game version, patch, BCC
 
 **Era**:
@@ -15,45 +15,34 @@ Classic Era (Vanilla 1.15). Interface 11509. Client folder `_classic_era_`.
 The Burning Crusade Classic Anniversary. Interface 20506. Client folder `_anniversary_`.
 _Avoid_: BCC, Burning Crusade Classic as the short UI label
 
-**Layer**:
-One of Base, Class, Variant, or Character. Later layers win field by field. Edit mode writes to exactly one selected layer.
-_Avoid_: profile, AceDB profile, Default as a Layer name
+**Profile**:
+A named Account store of Layout, Keybinds, and the Action Deck. The player gives it a custom name and saves it. Edit Mode writes to the active Profile.
+_Avoid_: AceDB profile, Layer, Variant, Bartender profile
 
-**Base**:
-The shared layer for every class.
+**Default Profile**:
+The Profile a Character uses when it has no selection. The player can set which Profile is Default.
 
 **Class**:
-A World of Warcraft class (`WARRIOR`, `MAGE`, and so on). The Class layer holds sparse deltas for that class only.
-_Avoid_: Lua class, character, spec
-
-**Variant**:
-A named overlay on a Class (for example Arms). It may bind to a Talent Tree. It is not owned by one Character.
-_Avoid_: profile, spec, spec profile, dual spec
+A World of Warcraft class (`WARRIOR`, `MAGE`, and so on).
+_Avoid_: Lua class, spec, Layer named Class
 
 **Account**:
-The Battle.net account. Base, Class, and Variant Layout, Keybinds, and Action Deck overlays live here so same-class characters share them.
+The Battle.net account. Profiles and Loadout Snapshots live here so every Character can use them.
 
 **Character**:
-One toon. It stores the active Variant, whether that choice is a Manual Override, which Layer edit mode writes, Action Slot hard lock, and sparse Character Layer deltas for Layout, Keybinds, and Action Deck.
+One toon. It stores the selected Profile, Action Slot hard lock, and chrome prefs. It does not store Layout overlays.
 _Avoid_: Bartender character profile, AceDB character profile as the only store
 
-**Manual Override**:
-A Character lock on the active Variant. Talent Tree auto-bind does not change the Variant until the override is cleared.
-
-**Talent Tree**:
-One of the three class talent tabs. A Variant may bind to the tab with the most points spent.
-_Avoid_: spec, specialization, dual spec
-
 **Effective Config**:
-The merged Layout, Keybinds, and Action Deck after all Layers apply.
+The merged Layout, Keybinds, and Action Deck after shipped Class defaults and the active Profile apply.
 
 ## Layout and bars
 
 **Layout**:
-Positions, scale, grid, and enabled state of Bars, plus Player Frame and Target Frame positions, Cast Bar place and size, Range Display place, and Stance Bar place. Chrome, combat meters other than the Cast Bar and Range Display, Chat, and Details Windows are not Layout.
+Positions, scale, grid, and enabled state of Bars, plus Player Frame and Target Frame screen parks and Widgets, Cast Bar place and size, Range Display place, and Stance Bar place. Chrome, combat meters other than the Cast Bar and Range Display, Chat, and Details Windows are not Layout.
 
 **Keybind**:
-A keyboard or mouse key mapped to a ShadowUI action button. It uses the same Layer stack as Layout and the Action Deck. The action fires on key down and on click down. Base ships the default physical keys (the current Warrior Action Bar map). Class, Variant, and Character layers may overlay those keys. Warrior Variants change the Action Deck but keep the Base physical keys.
+A keyboard or mouse key mapped to a ShadowUI action button. It lives on the same Profile as Layout and the Action Deck. The action fires on key down and on click down. Shipped Class defaults include the physical keys (the current Warrior Action Bar map). The active Profile may overlay those keys.
 _Avoid_: binding set, SavedBindings (ShadowUI does not write the default bind file)
 
 **Bar**:
@@ -64,14 +53,14 @@ _Avoid_: calling the Cast Bar, GCD Sweep, Mana Ticker, Swing Timer, Range Displa
 A numbered slot on the default 1–120 action grid. A standard Bar normally maps each button to one fixed slot. The Warrior main Bar selects Battle slots 73–84, Defensive slots 85–96, or Berserker slots 97–108. The Druid main Bar selects Caster 1–12, Cat 73–84, Prowl 85–96, or Bear 97–108. The Rogue main Bar selects Open 1–12 or Stealth 73–84.
 
 **Action Deck**:
-Macros and spells on Action Slots. It uses the same Layer stack as Layout and Keybinds. A macro must match its catalog name and body, not only its account-wide name. `/shadowui deck` validates the resolved loadout, deletes every General and character macro, recreates only the unique loadout macros on the General tab, then clears and replaces the Action Slots that the deck owns plus every slot in the selected loadout. Loadout Class still includes the active Variant, matching the Macro Cursor Action Bars. A missing Variant uses the first shipped Variant so apply cannot write the class skeleton (Bloodrage on 5, extra Taunts). Later-layer `false` tombstones a slot. Apply honors those tombstones so empty slots stay empty after reload. It does not change Keybinds or Layout. `/shadowui` Loadout chooses Class, Variant, or Character. Classic Era picks up abilities by spell name. Warrior ships an Action Deck. Other classes may overlay one. Macro Cursor and ShadowUI share the live overlay.
+Macros and spells on Action Slots. It lives on the same Profile as Layout and Keybinds. A macro must match its catalog name and body, not only its account-wide name. `/shadowui deck` validates the resolved loadout, deletes every General and character macro, recreates only the unique loadout macros on the General tab, then clears and replaces the Action Slots that the deck owns plus every slot in the selected loadout. Profile `false` tombstones a slot. Apply honors those tombstones so empty slots stay empty after reload. It does not change Keybinds or Layout. Classic Era picks up abilities by spell name. Warrior ships an Action Deck. Other classes may overlay one. Macro Cursor and ShadowUI share the live overlay.
 _Avoid_: Bartender profile import, injecting macros on login, Decks as a Keybind Layer
 
 **Action Slot Lock**:
 Buttons stay locked. A click uses the action. Shift-drag (the default pickup modifier) moves a spell or item to another Action Slot and does not use the action. Shift+Alt (Option on Mac) drag inserts the action and Keybind; the drop row shifts right; overflow from the end of that row stays on the cursor. Hard lock in `/shadowui` blocks those moves too.
 
 **Shift and Prune**:
-An edit that packs Keybinds left and drops gaps with no Keybind. Actions on those Keybinds move with them. The pack wraps to the next row of a Bar and continues onto the next Bar. Writes go to the selected Layer. `/shadowui prune` and the options button run it. Out of combat only.
+An edit that packs Keybinds left and drops gaps with no Keybind. Actions on those Keybinds move with them. The pack wraps to the next row of a Bar and continues onto the next Bar. Writes go to the active Profile. `/shadowui prune` and the options button run it. Out of combat only.
 
 **Macro Library**:
 The shared catalog of macros. Applying an Action Deck loads only its referenced catalog records into the General tab and leaves the character tab empty. Delete in Macro Cursor removes the catalog record and its live cache copy. A macro removed in the game is unloaded only; the catalog record stays.
@@ -83,6 +72,40 @@ A Bar gated by class or possess in play: pet or possess. Layout Edit Mode previe
 **Stance Bar**:
 The Blizzard shapeshift bar (`StanceBarFrame` / `ShapeshiftBarFrame`). It shows Warrior stances, Paladin auras, Druid forms, Rogue Stealth, Priest Shadowform, and Shaman Ghost Wolf. ShadowUI does not replace it. HideBlizzardBars reparents it to UIParent and ParkFrame parks it from Layout so parked MainMenuBar cannot drag it off-screen. Layout Edit Mode can drag it. Shown buttons use the same icon chrome and Outer Edge as Action Slots. Unused slots stay empty. It is not a Bar and not a Special Bar.
 _Avoid_: aura bar, form bar as separate ShadowUI Bars
+
+## Unit Frames
+
+**Unit Token**:
+The Blizzard unit id string a Unit Frame binds to (`player`, `target`).
+_Avoid_: unit id as a Lua number, GUID, name
+
+**Unit Frame**:
+A ShadowUI HUD host bound to one Unit Token. It is a tree of Widgets. Player Frame and Target Frame are the two shipped Unit Frames.
+_Avoid_: SUF, ElvUI unit frame, nameplate, party frame, raid frame
+
+**Widget**:
+A named, placeable piece of a Unit Frame: Frame Art, portrait, health, power, name, Name Background, Status Text, level, auras, and the target spell bar. Place, size, stack, and enabled live in Layout on that Unit Frame key. The active Profile sparse-merges one Widget at a time.
+_Avoid_: element, region, module, component, part, Bar
+
+**Baseline**:
+The shipped Widget arrangement that matches the Classic targeting frame: host 232×100, portrait 64×64, health and power 119×12. Player has the portrait on the left. Target is that layout mirrored, plus Name Background, auras, and the spell bar.
+_Avoid_: theme, skin, profile, ElvUI default
+
+**Frame Art**:
+The targeting-frame border texture Widget on a Unit Frame. Baseline shows the full 232×100 crop. Unit Frame Designer can move and resize it; that crops the atlas so the chrome shape melds to the box. Host park size does not follow Frame Art.
+_Avoid_: chrome texture, UI-TargetingFrame as the Widget name, stretching Frame Art
+
+**Player Frame**:
+The Unit Frame bound to the player Unit Token. Layout holds its screen park and Widgets. Layout Edit Mode drags the host. Unit Frame Designer places Widgets. Chrome paints it. Shield Row and Mana Ticker lock to its name and power.
+_Avoid_: PlayerFrame as a second live host
+
+**Target Frame**:
+The Unit Frame bound to the target Unit Token. Layout holds its screen park and Widgets. Layout Edit Mode drags the host. Unit Frame Designer places Widgets. Chrome paints Meter Fill, Portrait Ring, Threat Bar, Aggro Glow, Aura Duration, Combo Points, and Crowd Control Portrait. Target of Target stays the Blizzard nested frame at the Blizzard default offset until it is a Unit Frame.
+_Avoid_: TargetFrame as a second live host
+
+**Unit Frame Designer**:
+The visual builder on the `/shadowui` Unit Frames page. A tree, canvas preview, and inspector place Widgets. Click a Widget on the canvas to select it, then drag that Widget. A resize grip appears only on the selected Widget. Resize Frame Art to crop the chrome. Front and Back set Widget stack (paint order). The canvas is a preview, not the live HUD. Writes keep `relativeTo` and go only to the active Profile. Layout Edit Mode still parks the host on the screen.
+_Avoid_: UF editor, frame builder, ElvUI mover, SUF config, Blizzard Edit Mode, HUD chips on the live Player Frame, Layer as Widget z-order
 
 ## Combat meters
 
@@ -108,16 +131,16 @@ _Avoid_: absorb bar, shield bar, WeakAura
 ## Chrome
 
 **Chrome**:
-The visual treatment of the UI: Darken of Blizzard art, Meter Fill, action-icon chrome, Stance Bar buttons, buffs, Chat, minimap, World Layer, Time, Stopwatch, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, and the Target Frame. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label: no Darken fill and no Outer Edge. Keybind Edit Mode still shows empty Action Slots. A Shift-drag pickup (ACTIONBAR_SHOWGRID) shows every standard Bar, including a Bar that is off, and paints every empty Action Slot with Darken and Outer Edge so it is a drop target. The Keybind label on those empty slots is shown too. Special Bars that are off stay hidden. After the pickup ends, empty Action Slots and disabled Bars hide again. Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place. ShadowUI skins their icons and does not park or snap them. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit, and show remaining time. Target of Target auras sit 2px to the right of Target of Target in a horizontal row. The Target Frame keeps Blizzard Status Text. A rare-elite target uses the Rare-Elite dragon. The Threat Bar is a bubble tab on the 45-degree edge of the Target Frame portrait. A Portrait Ring outlines that portrait in the target's class colour. Aggro Glow sits around the Target Frame: orange at high threat, blood red while the target attacks the player.
+The visual treatment of the UI: Darken of Blizzard art, Meter Fill, action-icon chrome, Stance Bar buttons, buffs, Chat, minimap, World Layer, Time, Stopwatch, Minimap Icons, Micro Cluster, Tracking, Details Windows, the Player Frame, the Target Frame, and the `/shadowui` options pane. Icon chrome is a 0.05 fill, a 2px inset, a 0.07 icon crop, and an Outer Edge. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label: no Darken fill and no Outer Edge. Keybind Edit Mode still shows empty Action Slots. A Shift-drag pickup (ACTIONBAR_SHOWGRID) shows every standard Bar, including a Bar that is off, and paints every empty Action Slot with Darken and Outer Edge so it is a drop target. The Keybind label on those empty slots is shown too. Special Bars that are off stay hidden. After the pickup ends, empty Action Slots and disabled Bars hide again. Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place. ShadowUI skins their icons and does not park or snap them. Spell and item buttons darken slightly on hover, darken more when pressed, and keep the GCD clock swipe. Cooldown Count shows remaining seconds on those buttons. ItemRack worn-item and menu buttons use the same icon chrome. Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit, and show remaining time. Target of Target auras sit 2px to the right of Target of Target in a horizontal row. The Target Frame keeps Blizzard Status Text. Target Frame Art uses a 0.14 Darken so original chrome and elite, rare, rare-elite, and worldboss dragons still show. A rare-elite target uses the Rare-Elite dragon. The Threat Bar is a bubble tab on the 45-degree edge of the Target Frame portrait. A Portrait Ring outlines that portrait in the target's class colour. Aggro Glow sits around the Target Frame: orange at high threat, blood red while the target attacks the player.
 _Avoid_: theme, skin pack, user-selectable skin
 
 **Darken**:
-A 0.05 chrome lock on Blizzard unit-frame and window art, plus a 0.05 fill around action icons that have a spell or item, buffs, and debuffs. The square minimap buffer uses the same 0.05 colour at 0.6 alpha. Portraits stay native. Debuff type colours stay native.
+A 0.05 chrome lock on Blizzard unit-frame and window art, plus a 0.05 fill around action icons that have a spell or item, buffs, and debuffs. The square minimap buffer uses the same 0.05 colour at 0.6 alpha. The `/shadowui` options pane uses that fill instead of DialogBox parchment. Target Frame Art uses 0.14 so original chrome and dragon art still show. Portraits stay native. Debuff type colours stay native.
 _Avoid_: Outer Edge, overlay filter
 
 **Meter Fill**:
-A horizontal lighting overlay of the live bar colour on Blizzard health and power bars (mana, rage, energy, and the rest) and on Name Background. The overlay sits on the native fill so StatusBar vertex colour cannot flatten it. Unit frames and nameplates keep Blizzard layout. Cast Bar, GCD Sweep, Swing Timer, and Threat Bar keep their own palettes.
-_Avoid_: class-coloured health, replacing unit frames or nameplates
+A horizontal lighting overlay of the live bar colour on Unit Frame health and power bars (mana, rage, energy, and the rest) and on Name Background. The overlay sits on the native fill so StatusBar vertex colour cannot flatten it. Nameplates keep Blizzard layout. Cast Bar, GCD Sweep, Swing Timer, and Threat Bar keep their own palettes.
+_Avoid_: class-coloured health, replacing nameplates
 
 **Name Background**:
 The strip behind the Target Frame and Focus Frame name (`TargetFrameNameBackground`). A player unit uses that unit's class colour (same source as Portrait Ring). A non-player unit keeps reaction colour: hostile red, friendly blue, neutral yellow. Meter Fill paints it. It is not a nameplate.
@@ -133,7 +156,7 @@ _Avoid_: compass, north tag, zone button art
 
 **World Layer**:
 The Classic realm shard shown by Nova World Buffs. ShadowUI parks NWB's `MinimapLayerFrame` on the bottom of the square minimap holder so the map mask does not clip it. It does not compute shards itself.
-_Avoid_: Layer (that is Base / Class / Variant)
+_Avoid_: Layer (that is a Profile)
 
 **Time**:
 The Blizzard clock on the square minimap (`TimeManagerClockButton`). ShadowUI restyles it the SexyMap way: hide the clock border, size the chip to the ticker, and park it under the map. It shows realm time. Hover shows realm time and local time. A click opens the Stopwatch. GameTimeFrame (day/night) stays hidden.
@@ -147,13 +170,13 @@ _Avoid_: ShadowUIStopwatch
 The mouse wheel zooms the square minimap. After 5 seconds the map zooms out. Zoom buttons stay hidden.
 
 **Minimap Icon**:
-A button on the square minimap edge. The player can drag it. Buttons sit on SexyMap's square path, 10px outside the map so the mask does not clip them. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park here, including dungeon finder, ItemRack, and LibDBIcon. The ItemRack minimap button does not get a second Outer Edge.
+A button on the square minimap edge. The player can drag it. Buttons sit on SexyMap's square path, 10px outside the map so the mask does not clip them. Buttons that parent to `Minimap`, `MinimapCluster`, or `MinimapBackdrop` park here, including dungeon finder, ItemRack, and LibDBIcon. The ItemRack minimap button does not get a second Outer Edge. ItemRack's set menu stays on UIParent so the square map does not clip it.
 
 **Micro Cluster**:
 The micro-menu buttons plus the backpack in one row, flush to the bottom-right of the screen. Buttons keep native Blizzard size and art. Adjacent buttons have no gap. The row has no gap above the bottom of the screen. Classic Era hides Dungeon Journal and Collections when those windows do not exist. `/shadowui` can turn this off and keep the default Blizzard menu.
 
 **Tracking**:
-The Blizzard XP and reputation meters, parked at the top of the screen. Not a Bar.
+The Blizzard XP and reputation meters, parked at the top of the screen. Character can hide the Experience bar. Reputation stays. Not a Bar.
 
 **Chat**:
 The General chat window. ShadowUI parks its place and fills it black. Size stays with Blizzard Chat and Blizzard Edit Mode. ShadowUI does not set or snap Chat size. It is not a Bar and is not in Layout.
@@ -161,14 +184,8 @@ The General chat window. ShadowUI parks its place and fills it black. Size stays
 **Details Window**:
 A Details! damage chart or threat chart. ShadowUI parks those two charts when Details! is loaded. They are not Bars and are not in Layout.
 
-**Player Frame**:
-The Blizzard player unit frame. ShadowUI parks it and applies Darken and Meter Fill. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. On 1.15.9 it uses SetPointBase because Edit Mode replaces SetPoint. ShadowUI does not replace it.
-
-**Target Frame**:
-The Blizzard target unit frame. ShadowUI parks it and applies Darken and Meter Fill. Layout Edit Mode can drag it. ParkFrame snaps Blizzard Edit Mode back to the Layout place. On 1.15.9 it uses SetPointBase because Edit Mode replaces SetPoint. ShadowUI does not replace it. Status Text on health and mana stays native Blizzard. A rare-elite target uses the Blizzard Rare-Elite dragon. Target of Target stays on the Blizzard default (`BOTTOMRIGHT`, −35, −10). The Blizzard target spell bar sits 2px above Name Background at mana width. Spell name sits on the left. Remaining / duration sits on the right. The Threat Bar is a bubble tab on the 45-degree edge of the circular portrait. A Portrait Ring outlines that portrait in the target's class colour. A non-player portrait stays full original. Aggro Glow sits around the frame: orange at high threat, blood red while the target attacks the player. Target auras sit 2px to the right of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit, and show remaining time from UnitAura. Target of Target auras sit 2px to the right of Target of Target in a horizontal row. The Blizzard bar well (`TargetFrameBackground`) stays hidden so it cannot cover the top half of an empty health slot. Name Background uses Meter Fill. A player target uses class colour.
-
 **Status Text**:
-Health and mana numbers on a unit frame. Format comes from Blizzard Status Text (numeric, percent, both, or none). ShadowUI does not paint a caption on the Target Frame. Native LeftText, RightText, and TextString stay.
+Health and mana numbers on a Unit Frame Widget. Format comes from Blizzard Status Text (numeric, percent, both, or none). ShadowUI does not paint a caption on the Target Frame. Native LeftText, RightText, and TextString stay.
 
 **Threat Bar**:
 A round bubble tab on the 45-degree (top-right) edge of the Target Frame circular portrait. It sits over that portrait rim. Fill is one circle with a vertical lighting gradient of the player threat percent from UnitDetailedThreatSituation (scaled percent, or raw if scaled is missing). Fill sits at 50% opacity so the portrait shows through. The Darken stroke stays opaque. Percent can exceed 100. Below 70% the bubble is dark glass. 70–88% is yellow to orange. 88–99% is orange to deep orange. 100% and above is red to deep red. A thick circular Darken stroke matches Target Frame chrome. Nested discs, offset drops, and Outer Edge stay hidden. Threat Number stays centred, one outlined line at size 9. It shows in solo, party, and raid. 0% stays hidden. Native NumericalThreat stays hidden. Details! still parks the threat chart.
@@ -194,8 +211,16 @@ Remaining time on a Target Frame or Focus Frame buff or debuff. ShadowUI paints 
 _Avoid_: LibClassicDurations
 
 **Cooldown Count**:
-Remaining cooldown seconds on a ShadowUI action button. Counts hide for cooldowns shorter than 2s so the GCD swipe has no number. Bags and other Blizzard cooldowns stay default.
+Remaining cooldown seconds on a ShadowUI action button. Counts hide for cooldowns shorter than 2s so the GCD swipe has no number. The Action Slot icon is grayed out while that 2s+ cooldown runs. Bags and other Blizzard cooldowns stay default.
 _Avoid_: OmniCC as a second addon name in-game
+
+**Combo Points**:
+Five pips above the Target Frame portrait. Empty pips are a hollow ring. Filled pips are a red dartboard. Native ComboFrame stays hidden.
+_Avoid_: ComboFrame, combo bar, Rogue resource bar
+
+**Crowd Control Portrait**:
+A portrait overlay that shows the Crowd Control spell icon and remaining time while that aura is on the player or target. Stun wins over other kinds.
+_Avoid_: portrait swap, CC icon, WeakAura
 
 **Bags**:
 Parked combined inventory and bank (`skin/bags.lua`, `skin/rainbow.lua`). The files stay in the tree. The TOC does not load them. Blizzard bag and bank windows stay. Darken still tints those Blizzard windows.
@@ -208,12 +233,12 @@ _Avoid_: bag break, replacing quality glow
 ## Edit
 
 **Layout Edit Mode**:
-The session where the player drags Bars, the Player Frame, the Target Frame, the Cast Bar, the Range Display, and the Stance Bar on a snap grid from screen bottom-left. Hold Shift while dragging to skip the snap grid. Persist writes the nearest UIParent point (`BOTTOM`, `BOTTOMRIGHT`, `CENTER`, and the rest) so the host keeps that screen edge when the resolution changes. Magenta guides mark true screen centre. A host snaps to that centre when it is within one 32.4 cell. Player Frame, Target Frame, and Range Display snap and paint the HUD overlay on the visible chrome, not the empty hit-box pad. Range numbers stay geometrically centred in the host so the midline is exact. While a host is dragged or resized, a HUD chip shows the Layout point, x/y, and frame size. Every Bar has a resize grip. Resize changes columns and rows so the slot count still fills the grid. Scale does not change. Action Bars snap to 12, 6, 4, 3, 2, or 1 columns. Other Bars snap to grids that fill their slot count. The Cast Bar also resizes. A HUD overlay paints each host in blue. The Cast overlay matches the Cast Bar. Layout Edit Mode previews the Cast Bar, the GCD Sweep, all Swing Timer lanes, and every Special Bar for every class. Magenta guides mark screen centre. Writes go only to the selected Layer. GCD Sweep, Mana Ticker, Swing Timer, Shield Row, Micro Cluster, Tracking, Chat, and Details Windows do not move on their own.
+The session where the player drags Bars, the Player Frame, the Target Frame, the Cast Bar, the Range Display, and the Stance Bar on a snap grid from screen bottom-left. Hold Shift while dragging to skip the snap grid. Persist writes the nearest UIParent point (`BOTTOM`, `BOTTOMRIGHT`, `CENTER`, and the rest) so the host keeps that screen edge when the resolution changes. Magenta guides mark the snap-grid line nearest true screen centre. A host snaps to that midline when it is within one 16.2 cell. Player Frame, Target Frame, and Range Display snap and paint the HUD overlay on the visible chrome, not the empty hit-box pad. Range numbers stay geometrically centred in the host so the midline is exact. While a host is selected, dragged, or resized, a HUD chip follows the pointer and shows the Layout point, x/y, and frame size. The chip sits above the Edit Mode HUD. Every Bar has a resize grip. Resize changes columns and rows so the slot count still fills the grid. Scale does not change. Action Bars snap to 12, 6, 4, 3, 2, or 1 columns. Other Bars snap to grids that fill their slot count. The Cast Bar also resizes. A HUD overlay paints each host in blue. The Cast overlay matches the Cast Bar. Layout Edit Mode previews the Cast Bar, the GCD Sweep, all Swing Timer lanes, and every Special Bar for every class. Magenta guides mark screen centre. Writes go only to the active Profile. GCD Sweep, Mana Ticker, Swing Timer, Shield Row, Micro Cluster, Tracking, Chat, and Details Windows do not move on their own.
 _Avoid_: Blizzard Edit Mode as the way to place ShadowUI hosts, moving other Chrome
 
 **Keybind Edit Mode**:
-The session where the player hovers a button and presses a key. Writes go only to the selected Layer. It does not write SavedBindings. Layout Edit Mode and Keybind Edit Mode cannot run at the same time.
+The session where the player hovers a button and presses a key. Writes go only to the active Profile. It does not write SavedBindings. Layout Edit Mode and Keybind Edit Mode cannot run at the same time.
 _Avoid_: LibKeyBound SaveBindings, /kb as the primary command, binding set
 
 **Edit Mode**:
-Either Layout Edit Mode or Keybind Edit Mode. `/shadowui` and `/sui` open options. `/shadowui edit` toggles Layout Edit Mode. `/shadowui binds` toggles Keybind Edit Mode. `/shadowui deck` places the Action Deck. `/shadowui prune` packs Keybinds left. `/sui` takes the same subcommands.
+Layout Edit Mode or Keybind Edit Mode. `/shadowui` and `/sui` open options, including the Unit Frame Designer on the Unit Frames page. `/shadowui edit` toggles Layout Edit Mode. `/shadowui binds` toggles Keybind Edit Mode. `/shadowui units` or `/shadowui frames` opens Unit Frame Designer. `/shadowui deck` places the Action Deck. `/shadowui prune` packs Keybinds left. `/sui` takes the same subcommands.
