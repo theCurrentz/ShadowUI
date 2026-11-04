@@ -1,0 +1,67 @@
+## Interface: 16001
+## Title: ShadowUI
+## Notes: Opinionated WoW Forever bars and chrome. Named Profiles for Layout, Keybinds, and Action Deck.
+## Author: Parker Westfall
+## Version: 0.1.0
+## SavedVariables: ShadowUIDB
+## SavedVariablesPerCharacter: ShadowUICharDB
+
+libs\embeds.xml
+
+core\init.lua
+core\db.lua
+core\resolve.lua
+core\easing.lua
+core\keybinds.lua
+
+defaults\base.lua
+defaults\catalog.lua
+defaults\classes\WARRIOR.lua
+defaults\classes\PALADIN.lua
+defaults\classes\HUNTER.lua
+defaults\classes\ROGUE.lua
+defaults\classes\PRIEST.lua
+defaults\classes\SHAMAN.lua
+defaults\classes\MAGE.lua
+defaults\classes\WARLOCK.lua
+defaults\classes\DRUID.lua
+
+bars\button.lua
+bars\grid.lua
+bars\bar.lua
+bars\slotshift.lua
+bars\overlay.lua
+bars\pet.lua
+bars\special.lua
+bars\manager.lua
+
+skin\shape.lua
+skin\chrome.lua
+skin\fade.lua
+skin\darken.lua
+skin\frames.lua
+skin\windows.lua
+skin\auras.lua
+skin\chat.lua
+skin\micro.lua
+skin\tracking.lua
+skin\minimap.lua
+skin\time.lua
+skin\details.lua
+skin\itemrack.lua
+# Bags parked. Uncomment rainbow.lua then bags.lua to revive.
+#skin\rainbow.lua
+#skin\bags.lua
+skin\stance.lua
+skin\extra.lua
+skin\blizzardbars.lua
+
+edit\mode.lua
+edit\frames.lua
+edit\keybinds.lua
+edit\layer.lua
+
+options\nav.lua
+options\config.lua
+options\scroll.lua
+options\chrome.lua
