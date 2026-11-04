@@ -6,7 +6,8 @@
           NormalizeBindingKey, BindButtonKey, ClearButtonBinds,
           CollectClientActionBinds, OverrideClickTarget, ApplyKeybinds,
           FlushPendingKeybinds, ShortHotkey, FormatTooltipKeybind,
-          AppendActionTooltipKeybind
+          AppendActionTooltipKeybind, IsActionSlotPickup,
+          ShouldShowActionSlotKeybind
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -317,6 +318,40 @@ local function ownerFrame(addon)
   return addon.keybindOwner
 end
 
+-- Cursor kinds that place onto an Action Slot. Merchant and money do not.
+local ACTION_CURSOR = {
+  spell = true,
+  item = true,
+  macro = true,
+  petaction = true,
+  flyout = true,
+  mount = true,
+  battlepet = true,
+  companion = true,
+  equipmentset = true,
+}
+
+function Addon:IsActionSlotPickup()
+  if (self.actionBarGridCount or 0) > 0 then
+    return true
+  end
+  if not GetCursorInfo then
+    return false
+  end
+  local kind = GetCursorInfo()
+  return type(kind) == "string" and ACTION_CURSOR[kind] == true
+end
+
+function Addon:ShouldShowActionSlotKeybind(filled)
+  if self:IsActionSlotPickup() then
+    return true
+  end
+  if self.keybindMode == true then
+    return false
+  end
+  return filled == true
+end
+
 function Addon:PaintButtonHotkeys(binds)
   local bySlot = self:HotkeysBySlot(binds)
   local byName = binds or {}
@@ -339,9 +374,7 @@ function Addon:PaintButtonHotkeys(binds)
         hotkey:SetText("")
       end
       local filled = not button.HasAction or button:HasAction()
-      local showEmpty = self.ShouldShowEmptyActionSlots and self:ShouldShowEmptyActionSlots()
-        or self.keybindMode
-      if button.shadowUIHotkey and (filled or showEmpty) then
+      if button.shadowUIHotkey and self:ShouldShowActionSlotKeybind(filled) then
         hotkey:Show()
       elseif hotkey.Hide then
         hotkey:Hide()
@@ -359,32 +392,17 @@ function Addon:PaintButtonHotkeys(binds)
 end
 
 function Addon:ApplyKeybinds(cfg)
-  self._pendingKeybinds = cfg.keybinds or {}
-  if InCombatLockdown() then
-    return
-  end
-  self:FlushPendingKeybinds()
+  -- Profile keys target ShadowUIActionButton hosts. Forever skins Blizzard
+  -- ActionButtons and keeps the client binds.
+  return
 end
 
 function Addon:FlushPendingKeybinds()
   local pending = self._pendingKeybinds
-  if not pending or InCombatLockdown() then
+  if not pending then
     return
   end
   local binds = self:MergeBindingTables(self:CollectClientActionBinds(), pending)
-  local owner = ownerFrame(self)
-  ClearOverrideBindings(owner)
-  for name, key in pairs(binds) do
-    if key and key ~= "" then
-      local slot = self:SlotFromBindingName(name)
-      if slot then
-        local clickName, clickButton = self:OverrideClickTarget(slot)
-        SetOverrideBindingClick(owner, true, key, clickName, clickButton)
-      else
-        SetOverrideBinding(owner, true, key, name)
-      end
-    end
-  end
   self:PaintButtonHotkeys(binds)
   self._pendingKeybinds = nil
 end

@@ -84,8 +84,8 @@ local rogueEffective = Addon:ResolveEffective("ROGUE")
 assert(rogueEffective.layout.bar1.enabled == true
   and rogueEffective.layout.bar1.relativeTo == "UIParent",
   "Rogue effective bar1 stays enabled on a visible parent")
-assert(account.profiles.Default.layout.bar1.y == -800,
-  "legacy Account Base copies into the Default Profile")
+assert(account.layout.bar1.y == -800,
+  "legacy Account Base copies into the Profile")
 
 local variantLegacy = account.classes.ROGUE.variants.Combat.layout.bar3
 assert(variantLegacy.relativeTo == nil and variantLegacy.fadeIdle == 0.2,

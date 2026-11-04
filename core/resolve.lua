@@ -1,10 +1,9 @@
 --[[
-  Purpose: Merge shipped Class defaults with the active Account Profile.
+  Purpose: Merge shipped Class defaults with the Account Profile.
   Deps: ShadowUI db helpers, ShadowUI.Defaults
-  Public: DeepCopy, SparseMerge, ShippedClass, EnsureProfiles, GetActiveProfileName,
-          GetProfile, ResolveShipped, ResolveEffective, ResolveBarVisual, ResolveBarRowGaps,
-          BarLayoutForApply, WriteProfileDelta, WriteLayerDelta, TalentPointsFromTabInfo,
-          GetPrimaryTalentTree
+  Public: DeepCopy, SparseMerge, ShippedClass, EnsureProfile, GetProfile,
+          ResolveShipped, ResolveEffective, ResolveBarVisual, ResolveBarRowGaps,
+          BarLayoutForApply, WriteProfileDelta, WriteLayerDelta
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -38,8 +37,6 @@ function Addon:ShippedClass(classFile)
   return (shipped.classes or {})[classFile] or {}
 end
 
-local FALLBACK_PROFILE = "Default"
-
 local function emptyProfile()
   return { layout = {}, keybinds = {}, actions = {} }
 end
@@ -51,66 +48,61 @@ local function profileFields(src)
   return { layout = src.layout or {}, keybinds = src.keybinds or {} }
 end
 
-function Addon:EnsureProfiles()
+local function copySection(self, src)
+  if not self.DeepCopy then
+    return src or {}
+  end
+  return self:DeepCopy(src or {})
+end
+
+local function hasContent(section)
+  return type(section) == "table" and next(section) ~= nil
+end
+
+function Addon:EnsureProfile()
   local db = self:GetDB()
-  db.profiles = db.profiles or {}
-  if type(db.defaultProfile) ~= "string" or db.defaultProfile == "" then
-    db.defaultProfile = FALLBACK_PROFILE
-  end
-  if not next(db.profiles) then
-    db.profiles[db.defaultProfile] = emptyProfile()
-  elseif not db.profiles[db.defaultProfile] then
-    local name = next(db.profiles)
-    db.defaultProfile = name
-  end
-end
-
-function Addon:GetActiveProfileName()
-  self:EnsureProfiles()
-  local db = self:GetDB()
-  local char = self:GetCharDB()
-  local selected = char.activeProfile
-  if type(selected) == "string" and db.profiles[selected] then
-    return selected
-  end
-  return db.defaultProfile
-end
-
-function Addon:GetProfile(name)
-  self:EnsureProfiles()
-  name = name or self:GetActiveProfileName()
-  local db = self:GetDB()
-  local profile = db.profiles[name]
-  if not profile then
-    return nil
-  end
-  profile.layout = profile.layout or {}
-  profile.keybinds = profile.keybinds or {}
-  profile.actions = profile.actions or {}
-  return profile
-end
-
--- Classic Era returns (name, texture, pointsSpent, ...) while modernized clients
--- return (id, name, description, texture, pointsSpent, ...). Taking the largest
--- numeric candidate of the two slots reads both shapes without guessing a client.
-function Addon:TalentPointsFromTabInfo(a, b, c, d, e)
-  local third = type(c) == "number" and c or 0
-  local fifth = type(e) == "number" and e or 0
-  return third > fifth and third or fifth
-end
-
-function Addon:GetPrimaryTalentTree()
-  if type(GetNumTalentTabs) ~= "function" or type(GetTalentTabInfo) ~= "function" then
-    return nil
-  end
-  local best, bestPts = nil, 0
-  for i = 1, GetNumTalentTabs() or 0 do
-    local points = self:TalentPointsFromTabInfo(GetTalentTabInfo(i))
-    if points > bestPts then
-      best, bestPts = i, points
+  local named = db.profiles
+  if type(named) == "table" and next(named) then
+    local char = self.GetCharDB and self:GetCharDB()
+    local pick = char and char.activeProfile
+    if type(pick) ~= "string" or not named[pick] then
+      pick = db.defaultProfile
+    end
+    if type(pick) ~= "string" or not named[pick] then
+      pick = "Default"
+    end
+    local source = named[pick] or named[next(named)]
+    if type(source) ~= "table" then
+      source = emptyProfile()
+    end
+    if not hasContent(db.layout) then
+      db.layout = copySection(self, source.layout)
+    end
+    if not hasContent(db.keybinds) then
+      db.keybinds = copySection(self, source.keybinds)
+    end
+    if not hasContent(db.actions) then
+      db.actions = copySection(self, source.actions)
     end
   end
-  return best
+  db.layout = db.layout or {}
+  db.keybinds = db.keybinds or {}
+  db.actions = db.actions or {}
+  db.profiles = nil
+  db.defaultProfile = nil
+  local char = self.GetCharDB and self:GetCharDB()
+  if char then
+    char.activeProfile = nil
+  end
+end
+
+function Addon:GetProfile()
+  self:EnsureProfile()
+  local db = self:GetDB()
+  db.layout = db.layout or {}
+  db.keybinds = db.keybinds or {}
+  db.actions = db.actions or {}
+  return db
 end
 
 function Addon:ResolveShipped(classFile)
@@ -123,9 +115,9 @@ function Addon:ResolveShipped(classFile)
   return eff
 end
 
-function Addon:ResolveEffective(classFile, profileName)
+function Addon:ResolveEffective(classFile)
   local eff = self:ResolveShipped(classFile)
-  local profile = self:GetProfile(profileName)
+  local profile = self:GetProfile()
   if profile then
     self:SparseMerge(eff, profileFields(profile))
   end
@@ -167,7 +159,7 @@ function Addon:ResolveBarVisual(layout, barId, barCfg)
   end
   return {
     gap = pickVisual(barCfg, group, global, "gap", 0),
-    iconShape = pickVisual(barCfg, group, global, "iconShape", "square"),
+    iconShape = "square",
     scale = pickVisual(barCfg, group, global, "scale", 1),
     fadeIdle = pickVisual(barCfg, group, global, "fadeIdle", 1),
   }

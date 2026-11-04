@@ -1,8 +1,8 @@
--- Two Bars can use two icon shapes. Micro Cluster shape is independent.
--- Stance buttons stay square. Circle and diamond use CreateMaskTexture plus
--- AddMaskTexture and a matching Outer Edge drop. Press glow uses a mask
--- sized to the 4px inset. A drawable CreateTexture overlay is not a mask.
--- Square keeps the 9-slice outer_shadow. Roundrect chrome uses a 2:1 drop.
+-- Action Slot icons stay square. Extra Action still uses circle chrome.
+-- Circle and diamond use CreateMaskTexture plus AddMaskTexture and a matching
+-- Outer Edge drop. Press glow uses a mask sized to the 4px inset. A drawable
+-- CreateTexture overlay is not a mask. Square keeps the 9-slice outer_shadow.
+-- Roundrect chrome uses a 2:1 drop. Stance buttons stay square.
 -- Run: lua tests/shape_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -171,8 +171,18 @@ local btn2 = fakeButton(bar2)
 Addon:SkinBarButton(btn1)
 Addon:SkinBarButton(btn2)
 
-assert(btn1.shadowUIShape == "circle", "Bar 1 Action Slots use circle")
-assert(btn2.shadowUIShape == "diamond", "Bar 2 Action Slots use diamond")
+assert(btn1.shadowUIShape == "square", "Action Slots stay square when Layout asks for circle")
+assert(btn2.shadowUIShape == "square", "Action Slots stay square when Layout asks for diamond")
+assert(btn1.shadowUIOuterShape == "square" or btn1.shadowUIOuterShape == nil,
+  "Action Slot Outer Edge stays square")
+
+Addon:ApplyIconShape(btn1, "circle")
+Addon:ApplyOuterChrome(btn1, "circle")
+Addon:ApplyIconShape(btn2, "diamond")
+Addon:ApplyOuterChrome(btn2, "diamond")
+
+assert(btn1.shadowUIShape == "circle", "ApplyIconShape still paints Extra Action circle")
+assert(btn2.shadowUIShape == "diamond", "ApplyIconShape still paints diamond")
 assert(btn1.icon.masks[1] == btn1.shadowUIShapeMask, "circle masks the icon")
 assert(btn1.chrome.masks[1] == btn1.shadowUIShapeMask, "circle masks the chrome fill")
 assert(btn1.HighlightTexture.masks[1] == btn1.shadowUIShapeMask, "circle masks hover")
@@ -187,9 +197,9 @@ assert(btn1.shadowUIShapeMask.file:find("TempPortraitAlphaMask", 1, true),
   "circle mask file is the portrait mask")
 assert(btn2.shadowUIShapeMask.file:find("mask_diamond", 1, true),
   "diamond mask file is the shipped diamond")
-Addon:SkinBarButton(btn1)
+Addon:ApplyIconShape(btn1, "circle")
 assert(btn1.icon.masks[1] == btn1.shadowUIShapeMask,
-  "a second skin pass keeps one mask")
+  "a second ApplyIconShape pass keeps one mask")
 assert(btn1.shadowUIShapeMask.hidden == false, "MaskTexture stays shown so it applies")
 assert(btn1.shadowUIOuterShape == "circle", "Bar 1 Outer Edge is circle")
 assert(btn2.shadowUIOuterShape == "diamond", "Bar 2 Outer Edge is diamond")
@@ -219,13 +229,12 @@ assert(press2.masks[1] == btn2.shadowUIPressMask,
   "diamond masks the press glow")
 assert(btn2.shadowUIPressMask.all == press2,
   "diamond press mask sizes to the glow")
-Addon:SkinBarButton(btn1)
+Addon:ApplyIconShape(btn1, "circle")
 assert(press1.masks[1] == btn1.shadowUIPressMask,
-  "a later skin pass keeps the press glow mask")
+  "a later Extra Action skin pass keeps the press glow mask")
 
-bar1.iconShape = "square"
-Addon:SkinBarButton(btn1)
-assert(btn1.shadowUIShape == "square", "a Bar can return to square")
+Addon:ApplyIconShape(btn1, "square")
+assert(btn1.shadowUIShape == "square", "ApplyIconShape can return to square")
 assert(btn1.icon.masks[1] == nil, "square removes the shape mask from the icon")
 assert(btn1.shadowUIShapeMask.hidden == true, "square hides the unused MaskTexture")
 assert(press1.masks[1] == nil, "square removes the press glow mask")
@@ -235,11 +244,10 @@ local micro = { name = "ShadowUIMicroHost" }
 local microBtn = fakeButton(micro)
 microBtn._shadowUINativeW = 28
 microBtn._shadowUINativeH = 58
-Addon:ApplyIconShape(microBtn, "circle")
-assert(microBtn.shadowUIShape == "circle", "Micro Cluster can be circle while Bars differ")
-assert(microBtn.icon.masks[1] == microBtn.shadowUIShapeMask,
-  "Micro Cluster masks the icon when chrome fill is missing")
-assert(btn2.shadowUIShape == "diamond", "Bar shape stays when Micro Cluster shape changes")
+Addon:ApplyIconShape(microBtn, "square")
+assert(microBtn.shadowUIShape == "square", "Micro Cluster icons stay square")
+assert(microBtn.icon.masks[1] == nil, "square Micro Cluster does not mask native art")
+assert(btn2.shadowUIShape == "diamond", "Extra Action diamond chrome is separate from Micro Cluster")
 
 local leftover = fakeButton(bar1)
 local overlay = fakeTex()

@@ -51,11 +51,8 @@ assert(Addon.editMode == false, "keybind session disables bar drag")
 assert(Addon.keybindMode == true, "keybind session enables hover-bind")
 assert(Addon:SetEditSession(nil) == nil, "nil ends the session")
 assert(Addon.editMode == false and Addon.keybindMode == false, "no session means play mode")
-assert(Addon:SetEditSession("units") == "units", "units session is Unit Frame Designer")
-assert(Addon.unitFrameMode == true, "units session enables Widget edit")
-assert(Addon.editMode == false and Addon.keybindMode == false, "units session is not layout or keybind")
-assert(Addon:SetEditSession("layout") == "layout", "layout replaces units")
-assert(Addon.unitFrameMode == false, "layout session clears Unit Frame Designer")
+assert(Addon:SetEditSession("units") == nil, "units session is not shipped")
+assert(Addon:SetEditSession("layout") == "layout", "layout session still works")
 assert(Addon:SetEditSession("frames") == nil, "unknown session is play mode")
 
 local button = {

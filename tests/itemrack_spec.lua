@@ -111,7 +111,7 @@ assert(wornIcon.all == nil, "ItemRack icon must not cover the chrome")
 assert(wornIcon.points[1][1] == "TOPLEFT" and wornIcon.points[1][2] == 2,
   "ItemRack icon insets 2px")
 assert(wornIcon.crop[1] == 0.07 and wornIcon.crop[3] == 0.07,
-  "ItemRack icon crop matches action icons")
+  "ItemRack icon crop is 0.07")
 assert(worn.NormalTexture.hidden or worn.NormalTexture.a == 0,
   "ItemRack silver slot art stays hidden")
 assert(worn.IconBorder.hidden or worn.IconBorder.a == 0,

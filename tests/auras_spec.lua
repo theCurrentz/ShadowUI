@@ -1,12 +1,7 @@
--- Buff and debuff icons get the same 0.05 chrome as the player frame, plus
--- a 4px Lorti outer edge. Unused slots stay empty. Player BuffFrame and
--- DebuffFrame keep Blizzard Edit Mode place. Debuff type colour on the
--- Blizzard border stays native. Target of Target auras sit 2px to the right
--- of Target of Target in a horizontal row. Target auras sit 2px to the right
--- of the Target Frame in horizontal rows at 32px so Aura Duration numbers fit.
--- Blizzard enemy-with-no-debuffs layout starts buffs on top of the frame.
--- Classic copies TargetFrameMixin.UpdateAuras onto TargetFrame, so the
--- instance method must keep that right-side place.
+-- Player buff and debuff icons use a 0.07 zoom and hide their border.
+-- No Darken ring and no Outer Edge. Unused slots stay empty.
+-- Player BuffFrame and DebuffFrame keep Blizzard Edit Mode place.
+-- Target Frame, Target of Target, Focus, and party auras stay Blizzard.
 -- Run: lua tests/auras_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local unpack = unpack or table.unpack
@@ -62,7 +57,7 @@ local function fakeTex()
     self.r, self.g, self.b, self.a = r, g, b, a
   end
   function tex:SetVertexColor(r, g, b) self.r, self.g, self.b = r, g, b end
-  function tex:SetDrawLayer() end
+  function tex:SetDrawLayer(layer) self.layer = layer end
   function tex:GetTexture() return self.texture end
   function tex:Show() self.shown = true end
   function tex:Hide() self.shown = false end
@@ -99,14 +94,15 @@ _G.EditModeSystemMixin = {
     self:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 80, -40)
   end,
 }
-local buff, buffIcon = fakeButton("BuffButton1")
-local _, _, debuffBorder = fakeButton("DebuffButton1", { 1, 0, 0 })
-local unusedDebuff, unusedIcon = fakeButton("DebuffButton2")
+local buff, buffIcon, buffBorder = fakeButton("BuffButton1")
+local debuff, _, debuffBorder = fakeButton("DebuffButton1", { 1, 0, 0 })
+local unusedDebuff, unusedIcon, unusedBorder = fakeButton("DebuffButton2")
 unusedIcon.texture = nil
 function unusedDebuff:IsShown() return false end
 
 local modernIcon = fakeTex()
 local modernDebuffIcon = fakeTex()
+local modernBuffBorder = fakeTex()
 local modernDebuffBorder = fakeTex()
 modernDebuffBorder.r, modernDebuffBorder.g, modernDebuffBorder.b = 1, 0, 0
 local function modernButton(icon, border, auraType)
@@ -120,7 +116,7 @@ local function modernButton(icon, border, auraType)
   function button:SetFrameLevel() end
   return button
 end
-local modernBuff = modernButton(modernIcon, fakeTex(), "Buff")
+local modernBuff = modernButton(modernIcon, modernBuffBorder, "Buff")
 local modernDebuff = modernButton(modernDebuffIcon, modernDebuffBorder, "Debuff")
 modernBuff.hasValidInfo = true
 modernDebuff.hasValidInfo = true
@@ -153,7 +149,7 @@ local function fakeAuraHost(auraFrames)
   return frame
 end
 local function fakePlaceButton(name, borderColor)
-  local button = fakeButton(name, borderColor)
+  local button, icon, border = fakeButton(name, borderColor)
   button.points = {}
   button.w = 21
   button.h = 21
@@ -181,7 +177,7 @@ local function fakePlaceButton(name, borderColor)
   function button:IsShown()
     return true
   end
-  return button
+  return button, icon, border
 end
 
 _G.TargetFrameToT = { name = "TargetFrameToT" }
@@ -198,9 +194,9 @@ end
 function _G.TargetFrame:IsShown()
   return true
 end
-local totDebuff1 = fakePlaceButton("TargetFrameToTDebuff1", { 1, 0, 0 })
+local totDebuff1, totDebuffIcon = fakePlaceButton("TargetFrameToTDebuff1", { 1, 0, 0 })
 local totDebuff2 = fakePlaceButton("TargetFrameToTDebuff2", { 1, 0, 0 })
-local targetBuff1 = fakePlaceButton("TargetFrameBuff1")
+local targetBuff1, targetBuffIcon, targetBuffBorder = fakePlaceButton("TargetFrameBuff1")
 local targetBuff2 = fakePlaceButton("TargetFrameBuff2")
 
 local function blizzardPlaceOnTop()
@@ -224,36 +220,40 @@ assert(loadfile(root .. "skin/darken.lua"))()
 assert(loadfile(root .. "skin/auras.lua"))()
 Addon:SkinAuras()
 
-assert(buff.chrome.r == 0.05 and buff.chrome.g == 0.05 and buff.chrome.b == 0.05,
-  "buff chrome is Lorti darkest")
-assert(buffIcon.all == nil, "buff icon must not cover the chrome")
-assert(buffIcon.points[1][1] == "TOPLEFT" and buffIcon.points[1][2] == 2,
-  "buff icon insets 2px")
-assert(_G.BuffButton1Border.r == 0.05, "buff silver border is darkened")
+assert(buffIcon.crop[1] == 0.07 and buffIcon.crop[2] == 1 - 0.07
+    and buffIcon.crop[3] == 0.07 and buffIcon.crop[4] == 1 - 0.07,
+  "buff icon zoom is 0.07")
+assert(modernIcon.crop[1] == 0.07 and modernIcon.crop[3] == 0.07,
+  "modern buff icon zoom is 0.07")
+assert(modernDebuffIcon.crop[1] == 0.07 and modernDebuffIcon.crop[3] == 0.07,
+  "debuff icon zoom is 0.07")
+assert(buffIcon.points[1] == nil, "buff icon keeps its native points")
+assert(modernIcon.layer == nil, "buff icons keep their native draw layer")
+assert(buffBorder.shown == false, "buff icons have no border")
+assert(modernBuffBorder.shown == false, "modern buff icons have no border")
+assert(debuffBorder.shown == false, "debuff icons have no border")
 assert(debuffBorder.r == 1 and debuffBorder.g == 0 and debuffBorder.b == 0,
-  "debuff type colour stays native")
-assert(buff.shadowUIOuter, "buff keeps a Lorti outer edge")
-assert(buff.shadowUIOuter.points[1][4] == -4, "buff outer edge extends 4px")
+  "hiding the debuff border does not recolor it")
+assert(modernDebuffBorder.shown == false, "modern debuff icons have no border")
+assert(not buff.chrome and not modernBuff.chrome and not debuff.chrome,
+  "player auras do not get a Darken ring")
+assert(not buff.shadowUIOuter and not modernBuff.shadowUIOuter and not modernDebuff.shadowUIOuter,
+  "player auras do not get an Outer Edge")
+assert(unusedIcon.crop == nil, "unused debuff slots do not zoom")
+assert(unusedBorder.shown ~= false, "unused debuff slots keep their border state")
+assert(not unusedDebuff.chrome, "unused debuff slots do not get a Darken ring")
+assert(not privateAnchor.chrome, "private aura anchors do not get a Darken ring")
 
-assert(modernBuff.chrome.r == 0.05, "modern buff chrome is Lorti darkest")
-assert(modernBuff.shadowUIOuter, "modern buff keeps a Lorti Outer Edge")
-assert(modernBuff.shadowUIOuter.template == "BackdropTemplate", "Outer Edge uses BackdropTemplate")
-assert(modernBuff.shadowUIOuter.backdrop.edgeFile:find("outer_shadow", 1, true),
-  "Outer Edge uses the Lorti shadow texture")
-assert(modernBuff.shadowUIOuter.points[1][2] == modernIcon,
-  "Outer Edge sits on the icon, not the duration slot")
-assert(modernBuff.shadowUIOuter.points[1][4] == -4, "modern Outer Edge extends 4px")
-assert(modernDebuff.shadowUIOuter, "modern debuff keeps a Lorti Outer Edge")
-assert(modernDebuffBorder.r == 1 and modernDebuffBorder.g == 0,
-  "modern debuff type colour stays native")
-assert(not unusedDebuff.chrome or unusedDebuff.chrome.shown == false,
-  "unused debuff slots do not keep Darken chrome")
-assert(not unusedDebuff.shadowUIOuter or unusedDebuff.shadowUIOuter.shown == false,
-  "unused debuff slots do not keep an Outer Edge")
-assert(not privateAnchor.chrome or privateAnchor.chrome.shown == false,
-  "private aura anchors do not keep Darken chrome")
-assert(not privateAnchor.shadowUIOuter or privateAnchor.shadowUIOuter.shown == false,
-  "private aura anchors do not keep an Outer Edge")
+_G.issecretvalue = function(v)
+  return v == 136085
+end
+local secretBuff, secretIcon, secretBorder = fakeButton("BuffButton8")
+secretIcon.texture = 136085
+Addon:SkinAuraButton(secretBuff)
+assert(secretIcon.crop[1] == 0.07, "secret aura texture still zooms")
+assert(secretBorder.shown == false, "secret aura icons have no border")
+_G.issecretvalue = nil
+
 local function last(frame)
   return frame.points[#frame.points]
 end
@@ -282,47 +282,31 @@ _G.EditModeSystemMixin.ApplySystemAnchor(_G.DebuffFrame)
 assert(last(_G.DebuffFrame)[4] == 80 and last(_G.DebuffFrame)[5] == -40,
   "Edit Mode ApplySystemAnchor can keep the DebuffFrame place")
 
-assert(totDebuff1.points[1][1] == "TOPLEFT" and totDebuff1.points[1][2] == _G.TargetFrameToT
-    and totDebuff1.points[1][3] == "TOPRIGHT" and totDebuff1.points[1][4] == 2
-    and totDebuff1.points[1][5] == 0,
-  "target of target auras sit 2px to the right of Target of Target")
-assert(totDebuff2.points[1][1] == "TOPLEFT" and totDebuff2.points[1][2] == totDebuff1
-    and totDebuff2.points[1][3] == "TOPRIGHT" and totDebuff2.points[1][4] == 3
-    and totDebuff2.points[1][5] == 0,
-  "target of target auras stay in a horizontal row")
-assert(targetBuff1.points[1][1] == "TOPLEFT" and targetBuff1.points[1][2] == _G.TargetFrame
-    and targetBuff1.points[1][3] == "TOPRIGHT" and targetBuff1.points[1][4] == 2
-    and targetBuff1.points[1][5] == 0,
-  "target auras sit 2px to the right of the Target Frame")
-assert(targetBuff2.points[1][1] == "TOPLEFT" and targetBuff2.points[1][2] == targetBuff1
-    and targetBuff2.points[1][3] == "TOPRIGHT" and targetBuff2.points[1][4] == 3
-    and targetBuff2.points[1][5] == 0,
-  "target auras stay in a horizontal row")
-assert(targetBuff1.w == 32 and targetBuff1.h == 32,
-  "target auras are 32px so Aura Duration numbers fit")
-assert(targetBuff2.w == 32 and targetBuff2.h == 32,
-  "each target aura is 32px")
+assert(#totDebuff1.points == 0 and #totDebuff2.points == 0,
+  "SkinAuras does not place Target of Target auras")
 assert(totDebuff1.w == 21 and totDebuff1.h == 21,
-  "target of target auras keep native size")
+  "SkinAuras does not resize Target of Target auras")
+assert(totDebuffIcon.crop == nil, "Target of Target auras keep native TexCoord")
+assert(#targetBuff1.points == 0 and #targetBuff2.points == 0,
+  "SkinAuras does not place Target Frame auras")
+assert(targetBuffIcon.crop == nil, "Target Frame auras keep native TexCoord")
+assert(targetBuffBorder.shown ~= false, "Target Frame auras keep their border")
+assert(Addon.PlaceTargetAuras == nil, "target aura placement is not part of ShadowUI")
 
 _G.TargetFrame:UpdateAuras()
-assert(targetBuff1.points[1][1] == "TOPLEFT" and targetBuff1.points[1][2] == _G.TargetFrame
-    and targetBuff1.points[1][3] == "TOPRIGHT" and targetBuff1.points[1][4] == 2
-    and targetBuff1.points[1][5] == 0,
-  "TargetFrame:UpdateAuras cannot keep auras on top of the Target Frame")
-assert(targetBuff1.w == 32 and targetBuff1.h == 32,
-  "TargetFrame:UpdateAuras cannot keep Blizzard 21px target auras")
+assert(targetBuff1.points[1][2] == _G.TargetFrame
+    and targetBuff1.points[1][3] == "BOTTOMLEFT"
+    and targetBuff1.points[1][4] == 5
+    and targetBuff1.points[1][5] == 32,
+  "TargetFrame:UpdateAuras keeps the Blizzard aura place")
+assert(targetBuff1.w == 21 and targetBuff1.h == 21,
+  "TargetFrame:UpdateAuras keeps the Blizzard aura size")
+assert(targetBuffIcon.crop == nil, "TargetFrame:UpdateAuras does not zoom target auras")
 
-function targetBuff1:IsShown() return false end
-function targetBuff2:IsShown() return false end
-local poolBuff1 = fakePlaceButton("PoolAura1")
+local poolBuff1, poolIcon = fakePlaceButton("PoolAura1")
 local poolBuff2 = fakePlaceButton("PoolAura2")
 poolBuff1.Icon = _G.PoolAura1Icon
 poolBuff2.Icon = _G.PoolAura2Icon
-poolBuff1.unit = "target"
-poolBuff2.unit = "target"
-poolBuff1.auraInstanceID = 1
-poolBuff2.auraInstanceID = 2
 poolBuff1:ClearAllPoints()
 poolBuff1:SetPoint("TOPLEFT", _G.TargetFrame, "BOTTOMLEFT", 5, 32)
 poolBuff1:SetSize(21, 21)
@@ -353,13 +337,12 @@ _G.TargetFrame.auraPools = {
   end,
 }
 Addon:SkinAuras()
-assert(poolBuff1.points[1][1] == "TOPLEFT" and poolBuff1.points[1][2] == _G.TargetFrame
-    and poolBuff1.points[1][3] == "TOPRIGHT" and poolBuff1.points[1][4] == 2
-    and poolBuff1.points[1][5] == 0,
-  "1.15.9 auraPools target auras sit 2px to the right of the Target Frame")
-assert(poolBuff2.points[1][2] == poolBuff1 and poolBuff2.points[1][3] == "TOPRIGHT",
-  "1.15.9 auraPools target auras stay in a horizontal row")
-assert(poolBuff1.w == 32 and poolBuff1.h == 32,
-  "1.15.9 auraPools target auras are 32px")
+assert(poolBuff1.points[1][2] == _G.TargetFrame
+    and poolBuff1.points[1][3] == "BOTTOMLEFT"
+    and poolBuff1.points[1][4] == 5,
+  "SkinAuras leaves 1.15.9 target auraPools in the Blizzard place")
+assert(poolBuff1.w == 21 and poolBuff1.h == 21,
+  "SkinAuras leaves 1.15.9 target auraPools at Blizzard size")
+assert(poolIcon.crop == nil, "SkinAuras does not zoom 1.15.9 target auraPools")
 
 print("auras_spec OK")

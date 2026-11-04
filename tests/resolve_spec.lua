@@ -9,13 +9,11 @@ assert(loadfile(root .. "core/resolve.lua"))()
 local account, char
 local function reset()
   account = {
-    defaultProfile = "Default",
-    profiles = {
-      Default = { layout = { bar1 = { y = 40 } }, keybinds = {} },
-      Raid = { layout = { bar1 = { scale = 1.2, fadeIdle = 0.2, iconShape = "diamond" } }, keybinds = {} },
-    },
+    layout = { bar1 = { y = 40 } },
+    keybinds = {},
+    actions = {},
   }
-  char = { activeProfile = nil }
+  char = {}
 end
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
@@ -25,76 +23,39 @@ Addon.Defaults = {
   classes = { DRUID = { layout = { pet = { x = 10, y = 0, enabled = true } }, keybinds = {} } },
 }
 
-local function stubTalents(tabs)
-  _G.GetNumTalentTabs = function() return #tabs end
-  _G.GetTalentTabInfo = function(i) return table.unpack(tabs[i]) end
-end
-
 reset()
 
 -- Sparse merge keeps untouched fields and copies nested tables by value.
-char.activeProfile = "Raid"
+account.layout.bar1.scale = 1.2
+account.layout.bar1.fadeIdle = 0.2
+account.layout.bar1.iconShape = "diamond"
 local eff = Addon:ResolveEffective("DRUID")
 assert(eff.layout.bar1.x == 0, "shipped x survives")
-assert(eff.layout.bar1.y == 0, "inactive Default Profile does not merge")
-assert(eff.layout.bar1.scale == 1.2, "active Profile wins over shipped")
+assert(eff.layout.bar1.y == 40, "Profile y wins")
+assert(eff.layout.bar1.scale == 1.2, "Profile wins over shipped")
 assert(eff.layout.bar1.fadeIdle == 0.2, "Profile fadeIdle wins")
-assert(eff.layout.bar1.iconShape == "diamond", "Profile iconShape wins")
 assert(eff.layout.bar1.enabled == true, "shipped flag survives")
 assert(eff.layout.pet.x == 10, "shipped class delta merges")
 local shipped = Addon:ResolveShipped("DRUID")
-assert(shipped.layout.bar1.y == 0, "shipped skips Profiles")
+assert(shipped.layout.bar1.y == 0, "shipped skips the Profile")
 assert(shipped.layout.bar1.scale == 1, "shipped keeps base scale")
 assert(shipped.layout.pet.x == 10, "shipped keeps Class")
 Addon.Defaults.base.layout.bar1.x = 99
 assert(eff.layout.bar1.x == 0, "resolve does not alias shipped defaults")
 Addon.Defaults.base.layout.bar1.x = 0
 
-assert(Addon:GetActiveProfileName() == "Raid", "Character selection wins")
-char.activeProfile = nil
-assert(Addon:GetActiveProfileName() == "Default", "missing selection uses Default Profile")
-char.activeProfile = "Missing"
-assert(Addon:GetActiveProfileName() == "Default", "unknown selection uses Default Profile")
-
--- Talent point slot differs by client: 3rd on Classic Era, 5th when modernized.
-assert(Addon:TalentPointsFromTabInfo("Feral", "tex", 31, "bg", 0, true) == 31, "classic shape")
-assert(Addon:TalentPointsFromTabInfo(1, "Feral", "desc", "tex", 41) == 41, "modern shape")
-assert(Addon:TalentPointsFromTabInfo("Feral", "tex") == 0, "no numeric slot")
-assert(Addon:TalentPointsFromTabInfo(nil, nil, nil, nil, nil) == 0, "empty returns zero")
-
-stubTalents({
-  { "Balance", "tex", 8, "bg", 0, true },
-  { "Feral", "tex", 31, "bg", 0, true },
-  { "Resto", "tex", 0, "bg", 0, true },
-})
-assert(Addon:GetPrimaryTalentTree() == 2, "classic returns highest tab")
-
-stubTalents({
-  { 1, "Balance", "desc", "tex", 5 },
-  { 2, "Feral", "desc", "tex", 3 },
-  { 3, "Resto", "desc", "tex", 34 },
-})
-assert(Addon:GetPrimaryTalentTree() == 3, "modern returns highest tab")
-
-stubTalents({ { "Balance", "tex", 0 }, { "Feral", "tex", 0 } })
-assert(Addon:GetPrimaryTalentTree() == nil, "no points spent means no tree")
-
-_G.GetNumTalentTabs, _G.GetTalentTabInfo = nil, nil
-assert(Addon:GetPrimaryTalentTree() == nil, "missing talent API does not error")
-
--- Profile writes land on the active Profile only.
+-- Profile writes land on the Account store.
 reset()
-char.activeProfile = "Raid"
+account.layout.bar1.scale = 1.2
 Addon:WriteProfileDelta("layout", "bar1", { y = 9 })
-assert(account.profiles.Raid.layout.bar1.y == 9, "Profile patch merges")
-assert(account.profiles.Raid.layout.bar1.scale == 1.2, "Profile keeps siblings")
-assert(account.profiles.Default.layout.bar1.y == 40, "other Profile is unchanged")
+assert(account.layout.bar1.y == 9, "Profile patch merges")
+assert(account.layout.bar1.scale == 1.2, "Profile keeps siblings")
 
 Addon:WriteProfileDelta("keybinds", "CLICK ShadowUIActionButton1:Keybind", "Q")
-assert(account.profiles.Raid.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q",
+assert(account.keybinds["CLICK ShadowUIActionButton1:Keybind"] == "Q",
   "Profile keybind is a string")
 Addon:WriteProfileDelta("keybinds", "CLICK ShadowUIActionButton1:Keybind", false)
-assert(account.profiles.Raid.keybinds["CLICK ShadowUIActionButton1:Keybind"] == false,
+assert(account.keybinds["CLICK ShadowUIActionButton1:Keybind"] == false,
   "false unbinds on the Profile")
 
 -- Shipped variants do not leak onto effective config.
@@ -127,17 +88,17 @@ local visualLayout = {
 }
 local grouped = Addon:ResolveBarVisual(visualLayout, "bar1")
 assert(grouped.gap == 2, "Bar Group gap wins over Global")
-assert(grouped.iconShape == "diamond", "Bar Group shape wins over Global")
+assert(grouped.iconShape == "square", "Action Slot icons stay square")
 assert(grouped.scale == 1.1, "Bar Group scale applies when the Bar has none")
 assert(grouped.fadeIdle == 0.5, "Bar Group fade idle applies when the Bar has none")
 local ungrouped = Addon:ResolveBarVisual(visualLayout, "bar2")
 assert(ungrouped.gap == 4, "ungrouped Bar uses Global gap")
-assert(ungrouped.iconShape == "circle", "ungrouped Bar uses Global shape")
+assert(ungrouped.iconShape == "square", "ungrouped Bar stays square")
 assert(ungrouped.scale == 1, "missing scale defaults to 1")
 assert(ungrouped.fadeIdle == 1, "missing fade idle defaults to 1")
 local overridden = Addon:ResolveBarVisual(visualLayout, "bar3")
 assert(overridden.gap == 8, "Bar gap wins over Bar Group")
-assert(overridden.iconShape == "square", "Bar shape wins over Bar Group")
+assert(overridden.iconShape == "square", "Bar shape stays square")
 assert(overridden.scale == 1.1, "Bar scale still inherits Bar Group when unset")
 local missingGroup = Addon:ResolveBarVisual(visualLayout, "bar4")
 assert(missingGroup.gap == 4, "unknown Bar Group falls back to Global gap")

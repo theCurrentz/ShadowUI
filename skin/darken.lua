@@ -1,20 +1,60 @@
 --[[
   Purpose: Recolor Blizzard chrome with Lorti vertex colors and keep those colors.
-  Deps: named FrameXML textures
+  Deps: named FrameXML textures, ShadowUI:GetCharDB()
   Public: ShadowUI:LockVertex(), ShadowUI:LockBackdropBorder(), ShadowUI:DarkenNamed(),
-          ShadowUI:DarkenFrameRegions(), ShadowUI:SkinDarken()
+          ShadowUI:DarkenFrameRegions(), ShadowUI:RefreshDarkenPalette(), ShadowUI:SkinDarken()
   Notes: LockVertex also hooks SetTexture and SetAtlas. Those APIs reset vertex color.
+         Character darkness (default 1) scales the live DARKEN_* tables in place so
+         existing LockVertex hooks pick up the new values.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 local unpack = unpack or table.unpack
 
--- Lorti UI Classic: darkest chrome, window grey, bar art.
-Addon.DARKEN_BLACK = { 0.05, 0.05, 0.05 }
-Addon.DARKEN_GREY = { 0.35, 0.35, 0.35 }
-Addon.DARKEN_BAR = { 0.2, 0.2, 0.2 }
--- Target/Focus Frame Art. Darker than bar grey, not 0.05 black.
-Addon.DARKEN_SOFT = { 0.14, 0.14, 0.14 }
+-- Shipped Lorti bases at Character darkness 1.
+local BASE_BLACK = 0.05
+local BASE_GREY = 0.35
+local BASE_BAR = 0.2
+local BASE_SOFT = 0.14
+
+-- Live palette. LockVertex closes over these tables; mutate in place only.
+Addon.DARKEN_BLACK = { BASE_BLACK, BASE_BLACK, BASE_BLACK }
+Addon.DARKEN_GREY = { BASE_GREY, BASE_GREY, BASE_GREY }
+Addon.DARKEN_BAR = { BASE_BAR, BASE_BAR, BASE_BAR }
+-- Target/Focus Frame Art. Darker than bar grey, not base black.
+Addon.DARKEN_SOFT = { BASE_SOFT, BASE_SOFT, BASE_SOFT }
+
+local function scaleChannel(base, darkness)
+  if darkness >= 1 then
+    return base
+  end
+  if darkness <= 0 then
+    return 1
+  end
+  return 1 - darkness * (1 - base)
+end
+
+local function paintPalette(color, base, darkness)
+  local v = scaleChannel(base, darkness)
+  color[1], color[2], color[3] = v, v, v
+end
+
+function Addon:RefreshDarkenPalette()
+  local darkness = 1
+  local char = self.GetCharDB and self:GetCharDB()
+  if char and type(char.darkness) == "number" then
+    darkness = char.darkness
+  end
+  if darkness < 0 then
+    darkness = 0
+  elseif darkness > 1 then
+    darkness = 1
+  end
+  paintPalette(self.DARKEN_BLACK, BASE_BLACK, darkness)
+  paintPalette(self.DARKEN_GREY, BASE_GREY, darkness)
+  paintPalette(self.DARKEN_BAR, BASE_BAR, darkness)
+  paintPalette(self.DARKEN_SOFT, BASE_SOFT, darkness)
+end
 
 local function sameColor(nr, ng, nb, color)
   return nr == color[1] and ng == color[2] and nb == color[3]
@@ -113,6 +153,7 @@ function Addon:SkinWindowFrames() end
 function Addon:OnDarkenAddonLoaded() end
 
 function Addon:SkinDarken()
+  self:RefreshDarkenPalette()
   self:SkinUnitFrames()
   self:SkinWindowFrames()
   if self._darkenEvents or not self.RegisterEvent then

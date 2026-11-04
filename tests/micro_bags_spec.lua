@@ -1,7 +1,5 @@
--- After Blizzard bars are hidden, micro and bag buttons stay parented to
--- MainMenuBarArtFrame. SkinMicroAndBags must reparent them to a cluster,
--- keep native Blizzard size and art, dock flush to screen bottom-right,
--- and restore layout when Blizzard SetPoint/SetParent runs.
+-- The Blizzard micro menu and bag bar stay in place. ShadowUI shadows
+-- only those bar borders. Buttons, tray art, and extra slots stay Blizzard.
 -- Run: lua tests/micro_bags_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -11,12 +9,11 @@ end
 _G.hooksecurefunc = function(object, method, fn)
   if type(object) == "string" then
     fn = method
-    local name = object
-    local orig = _G[name]
+    local orig = _G[object]
     if type(orig) ~= "function" then
       return
     end
-    _G[name] = function(...)
+    _G[object] = function(...)
       orig(...)
       fn(...)
     end
@@ -46,247 +43,138 @@ _G.CreateFrame = function(_, name, parent, template)
     self.width = width
     self.height = height
   end
+  function frame:GetWidth() return self.width or 28 end
+  function frame:GetHeight() return self.height or 37 end
   function frame:ClearAllPoints() self.points = {} end
   function frame:SetPoint(...)
     self.points[#self.points + 1] = { ... }
   end
   function frame:SetBackdrop(spec) self.backdrop = spec end
+  function frame:SetBackdropColor() end
   function frame:SetBackdropBorderColor(r, g, b, a)
     self.border = { r, g, b, a }
   end
-  function frame:SetAlpha() end
-  function frame:SetClipsChildren() end
+  function frame:EnableMouse() end
   function frame:Show() self.shown = true end
   function frame:Hide() self.shown = false end
+  function frame:IsShown() return self.shown end
   return frame
 end
 
-local function fakeButton(name, parent, shown)
+local function fakeButton(name, parent)
   local button = {
     name = name,
     parent = parent,
-    shown = shown,
-    points = {},
-    sized = false,
+    shown = true,
+    points = { { "RIGHT", parent, "RIGHT", 0, 0 } },
+    layoutIndex = 1,
+    width = 37,
+    height = 37,
   }
+  function button:GetName() return self.name end
   function button:SetParent(frame) self.parent = frame end
   function button:GetParent() return self.parent end
   function button:SetSize(width, height)
-    self.sized = true
     self.width = width
     self.height = height
   end
-  function button:GetWidth() return self.width or 28 end
-  function button:GetHeight() return self.height or 58 end
-  function button:SetScale(scale) self.scale = scale end
-  function button:GetHitRectInsets()
-    return 0, 0, 18, 0
-  end
-  function button:SetHitRectInsets(l, r, t, b)
-    self.hitInsets = { l, r, t, b }
-  end
-  function button:GetFrameLevel() return self.level or 4 end
-  function button:SetFrameLevel(level) self.level = level end
-  function button:SetClipsChildren() end
-  local function fakeArt()
-    local art = { points = {} }
-    function art:SetVertexColor(r)
-      button.vertex = r
-    end
-    function art:SetTexCoord(left, right, top, bottom)
-      button.texCoord = { left, right, top, bottom }
-    end
-    function art:SetAlpha(a)
-      button.frameArtAlpha = a
-    end
-    function art:ClearAllPoints()
-      button.artPoints = {}
-      art.points = {}
-    end
-    function art:SetAllPoints(frame)
-      button.artFill = frame
-    end
-    function art:SetPoint(...)
-      local point = { ... }
-      button.artPoints = button.artPoints or {}
-      button.artPoints[#button.artPoints + 1] = point
-      art.points[#art.points + 1] = point
-    end
-    return art
-  end
-  function button:GetNormalTexture()
-    return fakeArt()
-  end
-  function button:GetPushedTexture()
-    return fakeArt()
-  end
-  function button:GetDisabledTexture()
-    return fakeArt()
-  end
-  function button:GetHighlightTexture()
-    return fakeArt()
+  function button:GetWidth() return self.width end
+  function button:GetHeight() return self.height end
+  function button:ClearAllPoints() self.points = {} end
+  function button:SetPoint(...)
+    self.points[#self.points + 1] = { ... }
   end
   function button:Show() self.shown = true end
   function button:Hide() self.shown = false end
-  function button:IsShown() return self.shown end
-  function button:ClearAllPoints() self.points = {} end
-  function button:SetPoint(point, relative, relativePoint, x, y)
-    self.points[#self.points + 1] = { point, relative, relativePoint, x, y }
-  end
-  function button:SetScript() end
+  function button:GetFrameLevel() return 4 end
+  _G[name] = button
   return button
 end
 
-local art = { name = "MainMenuBarArtFrame", shown = true }
-function art:Show() self.shown = true end
-function art:Hide() self.shown = false end
-function art:SetParent() end
-function art:ClearAllPoints() end
-function art:SetPoint() end
-function art:SetScript() end
-_G.MainMenuBarArtFrame = art
-_G.MainMenuBarBackpackButton = fakeButton("MainMenuBarBackpackButton", art, false)
-_G.MainMenuBarBackpackButton.width = 37
-_G.MainMenuBarBackpackButton.height = 37
-_G.CharacterMicroButton = fakeButton("CharacterMicroButton", art, false)
-_G.SpellbookMicroButton = fakeButton("SpellbookMicroButton", art, false)
-_G.TalentMicroButton = fakeButton("TalentMicroButton", art, false)
-_G.AchievementMicroButton = fakeButton("AchievementMicroButton", art, true)
-_G.QuestLogMicroButton = fakeButton("QuestLogMicroButton", art, false)
-_G.SocialsMicroButton = fakeButton("SocialsMicroButton", art, false)
-_G.GuildMicroButton = fakeButton("GuildMicroButton", art, true)
-_G.WorldMapMicroButton = fakeButton("WorldMapMicroButton", art, false)
-_G.CollectionsMicroButton = fakeButton("CollectionsMicroButton", art, true)
-_G.EJMicroButton = fakeButton("EJMicroButton", art, true)
-_G.StoreMicroButton = fakeButton("StoreMicroButton", art, true)
-_G.MainMenuMicroButton = fakeButton("MainMenuMicroButton", art, false)
-_G.HelpMicroButton = fakeButton("HelpMicroButton", art, false)
-_G.CharacterBag0Slot = fakeButton("CharacterBag0Slot", art, true)
-_G.KeyRingButton = fakeButton("KeyRingButton", art, true)
-_G.MicroButtonPortrait = { points = {}, parent = _G.CharacterMicroButton }
-function _G.MicroButtonPortrait:SetParent(frame) self.parent = frame end
-function _G.MicroButtonPortrait:ClearAllPoints() self.points = {} end
-function _G.MicroButtonPortrait:SetPoint(...)
-  self.points[#self.points + 1] = { ... }
-end
-function _G.MicroButtonPortrait:SetSize(width, height)
-  self.width = width
-  self.height = height
-end
-function _G.MicroButtonPortrait:SetTexCoord(left, right, top, bottom)
-  self.texCoord = { left, right, top, bottom }
-end
-function _G.MicroButtonPortrait:SetAlpha(a) self.alpha = a end
-function _G.CharacterMicroButton_SetNormal()
-  _G.MicroButtonPortrait:SetTexCoord(0.2, 0.8, 0.0666, 0.9)
-  _G.MicroButtonPortrait:SetAlpha(1)
-end
-function _G.CharacterMicroButton_SetPushed()
-  _G.MicroButtonPortrait:SetTexCoord(0.2666, 0.8666, 0, 0.8333)
-  _G.MicroButtonPortrait:SetAlpha(0.5)
+local function fakeTex(name)
+  return { name = name, points = {}, hidden = false, alpha = 1 }
 end
 
-assert(loadfile(root .. "skin/chrome.lua"))()
+local bags = _G.CreateFrame("Frame", "BagsBar", _G.UIParent)
+bags:SetPoint("BOTTOMRIGHT", _G.UIParent, "BOTTOMRIGHT", -4, 4)
+_G.BagsBar = bags
+local center = fakeTex("BagsBarCenter")
+local border = fakeTex("BagsBarBorder")
+function bags:GetRegions()
+  return center, border
+end
+bags.Center = center
+bags.Border = border
+
+local bag = fakeButton("MainMenuBarBackpackButton", bags)
+bag.width = 37
+bag.height = 37
+fakeButton("CharacterBag0Slot", bags)
+fakeButton("CharacterBag1Slot", bags)
+fakeButton("KeyRingButton", bags)
+
+local menu = _G.CreateFrame("Frame", "MicroMenu", _G.UIParent)
+_G.MicroMenu = menu
+local container = _G.CreateFrame("Frame", "MicroMenuContainer", _G.UIParent)
+container:SetPoint("BOTTOMRIGHT", bags, "BOTTOMLEFT", 0, 0)
+_G.MicroMenuContainer = container
+menu:SetParent(container)
+local menuCenter = fakeTex("MicroMenuCenter")
+function container:GetRegions()
+  return menuCenter
+end
+
+local character = fakeButton("CharacterMicroButton", menu)
+character.width = 28
+character.height = 58
 
 local char = { useShadowUIMenu = true }
 function Addon:GetCharDB()
   return char
 end
 
+assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/micro.lua"))()
 Addon:SkinMicroAndBags()
 
-local bag = _G.MainMenuBarBackpackButton
-assert(bag.parent ~= art, "backpack must leave the art frame")
-assert(bag.parent.name == "ShadowUIMicroCluster", "backpack parents to the ShadowUI cluster")
-assert(bag.shown, "backpack must be shown")
+assert(bag.parent == bags, "backpack stays on BagsBar")
+assert(bag.points[1][1] == "RIGHT", "backpack keeps its Blizzard point")
+assert(bag.width == 37 and bag.height == 37, "backpack keeps native size")
+assert(_G.CharacterBag0Slot.parent == bags, "extra bag slots stay on BagsBar")
+assert(_G.KeyRingButton.parent == bags, "keyring stays on BagsBar")
+assert(bags.shown, "BagsBar stays shown")
+assert(bags.points[1][1] == "BOTTOMRIGHT", "BagsBar keeps its Blizzard point")
+assert(not center.hidden and center.alpha == 1, "bag bar center art stays")
+assert(not border.hidden and border.alpha == 1, "bag bar border art stays")
+assert(center.vertex == nil, "bag bar center is not darkened")
 
-local character = _G.CharacterMicroButton
-local host = character._shadowUIHost
-assert(host, "each micro button sits in a native-size host")
-assert(not host.clipsChildren, "hosts must not clip Blizzard art")
-assert(host.parent.name == "ShadowUIMicroCluster", "hosts parent to the ShadowUI cluster")
-assert(character.parent == host, "micro buttons parent to their host")
-assert(character.shown, "micro buttons must be shown")
-assert(host.width == 28 and host.height == 58, "host matches native 28x58 size")
-assert(character.width == 28 and character.height == 58,
-  "micro buttons keep native 28x58 size so the glyph is not stretched")
-assert(not character.scale or character.scale >= 1, "micro buttons are not scaled down")
-assert(character.vertex == nil, "micro buttons keep native vertex colour")
-assert(_G.SocialsMicroButton.shown, "Classic Era Socials button must stay in the row")
-assert(_G.GuildMicroButton.shown == false, "GuildMicroButton is a no-op on Classic Era and must stay hidden")
-assert(_G.AchievementMicroButton.shown == false, "AchievementMicroButton stays out of the Micro Cluster")
-assert(_G.StoreMicroButton.shown == false, "StoreMicroButton stays out of the Micro Cluster")
-assert(_G.EJMicroButton.shown == false,
-  "EJMicroButton stays out of the Micro Cluster when ToggleEncounterJournal is missing")
-assert(_G.CollectionsMicroButton.shown == false,
-  "CollectionsMicroButton stays out of the Micro Cluster when ToggleCollectionsJournal is missing")
-assert(bag.width == 37 and bag.height == 37, "backpack keeps native Blizzard size")
+local outer = bags.shadowUIOuter
+assert(outer and outer.shown ~= false, "bag bar border gets an Outer Edge")
+assert(outer.template == "BackdropTemplate", "bag bar Outer Edge uses BackdropTemplate")
+assert(outer.backdrop.edgeFile:find("outer_shadow", 1, true),
+  "bag bar Outer Edge uses the Lorti shadow texture")
+assert(outer.points[1][4] == -4, "bag bar Outer Edge extends 4px")
+assert(bag.shadowUIOuter == nil, "backpack does not get its own Outer Edge")
+assert(_G.CharacterBag0Slot.shadowUIOuter == nil, "bag slots do not get an Outer Edge")
 
-local cluster = host.parent
-local dock = cluster.points[#cluster.points]
-assert(dock[1] == "BOTTOMRIGHT" and dock[2] == _G.UIParent and dock[3] == "BOTTOMRIGHT",
-  "cluster docks to screen bottom-right")
-assert(dock[4] == 0 and dock[5] == 0, "cluster has no margin")
-assert(host.points[#host.points][1] == "BOTTOMRIGHT", "micro row sits on the bottom edge")
-assert(host.points[#host.points][4] == 0,
-  "micro frames keep no gap between items")
-assert(host.points[#host.points][5] == 0,
-  "micro row has no gap above the bottom of the screen")
-assert(_G.SpellbookMicroButton.texCoord == nil,
-  "micro art must keep native UVs; do not crop or stretch the glyph")
-assert(_G.SpellbookMicroButton.artFill == nil,
-  "micro art must keep native points; do not fill a square crop")
-local portrait = _G.MicroButtonPortrait
-assert(portrait.parent == _G.CharacterMicroButton, "portrait stays on the Character button")
-assert(portrait.texCoord == nil, "portrait keeps native Blizzard tex coords")
-_G.CharacterMicroButton_SetNormal()
-assert(portrait.texCoord[1] == 0.2 and portrait.texCoord[3] == 0.0666,
-  "SetNormal keeps the native portrait hole")
-_G.CharacterMicroButton_SetPushed()
-assert(portrait.texCoord[1] == 0.2666 and portrait.texCoord[3] == 0,
-  "SetPushed keeps the native portrait shift")
-assert(character.shadowUIOuter == nil or character.shadowUIOuter.shown == false,
-  "micro buttons do not use Outer Edge")
-assert(host.shadowUIOuter == nil or host.shadowUIOuter.shown == false,
-  "micro hosts do not use Outer Edge")
-assert(bag.shadowUIOuter and bag.shadowUIOuter.shown ~= false,
-  "backpack gets Outer Edge when the Micro Cluster is on")
-
-character:SetParent(art)
-character:SetPoint("BOTTOMLEFT", art, "BOTTOMLEFT", 552, 2)
-assert(character.parent == host, "SetParent to the art frame must be undone")
-assert(host.parent.name == "ShadowUIMicroCluster", "host stays on the cluster")
-assert(host.points[#host.points][1] == "BOTTOMRIGHT", "SetPoint to the art frame must be undone")
-
-bag:SetParent(art)
-bag:SetPoint("BOTTOMRIGHT", art, "BOTTOMRIGHT", 0, 0)
-assert(bag.parent.name == "ShadowUIMicroCluster", "bag SetParent to the art frame must be undone")
-assert(bag.points[#bag.points][2].name == "ShadowUIMicroCluster", "bag must stay anchored to the cluster")
-
-assert(_G.CharacterBag0Slot.shown == false, "extra bag slots stay hidden")
-assert(_G.KeyRingButton.shown == false, "keyring stays hidden")
+assert(character.parent == menu, "micro buttons stay on MicroMenu")
+assert(menu.parent == container, "MicroMenu stays on MicroMenuContainer")
+assert(character.shadowUIOuter == nil, "micro buttons do not get an Outer Edge")
+assert(container.shadowUIOuter and container.shadowUIOuter.shown ~= false,
+  "micro bar border gets an Outer Edge")
+assert(not menuCenter.hidden, "micro bar center art stays")
+assert(_G.ShadowUIMicroCluster == nil, "ShadowUI does not build a Micro Cluster")
+assert(_G.ShadowUIMicroExtraPark == nil, "ShadowUI does not park extra buttons")
 
 char.useShadowUIMenu = false
 Addon:SkinMicroAndBags()
-assert(character.parent == art, "blizzard menu parents micro buttons to MainMenuBarArtFrame")
-assert(bag.parent == art, "blizzard menu parents the backpack to MainMenuBarArtFrame")
-assert(cluster.shown == false, "Micro Cluster hides when the Blizzard menu is on")
-assert(host.shown == false, "hosts hide when the Blizzard menu is on")
-assert(_G.CharacterBag0Slot.shown, "blizzard menu shows extra bag slots")
-assert(_G.KeyRingButton.shown, "blizzard menu shows the keyring")
-assert(art.shown, "blizzard menu keeps MainMenuBarArtFrame shown")
+assert(bags.shadowUIOuter.shown == false, "border shadow hides when the toggle is off")
+assert(container.shadowUIOuter.shown == false, "micro border shadow hides when the toggle is off")
+assert(bag.parent == bags, "toggle off leaves the backpack on BagsBar")
 
 local dbSrc = assert(io.open(root .. "core/db.lua", "r")):read("*a")
-assert(dbSrc:find("useShadowUIMenu%s*=%s*true"), "character default uses the ShadowUI menu")
-
+assert(dbSrc:find("useShadowUIMenu%s*=%s*true"), "character default shadows the menu and bag borders")
 local configSrc = assert(io.open(root .. "options/config.lua", "r")):read("*a")
-assert(configSrc:find("useShadowUIMenu"), "/shadowui exposes the menu toggle")
-
-char.useShadowUIMenu = true
-_G.ToggleEncounterJournal = function() end
-Addon:SkinMicroAndBags()
-assert(_G.EJMicroButton.shown,
-  "EJMicroButton stays in the Micro Cluster when ToggleEncounterJournal exists")
+assert(configSrc:find("Shadow menu and bag borders"), "/shadowui names the border shadow toggle")
 
 print("micro_bags_spec OK")

@@ -71,7 +71,6 @@ _G.PlayerFrameTexture = fakeTex("PlayerFrameTexture")
 _G.PetFrameTexture = fakeTex("PetFrameTexture")
 _G.TargetFrameTextureFrameTexture = fakeTex("TargetFrameTextureFrameTexture")
 _G.PartyMemberFrame1Texture = fakeTex("PartyMemberFrame1Texture")
-_G.MainMenuXPBarTexture0 = fakeTex("MainMenuXPBarTexture0")
 _G.LootFrameTitleBg = fakeTex("LootFrameTitleBg")
 _G.MainMenuBarLeftEndCap = fakeTex("MainMenuBarLeftEndCap")
 _G.MerchantFramePortrait = fakeTex("MerchantFramePortrait")
@@ -105,7 +104,6 @@ eq(_G.PartyMemberFrame1Texture, 0.05, 0.05, 0.05, "party frame chrome is Lorti d
 eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "target frame chrome is soft Darken, not 0.05 black")
 eq(_G.TargetFrameTextureFrameTexture, 0.14, 0.14, 0.14, "target Frame Art uses soft Darken")
 eq(_G.LootFrameTitleBg, 0.05, 0.05, 0.05, "loot title is Lorti darkest")
-eq(_G.MainMenuXPBarTexture0, 0.2, 0.2, 0.2, "XP bar art is Lorti bar grey")
 eq(_G.MainMenuBarLeftEndCap, 0.35, 0.35, 0.35, "gryphon art is Lorti window grey")
 eq(_G.ReputationWatchBar.StatusBar.WatchBarTexture0, 0.2, 0.2, 0.2, "reputation art is Lorti bar grey")
 eq(_G.PaperDollFrame:GetRegions(), 1, 1, 1, "character portrait stays native")
@@ -122,11 +120,22 @@ eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "target classification keeps 
 
 _G.PlayerFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
 eq(_G.PlayerFrameTexture, 0.05, 0.05, 0.05, "SetTexture cannot reset the player frame color")
+assert(_G.PlayerFrameTexture.path:find("media\\frameart\\UI-TargetingFrame", 1, true),
+  "player frame keeps the border shadow and drops the inner shadow")
 _G.TargetFrame.borderTexture:SetAtlas("UI-HUD-UnitFrame-Target-PortraitOn")
 eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "SetAtlas cannot reset the target frame color")
 
 _G.TargetFrameMixin.CheckClassification(_G.TargetFrame)
 eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "1.15 mixin classification keeps the soft Darken")
+
+_G.TargetFrame.borderTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-Rare-Elite.blp")
+assert(_G.TargetFrame.borderTexture.path:find("frameart\\UI-TargetingFrame-Rare-Elite", 1, true),
+  "rare-elite frame art keeps the border shadow and drops the inner shadow")
+eq(_G.TargetFrame.borderTexture, 0.14, 0.14, 0.14, "border-shadow swap keeps soft Darken")
+
+_G.PlayerFrameTexture:SetTexture("Interface\\Vehicles\\UI-Vehicle-Frame")
+assert(_G.PlayerFrameTexture.path:find("UI-Vehicle-Frame", 1, true),
+  "vehicle art stays the Blizzard file")
 
 local modern = fakeTex("ModernPlayerTexture")
 _G.PlayerFrame = { PlayerFrameContainer = { FrameTexture = modern } }
@@ -136,5 +145,27 @@ eq(modern, 0.05, 0.05, 0.05, "modern player container chrome is Lorti darkest")
 Addon:LockVertex(nil, Addon.DARKEN_BLACK)
 Addon:DarkenNamed({ "MissingFrameTexture" }, Addon.DARKEN_BLACK)
 Addon:DarkenFrameRegions(nil, Addon.DARKEN_BLACK)
+
+local char = { darkness = 1 }
+function Addon:GetCharDB()
+  return char
+end
+Addon:RefreshDarkenPalette()
+assert(Addon.DARKEN_BLACK[1] == 0.05 and Addon.DARKEN_GREY[1] == 0.35
+  and Addon.DARKEN_BAR[1] == 0.2 and Addon.DARKEN_SOFT[1] == 0.14,
+  "darkness 1 keeps the shipped Lorti palette")
+local blackRef = Addon.DARKEN_BLACK
+char.darkness = 0
+Addon:RefreshDarkenPalette()
+assert(Addon.DARKEN_BLACK == blackRef, "RefreshDarkenPalette mutates the live table")
+assert(Addon.DARKEN_BLACK[1] == 1 and Addon.DARKEN_GREY[1] == 1
+  and Addon.DARKEN_BAR[1] == 1 and Addon.DARKEN_SOFT[1] == 1,
+  "darkness 0 restores native white chrome")
+char.darkness = 0.5
+Addon:RefreshDarkenPalette()
+assert(math.abs(Addon.DARKEN_BLACK[1] - 0.525) < 0.0001, "darkness 0.5 scales black")
+assert(math.abs(Addon.DARKEN_SOFT[1] - 0.57) < 0.0001, "darkness 0.5 scales soft")
+char.darkness = 1
+Addon:RefreshDarkenPalette()
 
 print("darken_spec OK")

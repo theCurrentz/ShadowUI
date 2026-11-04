@@ -150,14 +150,11 @@ function Addon:CreateBarButton(parent, id)
   return button
 end
 function Addon:GetCharDB()
-  return { activeProfile = "Raid" }
+  return {}
 end
 function Addon:WriteProfileDelta() end
 function Addon:GetDB()
-  return { defaultProfile = "Default", profiles = { Default = {}, Raid = {} } }
-end
-function Addon:GetActiveProfileName()
-  return "Raid"
+  return { layout = {}, keybinds = {}, actions = {} }
 end
 function Addon:Print() end
 function Addon:ApplyAll() self.applied = (self.applied or 0) + 1 end
@@ -268,9 +265,9 @@ assert(Addon:FormatEditReadout("Range", "CENTER", 0, -96, 112, 36)
   "drag readout shows point, x/y, and frame size")
 
 local picker = Addon.layerPicker
-assert(picker, "profile HUD shows in Layout Edit Mode")
+assert(picker, "edit HUD shows in Layout Edit Mode")
 assert(picker.title.text == "Layout Edit Mode", "picker uses the HUD title")
-assert(picker.profile, "picker names the active Profile")
+assert(picker.profile == nil, "picker does not name a Profile")
 assert(picker.done, "picker has a Done control")
 assert(picker.done.mouse == true, "Done receives mouse")
 assert(picker.done.clicks, "Done registers for clicks")

@@ -3,7 +3,8 @@
   Deps: ShadowUI:CreateBarButton(), ShadowUI:ApplyBarChrome(), ShadowUI:AttachBarDragOverlay()
   Public: ShadowUI:FirstActionSlot(), ShadowUI:CreateBar(), ShadowUI:PlaceBarButtons(),
           ShadowUI:UpdateBarLayout()
-  Notes: PlaceBarButtons uses Gap between as space between slots. Gap above
+  Notes: Forever does not load LibActionButton. CreateBarButton returns nil.
+         PlaceBarButtons uses Gap between as space between slots. Gap above
          and gap below on this Bar pad inside each slot and shrink the icon.
 ]]
 
@@ -55,7 +56,7 @@ function Addon:UpdateBarLayout(bar, cfg)
   local size = cfg.buttonSize or 36
   self:PlaceBarButtons(bar, cfg.columns or #bar.buttons, size, cfg.gap or 0, cfg.rowGaps)
   bar:SetScale(cfg.scale or 1)
-  bar.iconShape = cfg.iconShape or "square"
+  bar.iconShape = "square"
   bar.fadeIdle = cfg.fadeIdle
   bar:ClearAllPoints()
   bar:SetPoint(
@@ -88,9 +89,7 @@ function Addon:CreateBar(barId, cfg)
   local page = tonumber(barId:match("^bar(%d+)$"))
   assert(page, "CreateBar requires a standard action bar id")
 
-  -- SecureHandlerStateTemplate must be the only template so WrapScript exists.
-  -- BackdropTemplate on the same CreateFrame can fail on Classic Era.
-  local bar = CreateFrame("Frame", "ShadowUIBar" .. page, UIParent, "SecureHandlerStateTemplate")
+  local bar = CreateFrame("Frame", "ShadowUIBar" .. page, UIParent)
   bar:SetFrameStrata("MEDIUM")
   bar:SetClampedToScreen(true)
   if bar.SetClampRectInsets then

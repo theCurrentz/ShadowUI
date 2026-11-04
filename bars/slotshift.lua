@@ -302,44 +302,9 @@ function Addon:WithUnlockedActionBars(fn)
   end
 end
 
-function Addon:ActionFromSlot(slot)
-  if type(slot) ~= "number" or type(GetActionInfo) ~= "function" then
-    return nil
-  end
-  local actionType, id = GetActionInfo(slot)
-  if not actionType or actionType == "" then
-    return nil
-  end
-  if actionType == "spell" then
-    local name = tostring(id)
-    if type(GetSpellInfo) == "function" then
-      name = GetSpellInfo(id) or name
-    end
-    return { id = "spell:" .. tostring(id), name = name, kind = "spell", spellId = id }
-  end
-  if actionType == "macro" then
-    local name = tostring(id)
-    if type(GetMacroInfo) == "function" then
-      name = GetMacroInfo(id) or name
-    end
-    local catalog = (self.Defaults or {}).catalog
-    if type(catalog) == "table" then
-      for catalogId, rec in pairs(catalog) do
-        if type(rec) == "table" and rec.name == name then
-          return { id = catalogId, name = name }
-        end
-      end
-    end
-    return { id = name, name = name }
-  end
-  if actionType == "item" then
-    local name = tostring(id)
-    if type(GetItemInfo) == "function" then
-      name = GetItemInfo(id) or name
-    end
-    return { id = "item:" .. tostring(id), name = name, kind = "item" }
-  end
-  return { id = actionType .. ":" .. tostring(id), name = tostring(id), kind = actionType }
+function Addon:ActionFromSlot()
+  -- GetActionInfo is secret and removed on Forever while this addon is tainted.
+  return nil
 end
 
 local function keyByBindSlot(self, binds)
@@ -414,94 +379,7 @@ function Addon:CollectHudButtons(groupName)
   return buttons
 end
 
-local function snapshotSlot(slot)
-  if type(GetActionInfo) ~= "function" then
-    return nil
-  end
-  local actionType, id, subType = GetActionInfo(slot)
-  if not actionType or actionType == "" then
-    return nil
-  end
-  return { type = actionType, id = id, subType = subType }
-end
-
-local function cursorHasPickup()
-  if type(GetCursorInfo) ~= "function" then
-    return true
-  end
-  local kind = GetCursorInfo()
-  return kind ~= nil and kind ~= ""
-end
-
-local function pickupSnap(snap)
-  if not snap then
-    return false
-  end
-  if snap.type == "spell" then
-    local api = _G.C_Spell
-    if api and type(api.PickupSpell) == "function" and snap.id then
-      pcall(api.PickupSpell, snap.id)
-      if cursorHasPickup() then
-        return true
-      end
-    end
-    if type(PickupSpell) == "function" then
-      pcall(PickupSpell, snap.id)
-      return cursorHasPickup()
-    end
-    return false
-  end
-  if snap.type == "macro" and type(PickupMacro) == "function" then
-    pcall(PickupMacro, snap.id)
-    return cursorHasPickup()
-  end
-  if snap.type == "item" and type(PickupItem) == "function" then
-    pcall(PickupItem, snap.id)
-    return cursorHasPickup()
-  end
-  return false
-end
-
-function Addon:ApplySlotMoves(moves, held)
-  if type(PickupAction) ~= "function" or type(ClearCursor) ~= "function" then
-    return
-  end
-  local snaps = {}
-  local dests = {}
-  for dest, src in pairs(moves or {}) do
-    dests[#dests + 1] = dest
-    if snaps[dest] == nil then
-      snaps[dest] = snapshotSlot(dest) or false
-    end
-    if src and snaps[src] == nil then
-      snaps[src] = snapshotSlot(src) or false
-    end
-  end
-  table.sort(dests)
-  local heldSnap = held and held.fromSlot and snaps[held.fromSlot]
-  if held and not heldSnap then
-    heldSnap = snapshotSlot(held.fromSlot)
-  end
-  self:WithUnlockedActionBars(function()
-    ClearCursor()
-    for _, dest in ipairs(dests) do
-      PickupAction(dest)
-      ClearCursor()
-    end
-    for _, dest in ipairs(dests) do
-      local src = moves[dest]
-      local snap = src and snaps[src]
-      if snap and snap ~= false then
-        if pickupSnap(snap) then
-          PlaceAction(dest)
-          ClearCursor()
-        end
-      end
-    end
-    if heldSnap and heldSnap ~= false then
-      pickupSnap(heldSnap)
-    end
-  end)
+function Addon:ApplySlotMoves()
 end
 
 function Addon:WriteHudOverlays(bindOverlay)
@@ -630,24 +508,5 @@ function Addon:HookButtonForSlotShift(button)
   if not button or button._shadowUISlotShift then
     return
   end
-  local header = button.header
-  if not header or not header.WrapScript then
-    return
-  end
   button._shadowUISlotShift = true
-  button.ShadowUIDragStart = function(self)
-    Addon:OnSlotShiftDragStart(self)
-  end
-  button.ShadowUIInsertReceive = function(self)
-    Addon:OnSlotShiftInsertReceive(self)
-  end
-  pcall(header.WrapScript, header, button, "OnDragStart", [[
-    self:CallMethod("ShadowUIDragStart")
-  ]])
-  pcall(header.WrapScript, header, button, "OnReceiveDrag", [[
-    if IsShiftKeyDown() and IsAltKeyDown() and owner:GetAttribute("shadowuifromslot") then
-      self:CallMethod("ShadowUIInsertReceive")
-      return false
-    end
-  ]])
 end

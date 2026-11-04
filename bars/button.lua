@@ -1,20 +1,29 @@
 --[[
   Purpose: Create LibActionButton action buttons with Action Slot Lock and Lorti-dark icon chrome.
-           Empty Action Slots stay hidden, including the Keybind label, except during
-           Keybind Edit Mode or an Action Slot pickup (slots and Keybind labels both show).
-           Shift+Alt drag inserts the action and Keybind. Pressed slots show a green
+           Skin Forever Blizzard ActionButtons lightly: the icon, IconMask, cooldowns,
+           hover and checked glows, Flash, equipped Border, and spell alerts stay native.
+           Only the slot rim is blackened and the empty-slot art dimmed, under an Outer Edge.
+           An Action Slot with no spell, macro, or item stays hidden, including the Keybind
+           label. A pickup or ACTIONBAR_SHOWGRID still shows empty slots as drop targets
+           and shows every Keybind. Keybind Edit Mode hides slot Keybind labels unless
+           a pickup is active. Forever Blizzard ActionButtons follow the host show state
+           instead of HasAction. Do not write Blizzard keys (icon, HotKey, Count) on
+           those hosts: Blizzard Update reads them, and taint there stops the drag
+           grid from showing empty slots, so a drop clicks through.
+           Shift+Alt drag inserts the action and Keybind. Pressed LAB slots show a green
            colour overlay on key down and click down. The overlay snaps off on up.
            A player cast or channel on that Action Slot keeps the overlay until it
            completes. The icon size does not change. Macro names stay hidden.
            Keybind labels are gold thick-outlined uppercase text. Item counts are
            pale lime outlined text inset inside the Action Slot.
-  Deps: ShadowUI addon table, LibActionButton-1.0
+  Deps: ShadowUI addon table, LibActionButton-1.0, ShadowUI:ApplyOuterChrome(),
+        ShadowUI:LockVertex()
   Public: ShadowUI:CreateBarButton(parent, id, actionSlot), ShadowUI:SkinBarButton(),
           ShadowUI:ShouldShowEmptyActionSlots(), ShadowUI:PaintEmptySlotVisibility(),
           ShadowUI:RefreshActionPlacement(), ShadowUI:OnActionBarShowGrid(),
           ShadowUI:OnActionBarHideGrid(), ShadowUI:OnCursorChanged(),
           ShadowUI:LockBarButton(), ShadowUI:ApplyActionSlotLock(),
-          ShadowUI:SetActionSlotHardLock(), ShadowUI:SkinCooldownCount(),
+          ShadowUI:SetActionSlotHardLock(),
           ShadowUI:PressGlowAlpha(), ShadowUI:PressGlowIsActive(),
           ShadowUI:ActionSlotSpellID(), ShadowUI:OnPressCastEvent(),
           ShadowUI:ShowPressGlow(), ShadowUI:HidePressGlow(),
@@ -23,8 +32,8 @@
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
-local LAB = LibStub("LibActionButton-1.0")
--- Crop rounded icon art. 0.07 keeps the square fill without over-zoom.
+local LAB = LibStub("LibActionButton-1.0", true)
+-- Crop rounded LAB icon art. 0.07 keeps the square fill without over-zoom.
 local CROP = 0.07
 local INSET = 2
 local HOVER_ALPHA = 0.22
@@ -43,7 +52,7 @@ local PRESS_CAST_END = {
   UNIT_SPELLCAST_INTERRUPTED = true,
   UNIT_SPELLCAST_CHANNEL_STOP = true,
 }
--- Gold matches Cooldown Count. Gray LAB defaults are hard to read on Darken icons.
+-- Gold Keybind labels. Gray LAB defaults are hard to read on Darken icons.
 local SLOT_LABEL_GOLD = { 1, 0.82, 0, 1 }
 local SLOT_LABEL_LIME = { 0.7, 0.88, 0.55, 0.75 }
 local HOTKEY_SIZE = 16
@@ -54,8 +63,6 @@ local COUNT_OFFSET_Y = 3
 local MOUSE_BUTTONS = {
   "LeftButton", "RightButton", "MiddleButton", "Button4", "Button5",
 }
-
-function Addon:SkinCooldownCount(button) end
 
 function Addon:PressGlowAlpha(elapsed, duration)
   duration = duration or 0
@@ -86,27 +93,8 @@ function Addon:BindingKeyIsDown(key)
 end
 
 function Addon:ActionSlotSpellID(button)
-  local slot = button and button._state_action
-  if type(slot) ~= "number" or not GetActionInfo then
-    return nil
-  end
-  local actionType, id = GetActionInfo(slot)
-  if actionType == "spell" then
-    return id
-  end
-  if actionType == "macro" and GetMacroSpell then
-    local name, _, spellId = GetMacroSpell(id)
-    if type(spellId) == "number" then
-      return spellId
-    end
-    if name and GetSpellInfo then
-      return select(7, GetSpellInfo(name))
-    end
-  end
-  if actionType == "item" and GetItemSpell then
-    local _, spellId = GetItemSpell(id)
-    return spellId
-  end
+  -- GetActionInfo is secret on Forever while this addon is tainted.
+  return button and button.shadowUISpellID or nil
 end
 
 function Addon:PressGlowIsActive(button, now)
@@ -151,11 +139,9 @@ local function ensurePressGlow(button)
     glow:Hide()
   end
   -- Glow is created on first press, after the last SkinBarButton. Re-apply
-  -- shape so circle and diamond mask this overlay to the 4px inset.
+  -- the host shape so Extra Action keeps circle chrome.
   if Addon.ApplyIconShape then
-    local parent = button.GetParent and button:GetParent()
-    local shape = button.shadowUIShape or (parent and parent.iconShape) or "square"
-    Addon:ApplyIconShape(button, shape)
+    Addon:ApplyIconShape(button, button.shadowUIShape or "square")
   end
   return glow
 end
@@ -563,8 +549,34 @@ local function paintChrome(button)
   end
   chrome:ClearAllPoints()
   chrome:SetAllPoints(button)
-  chrome:SetColorTexture(0.05, 0.05, 0.05, 1)
+  local black = Addon.DARKEN_BLACK or { 0.05, 0.05, 0.05 }
+  chrome:SetColorTexture(black[1], black[2], black[3], 1)
   chrome:Show()
+end
+
+local function buttonName(button)
+  local name = button and button.GetName and button:GetName()
+  if type(name) ~= "string" then
+    return nil
+  end
+  return name
+end
+
+local function isDefaultActionButton(button)
+  local name = buttonName(button)
+  if not name then
+    return false
+  end
+  return name:find("^ActionButton%d+$")
+    or name:find("^MultiBar")
+    or name:find("^PetActionButton")
+    or name:find("^StanceButton")
+    or name:find("^ShapeshiftButton")
+    or name:find("^BonusActionButton")
+    or name:find("^PossessButton")
+    or name:find("^OverrideActionButton")
+    or name:find("^OverrideActionBarButton")
+    or name:find("^ExtraActionButton")
 end
 
 local function placeActionOuter(button, outer)
@@ -575,7 +587,7 @@ local function placeActionOuter(button, outer)
   if parent and outer.SetParent then
     outer:SetParent(parent)
   end
-  if button.SetClipsChildren then
+  if not isDefaultActionButton(button) and button.SetClipsChildren then
     button:SetClipsChildren(false)
   end
   if button.GetFrameLevel and outer.SetFrameLevel then
@@ -588,10 +600,26 @@ local function placeActionOuter(button, outer)
 end
 
 local function slotHasAction(button)
+  if isDefaultActionButton(button) then
+    return true
+  end
   if not button.HasAction then
     return true
   end
   return button:HasAction() and true or false
+end
+
+-- Forever forbids HasAction on default ActionButtons. Blizzard already hides
+-- an empty slot (or its icon) when Always Show is off. Read that show state.
+local function defaultActionSlotIsFilled(button)
+  if button.IsShown and not button:IsShown() then
+    return false
+  end
+  local icon = button.icon or button.Icon
+  if icon and icon.IsShown and not icon:IsShown() then
+    return false
+  end
+  return true
 end
 
 local function cursorHasPickup()
@@ -606,6 +634,9 @@ function Addon:ShouldShowEmptyActionSlots()
   if self.keybindMode == true then
     return true
   end
+  if self.IsActionSlotPickup then
+    return self:IsActionSlotPickup()
+  end
   if (self.actionBarGridCount or 0) > 0 then
     return true
   end
@@ -616,17 +647,50 @@ local function showEmptyActionSlot()
   return Addon:ShouldShowEmptyActionSlots()
 end
 
-local function paintSlotChrome(button)
-  paintChrome(button)
-  local parent = button.GetParent and button:GetParent()
-  local shape = (parent and parent.iconShape) or "square"
-  if Addon.ApplyIconShape then
-    Addon:ApplyIconShape(button, shape)
-  end
-  local outer = Addon:ApplyOuterChrome(button, shape)
+local function paintOuterEdge(button)
+  local outer = Addon:ApplyOuterChrome(button, "square")
   placeActionOuter(button, outer)
   if outer and outer.Show then
     outer:Show()
+  end
+end
+
+local function paintSlotChrome(button)
+  paintChrome(button)
+  if Addon.ApplyIconShape then
+    Addon:ApplyIconShape(button, "square")
+  end
+  paintOuterEdge(button)
+end
+
+local function paintHotkeyVisibility(button, filled)
+  local hotkey = button.HotKey
+  if not hotkey and button.GetName then
+    hotkey = _G[button:GetName() .. "HotKey"]
+    if not isDefaultActionButton(button) then
+      button.HotKey = hotkey
+    end
+  end
+  if not hotkey then
+    return
+  end
+  local show
+  if Addon.ShouldShowActionSlotKeybind then
+    show = Addon:ShouldShowActionSlotKeybind(filled) == true
+  else
+    show = filled == true and Addon.keybindMode ~= true
+  end
+  if show and not isDefaultActionButton(button) and not button.shadowUIHotkey then
+    show = false
+  end
+  if show then
+    if hotkey.Show then
+      hotkey:Show()
+    end
+    return
+  end
+  if hotkey.Hide then
+    hotkey:Hide()
   end
 end
 
@@ -634,8 +698,18 @@ function Addon:PaintEmptySlotVisibility(button)
   if not button then
     return
   end
-  local filled = slotHasAction(button)
   local showEmpty = showEmptyActionSlot()
+  if isDefaultActionButton(button) then
+    local filled = defaultActionSlotIsFilled(button)
+    if filled or showEmpty then
+      paintOuterEdge(button)
+    else
+      hideButtonChrome(button)
+    end
+    paintHotkeyVisibility(button, filled)
+    return
+  end
+  local filled = slotHasAction(button)
   local visible = filled or showEmpty
   if button.SetAlpha then
     button:SetAlpha(visible and 1 or 0)
@@ -646,24 +720,15 @@ function Addon:PaintEmptySlotVisibility(button)
     hideButtonChrome(button)
     Addon:ClearPressGlow(button)
   end
-  local hotkey = button.HotKey
-  if not hotkey then
-    return
-  end
-  if filled or showEmpty then
-    if button.shadowUIHotkey and hotkey.Show then
-      hotkey:Show()
-    end
-    return
-  end
-  if hotkey.Hide then
-    hotkey:Hide()
-  end
+  paintHotkeyVisibility(button, filled)
 end
 
 function Addon:RefreshActionPlacement()
   if self.ShowBarsForActionPlacement then
     self:ShowBarsForActionPlacement(self:ShouldShowEmptyActionSlots())
+  end
+  if self.SkinBlizzardActionBars then
+    self:SkinBlizzardActionBars()
   end
   for _, bar in pairs(self.bars or {}) do
     for _, button in ipairs(bar.buttons or {}) do
@@ -702,7 +767,69 @@ function Addon:OnCursorChanged()
   end
 end
 
+local function hideMacroName(button)
+  local name = button.Name
+  if not name and button.GetName then
+    name = _G[button:GetName() .. "Name"]
+  end
+  if not name then
+    return
+  end
+  if name.SetText then
+    name:SetText("")
+  end
+  if name.Hide then
+    name:Hide()
+  end
+end
+
+-- Only the rim and the empty-slot art. The icon, IconMask, glows, Flash,
+-- Border, and spell alerts carry Blizzard feedback and stay native.
+-- FloatingBG and NormalTexture2 match DarkMode Forever slot chrome.
+local function darkenDefaultArt(button)
+  if not Addon.LockVertex then
+    return
+  end
+  local rim, well = Addon.DARKEN_BLACK, Addon.DARKEN_BAR
+  local name = buttonName(button)
+  Addon:LockVertex(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()), rim)
+  Addon:LockVertex(button.PushedTexture or (button.GetPushedTexture and button:GetPushedTexture()), rim)
+  Addon:LockVertex(button.SlotArt, well)
+  Addon:LockVertex(button.SlotBackground, well)
+  local floating = button.FloatingBG
+  if not floating and name then
+    floating = _G[name .. "FloatingBG"]
+  end
+  Addon:LockVertex(floating, rim)
+  if name then
+    Addon:LockVertex(_G[name .. "NormalTexture2"], rim)
+  end
+end
+
+-- HookScript, SetPoint, and SetScript on default ActionButtons and their
+-- cooldown frames raise ADDON_ACTION_FORBIDDEN. Cooldown times are secret.
+local function skinDefaultButton(button)
+  Addon:PaintEmptySlotVisibility(button)
+  darkenDefaultArt(button)
+  hideMacroName(button)
+  paintSlotLabel(button.HotKey, HOTKEY_SIZE, SLOT_LABEL_GOLD, HOTKEY_FLAGS)
+  local count = button.Count
+  if not count and button.GetName then
+    count = _G[button:GetName() .. "Count"]
+  end
+  paintCountLabel(count)
+end
+
 function Addon:SkinBarButton(button)
+  if isDefaultActionButton(button) then
+    skinDefaultButton(button)
+    return
+  end
+  local icon = button.icon or button.Icon
+  if not icon and button.GetName then
+    icon = _G[button:GetName() .. "Icon"]
+    button.icon = icon
+  end
   self:PaintEmptySlotVisibility(button)
   strip(button.NormalTexture or (button.GetNormalTexture and button:GetNormalTexture()))
   strip(button.Border)
@@ -717,18 +844,7 @@ function Addon:SkinBarButton(button)
   strip(pressed)
   inset(hover)
 
-  local name = button.Name
-  if not name and button.GetName then
-    name = _G[button:GetName() .. "Name"]
-  end
-  if name then
-    if name.SetText then
-      name:SetText("")
-    end
-    if name.Hide then
-      name:Hide()
-    end
-  end
+  hideMacroName(button)
   paintSlotLabel(button.HotKey, HOTKEY_SIZE, SLOT_LABEL_GOLD, HOTKEY_FLAGS)
   local count = button.Count
   if not count and button.GetName then
@@ -736,19 +852,11 @@ function Addon:SkinBarButton(button)
     button.Count = count
   end
   paintCountLabel(count)
-  hookPressGlow(button)
 
-  local icon = button.icon or button.Icon
-  if not icon and button.GetName then
-    icon = _G[button:GetName() .. "Icon"]
-    button.icon = icon
-  end
+  icon = button.icon or button.Icon or icon
   if icon then
-    if button.IconMask then
-      if icon.RemoveMaskTexture then
-        icon:RemoveMaskTexture(button.IconMask)
-      end
-      button.IconMask:Hide()
+    if button.IconMask and icon.RemoveMaskTexture then
+      pcall(icon.RemoveMaskTexture, icon, button.IconMask)
     end
     inset(icon)
     icon:SetTexCoord(CROP, 1 - CROP, CROP, 1 - CROP)
@@ -756,28 +864,21 @@ function Addon:SkinBarButton(button)
       icon:SetDrawLayer("ARTWORK", 0)
     end
   end
-  local parent = button.GetParent and button:GetParent()
-  local shape = (parent and parent.iconShape) or "square"
   if self.ApplyIconShape then
-    self:ApplyIconShape(button, shape)
+    self:ApplyIconShape(button, "square")
   end
+  hookPressGlow(button)
   skinCooldown(button)
-  self:SkinCooldownCount(button)
-  -- SetHitRectInsets is protected on action buttons. LAB OnButtonUpdate
-  -- runs on ACTIONBAR_SLOT_CHANGED in combat.
-  if not InCombatLockdown() and button.SetHitRectInsets then
-    button:SetHitRectInsets(0, 0, 0, 0)
-  end
 end
 
-if LAB.RegisterCallback then
+if LAB and LAB.RegisterCallback then
   LAB.RegisterCallback("ShadowUI", "OnButtonUpdate", function(_, button)
     Addon:SkinBarButton(button)
   end)
 end
 
 function Addon:LockBarButton(button)
-  if not button then
+  if not button or isDefaultActionButton(button) then
     return
   end
   -- buttonlock: click uses the action. Drag needs IsModifiedClick("PICKUPACTION")
@@ -816,6 +917,9 @@ function Addon:SetActionSlotHardLock(locked)
 end
 
 function Addon:CreateBarButton(parent, id, actionSlot)
+  if not LAB then
+    return nil
+  end
   local name = "ShadowUIActionButton" .. id
   local button = LAB:CreateButton(id, name, parent, CONFIG)
   button.MasqueSkinned = true

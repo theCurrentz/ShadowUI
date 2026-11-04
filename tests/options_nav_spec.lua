@@ -32,29 +32,16 @@ _G.LibStub = function(name)
 end
 
 function Addon:GetCharDB()
-  return { activeProfile = nil, microFadeIdle = nil, microIconShape = nil, xpFadeIdle = nil }
+  return { microFadeIdle = nil }
 end
 function Addon:GetDB()
-  return {
-    defaultProfile = "Default",
-    profiles = { Default = { layout = {}, keybinds = {} } },
-    loadouts = {},
-  }
+  return { layout = {}, keybinds = {}, actions = {} }
 end
 function Addon:GetPlayerClass()
   return "MAGE"
 end
-function Addon:GetActiveProfileName() return "Default" end
-function Addon:SetActiveProfile() end
-function Addon:CreateProfile() end
-function Addon:RenameProfile() end
-function Addon:DeleteProfile() end
-function Addon:SetDefaultProfile() end
-function Addon:ProfileValues()
-  return { Default = "Default" }
-end
 function Addon:GetProfile()
-  return Addon:GetDB().profiles.Default
+  return Addon:GetDB()
 end
 function Addon:ToggleEditMode() end
 function Addon:ToggleKeybindMode() end
@@ -63,16 +50,6 @@ function Addon:ResolveEffective()
   return { layout = {} }
 end
 function Addon:ApplyAll() end
-function Addon:WriteProfileDelta() end
-function Addon:LoadoutValues()
-  return {}
-end
-function Addon:DefaultLoadoutOptions()
-  return { selectedBars = {} }
-end
-function Addon:BackupLoadoutKey()
-  return "backup"
-end
 
 assert(loadfile(root .. "core/resolve.lua"))()
 function Addon:ResolveEffective()
@@ -89,61 +66,41 @@ assert(registered.args.search.name == "Search", "Search uses that name")
 assert(registered.args.general, "outline has General")
 assert(registered.args.general.type == "group", "General is a group")
 assert(not registered.args.general.inline, "General is an outline node")
-assert(registered.args.profiles and not registered.args.profiles.inline,
-  "Profiles is an outline node")
-assert(registered.args.bars and not registered.args.bars.inline,
-  "Action bars is an outline node")
-assert(registered.args.cooldown and not registered.args.cooldown.inline,
-  "Cooldown manager is an outline node")
-assert(registered.args.loadouts and not registered.args.loadouts.inline,
-  "Loadouts is an outline node")
-assert(not registered.args.bars.args.global.inline, "Global is nested in the outline")
-assert(not registered.args.bars.args.groups.inline, "Groups is nested in the outline")
-assert(not registered.args.bars.args.bar1.inline, "Bar 1 is nested in the outline")
+assert(registered.args.profiles == nil, "outline has no Profiles")
+assert(registered.args.bars == nil, "outline has no Action bars")
+assert(registered.args.cooldown == nil, "outline has no Cooldown manager")
+assert(registered.args.loadouts == nil, "outline has no Loadouts")
 assert(registered.args.general.args.microFadeIdle, "General holds Micro Cluster fade idle")
-assert(registered.args.general.args.showExperienceBar, "General holds Experience bar toggle")
-assert(registered.args.general.args.xpFadeIdle, "General holds Experience bar fade idle")
+assert(not registered.args.general.args.xpFadeIdle, "General has no Experience bar opacity")
+assert(not registered.args.general.args.showExperienceBar, "General has no Experience bar toggle")
 assert(registered.args.general.args.editLayout, "General holds Edit layout")
-assert(registered.args.unitFrames, "outline has Unit Frames")
-assert(registered.args.unitFrames.type == "group", "Unit Frames is a group")
-assert(not registered.args.unitFrames.inline, "Unit Frames is an outline node")
-assert(registered.args.unitFrames.args.studio.dialogControl == "ShadowUI-UnitStudio",
-  "Unit Frames hosts the visual studio")
+assert(registered.args.unitFrames == nil, "outline has no Unit Frames")
 assert(not registered.args.general.args.shiftAndPrune, "General does not hold Shift and Prune")
-assert(registered.args.bars.args.groups.args.group1.args.shiftAndPrune,
-  "each Bar Group holds Shift and Prune")
 
 assert(Addon:GetOptionsSearch() == "", "Search starts empty")
-assert(registered.args.profiles.hidden() ~= true, "empty Search keeps Profiles")
-assert(registered.args.bars.hidden() ~= true, "empty Search keeps Action bars")
+assert(registered.args.general.hidden() ~= true, "empty Search keeps General")
 
-registered.args.search.set(nil, " loadout ")
-assert(Addon:GetOptionsSearch() == "loadout", "Search stores a trimmed lowercase query")
+registered.args.search.set(nil, " minimap ")
+assert(Addon:GetOptionsSearch() == "minimap", "Search stores a trimmed lowercase query")
 assert(notified == "ShadowUI", "Search refresh notifies AceConfig")
-assert(registered.args.loadouts.hidden() ~= true, "Loadout query keeps Loadouts")
-assert(registered.args.profiles.hidden() == true, "Loadout query hides Profiles")
-assert(registered.args.bars.hidden() == true, "Loadout query hides Action bars")
+assert(registered.args.general.hidden() ~= true, "minimap query keeps General")
 
-registered.args.search.set(nil, "Gap")
-assert(registered.args.bars.hidden() ~= true, "Gap query keeps Action bars")
-assert(registered.args.bars.args.bar1.hidden() ~= true, "Gap query keeps Bar 1")
-assert(registered.args.bars.args.global.hidden() ~= true, "Gap query keeps Global")
-assert(registered.args.profiles.hidden() == true, "Gap query hides Profiles")
-assert(registered.args.cooldown.hidden() ~= true, "Gap query keeps Cooldown manager")
+registered.args.search.set(nil, "Hard lock")
+assert(registered.args.general.hidden() ~= true, "Hard lock query keeps General")
+assert(registered.args.general.args.hardLockActionSlots.hidden() ~= true,
+  "Hard lock query keeps that control")
+assert(registered.args.general.args.editLayout.hidden() == true,
+  "Hard lock query hides Edit layout")
 
-registered.args.search.set(nil, "Action bars")
-assert(registered.args.bars.hidden() ~= true, "Action bars query keeps that node")
-assert(registered.args.bars.args.bar1.hidden() ~= true,
-  "a matching parent keeps nested outline nodes")
-assert(registered.args.profiles.hidden() == true, "Action bars query hides Profiles")
-
-registered.args.search.set(nil, "Bar 1")
-assert(registered.args.bars.hidden() ~= true, "Bar 1 query keeps Action bars")
-assert(registered.args.bars.args.bar1.hidden() ~= true, "Bar 1 query keeps Bar 1")
-assert(registered.args.bars.args.bar2.hidden() == true, "Bar 1 query hides Bar 2")
+registered.args.search.set(nil, "Edit layout")
+assert(registered.args.general.hidden() ~= true, "Edit layout query keeps General")
+assert(registered.args.general.args.editLayout.hidden() ~= true,
+  "Edit layout query keeps that control")
+assert(registered.args.general.args.hardLockActionSlots.hidden() == true,
+  "Edit layout query hides Hard lock")
 
 registered.args.search.set(nil, "")
-assert(registered.args.profiles.hidden() ~= true, "clearing Search shows Profiles again")
+assert(registered.args.general.hidden() ~= true, "clearing Search shows General again")
 assert(registered.args.search.hidden == nil or registered.args.search.hidden() ~= true,
   "Search stays visible")
 

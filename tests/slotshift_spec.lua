@@ -226,7 +226,7 @@ assert(messages[#messages] == "Shifted keybinds left and pruned gaps.",
 local bindWrite, actionWrite = 0, 0
 for _, write in ipairs(writes) do
   assert(write.section == "keybinds" or write.section == "actions",
-    "Shift and Prune writes the active Profile")
+    "Shift and Prune writes the Profile")
   if write.section == "keybinds" then
     bindWrite = bindWrite + 1
   elseif write.section == "actions" then
@@ -235,7 +235,7 @@ for _, write in ipairs(writes) do
 end
 assert(bindWrite == 3, "Shift and Prune writes each Keybind in the pack")
 assert(actionWrite == 0, "Shift and Prune does not write an Action Deck overlay")
-assert(#placed >= 1, "Shift and Prune places live Action Slots")
+assert(#placed == 0, "Shift and Prune does not read GetActionInfo to move slots")
 
 function Addon.CollectHudButtons()
   return packed
@@ -258,14 +258,12 @@ assert(initSrc:find('cmd == "prune"') or initSrc:find('cmd == "shift"'),
   "/shadowui prune runs Shift and Prune")
 
 local configSrc = assert(io.open(root .. "options/config.lua", "r")):read("*a")
-assert(configSrc:find("ShiftAndPruneBars(groupName)", 1, true),
-  "options run Shift and Prune on that Bar Group")
-assert(configSrc:find("Shift and Prune"), "options use the Shift and Prune name")
+assert(not configSrc:find("ShiftAndPruneBars", 1, true),
+  "options do not run Shift and Prune")
+assert(not configSrc:find("Action bars", 1, true), "options have no Action bars group")
 
 local toc = assert(io.open(root .. "ShadowUI.toc", "r")):read("*a")
-assert(toc:find("bars\\slotshift.lua", 1, true), "Era TOC loads slotshift")
-local tocTbc = assert(io.open(root .. "ShadowUI_TBC.toc", "r")):read("*a")
-assert(tocTbc:find("bars\\slotshift.lua", 1, true), "TBC TOC loads slotshift")
+assert(toc:find("bars\\slotshift.lua", 1, true), "TOC loads slotshift")
 
 local lockValue = "1"
 _G.GetCVar = function() return lockValue end

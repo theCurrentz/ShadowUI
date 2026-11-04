@@ -1,10 +1,11 @@
--- Square minimap chrome is a 16px Darken buffer around the map, with Zone Text
--- on top and an Outer Edge. The map uses SexyMap's square mask and icon path.
--- Cluster icons, including late LFG and LibDBIcon buttons, sit on that square
--- with SexyMap's extra radius. World Layer from Nova World Buffs sits on the
--- bottom. Time is Blizzard TimeManagerClockButton under the map. GameTimeFrame
--- stays hidden. The mouse wheel zooms. After 5 seconds the map zooms out. The
--- player can drag every minimap icon, including LFG.
+-- Forever square minimap chrome skins the Blizzard cluster in place. The map
+-- uses SexyMap's square mask. A 16px Darken fade plus Outer Edge replaces the
+-- compass ring. Forever DielFrame hides so it does not block pings. Left-click
+-- pings the full square face. Cluster header widgets (Zone Text, Time,
+-- calendar, mail, tracking) stay put. Map-edge icons, including late LFG and
+-- LibDBIcon buttons, sit on the square path. World Layer from Nova World Buffs
+-- sits on the bottom. The mouse wheel zooms. After 5 seconds the map zooms
+-- out. The player can drag every map-edge icon, including LFG.
 -- Run: lua tests/minimap_spec.lua
 local unpack = unpack or table.unpack
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -105,6 +106,9 @@ local function fakeFrame(name)
       parent.children[#parent.children + 1] = self
     end
   end
+  function frame:GetParent()
+    return self.parent
+  end
   function frame:GetChildren()
     local kids = self.children or {}
     return unpack(kids)
@@ -204,14 +208,70 @@ _G.CreateFrame = function(_, name, parent, template)
 end
 
 _G.MinimapCluster = fakeFrame("MinimapCluster")
+function _G.MinimapCluster:Hide()
+  error("Hide is protected")
+end
+function _G.MinimapCluster:EnableMouse()
+  error("EnableMouse is protected")
+end
+_G.MinimapCluster.DielFrame = fakeFrame("MinimapClusterDielFrame")
+_G.MinimapCluster.DielFrame:SetParent(_G.MinimapCluster)
 _G.Minimap = fakeFrame("Minimap")
+_G.Minimap:SetSize(198, 198)
+_G.Minimap.PingLocation = function(self, x, y)
+  self.pinged = { x, y }
+end
+_G.Minimap.GetEffectiveScale = function()
+  return 1
+end
+_G.Minimap.GetScript = function(self, event)
+  return self[event]
+end
+-- Blizzard circular OnClick rejects square corners outside the inscribed circle.
+_G.Minimap.OnClick = function(self)
+  local x, y = _G.GetCursorPosition()
+  x = x / self:GetEffectiveScale()
+  y = y / self:GetEffectiveScale()
+  local cx, cy = self:GetCenter()
+  x, y = x - cx, y - cy
+  if math.sqrt(x * x + y * y) < (self:GetWidth() / 2) then
+    self:PingLocation(x, y)
+  end
+end
+_G.MinimapContainer = fakeFrame("MinimapContainer")
+_G.MinimapCluster.MinimapContainer = _G.MinimapContainer
+_G.MinimapContainer:SetParent(_G.MinimapCluster)
+_G.Minimap:SetParent(_G.MinimapContainer)
+_G.Minimap.ZoomIn = fakeFrame("MinimapZoomIn")
+_G.Minimap.ZoomOut = fakeFrame("MinimapZoomOut")
 _G.MinimapBorder = fakeFrame("MinimapBorder")
-_G.MinimapZoomIn = fakeFrame("MinimapZoomIn")
-_G.MinimapZoomOut = fakeFrame("MinimapZoomOut")
+_G.MinimapZoomIn = _G.Minimap.ZoomIn
+_G.MinimapZoomOut = _G.Minimap.ZoomOut
 _G.MinimapBackdrop = fakeFrame("MinimapBackdrop")
+_G.MinimapCompassTexture = fakeFrame("MinimapCompassTexture")
+_G.MinimapNorthTag = fakeFrame("MinimapNorthTag")
+_G.MinimapBorderTop = fakeFrame("MinimapBorderTop")
+_G.MinimapCluster.BorderTop = _G.MinimapBorderTop
+_G.MinimapCluster.Tracking = fakeFrame("MinimapClusterTracking")
+_G.MinimapCluster.Tracking:SetParent(_G.MinimapCluster)
+_G.MinimapCluster.IndicatorFrame = fakeFrame("MinimapClusterIndicatorFrame")
+_G.MinimapCluster.IndicatorFrame:SetParent(_G.MinimapCluster)
 _G.MiniMapTrackingBorder = fakeFrame("MiniMapTrackingBorder")
 _G.MiniMapMailFrame = fakeFrame("MiniMapMailFrame")
+_G.MiniMapMailFrame:SetParent(_G.MinimapCluster.IndicatorFrame)
+_G.MinimapCluster.IndicatorFrame.MailFrame = _G.MiniMapMailFrame
 _G.MiniMapTrackingFrame = fakeFrame("MiniMapTrackingFrame")
+_G.MiniMapTrackingFrame:SetParent(_G.MinimapCluster.Tracking)
+_G.HybridMinimap = {
+  MapCanvas = {
+    useMask = true,
+    SetUseMaskTexture = function(self, enabled) self.useMask = enabled end,
+  },
+  CircleMask = {
+    texture = "Textures\\MinimapMask",
+    SetTexture = function(self, path) self.texture = path end,
+  },
+}
 local function fakeIconTexture(name)
   local tex = { name = name, r = 1, g = 1, b = 1 }
   function tex:GetName() return self.name end
@@ -231,10 +291,13 @@ function _G.MiniMapTrackingFrame:GetRegions()
   return _G.MiniMapTrackingIcon
 end
 _G.MinimapZoneTextButton = fakeFrame("MinimapZoneTextButton")
+_G.MinimapZoneTextButton:SetParent(_G.MinimapCluster)
+_G.MinimapCluster.ZoneTextButton = _G.MinimapZoneTextButton
 _G.MinimapZoneText = fakeFontString("MinimapZoneText")
 _G.GameTimeFrame = fakeFrame("GameTimeFrame")
 _G.GameTimeFrame:SetParent(_G.MinimapCluster)
 _G.TimeManagerClockButton = fakeFrame("TimeManagerClockButton")
+_G.TimeManagerClockButton:SetParent(_G.MinimapCluster)
 _G.TimeManagerClockTicker = _G.TimeManagerClockButton:CreateFontString()
 _G.TimeManagerClockTicker:SetText("7:40")
 _G.MinimapLayerFrame = fakeFrame("MinimapLayerFrame")
@@ -297,91 +360,80 @@ Addon:SkinMinimap()
 local box = _G.ShadowUIMinimapHolder
 local cluster = _G.MinimapCluster
 local map = _G.Minimap
+local container = _G.MinimapContainer
 local fill = box and box.shadowUIBackdrop
-assert(box, "square map lives on a holder, not the circular cluster")
+assert(box, "Darken fade lives on a holder behind the Forever map")
 assert(_G.GetMinimapShape() == "SQUARE", "GetMinimapShape reports SQUARE for LibDBIcon")
 assert(fill, "minimap keeps a chrome fill")
 assert(fill.r == 0.05 and fill.g == 0.05 and fill.b == 0.05, "minimap chrome is Lorti darkest")
-assert(fill.a == 0.6, "Darken buffer is translucent")
+assert(fill.a == 0.6, "Darken fade is translucent")
 assert(fill.all == box, "fill is the square holder")
-local park = box.points[1]
-assert(park and park[1] == "TOPRIGHT" and park[2] == _G.UIParent, "holder parks at TOPRIGHT")
-assert(park[4] == 0 and park[5] == 0, "map is flush to the top-right")
-assert(box.width == 192 and box.height == 196, "holder keeps side buffer and a 4px top inset")
-assert(map.width == 160 and map.height == 160, "map stays 160 inside the buffer")
-assert(box.width - map.width == 32, "16px Darken buffer sits on each side")
-local mapPark = map.points[1]
-assert(mapPark and mapPark[1] == "BOTTOM" and mapPark[5] == 16,
-  "map sits on the bottom buffer so extra space is above Zone Text")
+assert(map.parent == container, "map stays on the Forever cluster")
+assert(map.width == 198 and map.height == 198, "do not resize the Forever map")
+assert(box.parent == container, "Darken fade follows the map host")
+local park = box.points[#box.points]
+assert(park and park[1] == "CENTER" and park[2] == map, "fade square is centred on the map")
+assert(box.width == 230 and box.height == 230, "16px Darken fade sits around the map")
+assert(box.width - map.width == 32, "16px Darken fade sits on each side")
 local outer = box.shadowUIOuter
 assert(outer, "minimap keeps an Outer Edge")
 assert(outer.template == "BackdropTemplate", "Outer Edge uses BackdropTemplate")
 assert(outer.backdrop.edgeFile:find("outer_shadow", 1, true), "Outer Edge uses the Lorti shadow texture")
 assert(outer.points[1][1] == "TOPLEFT" and outer.points[1][4] == -4,
   "Outer Edge extends 4px past the holder")
-assert(map.parent == box, "map leaves the circular MinimapCluster")
 assert(map.mask == "Interface\\BUTTONS\\WHITE8X8", "SexyMap square mask clips the map")
+assert(_G.HybridMinimap.CircleMask.texture == "Interface\\BUTTONS\\WHITE8X8",
+  "HybridMinimap uses the square mask")
 assert(map.width < box.width, "map insets so the dark frame is visible")
-assert(cluster.hidden, "circular cluster does not sit behind the square map")
-assert(cluster.mouse == false, "cluster has no dead mouse zone")
+assert(not cluster.hidden, "do not Hide MinimapCluster")
+assert(cluster.mouse == nil, "do not EnableMouse MinimapCluster")
 assert(_G.MinimapBorder.hidden, "round silver ring stays hidden on the square map")
-assert(_G.MinimapZoomOut.hidden, "zoom buttons stay hidden")
+assert(_G.MinimapCompassTexture.hidden, "compass ring stays hidden")
+assert(_G.MinimapNorthTag.hidden, "north tag stays hidden")
+assert(not _G.MinimapZoomOut.hidden, "Forever zoom buttons stay")
 assert(not _G.MinimapZoneText.hidden, "Zone Text stays visible")
-assert(_G.MinimapZoneText.parent == _G.MinimapZoneTextButton,
-  "Zone Text FontString sits on MinimapZoneTextButton")
-assert(_G.MinimapZoneTextButton.parent == box, "Zone Text sits on the square holder")
-local zone = _G.MinimapZoneTextButton.points[1]
-assert(zone and zone[1] == "BOTTOM" and zone[2] == map, "Zone Text sits above the map")
-assert(zone[3] == "TOP" and zone[5] == 3, "Zone Text keeps a 3px gap above the map")
-assert(_G.MiniMapTrackingBorder.r == 0.05, "tracking ring is Lorti darkest")
-
-local mail = _G.MiniMapMailFrame.points[1]
-assert(mail and mail[1] == "CENTER" and mail[2] == map, "mail icon is parented to the square map")
-assert(mail[4] > 0 and mail[5] < 0, "mail sits on the south-east square corner, not the circle")
+assert(_G.MinimapZoneTextButton.parent == cluster, "Zone Text stays on the cluster header")
+assert(not _G.GameTimeFrame.hidden, "calendar stays on the cluster header")
+assert(_G.TimeManagerClockButton.parent == cluster, "Time stays on the cluster header")
+assert(_G.ShadowUIMinimapClock == nil, "Time does not create a custom clock")
+assert(_G.ShadowUIStopwatch == nil, "Time does not create a custom Stopwatch")
+assert(_G.MiniMapMailFrame.parent == _G.MinimapCluster.IndicatorFrame,
+  "mail stays in the cluster header")
+assert(_G.MiniMapTrackingFrame.parent == _G.MinimapCluster.Tracking,
+  "tracking stays on the cluster header")
 assert(_G.MiniMapMailIcon.r == 1 and _G.MiniMapMailIcon.g == 1 and _G.MiniMapMailIcon.b == 1,
   "mail glyph is not painted Darken black")
 assert(_G.MiniMapTrackingIcon.r == 1 and _G.MiniMapTrackingIcon.g == 1 and _G.MiniMapTrackingIcon.b == 1,
   "tracking glyph is not painted Darken black")
 assert(not _G.MiniMapMailFrame.hidden, "mail host stays able to Show")
 assert(_G.MiniMapMailFrame.Show ~= _G.MiniMapMailFrame.Hide, "mail Show is not replaced")
-local track = _G.MiniMapTrackingFrame.points[1]
-assert(track[4] < 0 and track[5] > 0, "tracking sits on the north-west square corner, not the circle")
 
-assert(_G.GameTimeFrame.hidden, "sun/moon Time art stays hidden")
-assert(not _G.TimeManagerClockButton.hidden, "Time stays the Blizzard clock")
-assert(_G.ShadowUIMinimapClock == nil, "Time does not create a custom clock")
-assert(_G.ShadowUIStopwatch == nil, "Time does not create a custom Stopwatch")
 local timeFrame = _G.TimeManagerClockButton
-assert(timeFrame.parent == map, "Time sits on the map")
-local timePark = timeFrame.points[#timeFrame.points]
-assert(timePark and timePark[1] == "TOP" and timePark[2] == map,
-  "Time parks under the map the SexyMap way")
-assert(timePark[3] == "BOTTOM" and timePark[4] == 0 and timePark[5] == 0,
-  "Time is centred under the map")
 Addon:SkinMinimap()
 assert(_G.TimeManagerClockButton == timeFrame, "Time does not replace the Blizzard clock")
+assert(timeFrame.parent == cluster, "Time does not leave the cluster header")
 
 _G.MinimapZoomOut:Show()
-assert(_G.MinimapZoomOut.hidden, "zoom buttons cannot come back")
+assert(not _G.MinimapZoomOut.hidden, "zoom buttons stay after Show")
 
 map:SetMaskTexture("Textures\\MinimapMask")
 assert(map.mask == "Interface\\BUTTONS\\WHITE8X8", "Blizzard cannot restore the circular mask")
 
-_G.MiniMapMailFrame:SetPoint("CENTER", map, "CENTER", 0, 40)
+_G.MiniMapMailFrame:SetPoint("TOPRIGHT", cluster, "TOPRIGHT", -8, -2)
 local mailAfter = _G.MiniMapMailFrame.points[#_G.MiniMapMailFrame.points]
-assert(mailAfter[5] < 0, "mail cannot return to the circular cluster path")
+assert(mailAfter[2] == cluster, "mail cannot leave the cluster header")
 
--- Classic Era dungeon finder loads after the first skin, parented to the
--- hidden cluster. A later skin must lift it onto the square SW corner.
+-- Dungeon finder sits on the map edge. A later skin must lift it onto the
+-- square SW corner at the same compass angle.
 local lfg = fakeFrame("LFGMinimapFrame")
 _G.LFGMinimapFrame = lfg
-lfg:SetParent(cluster)
+lfg:SetParent(map)
 lfg:SetPoint("CENTER", map, "CENTER", -57, -57)
 Addon:SkinMinimap()
-assert(lfg.parent == map, "dungeon finder leaves the hidden cluster")
+assert(lfg.parent == map, "dungeon finder stays on the map")
 assert(not lfg.hidden, "dungeon finder stays visible")
 local lfgPark = lfg.points[#lfg.points]
-assert(lfgPark and lfgPark[4] == -90 and lfgPark[5] == -90,
+assert(lfgPark and lfgPark[4] == -109 and lfgPark[5] == -109,
   "dungeon finder sits on the south-west square corner, not the circle")
 
 -- Addon buttons that still SetPoint on the circle must snap to the square.
@@ -390,7 +442,7 @@ addonBtn:SetParent(map)
 addonBtn:SetPoint("CENTER", map, "CENTER", -57, -57)
 Addon:SkinMinimap()
 local addonPark = addonBtn.points[#addonBtn.points]
-assert(addonPark and addonPark[4] == -90 and addonPark[5] == -90,
+assert(addonPark and addonPark[4] == -109 and addonPark[5] == -109,
   "addon minimap icons sit on the square edge, not the circular path")
 
 -- Nova World Buffs already parents MinimapLayerFrame to Minimap. Keep it on
@@ -423,7 +475,7 @@ assert(char.minimapIcons.LFGMinimapFrame == 0,
   "a drag to the east of the map stores angle 0")
 Addon:SkinMinimap()
 local lfgAfterDrag = lfg.points[#lfg.points]
-assert(lfgAfterDrag[4] == 90 and lfgAfterDrag[5] == 0,
+assert(lfgAfterDrag[4] == 109 and lfgAfterDrag[5] == 0,
   "dungeon finder stays where the player dragged it")
 
 -- World Layer must still Show after the cluster is hidden. Nova World Buffs
@@ -462,6 +514,16 @@ local lateRackPark = lateRack.points[#lateRack.points]
 assert(lateRackPark and lateRackPark[1] == "CENTER" and lateRackPark[2] == map,
   "LibDBIcon ItemRack sits on the square path after IconCreated")
 
+-- Coordinates under the map stay put. Do not park FontStrings as edge icons.
+local coords = fakeFontString("MinimapCoordinates")
+coords:SetParent(map)
+coords:SetPoint("TOP", map, "BOTTOM", 0, -4)
+Addon:SkinMinimap()
+assert(coords.parent == map, "coordinates stay on the map")
+local coordsPark = coords.points[#coords.points]
+assert(coordsPark and coordsPark[1] == "TOP" and coordsPark[3] == "BOTTOM",
+  "coordinates stay under the map")
+
 -- ItemRack set menu is named ItemRackMenuFrame. It must not park as a
 -- Minimap Icon when it is a child of the map.
 local rackMenu = fakeFrame("ItemRackMenuFrame")
@@ -474,7 +536,7 @@ local rackMenuPark = rackMenu.points[#rackMenu.points]
 assert(rackMenuPark and rackMenuPark[3] == "BOTTOMLEFT",
   "ItemRack set menu keeps its dock on the map")
 
--- Tracking button stays on MiniMapTracking so SexyMap-style mouse propagate works.
+-- Tracking button stays on the cluster header host.
 local trackBtn = fakeFrame("MiniMapTrackingButton")
 _G.MiniMapTrackingButton = trackBtn
 trackBtn:SetParent(_G.MiniMapTrackingFrame)
@@ -501,5 +563,63 @@ _G.MinimapZoomOut.OnClick = function(self)
 end
 map:OnMouseWheel(-1)
 assert(_G.MinimapZoomOut.clicked, "mouse wheel uses the Blizzard zoom-out click")
+
+-- Forever day/night dial sits on the map face and eats pings in the middle.
+assert(_G.MinimapCluster.DielFrame.hidden, "DielFrame hides so the square map accepts pings")
+assert(_G.MinimapCluster.DielFrame.Show == _G.MinimapCluster.DielFrame.Hide,
+  "DielFrame cannot Show again over the square map")
+
+-- Square OnClick pings the full map face, including corners Blizzard rejects.
+map.cx, map.cy = 100, 100
+map.width, map.height = 198, 198
+map.pinged = nil
+_G.GetCursorPosition = function()
+  return 100 + 90, 100 + 90
+end
+assert(map.OnClick, "square map installs an OnClick ping")
+map:OnClick()
+assert(map.pinged and map.pinged[1] == 90 and map.pinged[2] == 90,
+  "square OnClick pings a corner outside the inscribed circle")
+map.pinged = nil
+_G.GetCursorPosition = function()
+  return 100, 100
+end
+map:OnClick()
+assert(map.pinged and map.pinged[1] == 0 and map.pinged[2] == 0,
+  "square OnClick pings the map centre")
+
+char.useShadowUIMinimap = false
+Addon:SkinMinimap()
+assert(box.hidden == true, "ShadowUI minimap holder hides when the Blizzard map is on")
+assert(map.parent == container, "map stays on the Forever cluster")
+assert(_G.GetMinimapShape() == "ROUND", "GetMinimapShape reports ROUND when ShadowUI minimap is off")
+assert(map.mask == "Textures\\MinimapMask", "circular mask returns when ShadowUI minimap is off")
+assert(_G.HybridMinimap.CircleMask.texture == "Textures\\MinimapMask",
+  "HybridMinimap circular mask returns when ShadowUI minimap is off")
+assert(not _G.MinimapBorder.hidden, "round silver ring returns when ShadowUI minimap is off")
+assert(not _G.MinimapCompassTexture.hidden, "compass ring returns when ShadowUI minimap is off")
+assert(not _G.MinimapCluster.DielFrame.hidden, "DielFrame returns when ShadowUI minimap is off")
+assert(not _G.MinimapZoomOut.hidden, "zoom buttons stay when ShadowUI minimap is off")
+assert(_G.MinimapZoneTextButton.parent == cluster, "Zone Text stays on the cluster header")
+map:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
+assert(map.mask == "Interface\\BUTTONS\\WHITE8X8", "Blizzard can keep a mask when ShadowUI minimap is off")
+-- Blizzard circular OnClick returns with the round map.
+map.pinged = nil
+_G.GetCursorPosition = function()
+  return 100 + 90, 100 + 90
+end
+map:OnClick()
+assert(map.pinged == nil, "round OnClick rejects a square corner")
+char.useShadowUIMinimap = true
+Addon:SkinMinimap()
+assert(not box.hidden, "ShadowUI minimap holder shows when the toggle is on")
+assert(map.parent == container, "map stays on the Forever cluster when the toggle is on")
+assert(_G.GetMinimapShape() == "SQUARE", "GetMinimapShape reports SQUARE when ShadowUI minimap is on")
+assert(_G.MinimapCluster.DielFrame.hidden, "DielFrame hides again when ShadowUI minimap is on")
+
+local dbSrc = assert(io.open(root .. "core/db.lua", "r")):read("*a")
+assert(dbSrc:find("useShadowUIMinimap%s*=%s*true"), "character default uses the ShadowUI minimap")
+local configSrc = assert(io.open(root .. "options/config.lua", "r")):read("*a")
+assert(configSrc:find("useShadowUIMinimap"), "/shadowui exposes the minimap toggle")
 
 print("minimap_spec OK")

@@ -1,7 +1,6 @@
--- Time is Blizzard TimeManagerClockButton, restyled the SexyMap way. Hover
--- Time Info shows realm time and local time via GameTime_UpdateTooltip.
--- A click keeps the Blizzard Stopwatch.
--- GameTimeFrame stays hidden.
+-- Time is Blizzard TimeManagerClockButton on the Forever cluster header.
+-- Hover Time Info shows realm time and local time via GameTime_UpdateTooltip.
+-- A click keeps the Blizzard Stopwatch. GameTimeFrame is the calendar and stays.
 -- Run: lua tests/time_spec.lua
 local unpack = unpack or table.unpack
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -110,8 +109,11 @@ end
 
 _G.UIParent = fakeFrame("UIParent")
 _G.Minimap = fakeFrame("Minimap")
+_G.MinimapCluster = fakeFrame("MinimapCluster")
 _G.GameTimeFrame = fakeFrame("GameTimeFrame")
+_G.GameTimeFrame:SetParent(_G.MinimapCluster)
 _G.TimeManagerClockButton = fakeFrame("TimeManagerClockButton")
+_G.TimeManagerClockButton:SetParent(_G.MinimapCluster)
 _G.TimeManagerClockButton.border = fakeFrame("TimeManagerClockBorder")
 _G.TimeManagerClockTicker = _G.TimeManagerClockButton:CreateFontString()
 _G.TimeManagerClockTicker:SetText("7:40")
@@ -146,25 +148,18 @@ end
 assert(loadfile(root .. "skin/time.lua"))()
 Addon:SkinTime()
 
-assert(_G.GameTimeFrame.hidden, "sun/moon Time art stays hidden")
+assert(not _G.GameTimeFrame.hidden, "calendar stays on the cluster header")
 _G.GameTimeFrame:Show()
-assert(_G.GameTimeFrame.hidden, "sun/moon Time art cannot come back")
+assert(not _G.GameTimeFrame.hidden, "calendar can Show")
 
 assert(_G.ShadowUIMinimapClock == nil, "Time does not create a custom clock")
 assert(_G.ShadowUIStopwatch == nil, "Time does not create a custom Stopwatch")
 
 local clock = _G.TimeManagerClockButton
 assert(not clock.hidden, "Time stays the Blizzard clock")
-assert(clock.parent == _G.Minimap, "Time sits on the map")
-local park = clock.points[#clock.points]
-assert(park and park[1] == "TOP" and park[2] == _G.Minimap,
-  "Time parks under the map the SexyMap way")
-assert(park[3] == "BOTTOM" and park[4] == 0 and park[5] == 0,
-  "Time is centred under the map")
-assert(clock.border.hidden, "clock border art stays hidden")
-assert(clock.shadowUIBackdrop.r == 0.05, "Time fill is Lorti darkest")
-assert(clock.width == 44 and clock.height == 20, "Time chip sizes to the ticker")
-assert(clock.strata == "LOW" and clock.level == 4000, "Time sits above map blips")
+assert(clock.parent == _G.MinimapCluster, "Time stays on the cluster header")
+assert(#clock.points == 0, "Time does not park under the map")
+assert(clock.shadowUIBackdrop == nil, "Time does not add a Darken chip")
 assert(clock.OnClick == nil, "Time keeps the Blizzard Stopwatch click")
 assert(clock.mouse == true, "Time accepts hover")
 clock:OnEnter(clock)
@@ -183,17 +178,15 @@ assert(_G.GameTooltip.shown, "Time Info stays open while the mouse is on Time")
 clock:OnLeave(clock)
 assert(_G.GameTooltip.shown == false, "Time Info hides when the mouse leaves Time")
 
-_G.TimeManagerClockTicker:SetText("7:40")
-clock:Hide()
-assert(not clock.hidden, "Time cannot stay hidden")
-clock:SetPoint("CENTER", _G.Minimap, "CENTER", 0, 0)
+clock:SetPoint("TOPRIGHT", _G.MinimapCluster, "TOPRIGHT", -40, -2)
 local after = clock.points[#clock.points]
-assert(after[1] == "TOP" and after[3] == "BOTTOM",
-  "Time cannot leave the SexyMap park under the map")
+assert(after[1] == "TOPRIGHT" and after[2] == _G.MinimapCluster,
+  "Time keeps its cluster header point")
 
 Addon:SkinTime()
 assert(_G.TimeManagerClockButton == clock, "Time does not replace the Blizzard clock")
 assert(not clock.hidden, "Time stays visible after a later skin")
-assert(not clock.shadowUIBackdrop.hidden, "Time fill stays after a later skin")
+assert(clock.parent == _G.MinimapCluster, "Time stays on the cluster header after a later skin")
+assert(not _G.GameTimeFrame.hidden, "calendar stays after a later skin")
 
 print("time_spec OK")

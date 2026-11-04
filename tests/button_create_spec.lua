@@ -11,8 +11,8 @@ assert(beforeConfig:find("MasqueSkinned", 1, true), "MasqueSkinned must be set b
 assert(beforeConfig:find("pcall", 1, true), "Classic rejects AnyDown; RegisterForClicks must be pcalled")
 
 local barSrc = assert(io.open(root .. "bars/bar.lua", "r")):read("*a")
-assert(not barSrc:find("SecureHandlerStateTemplate,BackdropTemplate", 1, true),
-  "combining SecureHandler + Backdrop templates can fail CreateFrame on Classic")
+assert(not barSrc:find("SecureHandlerStateTemplate", 1, true),
+  "Forever does not compile SecureHandler snippets")
 
 local buttonSrc = assert(io.open(root .. "bars/button.lua", "r")):read("*a")
 assert(buttonSrc:find("masqueSkinned%s*=%s*true"), "CONFIG must set masqueSkinned before LAB UpdateAction")

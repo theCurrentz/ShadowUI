@@ -1,5 +1,9 @@
 # Widget stack and Frame Art crop
 
+Superseded by [ADR 0012](0012-blizzard-unit-frames-and-no-cast-stack.md). Widgets and Frame Art crop are not shipped.
+
+# Original
+
 Widgets on one Unit Frame must overlap. Frame Art is a targeting-frame atlas, not a stretchable box.
 
 Each Widget has a **stack** integer (1–16). Higher stack paints in front. Stack is not a Profile Layer. The Designer Front/Back controls write `stack` on the active Profile.

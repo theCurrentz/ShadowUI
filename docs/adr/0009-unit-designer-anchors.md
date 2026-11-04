@@ -1,5 +1,9 @@
 # Unit Frame Designer keeps SetPoint relativeTo
 
+Superseded by [ADR 0012](0012-blizzard-unit-frames-and-no-cast-stack.md). Unit Frame Designer is not shipped.
+
+# Original
+
 A drag that calls `GetPoint` after `StartMoving` re-parents the Widget to the host or UIParent. Status Text would store host offsets and drop `relativeTo = "health"`.
 
 Designer persist converts the new canvas rect into offsets for the existing `point`, `relativePoint`, and `relativeTo`, then writes that patch on the active Profile. The studio lives on the `/shadowui` Unit Frames page. It does not overlay HUD chips on the live Player Frame. Layout Edit Mode still parks the host on the screen. Frame Art crop and Widget stack are [ADR 0010](0010-widget-stack-and-art-crop.md).

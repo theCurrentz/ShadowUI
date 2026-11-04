@@ -31,7 +31,7 @@ ShadowUI/
     db.lua                      -- AceDB schema, defaults registration
     resolve.lua                 -- merge Base → Class → Variant into effective config
   bars/
-    button.lua                  -- LAB buttons with 2px Lorti-dark icon chrome
+    button.lua                  -- Blizzard button Darken rim and Outer Edge; LAB buttons with 2px Lorti-dark icon chrome
     cooldown.lua                -- remaining cooldown seconds on ShadowUI action buttons
     grid.lua                    -- snap a Bar size to columns and rows
     bar.lua                     -- bar frame: grid, scale, columns
@@ -55,10 +55,9 @@ ShadowUI/
     statustext.lua              -- hide leftover ShadowUI Target Frame Status Text
     threat.lua                  -- Target Frame Threat Bar bubble tab on the portrait
     windows.lua                 -- bags, character, vendor, XP art
-    auras.lua                   -- buff and debuff icon chrome
-    auratime.lua                -- Target Frame Aura Duration swipe and seconds
+    auras.lua                   -- player buff and debuff icon zoom; no border
     chat.lua                    -- semi-transparent black chat
-    micro.lua                   -- micro + backpack on ShadowUIMicroCluster, native art, flush bottom-right
+    micro.lua                   -- Blizzard micro menu and bag bar; Outer Edge on those borders
     minimap.lua                 -- large square blackened minimap
     rainbow.lua                 -- Rainbow Organizer (parked; TOC does not load)
     bags.lua                    -- combined inventory and bank (parked; TOC does not load)
@@ -124,7 +123,7 @@ Minimal per-character state only:
   editLayer = "variant",    -- "base" | "class" | "variant"
   variantManual = true,     -- true after manual `/shadowui variant`; cleared by `variant clear`
   hardLockActionSlots = false, -- true blocks Shift-drag between Action Slots
-  useShadowUIMenu = true,      -- false restores the default Blizzard micro menu and bags
+  useShadowUIMenu = true,      -- false leaves the micro menu and bag bar borders stock
 }
 ```
 
@@ -149,7 +148,7 @@ Minimal per-character state only:
 ### Visual button rules
 
 - Action Slot Lock: click uses the action. Shift-drag moves a spell or item and does not use the action. `/shadowui` hard lock blocks that move. A pickup shows every standard Bar and empty Action Slot as a drop target, including each Keybind label.
-- Square ability icons with a 2px Lorti-dark inset (chrome 0.05, 0.05, 0.05) and a 4px black outer edge
+- Native Blizzard ability icons (no zoom, Blizzard icon mask kept) with a Lorti-dark rim (0.05, 0.05, 0.05) and a 4px black outer edge; every Blizzard effect stays fully visible
 - No margin between buttons (button frames abut; icons do not)
 - Bar backdrop: none. An Action Slot with no spell, macro, or item stays hidden, including its Keybind label, except during Keybind Edit Mode or a pickup (slots and Keybind labels both show).
 
@@ -171,16 +170,16 @@ Minimal per-character state only:
 
 | Element | Treatment |
 |---------|-----------|
-| Action bars (ours) | No bar fill; 0.05 chrome around each bound icon; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; gold thick-outlined uppercase Keybind labels at size 16; pale lime outlined item counts at size 15, inset inside the slot; Cooldown Count for cooldowns of 2s or more; the Action Slot icon is grayed out while that cooldown runs |
+| Action bars (Blizzard) | No bar fill; 0.05 Darken rim on each Blizzard slot and 0.2 on empty-slot art; native icon, IconMask, cooldown swipe, hover and checked glows, attack Flash, equipped border, and proc, cast, and interrupt effects; empty Action Slots stay hidden, including Keybind labels, except during Keybind Edit Mode or a Shift-drag pickup; 4px black outer edge on bound slots and on empty slots while a pickup is active; Keybind labels show on those empty slots while a pickup is active; gold thick-outlined uppercase Keybind labels at size 16; pale lime outlined item counts at size 15, inset inside the slot |
 | Unit frames, raid, party, pet | Vertex color 0.05, 0.05, 0.05; color stays after Blizzard resets; Target Frame keeps native Status Text; rare-elite uses the Rare-Elite dragon; Threat Bar bubble tab on the portrait |
 | Window chrome (bags, character, vendor, bank, spellbook) | Vertex color 0.35, 0.35, 0.35; portraits stay native |
 | Bags | Parked. Files stay. Blizzard bag and bank windows stay. Darken still tints those windows. |
-| XP / reputation art | Vertex color 0.2, 0.2, 0.2 |
-| Buffs / debuffs | 0.05 chrome, 2px icon inset, 4px outer edge; unused slots stay empty; player BuffFrame and DebuffFrame keep Blizzard Edit Mode place; debuff type colour stays native; Target Frame auras sit 2px to the right at 32px and show remaining time |
+| XP / reputation art | Experience bar stays with Blizzard; fill, notches, Status Text, and rested XP stay; Lorti Outer Edge on the bar; reputation art vertex color 0.2, 0.2, 0.2 |
+| Buffs / debuffs | Player icons use a 0.07 zoom and hide their border; no Darken ring and no Outer Edge; unused slots stay empty; player BuffFrame and DebuffFrame keep Blizzard Edit Mode place; Target Frame, Target of Target, Focus, and party auras stay Blizzard |
 | Tooltips | Dark backdrop border |
-| Minimap | Compact square flush to top-right, 16px 0.05 Darken buffer at 0.6 alpha, Zone Text on top, World Layer on the bottom from Nova World Buffs, Time is Blizzard TimeManagerClockButton under the map (hover Time Info, click Stopwatch), mouse-wheel zoom and 5s auto zoom-out, Outer Edge; cluster icons on the square path 10px outside the map and draggable |
+| Minimap | Square Forever cluster in place, 16px 0.05 Darken fade at 0.6 alpha instead of the compass, header Zone Text / Time / calendar / mail / tracking stay, World Layer on the bottom from Nova World Buffs, Time is Blizzard TimeManagerClockButton on the header (hover Time Info, click Stopwatch), mouse-wheel zoom and 5s auto zoom-out, Outer Edge; map-edge icons on the square path 10px outside the map and draggable |
 | Chat | Black, semi-transparent |
-| Micro menu + bag bar | Native Blizzard size and art (no Shop); one row, flush bottom-right, 0px gap between items, 0px gap from screen bottom |
+| Micro menu + bag bar | Blizzard place, buttons, and tray art; Outer Edge on the bar borders only |
 | Cast bar | Custom player Cast Bar (see below); Blizzard player cast bar hidden; target/focus spell bars stay Blizzard |
 
 Everything else is left alone.

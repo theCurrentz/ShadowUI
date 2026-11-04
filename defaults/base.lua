@@ -1,6 +1,6 @@
 --[[
   Purpose: Shared Base layout and Keybinds: six reversed rows, 3x4 side bars,
-           bar9, bar10, pet, possess, Global gap and shape, and the default Action Slot keys.
+           bar9, bar10, pet, possess, Global gap, and the default Action Slot keys.
   Deps: ShadowUI addon table
   Public: populates ShadowUI.Defaults.base
 ]]
@@ -55,21 +55,6 @@ Addon.Defaults.base = {
     bar10 = bar("BOTTOM", 0, BOTTOM + 9 * SIZE, 12, 12),
     pet = bar("BOTTOM", 0, BOTTOM + 6 * SIZE, 10, 10),
     possess = bar("BOTTOM", 0, BOTTOM + 7 * SIZE, 2, 2),
-    cooldown = {
-      point = "CENTER",
-      relativeTo = "UIParent",
-      relativePoint = "CENTER",
-      x = 0,
-      y = -96,
-      scale = 1,
-      gap = 4,
-      direction = "right",
-      columns = 8,
-      max = 8,
-      vertical = false,
-      enabled = true,
-      buttonSize = SIZE,
-    },
   },
   -- Current Warrior Action Bar keys. Every class inherits this Base map.
   keybinds = {

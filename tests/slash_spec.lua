@@ -28,27 +28,4 @@ assert(prunedGroup == "Main", "/shadowui prune packs Keybinds in that Bar Group"
 Addon:SlashCommand("shift Side")
 assert(prunedGroup == "Side", "/shadowui shift is the same command")
 
-local loadoutRest
-function Addon:HandleLoadoutCommand(rest)
-  loadoutRest = rest
-end
-Addon:SlashCommand("loadout preview Tazzy")
-assert(loadoutRest == "preview Tazzy", "/shadowui loadout delegates its subcommand")
-
-local dumped = 0
-function Addon:DumpXPStack()
-  dumped = dumped + 1
-end
-Addon:SlashCommand("xpstack")
-assert(dumped == 1, "/shadowui xpstack dumps the live Tracking XP host")
-
-local unitToggles = 0
-function Addon:ToggleUnitFrameMode()
-  unitToggles = unitToggles + 1
-end
-Addon:SlashCommand("units")
-assert(unitToggles == 1, "/shadowui units opens Unit Frame Designer")
-Addon:SlashCommand("frames")
-assert(unitToggles == 2, "/shadowui frames is the same command")
-
 print("slash_spec OK")

@@ -1,14 +1,14 @@
 --[[
-  Purpose: One OnUpdate FadeDriver for Chat, Bars, the Micro Cluster, Details
-           Windows, and the Experience bar. Enter is 0.6s bezier, leave is
-           0.4s bezier, optional delay before leave. The driver is off when
-           every host is at rest. Fade the host frame, not LAB buttons: empty
-           Action Slots already use button alpha.
+  Purpose: One OnUpdate FadeDriver for Chat, Bars, the Micro Bar,
+           the Bag Bar, and Details Windows. Enter is 0.6s bezier,
+           leave is 0.4s bezier, optional delay before leave. The driver is
+           off when every host is at rest. Fade the host frame, not LAB
+           buttons: empty Action Slots already use button alpha.
   Deps: ShadowUI:Ease()
   Public: ShadowUI:RegisterFadeHost(), ShadowUI:UnregisterFadeHost(),
           ShadowUI:SetFadeMouseOver(), ShadowUI:TickFade(), ShadowUI:WakeFadeDriver(),
-          ShadowUI:FadeDriverRunning(), ShadowUI:ApplyBarFades(),
-          ShadowUI:ApplyMicroFade(), ShadowUI:ApplyXPFade()
+          ShadowUI:FadeDriverRunning(),           ShadowUI:ApplyBarFades(),
+          ShadowUI:ApplyMicroFade()
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
@@ -156,6 +156,7 @@ function Addon:RegisterFadeHost(spec)
   host.enterDur = spec.enterDur or ENTER_DUR
   host.leaveDur = spec.leaveDur or LEAVE_DUR
   host.setAlpha = spec.setAlpha
+  host.pollMouse = spec.pollMouse and true or false
   if spec.useForced == nil then
     host.useForced = true
   else
@@ -197,6 +198,9 @@ end
 function Addon:TickFade(elapsed)
   elapsed = elapsed or 0
   for _, host in pairs(hosts) do
+    if host.pollMouse and host.frame and host.frame.IsMouseOver then
+      host.mouseOver = host.frame:IsMouseOver() and true or false
+    end
     local wanted = wantedActive(host)
     if wanted then
       host.delayLeft = nil
@@ -290,106 +294,60 @@ function Addon:ApplyBarFades(cfg)
   self:WakeFadeDriver()
 end
 
+local function microFadeFrames()
+  if Addon.MicroBarFrames then
+    return Addon:MicroBarFrames()
+  end
+  local frames = {}
+  local menu = _G.MicroMenuContainer or _G.MicroMenu
+  if menu then
+    frames[#frames + 1] = menu
+  end
+  if _G.BagsBar then
+    frames[#frames + 1] = _G.BagsBar
+  end
+  if #frames == 0 and _G.MicroButtonAndBagsBar then
+    frames[1] = _G.MicroButtonAndBagsBar
+  end
+  return frames
+end
+
 function Addon:ApplyMicroFade()
-  local cluster = _G.ShadowUIMicroCluster
   local char = self.GetCharDB and self:GetCharDB()
   local useMenu = not char or char.useShadowUIMenu ~= false
-  if not cluster or not useMenu or (cluster.IsShown and not cluster:IsShown()) then
-    if cluster then
-      self:UnregisterFadeHost(cluster)
+  local active = {}
+  if useMenu then
+    for _, frame in ipairs(microFadeFrames()) do
+      if not frame.IsShown or frame:IsShown() then
+        active[frame] = true
+      end
     end
+  end
+  for _, frame in ipairs({
+    _G.MicroMenuContainer,
+    _G.MicroMenu,
+    _G.BagsBar,
+    _G.MicroButtonAndBagsBar,
+    _G.ShadowUIMicroCluster,
+  }) do
+    if frame and not active[frame] then
+      self:UnregisterFadeHost(frame)
+    end
+  end
+  if not useMenu or not next(active) then
     return
   end
   local idle = char and char.microFadeIdle
   if idle == nil then
     idle = 1
   end
-  self:RegisterFadeHost({
-    frame = cluster,
-    idleAlpha = idle,
-    activeAlpha = 1,
-  })
-  local names = {
-    "MainMenuBarBackpackButton",
-    "CharacterMicroButton",
-    "SpellbookMicroButton",
-    "TalentMicroButton",
-    "QuestLogMicroButton",
-    "SocialsMicroButton",
-    "GuildMicroButton",
-    "LFDMicroButton",
-    "WorldMapMicroButton",
-    "CollectionsMicroButton",
-    "EJMicroButton",
-    "MainMenuMicroButton",
-    "HelpMicroButton",
-  }
-  for _, name in ipairs(names) do
-    local button = _G[name]
-    if button and not button._shadowUIFadeMouse then
-      button._shadowUIFadeMouse = true
-      local function enter()
-        Addon:SetFadeMouseOver(cluster, true)
-      end
-      local function leave()
-        Addon:SetFadeMouseOver(cluster, false)
-      end
-      if button.HookScript then
-        button:HookScript("OnEnter", enter)
-        button:HookScript("OnLeave", leave)
-      end
-    end
-  end
-  self:WakeFadeDriver()
-end
-
-local function hookXPFadeMouse(frame, host)
-  if not frame or frame._shadowUIFadeMouse then
-    return
-  end
-  frame._shadowUIFadeMouse = true
-  local function enter()
-    Addon:SetFadeMouseOver(host, true)
-  end
-  local function leave()
-    Addon:SetFadeMouseOver(host, false)
-  end
-  if frame.HookScript then
-    frame:HookScript("OnEnter", enter)
-    frame:HookScript("OnLeave", leave)
-  end
-end
-
-function Addon:ApplyXPFade()
-  local host = _G.ShadowUIXPHost
-  if not host then
-    local anchor = _G.MainStatusTrackingBarContainer or _G.MainMenuExpBar
-    host = anchor and anchor.shadowUIXPHost
-  end
-  if not host or (host.IsShown and not host:IsShown()) then
-    if host then
-      self:UnregisterFadeHost(host)
-    end
-    return
-  end
-  local char = self.GetCharDB and self:GetCharDB()
-  local idle = char and char.xpFadeIdle
-  if idle == nil then
-    idle = 1
-  end
-  self:RegisterFadeHost({
-    frame = host,
-    idleAlpha = idle,
-    activeAlpha = 1,
-  })
-  hookXPFadeMouse(host, host)
-  hookXPFadeMouse(_G.MainStatusTrackingBarContainer, host)
-  hookXPFadeMouse(_G.MainMenuExpBar, host)
-  local shown = _G.MainStatusTrackingBarContainer
-  shown = shown and shown.GetShownBar and shown:GetShownBar()
-  if shown then
-    hookXPFadeMouse(shown, host)
-    hookXPFadeMouse(shown.StatusBar, host)
+  for frame in pairs(active) do
+    self:RegisterFadeHost({
+      frame = frame,
+      idleAlpha = idle,
+      activeAlpha = 1,
+      pollMouse = true,
+    })
   end
   self:WakeFadeDriver()
 end

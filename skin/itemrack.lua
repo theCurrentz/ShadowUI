@@ -75,7 +75,8 @@ function Addon:SkinItemRackButton(button)
   if chrome then
     chrome:ClearAllPoints()
     chrome:SetAllPoints(button)
-    chrome:SetColorTexture(0.05, 0.05, 0.05, 1)
+    local black = self.DARKEN_BLACK or { 0.05, 0.05, 0.05 }
+    chrome:SetColorTexture(black[1], black[2], black[3], 1)
     chrome:Show()
   end
   self:ApplyOuterChrome(button)

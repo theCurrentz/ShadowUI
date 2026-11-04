@@ -1,35 +1,26 @@
--- /shadowui profile switches and marks Default.
+-- /shadowui has no Profile picker.
 -- Run: lua tests/layer_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
 _G.LibStub = function()
-  return { GetAddon = function() return Addon end }
+  return {
+    NewAddon = function() return Addon end,
+    GetAddon = function() return Addon end,
+  }
 end
-assert(loadfile(root .. "core/resolve.lua"))()
-assert(loadfile(root .. "profile/profiles.lua"))()
+assert(loadfile(root .. "core/init.lua"))()
 
-local account = {
-  defaultProfile = "Default",
-  profiles = {
-    Default = { layout = {}, keybinds = {} },
-    Raid = { layout = {}, keybinds = {} },
-  },
-}
-local char = { activeProfile = nil }
+function Addon:SetupDB() end
+function Addon:RegisterChatCommand() end
+function Addon:OpenOptions() end
+function Addon:ToggleEditMode() end
+function Addon:ToggleKeybindMode() end
+function Addon:ShiftAndPruneBars() end
 local messages = {}
-function Addon:GetDB() return account end
-function Addon:GetCharDB() return char end
 function Addon:Print(text) messages[#messages + 1] = text end
-function Addon:ApplyAll() end
 
-Addon:HandleProfileCommand("")
-assert(messages[#messages] == "Active Profile: Default (Default Profile)",
-  "empty command reports Default Profile")
-Addon:HandleProfileCommand("Raid")
-assert(char.activeProfile == "Raid", "named command selects that Profile")
-Addon:HandleProfileCommand("default")
-assert(account.defaultProfile == "Raid", "default with no name uses the active Profile")
-Addon:HandleProfileCommand("default Default")
-assert(account.defaultProfile == "Default", "default Name sets that Profile")
+Addon:SlashCommand("profile Raid")
+assert(messages[#messages]:find("Usage:", 1, true), "/shadowui profile is not a command")
+assert(not messages[#messages]:find("profile]", 1, true), "usage does not list profile")
 
 print("layer_spec OK")

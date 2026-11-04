@@ -1,5 +1,5 @@
 --[[
-  Purpose: AceDB schema for account Profiles/Loadout Snapshots and Character state.
+  Purpose: AceDB schema for the Account Profile and Character state.
   Deps: AceDB-3.0, ShadowUI addon table
   Public: ShadowUI:SetupDB(), ShadowUI:GetDB(), ShadowUI:GetCharDB()
 ]]
@@ -8,32 +8,24 @@ local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
 local ACCOUNT_DEFAULTS = {
   profile = {
-    profiles = {
-      Default = {
-        layout = {},
-        keybinds = {},
-        actions = {},
-      },
-    },
-    defaultProfile = "Default",
+    layout = {},
+    keybinds = {},
+    actions = {},
     base = {
       layout = {},
       keybinds = {},
     },
     classes = {},
-    loadouts = {},
   },
 }
 
 local CHAR_DEFAULTS = {
   profile = {
-    activeProfile = nil,
     hardLockActionSlots = false,
     useShadowUIMenu = true,
+    useShadowUIMinimap = true,
+    darkness = 1,
     microFadeIdle = 1,
-    microIconShape = "square",
-    xpFadeIdle = 1,
-    showExperienceBar = true,
     minimapIcons = {},
   },
 }
@@ -91,14 +83,11 @@ local function copySection(self, src)
 end
 
 function Addon:MigrateLegacyLayers()
-  local account = self:GetDB()
-  if self.EnsureProfiles then
-    self:EnsureProfiles()
+  if self.EnsureProfile then
+    self:EnsureProfile()
   end
-  account.profiles = account.profiles or {}
-  local name = account.defaultProfile or "Default"
-  account.profiles[name] = account.profiles[name] or { layout = {}, keybinds = {}, actions = {} }
-  local dest = account.profiles[name]
+  local account = self:GetDB()
+  local dest = self.GetProfile and self:GetProfile() or account
   dest.layout = dest.layout or {}
   dest.keybinds = dest.keybinds or {}
   dest.actions = dest.actions or {}
@@ -123,6 +112,7 @@ local function clearAccountAnchors(account)
   for _, profile in pairs(account.profiles or {}) do
     clearLegacyBarAnchors(profile and profile.layout)
   end
+  clearLegacyBarAnchors(account.layout)
 end
 
 function Addon:SetupDB()

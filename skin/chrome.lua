@@ -4,21 +4,63 @@
            and the Extra Action Button.
   Deps: ShadowUI bars, media/outer_shadow.tga, media/outer_shadow_roundrect.tga
   Public: ShadowUI:ParkFrame(), ShadowUI:ApplyOuterChrome(), ShadowUI:PaintOuterChrome(),
-          ShadowUI:ApplyBarChrome(), ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins()
+          ShadowUI:ApplyBarChrome(), ShadowUI:SkinBarChrome(), ShadowUI:ApplySkins(),
+          ShadowUI:ApplyStatusBarGradient()
   Notes: ParkFrame uses SetPointBase when 1.15.9 Edit Mode has replaced SetPoint.
          outer_shadow.tga is white RGB. PaintOuterChrome tints it black. BackdropTemplate
-         ApplyBackdrop resets that tint to white. Circle, diamond, and roundrect Outer
-         Edge use matching drop textures instead of the 9-slice. Roundrect is a 2:1
-         ring so a meter well does not stretch square corner quads.
+         ApplyBackdrop resets that tint to white. A secret frame size skips
+         SetupTextureCoordinates so loot cannot divide that width. Circle,
+         diamond, and roundrect Outer Edge use matching drop textures instead
+         of the 9-slice. Roundrect is a 2:1 ring so a meter well does not
+         stretch square corner quads.
 ]]
 
 local Addon = LibStub("AceAddon-3.0"):GetAddon("ShadowUI")
 
-function Addon:SkinTargetStatus() end
-function Addon:SkinTargetThreat() end
-function Addon:SkinPortraitRings() end
-function Addon:SkinComboPoints() end
-function Addon:SkinStatusBarGradients() end
+
+-- SetGradientAlpha was removed from the client; SetGradient takes ColorMixins.
+function Addon:ApplyStatusBarGradient(texture, orientation, from, to)
+  if not texture then
+    return
+  end
+  if CreateColor and texture.SetGradient then
+    local ok = pcall(
+      texture.SetGradient,
+      texture,
+      orientation,
+      CreateColor(from[1], from[2], from[3], from[4]),
+      CreateColor(to[1], to[2], to[3], to[4])
+    )
+    if ok then
+      return
+    end
+  end
+  if texture.SetGradientAlpha then
+    local ok = pcall(
+      texture.SetGradientAlpha,
+      texture,
+      orientation,
+      from[1], from[2], from[3], from[4],
+      to[1], to[2], to[3], to[4]
+    )
+    if ok then
+      return
+    end
+  end
+  if texture.SetGradient then
+    local ok = pcall(
+      texture.SetGradient,
+      texture,
+      orientation,
+      from[1], from[2], from[3],
+      to[1], to[2], to[3]
+    )
+    if ok then
+      return
+    end
+  end
+  texture:SetVertexColor(to[1], to[2], to[3], to[4])
+end
 local snapping = {}
 local OUTER_PAD = 4
 local OUTER_EDGE = 5
@@ -114,6 +156,22 @@ function Addon:ParkFrame(frame, point, x, y, width, height, relativeTo, relative
   snapping[frame] = nil
 end
 
+local function guardSecretBackdrop(outer)
+  if not outer or outer._shadowUISecretBackdrop or not outer.SetupTextureCoordinates then
+    return
+  end
+  outer._shadowUISecretBackdrop = true
+  local setup = outer.SetupTextureCoordinates
+  function outer:SetupTextureCoordinates()
+    local width = self.GetWidth and self:GetWidth()
+    local height = self.GetHeight and self:GetHeight()
+    if issecretvalue and (issecretvalue(width) or issecretvalue(height)) then
+      return
+    end
+    return setup(self)
+  end
+end
+
 function Addon:PaintOuterChrome(outer)
   if not outer then
     return
@@ -133,6 +191,7 @@ function Addon:ApplyOuterChrome(host, shape)
   shape = shape or "square"
   if host.shadowUIOuter and host.shadowUIOuterShape == shape
       and host.shadowUIOuterRev == OUTER_CHROME_REV then
+    guardSecretBackdrop(host.shadowUIOuter)
     self:PaintOuterChrome(host.shadowUIOuter)
     if host.shadowUIOuter.Show then
       host.shadowUIOuter:Show()
@@ -141,15 +200,17 @@ function Addon:ApplyOuterChrome(host, shape)
   end
   local outer = host.shadowUIOuter
   if not outer then
-    if host.GetFrameLevel and host:GetFrameLevel() < 1 and host.SetFrameLevel then
-      host:SetFrameLevel(1)
-    end
+    -- SetFrameLevel on default ActionButtons raises ADDON_ACTION_FORBIDDEN.
     local ok, created = pcall(CreateFrame, "Frame", nil, host, "BackdropTemplate")
     if not ok or not created then
       created = CreateFrame("Frame", nil, host)
     end
     outer = created
     host.shadowUIOuter = outer
+    -- The edge sits on the slot. It must not take the drop click.
+    if outer.EnableMouse then
+      outer:EnableMouse(false)
+    end
     if outer.ClearAllPoints then
       outer:ClearAllPoints()
     end
@@ -204,6 +265,7 @@ function Addon:ApplyOuterChrome(host, shape)
   if outer.Show then
     outer:Show()
   end
+  guardSecretBackdrop(outer)
   host.shadowUIOuterRev = OUTER_CHROME_REV
   return outer
 end
@@ -236,27 +298,23 @@ function Addon:ApplySkins()
     self.pendingApplyAll = true
     return
   end
+  if self.RefreshDarkenPalette then
+    self:RefreshDarkenPalette()
+  end
   self:SkinBarChrome()
   self:SkinChat()
   self:SkinMicroAndBags()
   self:SkinTrackingBars()
   self:SkinMinimap()
   self:SkinDarken()
-  self:SkinStatusBarGradients()
   self:SkinAuras()
-  self:SkinTargetStatus()
-  self:SkinTargetThreat()
-  self:SkinPortraitRings()
-  if self.SkinComboPoints then
-    self:SkinComboPoints()
-  end
-  if self.ApplyCrowdControlPortraits then
-    self:ApplyCrowdControlPortraits()
-  end
   self:SkinDetails()
   self:SkinItemRack()
   self:SkinStanceBar()
   if self.SkinExtraActionBar then
     self:SkinExtraActionBar()
+  end
+  if self.SkinBlizzardActionBars then
+    self:SkinBlizzardActionBars()
   end
 end

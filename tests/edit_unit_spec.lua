@@ -1,4 +1,4 @@
--- Player Frame and Target Frame are Layout Edit Mode hosts.
+-- Stance Bar is a Layout Edit Mode host. Player Frame and Target Frame stay Blizzard.
 -- Run: lua tests/edit_unit_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -167,9 +167,6 @@ function Addon:GetPlayerClass() return "MAGE" end
 function Addon:GetProfile() return account.classes.MAGE end
 function Addon:ApplyAll()
   self.applied = (self.applied or 0) + 1
-  if self.SkinUnitFrames then
-    self:SkinUnitFrames()
-  end
 end
 function Addon:Print() end
 function Addon:ShowLayerPicker() end
@@ -186,47 +183,15 @@ assert(loadfile(root .. "skin/frames.lua"))()
 assert(loadfile(root .. "edit/mode.lua"))()
 assert(loadfile(root .. "edit/frames.lua"))()
 
-Addon:SkinUnitFrames()
 Addon:SetEditSession("layout")
 Addon:ApplyEditSession(false)
 
-local playerOverlay = _G.ShadowUIPlayerDrag
-local targetOverlay = _G.ShadowUITargetDrag
-assert(playerOverlay, "Layout Edit Mode paints a Player HUD overlay")
-assert(targetOverlay, "Layout Edit Mode paints a Target HUD overlay")
-assert(playerOverlay.shown == true, "player overlay shows in Layout Edit Mode")
-assert(targetOverlay.shown == true, "target overlay shows in Layout Edit Mode")
-assert(playerOverlay.mouse == true, "player overlay receives the drag")
-assert(playerOverlay.strata == "DIALOG", "player overlay sits on the HUD dialog strata")
-assert(playerOverlay.fontString and playerOverlay.fontString.text == "Player", "overlay names the Player Frame")
-assert(targetOverlay.fontString and targetOverlay.fontString.text == "Target", "overlay names the Target Frame")
+assert(_G.ShadowUIPlayerDrag == nil, "Player Frame is not a Layout Edit Mode host")
+assert(_G.ShadowUITargetDrag == nil, "Target Frame is not a Layout Edit Mode host")
 local stanceOverlay = _G.ShadowUIStanceDrag
 assert(stanceOverlay, "Layout Edit Mode paints a Stance HUD overlay")
 assert(stanceOverlay.shown == true, "stance overlay shows when the Blizzard bar is up")
 assert(stanceOverlay.fontString and stanceOverlay.fontString.text == "Stance", "overlay names the Stance Bar")
-assert(playerOverlay.fill and playerOverlay.fill.g > 0.4, "player overlay fill is HUD blue")
-
-playerOverlay.script_OnMouseDown(playerOverlay, "LeftButton")
-assert(_G.PlayerFrame.moving ~= true, "Player Frame drag does not use Blizzard StartMoving")
-assert(_G.PlayerFrame._shadowUIDragging == true, "ShadowUI edit can move the Player Frame")
-cursor.x, cursor.y = 200, 80
-Addon.editDragTicker.script_OnUpdate(Addon.editDragTicker)
-assert(math.abs((_G.PlayerFrame.left or 0) - 194.4) < 0.01,
-  "Player Frame follows the pointer before mouse up")
-_G.PlayerFrame:SetPoint("CENTER", _G.UIParent, "CENTER", 16, -4)
-assert(_G.PlayerFrame.points[#_G.PlayerFrame.points][4] == 16, "park does not fight a ShadowUI drag")
-cursor.x, cursor.y = 100, 50
-playerOverlay.script_OnMouseUp(playerOverlay, "LeftButton")
-assert(_G.PlayerFrame._shadowUIDragging == false, "mouse up ends the Player Frame drag")
-assert(account.classes.MAGE.layout.player, "player persist writes Layout")
-assert(account.classes.MAGE.layout.player.point == "BOTTOMLEFT", "player persist uses the grid origin")
-assert(math.abs(account.classes.MAGE.layout.player.x - 97.2) < 0.01, "player persist snaps x")
-assert(math.abs(account.classes.MAGE.layout.player.y - 48.6) < 0.01, "player persist snaps y")
-
-_G.PlayerFrame:SetPoint("TOPLEFT", _G.UIParent, "TOPLEFT", 16, -4)
-local parked = _G.PlayerFrame.points[#_G.PlayerFrame.points]
-assert(parked[1] == "BOTTOMLEFT" and math.abs(parked[4] - 97.2) < 0.01,
-  "Blizzard Edit Mode snaps back to the ShadowUI Player Frame")
 
 _G.StanceBarFrame.shown = false
 Addon:RefreshUnitDragOverlays()
@@ -263,22 +228,8 @@ assert(stanceOverlay.width >= 30 and stanceOverlay.height >= 30,
   "a Stance Bar with no size still has a drag overlay over the stealth button")
 assert(stanceOverlay.mouse == true, "the stealth overlay receives the drag")
 
-_G.PlayerPortrait = fakeUnit("PlayerPortrait", 64, 64)
-_G.PlayerPortrait.left, _G.PlayerPortrait.bottom = 110, 70
-_G.PlayerFrameHealthBar = fakeUnit("PlayerFrameHealthBar", 119, 12)
-_G.PlayerFrameHealthBar.left, _G.PlayerFrameHealthBar.bottom = 174, 90
-_G.PlayerFrame.left, _G.PlayerFrame.bottom = 100, 50
-local visLeft, visBottom, visWidth, visHeight = Addon:HostVisualRect(_G.PlayerFrame, "player")
-assert(visLeft == 110 and visBottom == 70, "player visual origin is the portrait, not the empty pad")
-assert(visWidth == 183 and visHeight == 64, "player visual size unions portrait and health")
-Addon:RefreshUnitDragOverlays()
-assert(playerOverlay.width == 183 and playerOverlay.height == 64,
-  "Player HUD overlay matches the chrome, not the 232x100 hit box")
-
 Addon:SetEditSession(nil)
 Addon:ApplyEditSession(false)
-assert(playerOverlay.shown == false, "play mode hides the player overlay")
-assert(_G.PlayerFrame.movable == false, "play mode locks the Player Frame")
 assert(stanceOverlay.shown == false, "play mode hides the stance overlay")
 
 print("edit_unit_spec OK")

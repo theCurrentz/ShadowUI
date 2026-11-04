@@ -10,19 +10,12 @@ local CROP = 0.07
 local INSET = 2
 local BUTTONS = { "ExtraActionButton1", "ExtraActionButton2" }
 local STYLE = { "ExtraActionButtonStyle", "ExtraActionButtonStyleTexture" }
-local BARS = { "ExtraActionBarFrame", "ExtraAbilityContainer" }
 
 local function strip(texture)
   if not texture then
     return
   end
   pcall(texture.SetTexture, texture, "")
-  if texture.SetAlpha then
-    texture:SetAlpha(0)
-  end
-  if texture.Hide then
-    texture:Hide()
-  end
 end
 
 local function inset(region)
@@ -47,19 +40,25 @@ local function hideChrome(button)
   end
 end
 
+local function hasTexture(icon)
+  if not icon or not icon.GetTexture then
+    return false
+  end
+  local tex = icon:GetTexture()
+  if tex == nil then
+    return false
+  end
+  if issecretvalue and issecretvalue(tex) then
+    return true
+  end
+  return tex ~= "" and tex ~= 0
+end
+
 local function extraIsActive(button, name)
   if button.IsShown and not button:IsShown() then
     return false
   end
-  local icon = extraIcon(button, name)
-  if not icon then
-    return false
-  end
-  local tex = icon.GetTexture and icon:GetTexture()
-  if not tex or tex == "" or tex == 0 then
-    return false
-  end
-  return true
+  return hasTexture(extraIcon(button, name))
 end
 
 local function placeOuter(button, outer)
@@ -69,9 +68,6 @@ local function placeOuter(button, outer)
   local parent = button.GetParent and button:GetParent()
   if parent and outer.SetParent then
     outer:SetParent(parent)
-  end
-  if button.SetClipsChildren then
-    button:SetClipsChildren(false)
   end
   if button.GetFrameLevel and outer.SetFrameLevel then
     local level = button:GetFrameLevel()
@@ -99,7 +95,8 @@ function Addon:SkinExtraActionButton(button)
   if chrome then
     chrome:ClearAllPoints()
     chrome:SetAllPoints(button)
-    chrome:SetColorTexture(0.05, 0.05, 0.05, 1)
+    local black = self.DARKEN_BLACK or { 0.05, 0.05, 0.05 }
+    chrome:SetColorTexture(black[1], black[2], black[3], 1)
     chrome:Show()
   end
   placeOuter(button, self:ApplyOuterChrome(button, "circle"))
@@ -110,7 +107,10 @@ function Addon:SkinExtraActionButton(button)
   strip(button.style or button.Style)
   local icon = extraIcon(button, name)
   if icon then
-    button.icon = icon
+    -- Blizzard Update reads button.icon. Writing it taints that code.
+    if button.icon == nil then
+      button.icon = icon
+    end
     inset(icon)
     if icon.SetTexCoord then
       icon:SetTexCoord(CROP, 1 - CROP, CROP, 1 - CROP)
@@ -131,12 +131,6 @@ function Addon:SkinExtraActionBar()
   end
   for _, name in ipairs(STYLE) do
     strip(_G[name])
-  end
-  for _, name in ipairs(BARS) do
-    local bar = _G[name]
-    if bar and bar.SetClipsChildren then
-      bar:SetClipsChildren(false)
-    end
   end
   for _, name in ipairs(BUTTONS) do
     self:SkinExtraActionButton(_G[name])

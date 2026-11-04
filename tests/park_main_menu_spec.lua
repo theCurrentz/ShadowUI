@@ -84,36 +84,20 @@ _G.StanceBar.parent = _G.MainMenuBar
 assert(loadfile(root .. "bars/manager.lua"))()
 Addon:HideBlizzardBars()
 
-assert(_G.MainMenuBar.shown, "MainMenuBar must stay shown so ActionBarController does not Show() it")
-assert(_G.MainMenuBar.parent and _G.MainMenuBar.parent.name == "ShadowUIBlizzardPark",
-  "MainMenuBar must parent to the hidden park frame")
-assert(_G.MainMenuBar.parent.shown == false, "park frame stays hidden")
-assert(_G.MainMenuBarArtFrame.hidden, "default art frame hides")
-assert(_G.ActionButton1.hidden, "default action buttons hide")
-assert(_G.MultiBarBottomLeft.hidden, "MultiBarBottomLeft hides")
-assert(_G.PetActionBarFrame.hidden, "PetActionBarFrame stays hidden")
+assert(_G.MainMenuBar.shown, "MainMenuBar stays shown")
+assert(_G.MainMenuBar.parent == _G.UIParent, "MainMenuBar stays on UIParent")
+assert(_G.MainMenuBarArtFrame.alpha == nil, "do not SetAlpha MainMenuBar art")
+assert(_G.ActionButton1.hidden ~= true, "live ActionButtons stay")
+assert(_G.MultiBarBottomLeft.hidden ~= true, "live MultiBars stay")
 assert(_G.ExtraActionBarFrame.hidden == false, "Extra Action Bar stays shown")
-assert(_G.PossessBarFrame.alpha == 0 and _G.PossessBarFrame.mouse == false,
-  "PossessBarFrame stays parked so /click PossessButtonN still resolves")
-local possessPoint = _G.PossessBarFrame.points[#_G.PossessBarFrame.points]
-assert(possessPoint and possessPoint[4] == -1500 and possessPoint[5] == -1500,
-  "PossessBarFrame parks off-screen")
-assert(_G.MainMenuBarOverlayFrame.hidden, "overlay art still hides")
 assert(_G.ShapeshiftBarFrame.hidden == false, "default shapeshift bar stays shown")
 assert(_G.StanceBarFrame.hidden == false, "default stance bar stays shown")
-assert(_G.ShapeshiftBarFrame.parent == _G.UIParent, "shapeshift bar parents to UIParent")
-assert(_G.StanceBarFrame.parent == _G.UIParent, "stance bar parents to UIParent")
-assert(_G.StanceBar.parent == _G.UIParent, "1.15 StanceBar parents to UIParent")
-local shapeshiftPoint = _G.ShapeshiftBarFrame.points[#_G.ShapeshiftBarFrame.points]
-assert(shapeshiftPoint[1] == "CENTER" and shapeshiftPoint[4] == 0 and shapeshiftPoint[5] == -84,
-  "shapeshift bar parks at centre above the Cast Bar")
+assert(_G.ShapeshiftBarFrame.parent == _G.MainMenuBar, "do not reparent the shapeshift bar")
+assert(_G.StanceBarFrame.parent == _G.MainMenuBar, "do not reparent the stance bar")
 
 _G.ShapeshiftBarFrame:Show()
 assert(_G.ShapeshiftBarFrame.shown == true, "shapeshift Show must keep the default bar")
 _G.ShapeshiftBarFrame:SetParent(_G.MainMenuBar)
-assert(_G.ShapeshiftBarFrame.parent == _G.UIParent, "MainMenuBar must not keep the shapeshift bar")
-_G.MainMenuBar:Show()
-assert(_G.ShapeshiftBarFrame.shown == true, "MainMenuBar Show must not hide the shapeshift bar")
-assert(_G.MainMenuBarArtFrame.hidden, "MainMenuBar Show must re-hide default art")
+assert(_G.ShapeshiftBarFrame.parent == _G.MainMenuBar, "stance parent stays with Blizzard")
 
 print("park_main_menu_spec OK")

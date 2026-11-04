@@ -148,8 +148,6 @@ assert(opened == "ShadowUI", "Open still opens AceConfigDialog")
 assert(dialog.OpenFrames.ShadowUI._suiOptionsChrome, "Open skins the ShadowUI host")
 
 local toc = assert(io.open(root .. "ShadowUI.toc", "r")):read("*a")
-assert(toc:find("options\\chrome.lua", 1, true), "Era TOC loads options chrome")
-local tocTbc = assert(io.open(root .. "ShadowUI_TBC.toc", "r")):read("*a")
-assert(tocTbc:find("options\\chrome.lua", 1, true), "TBC TOC loads options chrome")
+assert(toc:find("options\\chrome.lua", 1, true), "TOC loads options chrome")
 
 print("options_chrome_spec OK")

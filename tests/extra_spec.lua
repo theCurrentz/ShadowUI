@@ -74,7 +74,9 @@ local function fakeTex()
 end
 
 local barHost = { name = "ExtraActionBarFrame", clips = true, shown = true }
-function barHost:SetClipsChildren(clips) self.clips = clips end
+function barHost:SetClipsChildren()
+  error("SetClipsChildren is protected")
+end
 function barHost:IsShown() return self.shown end
 _G.ExtraActionBarFrame = barHost
 
@@ -97,7 +99,9 @@ function button:CreateTexture()
 end
 function button:GetFrameLevel() return 4 end
 function button:SetFrameLevel() end
-function button:SetClipsChildren(clips) self.clipsChildren = clips end
+function button:SetClipsChildren()
+  error("SetClipsChildren is protected")
+end
 function button:GetParent() return barHost end
 _G.ExtraActionButton1 = button
 _G.ExtraActionButton1Icon = icon
@@ -114,16 +118,14 @@ assert(button.chrome.r == 0.05 and button.chrome.g == 0.05 and button.chrome.b =
 assert(icon.points[1][1] == "TOPLEFT" and icon.points[1][2] == 2,
   "Extra Action icon insets 2px")
 assert(icon.crop[1] == 0.07 and icon.crop[3] == 0.07,
-  "Extra Action icon crop matches action icons")
-assert(button.NormalTexture.hidden or button.NormalTexture.a == 0,
-  "Extra Action silver slot art stays hidden")
-assert(button.style.hidden or button.style.a == 0,
-  "Extra Action style art stays hidden")
-assert(_G.ExtraActionButtonStyle.hidden or _G.ExtraActionButtonStyle.a == 0,
-  "ExtraActionButtonStyle stays hidden")
+  "Extra Action icon crop is 0.07")
+assert(button.NormalTexture.texture == "",
+  "Extra Action silver slot art is stripped")
+assert(button.style.texture == "",
+  "Extra Action style art is stripped")
+assert(_G.ExtraActionButtonStyle.texture == "",
+  "ExtraActionButtonStyle is stripped")
 assert(button.shadowUIOuterShape == "circle", "Extra Action keeps a circle Outer Edge")
-assert(barHost.clips == false, "Extra Action Bar does not clip Outer Edge")
-assert(button.clipsChildren == false, "Extra Action Button does not clip Outer Edge")
 
 button.shown = false
 icon.texture = nil

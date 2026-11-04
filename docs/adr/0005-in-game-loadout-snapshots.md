@@ -7,3 +7,5 @@ ShadowUI stores Version-specific Loadout Snapshots on the Account. A source Char
 Same-Class and Cross-Class copies map fixed physical Bar and button positions. An old snapshot with multiple main-Bar pages requires an explicit source-page and target-range map. Cross-Class copies skip abilities the target does not know. ShadowUI does not guess equivalent class abilities.
 
 This keeps the game as the writer of live Actions, works across realms on one Account, and avoids fragile edits to client-owned action data. Macro Cursor remains unchanged.
+
+Status: superseded by [ADR 0013](0013-no-loadout-snapshots.md).

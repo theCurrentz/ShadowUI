@@ -45,11 +45,13 @@ local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local WoWBCC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local WoWWrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 
+-- This addon is Forever-only. Restricted Execute has no newtable().
+local WoWForever = true
+
 local UseVanillaOverlayGlow = false -- WoWRetail and ActionButtonSpellAlertManager
 local DisableOverlayGlow = WoWClassic or WoWBCC or WoWWrath
 
--- Enable custom flyouts for WoW Retail
-local UseCustomFlyout = WoWRetail or (FlyoutButtonMixin and not ActionButton_UpdateFlyout)
+local UseCustomFlyout = not WoWForever and (WoWRetail or (FlyoutButtonMixin and not ActionButton_UpdateFlyout))
 
 local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
@@ -475,6 +477,11 @@ function SetupSecureSnippets(button)
 end
 
 function WrapOnClick(button, unwrapheader)
+	-- Forever: WrapScript OnClick reads GetActionInfo, which is secret and
+	-- raises ADDON_ACTION_FORBIDDEN. SecureActionButton type=action still clicks.
+	if WoWForever then
+		return
+	end
 	-- unwrap OnClick until we got our old script out
 	if unwrapheader and unwrapheader.UnwrapScript then
 		local wrapheader
@@ -627,13 +634,27 @@ function Generic:SetState(state, kind, action)
 	self:UpdateState(state)
 end
 
+local function ApplyStateAttributes(self, state)
+	local kind = self.state_types[state] or "empty"
+	local action = self.state_actions[state]
+	self:SetAttribute("type", kind)
+	if kind ~= "empty" and kind ~= "custom" then
+		local action_field = (kind == "pet") and "action" or kind
+		self:SetAttribute(action_field, action)
+		self:SetAttribute("action_field", action_field)
+	end
+end
+
 function Generic:UpdateState(state)
 	if not state then state = self:GetAttribute("state") end
 	state = tostring(state)
 	self:SetAttribute(format("labtype-%s", state), self.state_types[state])
 	self:SetAttribute(format("labaction-%s", state), self.state_actions[state])
 	if state ~= tostring(self:GetAttribute("state")) then return end
-	if self.header then
+	-- Forever restricted Execute("GetFrameRef") raises RestrictedExecution.lua:79.
+	if WoWForever then
+		ApplyStateAttributes(self, state)
+	elseif self.header then
 		self.header:SetFrameRef("updateButton", self)
 		self.header:Execute([[
 			local frame = self:GetFrameRef("updateButton")

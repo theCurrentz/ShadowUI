@@ -1,9 +1,13 @@
--- Action-button chrome is a 0.05 fill with a 2px icon inset, a 0.07 crop,
+-- LAB action-button chrome is a 0.05 fill with a 2px icon inset, a 0.07 crop,
 -- hover/press colour overlay, a GCD clock swipe, a 4px Lorti outer edge, and a
 -- press overlay that snaps off on up and stays through a player cast.
 -- The icon must not fill the whole button or the chrome is covered.
--- An Action Slot with no spell, macro, or item stays hidden, including its Keybind,
--- except during Keybind Edit Mode or a pickup.
+-- A Blizzard ActionButton keeps its native icon, IconMask, hover, checked,
+-- Flash, and equipped Border. Only the slot rim and slot art are blackened.
+-- It gets the same Outer Edge.
+-- An Action Slot with no spell, macro, or item stays hidden, including its Keybind.
+-- A pickup or ACTIONBAR_SHOWGRID shows empty slots as drop targets with Keybind labels.
+-- Keybind Edit Mode hides slot Keybind labels unless a pickup is active.
 -- Keybind labels are gold thick-outlined uppercase text. Item counts are pale lime.
 -- Run: lua tests/button_skin_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -35,6 +39,17 @@ _G.CreateFrame = function(_, _, parent, template)
   function frame:SetParent(parent) self.parent = parent end
   function frame:Show() self.shown = true end
   function frame:Hide() self.shown = false end
+  function frame:GetWidth() return self.width or 36 end
+  function frame:GetHeight() return self.height or 36 end
+  function frame:GetEffectiveScale() return self.scale or 1 end
+  -- Blizzard BackdropTemplateMixin:SetupTextureCoordinates divides size by edgeSize.
+  function frame:SetupTextureCoordinates()
+    local width = self:GetWidth()
+    local height = self:GetHeight()
+    local edgeSize = (self.backdrop and self.backdrop.edgeSize) or 5
+    self.edgeRepeatX = (width / edgeSize) * self:GetEffectiveScale()
+    self.edgeRepeatY = (height / edgeSize) * self:GetEffectiveScale()
+  end
   function frame:ApplyBackdrop()
     self.border = { 1, 1, 1, 1 }
   end
@@ -43,7 +58,8 @@ end
 
 local function fakeTex()
   local tex = { points = {}, r = 1, g = 1, b = 1, shown = true }
-  function tex:SetTexture() end
+  function tex:SetTexture(path) self.texture = path end
+  function tex:RemoveMaskTexture(mask) self.removedMask = mask end
   function tex:SetAlpha(a) self.a = a end
   function tex:Hide() self.hidden = true self.shown = false end
   function tex:Show() self.hidden = false self.shown = true end
@@ -186,7 +202,9 @@ function button:SetClipsChildren(clips) self.clipsChildren = clips end
 local barHost = { name = "ShadowUIBar1" }
 function button:GetParent() return barHost end
 
+assert(loadfile(root .. "core/keybinds.lua"))()
 assert(loadfile(root .. "skin/chrome.lua"))()
+assert(loadfile(root .. "skin/darken.lua"))()
 assert(loadfile(root .. "bars/button.lua"))()
 Addon:SkinBarButton(button)
 
@@ -240,11 +258,26 @@ assert(button.clipsChildren == false, "the action button does not clip Outer Edg
 assert(outer.points[1][1] == "TOPLEFT" and outer.points[1][4] == -4,
   "outer edge extends 4px past the button")
 assert(outer.level == 3, "outer edge sits behind the button")
+outer.width = 40
+outer.height = 40
+outer:SetupTextureCoordinates()
+assert(outer.edgeRepeatX == 8, "a normal Outer Edge size still sets backdrop repeats")
+local secretSize = {}
+_G.issecretvalue = function(value)
+  return value == secretSize
+end
+outer.width = secretSize
+outer.height = secretSize
+outer:SetupTextureCoordinates()
+assert(outer.edgeRepeatX == 8, "a secret loot size does not redo backdrop math")
+_G.issecretvalue = nil
+outer.width = nil
+outer.height = nil
 
-assert(button.hitRectCalls == 1, "full-button hit rect is applied out of combat")
+assert(button.hitRectCalls == 0, "do not call SetHitRectInsets; it is protected")
 combat = true
 Addon:SkinBarButton(button)
-assert(button.hitRectCalls == 1, "do not call SetHitRectInsets in combat")
+assert(button.hitRectCalls == 0, "do not call SetHitRectInsets in combat")
 assert(button.cooldown.clearCount == 1, "do not re-anchor cooldown or the GCD swipe restarts")
 outer.border = { 1, 1, 1, 1 }
 Addon:SkinBarButton(button)
@@ -274,8 +307,15 @@ Addon.keybindMode = true
 Addon:SkinBarButton(button)
 assert(button.alpha == 1, "Keybind Edit Mode shows empty Action Slots")
 assert(not button.chrome.hidden, "Keybind Edit Mode paints empty Action Slot chrome")
-assert(button.HotKey.shown == true, "Keybind Edit Mode shows the Keybind on an empty Action Slot")
+assert(button.HotKey.shown == false, "Keybind Edit Mode hides the slot Keybind")
 Addon.keybindMode = false
+
+_G.GetCursorInfo = function()
+  return "merchant"
+end
+Addon:SkinBarButton(button)
+assert(button.alpha == 0, "a merchant cursor does not show empty Action Slots")
+assert(button.HotKey.shown == false, "a merchant cursor does not show empty Keybinds")
 
 _G.GetCursorInfo = function()
   return "spell"
@@ -284,7 +324,11 @@ Addon:SkinBarButton(button)
 assert(button.alpha == 1, "a pickup shows empty Action Slots")
 assert(not button.chrome.hidden, "a pickup paints empty Action Slot chrome")
 assert(button.shadowUIOuter.shown, "a pickup paints empty Action Slot Outer Edge")
-assert(button.HotKey.shown == true, "a pickup shows the Keybind on an empty Action Slot")
+assert(button.HotKey.shown == true, "a pickup shows Keybinds on empty Action Slots")
+Addon.keybindMode = true
+Addon:SkinBarButton(button)
+assert(button.HotKey.shown == true, "a pickup shows Keybinds even during Keybind Edit Mode")
+Addon.keybindMode = false
 _G.GetCursorInfo = function() end
 Addon:SkinBarButton(button)
 assert(button.alpha == 0, "clearing the cursor hides empty Action Slots again")
@@ -293,9 +337,15 @@ assert(button.HotKey.shown == false, "clearing the cursor hides empty Action Slo
 Addon.actionBarGridCount = 1
 Addon:SkinBarButton(button)
 assert(button.alpha == 1, "ACTIONBAR_SHOWGRID shows empty Action Slots")
-assert(button.HotKey.shown == true, "ACTIONBAR_SHOWGRID shows the Keybind on an empty Action Slot")
+assert(button.HotKey.shown == true, "ACTIONBAR_SHOWGRID shows Keybinds on empty Action Slots")
 Addon.bars = { bar1 = { buttons = { button } } }
+_G.GetCursorInfo = function()
+  return "macro"
+end
 Addon:OnActionBarHideGrid()
+assert(button.HotKey.shown == true, "HIDEGRID with a macro still on the cursor keeps Keybinds")
+_G.GetCursorInfo = function() end
+Addon:SkinBarButton(button)
 assert(button.alpha == 0, "ACTIONBAR_HIDEGRID hides empty Action Slots again")
 
 function button:HasAction()
@@ -305,6 +355,13 @@ Addon:SkinBarButton(button)
 assert(button.alpha == 1, "a bound Action Slot is visible")
 assert(not button.chrome.hidden, "a bound Action Slot keeps Darken chrome")
 assert(button.shadowUIOuter.shown, "a bound Action Slot keeps an Outer Edge")
+assert(button.HotKey.shown == true, "a filled Action Slot shows its Keybind")
+Addon.keybindMode = true
+Addon:SkinBarButton(button)
+assert(button.HotKey.shown == false, "Keybind Edit Mode hides the Keybind on a filled Action Slot")
+Addon.keybindMode = false
+Addon:SkinBarButton(button)
+assert(button.HotKey.shown == true, "leaving Keybind Edit Mode restores the Keybind")
 
 local bar = { fill = fakeTex(), shadow = fakeTex() }
 bar.fill.hidden = false
@@ -384,7 +441,9 @@ button._state_action = 1
 _G.GetActionInfo = function()
   return "spell", 133
 end
-assert(Addon:ActionSlotSpellID(button) == 133, "Action Slot spell id comes from GetActionInfo")
+assert(Addon:ActionSlotSpellID(button) == nil, "do not read GetActionInfo while tainted")
+button.shadowUISpellID = 133
+assert(Addon:ActionSlotSpellID(button) == 133, "Action Slot spell id is stored on the button")
 now = 30
 button.hooks.OnMouseDown[1]()
 Addon:OnPressCastEvent("UNIT_SPELLCAST_START", "player", "guid", 133)
@@ -441,5 +500,166 @@ assert(initSrc:find('UNIT_SPELLCAST_START", "OnPressCastEvent"', 1, true),
   "init registers START for the press overlay")
 assert(initSrc:find('UNIT_SPELLCAST_CHANNEL_STOP", "OnPressCastEvent"', 1, true),
   "init registers channel stop for the press overlay")
+
+local blizzCd = fakeTex()
+function blizzCd:ClearAllPoints()
+  error("ClearAllPoints is protected")
+end
+function blizzCd:SetPoint()
+  error("SetPoint is protected")
+end
+function blizzCd:SetScript()
+  error("SetScript is protected")
+end
+function blizzCd:SetHideCountdownNumbers()
+  error("SetHideCountdownNumbers is protected")
+end
+local blizzHotkey = { shown = true, text = "1" }
+function blizzHotkey:SetText(text) self.text = text end
+function blizzHotkey:Show() self.shown = true end
+function blizzHotkey:Hide() self.shown = false end
+local blizzFloating = fakeTex()
+local blizzNormal2 = fakeTex()
+_G.ActionButton1FloatingBG = blizzFloating
+_G.ActionButton1NormalTexture2 = blizzNormal2
+local blizz = {
+  icon = fakeTex(),
+  NormalTexture = fakeTex(),
+  HighlightTexture = fakeTex(),
+  PushedTexture = fakeTex(),
+  CheckedTexture = fakeTex(),
+  Flash = fakeTex(),
+  Border = fakeTex(),
+  SlotArt = fakeTex(),
+  SlotBackground = fakeTex(),
+  FloatingBG = blizzFloating,
+  cooldown = blizzCd,
+  HotKey = blizzHotkey,
+  Count = countLabel,
+  Name = macroName,
+}
+function blizz:GetName() return "ActionButton1" end
+function blizz:HasAction()
+  error("HasAction is secret")
+end
+function blizz:SetAlpha()
+  error("SetAlpha is protected")
+end
+function blizz:SetClipsChildren()
+  error("SetClipsChildren is protected")
+end
+function blizz:HookScript()
+  error("HookScript is protected")
+end
+function blizz:GetParent() return barHost end
+function blizz:GetFrameLevel() return 0 end
+function blizz:SetFrameLevel()
+  error("SetFrameLevel is protected")
+end
+function blizz:CreateTexture()
+  return fakeTex()
+end
+local iconMask = fakeTex()
+function iconMask:Hide()
+  error("Hide is protected")
+end
+blizz.IconMask = iconMask
+function blizz:IsShown()
+  return self.shown ~= false
+end
+blizz.shown = true
+Addon:SkinBarButton(blizz)
+assert(blizz.shadowUIOuter and blizz.shadowUIOuter.shown ~= false,
+  "a shown Blizzard Action Slot keeps an Outer Edge")
+assert(blizzHotkey.shown == true, "a filled Blizzard Action Slot shows its Keybind")
+
+local function isNative(tex)
+  return tex.shown ~= false and tex.texture == nil and #tex.points == 0
+    and tex.r == 1 and tex.g == 1 and tex.b == 1
+end
+local function isTinted(tex, level)
+  return tex.shown ~= false and tex.texture == nil
+    and tex.r == level and tex.g == level and tex.b == level
+end
+assert(#blizz.icon.points == 0 and not blizz.icon.all,
+  "a Blizzard icon keeps its native size (no inset zoom)")
+assert(blizz.icon.crop == nil, "a Blizzard icon keeps its native TexCoord (no crop zoom)")
+assert(blizz.icon.removedMask == nil, "a Blizzard icon keeps its IconMask")
+assert(isTinted(blizz.NormalTexture, 0.05), "the Blizzard slot rim is blackened, not stripped")
+assert(isTinted(blizz.PushedTexture, 0.05), "the Blizzard pressed rim is blackened, not stripped")
+assert(isTinted(blizz.FloatingBG, 0.05), "FloatingBG is blackened like DarkMode Forever")
+assert(isTinted(_G.ActionButton1NormalTexture2, 0.05),
+  "NormalTexture2 is blackened like DarkMode Forever")
+-- Lighter than the rim so an empty drop target still reads as a slot.
+assert(isTinted(blizz.SlotArt, 0.2), "Blizzard empty-slot art is dimmed")
+assert(isTinted(blizz.SlotBackground, 0.2), "the Blizzard slot background is dimmed")
+assert(isNative(blizz.HighlightTexture), "the Blizzard hover glow stays native")
+assert(isNative(blizz.CheckedTexture), "the Blizzard checked glow stays native")
+assert(isNative(blizz.Flash), "the Blizzard attack Flash stays native")
+assert(isNative(blizz.Border), "the Blizzard equipped Border stays native")
+assert(blizz.shadowUIChrome == nil, "the blackened rim replaces the Darken fill")
+
+blizz.icon.shown = false
+Addon:SkinBarButton(blizz)
+assert(blizz.shadowUIOuter.shown == false,
+  "a Blizzard Action Slot with a hidden icon does not keep an Outer Edge")
+assert(blizzHotkey.shown == false, "an empty Blizzard Action Slot hides its Keybind")
+
+blizz.icon.shown = true
+blizz.shown = false
+Addon:SkinBarButton(blizz)
+assert(blizz.shadowUIOuter.shown == false,
+  "a hidden Blizzard Action Slot does not keep an Outer Edge")
+
+-- Blizzard Update reads icon, HotKey, and Count. A write taints the drag grid.
+local blizzWrites = {}
+local plain = {}
+for k, v in pairs(blizz) do
+  plain[k] = v
+end
+local proxy = setmetatable({}, {
+  __index = plain,
+  __newindex = function(_, k, v)
+    blizzWrites[#blizzWrites + 1] = tostring(k)
+    plain[k] = v
+  end,
+})
+plain.icon = nil
+_G.ActionButton1Icon = fakeTex()
+_G.ActionButton1HotKey = blizzHotkey
+Addon:SkinBarButton(proxy)
+plain.icon = blizz.icon
+for _, key in ipairs(blizzWrites) do
+  assert(key ~= "icon" and key ~= "HotKey" and key ~= "Count",
+    "do not write " .. key .. " on a Blizzard ActionButton")
+end
+
+_G.GetCursorInfo = function()
+  return "spell"
+end
+Addon:SkinBarButton(blizz)
+assert(blizz.shadowUIOuter.shown ~= false,
+  "a pickup paints Outer Edge on a hidden Blizzard Action Slot")
+assert(blizzHotkey.shown == true,
+  "a pickup shows Keybinds on a hidden Blizzard Action Slot")
+_G.GetCursorInfo = function() end
+
+blizz.icon.shown = true
+blizz.shown = true
+Addon.keybindMode = true
+Addon:SkinBarButton(blizz)
+assert(blizzHotkey.shown == false,
+  "Keybind Edit Mode hides the Keybind on a filled Blizzard Action Slot")
+_G.GetCursorInfo = function()
+  return "item"
+end
+Addon:SkinBarButton(blizz)
+assert(blizzHotkey.shown == true,
+  "an item pickup shows Keybinds during Keybind Edit Mode")
+_G.GetCursorInfo = function() end
+Addon.keybindMode = false
+function blizz:GetName() return "OverrideActionBarButton2" end
+Addon:SkinBarButton(blizz)
+assert(blizz.shadowUIOuter, "an Override Action Bar button keeps an Outer Edge")
 
 print("button_skin_spec OK")

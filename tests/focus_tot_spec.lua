@@ -149,16 +149,20 @@ local ok, err = pcall(_G.FocusFrame.SetSmallSize, _G.FocusFrame, true)
 assert(not ok and tostring(err):find("anchor family", 1, true),
   "unpatched FocusFrame:SetSmallSize must fail when FocusFrame is already in the ToT family")
 
+local totSetPoint = _G.FocusFrameToT.SetPoint
+_G.FocusFrame_SetSmallSize = function() end
+local smallSizeFn = _G.FocusFrame_SetSmallSize
+
 assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "skin/darken.lua"))()
 assert(loadfile(root .. "skin/frames.lua"))()
 
 Addon:WatchBlizzardUnitEdit()
-_G.FocusFrame.smallSize = false
-_G.FocusFrame:SetSmallSize(true)
-assert(_G.FocusFrameToT.points[1][2] == _G.FocusFrame,
-  "patched SetSmallSize pins ToT to FocusFrame")
-assert(_G.FocusFrame.points[1][2] ~= _G.FocusFrameToT,
-  "FocusFrame cannot stay snapped to its ToT")
+assert(_G.FocusFrame.SetSmallSize == blizzardSetSmallSize,
+  "do not wrap FocusFrame SetSmallSize; SetParent/SetPoint on unit frames is forbidden")
+assert(_G.FocusFrameToT.SetPoint == totSetPoint,
+  "do not replace FocusFrameToT SetPoint")
+assert(_G.FocusFrame_SetSmallSize == smallSizeFn,
+  "do not wrap FocusFrame_SetSmallSize")
 
 print("focus_tot_spec OK")

@@ -153,23 +153,36 @@ Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == false, "PaintButtonHotkeys hides a Keybind on an empty Action Slot")
 Addon.keybindMode = true
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
-assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
-  "Keybind Edit Mode still paints empty Action Slots")
+assert(paintedHotkey.shown == false, "Keybind Edit Mode hides the slot Keybind")
 Addon.keybindMode = false
-function Addon:ShouldShowEmptyActionSlots()
-  return (self.actionBarGridCount or 0) > 0
-end
 Addon.actionBarGridCount = 1
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
-  "a pickup still paints empty Action Slot Keybinds")
+  "ACTIONBAR_SHOWGRID shows Keybinds on empty Action Slots")
 Addon.actionBarGridCount = 0
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == false, "ending a pickup hides empty Action Slot Keybinds")
+_G.GetCursorInfo = function()
+  return "spell"
+end
+Addon.keybindMode = true
+Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
+assert(paintedHotkey.shown == true, "a spell pickup shows Keybinds during Keybind Edit Mode")
+Addon.keybindMode = false
+_G.GetCursorInfo = function()
+  return "merchant"
+end
+Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
+assert(paintedHotkey.shown == false, "a merchant cursor does not show empty Keybinds")
+_G.GetCursorInfo = function() end
 function emptySlot:HasAction() return true end
 Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
 assert(paintedHotkey.shown == true and paintedHotkey.text == "1",
   "a filled Action Slot still shows its Keybind")
+Addon.keybindMode = true
+Addon:PaintButtonHotkeys({ ["CLICK ShadowUIActionButton1:Keybind"] = "1" })
+assert(paintedHotkey.shown == false, "Keybind Edit Mode hides the Keybind on a filled Action Slot")
+Addon.keybindMode = false
 
 assert(Addon:FormatTooltipKeybind(nil) == nil, "empty Keybind has no tooltip line")
 assert(Addon:FormatTooltipKeybind("") == nil, "blank Keybind has no tooltip line")

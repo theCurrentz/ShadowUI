@@ -1,4 +1,4 @@
--- Checks shipped layouts stay clear of each other and the cast bar.
+-- Checks shipped layouts stay clear of each other.
 -- BOTTOM-anchored bars use bottom-edge coordinates; CENTER bars use screen centre.
 -- Run: lua tests/layout_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -21,7 +21,6 @@ for class, data in pairs(Addon.Defaults.classes) do
 end
 
 local LIMIT = 360
-local CAST = { name = "castbar", point = "CENTER", left = -150, right = 144, top = -118, bottom = -146 }
 
 local function rect(id, cfg)
   local size = cfg.buttonSize or 36
@@ -92,7 +91,6 @@ end
 local function check(label, layouts)
   local rects = collect(layouts)
   local center = group(rects, "CENTER")
-  center[#center + 1] = CAST
   checkGroup(label, center, LIMIT)
   checkGroup(label, group(rects, "BOTTOM"), nil)
   return #rects
@@ -104,12 +102,7 @@ for _, cfg in pairs(base) do
   if cfg.buttons and cfg.enabled ~= false then enabled = enabled + 1 end
 end
 assert(enabled == 12, "expected 6 rows, two 3x4 sides, bar9, bar10, pet, and possess, got " .. enabled)
-assert(base.cooldown and base.cooldown.enabled ~= false, "Cooldown Manager ships enabled")
-assert(base.cooldown.point == "CENTER", "Cooldown Manager sits at centre")
-assert(base.cooldown.buttons == nil, "Cooldown Manager is not a Bar")
-assert(base.cooldown.direction == "right", "Cooldown Manager ships Direction Right")
-assert(base.cooldown.max == 8, "Cooldown Manager ships a max of 8")
-assert(base.cooldown.columns == 8, "Cooldown Manager ships one row")
+assert(base.cooldown == nil, "Layout has no Cooldown Manager")
 assert(base.global and base.global.gap == 0, "Global gap ships 0")
 assert(base.global.iconShape == "square", "Global shape ships square")
 assert(base.global.buttons == nil, "Global is not a Bar")

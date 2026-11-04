@@ -3,7 +3,6 @@
            and session switching for Keybind Edit Mode.
   Deps: ShadowUI:WriteProfileDelta(), ShadowUI:ApplyAll(), bar frames, edit/keybinds.lua
           Public: SetEditSession(), ApplyEditSession(), ToggleEditMode(), ToggleKeybindMode(),
-          ToggleUnitFrameMode(),
           RelativeScreenAnchor(), HostVisualRect(), SnapVisualToGrid(), SnapFrameToGrid(),
           EditCursor(), StartEditDragTick(), StopEditDragTick(), PlaceEditReadoutAtCursor(),
           FormatEditReadout(), PaintEditReadout(), HideEditReadout(),
@@ -33,14 +32,6 @@ function Addon:SnapValue(value)
 end
 
 local UNIT_VISUAL = {
-  player = {
-    "PlayerPortrait", "PlayerFramePortrait", "PlayerFrameHealthBar",
-    "PlayerFrameManaBar", "PlayerName",
-  },
-  target = {
-    "TargetFramePortrait", "TargetFrameHealthBar", "TargetFrameManaBar",
-    "TargetFrameName", "TargetFrameTextureFrameName",
-  },
 }
 
 local function addRegion(rect, region)
@@ -74,47 +65,19 @@ function Addon:HostVisualRect(frame, layoutId)
     return
   end
   local rect
-  if layoutId == "range" then
-    local left = frame.GetLeft and frame:GetLeft()
-    local bottom = frame.GetBottom and frame:GetBottom()
-    local width = frame.GetWidth and frame:GetWidth() or 0
-    local height = frame.GetHeight and frame:GetHeight() or 0
-    local tw, th = width, height
-    local text = frame.text
-    if text and (not text.IsShown or text:IsShown()) then
-      local sw = text.GetStringWidth and text:GetStringWidth()
-      if not sw or sw <= 0 then
-        sw = text.GetWidth and text:GetWidth()
-      end
-      local sh = text.GetStringHeight and text:GetStringHeight()
-      if not sh or sh <= 0 then
-        sh = text.GetHeight and text:GetHeight()
-      end
-      if sw and sw > 0 then
-        tw = sw
-      end
-      if sh and sh > 0 then
-        th = sh
-      end
+  local names = UNIT_VISUAL[layoutId]
+  if names then
+    for _, name in ipairs(names) do
+      rect = addRegion(rect, _G[name])
     end
-    if left and bottom and tw > 0 and th > 0 then
-      return left + (width - tw) / 2, bottom + (height - th) / 2, tw, th
-    end
-  else
-    local names = UNIT_VISUAL[layoutId]
-    if names then
-      for _, name in ipairs(names) do
-        rect = addRegion(rect, _G[name])
-      end
-    end
-    rect = addRegion(rect, frame.portrait)
-    rect = addRegion(rect, frame.healthbar)
-    rect = addRegion(rect, frame.manabar)
-    local container = frame.PlayerFrameContainer or frame.TargetFrameContainer
-    if container then
-      rect = addRegion(rect, container.PlayerPortrait)
-      rect = addRegion(rect, container.Portrait)
-    end
+  end
+  rect = addRegion(rect, frame.portrait)
+  rect = addRegion(rect, frame.healthbar)
+  rect = addRegion(rect, frame.manabar)
+  local container = frame.PlayerFrameContainer or frame.TargetFrameContainer
+  if container then
+    rect = addRegion(rect, container.PlayerPortrait)
+    rect = addRegion(rect, container.Portrait)
   end
   if rect then
     return rect.left, rect.bottom, rect.right - rect.left, rect.top - rect.bottom
@@ -496,39 +459,32 @@ function Addon:CreateEditGrid()
 end
 
 function Addon:SetEditSession(session)
-  if session ~= "layout" and session ~= "keybinds" and session ~= "units" then
+  if session ~= "layout" and session ~= "keybinds" then
     session = nil
   end
   self.editSession = session
   self.editMode = session == "layout"
   self.keybindMode = session == "keybinds"
-  self.unitFrameMode = session == "units"
   return session
 end
 
 function Addon:ApplyEditSession(reapply)
   local grid = self.editGrid or self:CreateEditGrid()
-  grid:SetShown(self.editMode == true or self.unitFrameMode == true)
+  grid:SetShown(self.editMode == true)
   if self.editSession then
     self:ShowLayerPicker()
   elseif self.layerPicker then
     self.layerPicker:Hide()
   end
-  if (reapply or self.editMode or self.unitFrameMode) and self.ApplyAll then
+  if (reapply or self.editMode) and self.ApplyAll then
     self:ApplyAll()
   end
   self:RefreshBarDragOverlays()
   if self.RefreshUnitDragOverlays then
     self:RefreshUnitDragOverlays()
   end
-  if self.RefreshUnitDesignerOverlays then
-    self:RefreshUnitDesignerOverlays()
-  end
   if self.ApplyKeybindSession then
     self:ApplyKeybindSession()
-  end
-  if self.ApplyCombatMeterPreview then
-    self:ApplyCombatMeterPreview()
   end
 end
 
@@ -582,27 +538,9 @@ function Addon:PersistHostPosition(frame, layoutId, withSize)
   end
   local patch = persistAnchor(self, frame, x, y)
   if withSize then
-    if layoutId == "cooldown" and self.NearestBarLayout then
-      local live = (self.ResolveEffective and self:ResolveEffective()) or {}
-      live = live.layout and live.layout.cooldown or {}
-      local shipped = self.Defaults and self.Defaults.base and self.Defaults.base.layout
-      shipped = shipped and shipped.cooldown or {}
-      local max = math.max(1, live.max or shipped.max or 8)
-      local size = live.buttonSize or shipped.buttonSize or BUTTON_SIZE
-      local gap = live.gap
-      if gap == nil then
-        gap = shipped.gap or 4
-      end
-      local layout = self:NearestBarLayout(max, size, frame:GetWidth(), frame:GetHeight(), gap)
-      patch.columns = layout.columns
-      if frame._previewColumns then
-        frame._previewColumns = nil
-      end
-    else
-      local width, height = self:SnapFrameSize(frame)
-      patch.width = width
-      patch.height = height
-    end
+    local width, height = self:SnapFrameSize(frame)
+    patch.width = width
+    patch.height = height
   end
   self:WriteProfileDelta("layout", layoutId, patch)
   self:ApplyAll()
@@ -638,24 +576,6 @@ function Addon:ToggleEditMode()
   self:ApplyEditSession(false)
 end
 
-function Addon:ToggleUnitFrameMode()
-  if self.OpenUnitFrameDesigner then
-    self:OpenUnitFrameDesigner()
-    return
-  end
-  if self.editSession ~= "units" and InCombatLockdown() then
-    self:Print("Cannot edit unit frames in combat.")
-    return
-  end
-  if self.editSession == "units" then
-    self:SetEditSession(nil)
-    self:ApplyEditSession(true)
-    return
-  end
-  self:SetEditSession("units")
-  self:ApplyEditSession(false)
-end
-
 function Addon:ToggleKeybindMode()
   if self.editSession ~= "keybinds" then
     if InCombatLockdown() then
@@ -680,8 +600,6 @@ function Addon:OnRegenDisabled()
   self:ApplyEditSession(true)
   if session == "keybinds" then
     self:Print("Keybind Edit Mode closed for combat.")
-  elseif session == "units" then
-    self:Print("Unit Frame Designer closed for combat.")
   else
     self:Print("Layout Edit Mode closed for combat.")
   end

@@ -99,9 +99,6 @@ function Addon:SkinWindowFrames()
   self:DarkenNamed(BLACK_NAMES, black)
   self:DarkenNamed(BAR_NAMES, bar)
   self:DarkenNamed(GRYPHON_NAMES, grey)
-  for i = 0, 4 do
-    self:LockVertex(_G["MainMenuXPBarTexture" .. i], bar)
-  end
   local status = _G.ReputationWatchBar and _G.ReputationWatchBar.StatusBar
   for i = 0, 3 do
     self:DarkenChild(status, "WatchBarTexture" .. i, bar)

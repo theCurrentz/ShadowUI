@@ -1,4 +1,4 @@
--- Named Profiles: create, rename, default, delete.
+-- One Account Profile: flatten named stores and drop Character selection.
 -- Run: lua tests/profile_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
 local Addon = {}
@@ -6,38 +6,42 @@ _G.LibStub = function()
   return { GetAddon = function() return Addon end }
 end
 assert(loadfile(root .. "core/resolve.lua"))()
-assert(loadfile(root .. "profile/profiles.lua"))()
 
 local account, char
 function Addon:GetDB() return account end
 function Addon:GetCharDB() return char end
 function Addon:GetPlayerClass() return "MAGE" end
-function Addon:ApplyAll()
-  Addon.applied = (Addon.applied or 0) + 1
-end
-function Addon:Print() end
 
 account = {
   defaultProfile = "Default",
   profiles = {
-    Default = { layout = { bar1 = { x = 1 } }, keybinds = {} },
+    Default = { layout = { bar1 = { x = 1 } }, keybinds = { Q = "Q" }, actions = {} },
+    Raid = { layout = { bar1 = { x = 9 } }, keybinds = {}, actions = {} },
+  },
+}
+char = { activeProfile = "Raid" }
+
+Addon:EnsureProfile()
+assert(account.layout.bar1.x == 9, "Character selection flattens that named store")
+assert(account.profiles == nil, "named Profile map is gone")
+assert(account.defaultProfile == nil, "Default Profile name is gone")
+assert(char.activeProfile == nil, "Character selection is gone")
+assert(Addon:GetProfile() == account, "GetProfile returns the Account store")
+
+account = {
+  defaultProfile = "Default",
+  profiles = {
+    Default = { layout = { bar1 = { y = 4 } }, keybinds = {}, actions = {} },
   },
 }
 char = { activeProfile = nil }
+Addon:EnsureProfile()
+assert(account.layout.bar1.y == 4, "empty Character uses Default named store")
 
-assert(Addon:GetActiveProfileName() == "Default", "empty Character uses Default Profile")
-assert(Addon:CreateProfile("Raid") == true, "create copies the active Profile")
-assert(account.profiles.Raid.layout.bar1.x == 1, "new Profile copies Layout")
-assert(Addon:SetActiveProfile("Raid") == true, "Character can select the new Profile")
-assert(char.activeProfile == "Raid", "selection is stored on Character")
-assert(Addon:SetDefaultProfile("Raid") == true, "Raid can be Default Profile")
-assert(account.defaultProfile == "Raid", "Default Profile is Raid")
-assert(Addon:RenameProfile("Raid", "Mythic") == true, "rename keeps the store")
-assert(account.profiles.Raid == nil and account.profiles.Mythic, "old name is gone")
-assert(account.defaultProfile == "Mythic", "rename updates Default Profile")
-assert(char.activeProfile == "Mythic", "rename updates Character selection")
-assert(Addon:DeleteProfile("Default") == true, "delete removes a spare Profile")
-assert(Addon:DeleteProfile("Mythic") == false, "the last Profile stays")
-assert(account.profiles.Mythic, "last Profile is still present")
+account = { layout = {}, keybinds = {}, actions = {} }
+char = {}
+assert(Addon:GetProfile().layout, "a fresh store still has Layout")
+Addon:WriteProfileDelta("layout", "bar1", { y = 9 })
+assert(account.layout.bar1.y == 9, "writes land on the Account Profile")
 
 print("profile_spec OK")

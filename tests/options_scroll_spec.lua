@@ -111,8 +111,6 @@ local other = acegui:Create("ScrollFrame")
 assert(not other._suiScrollTamed, "ScrollFrame outside ShadowUI options is not tamed")
 
 local toc = assert(io.open(root .. "ShadowUI.toc", "r")):read("*a")
-assert(toc:find("options\\scroll.lua", 1, true), "Era TOC loads options scroll")
-local tocTbc = assert(io.open(root .. "ShadowUI_TBC.toc", "r")):read("*a")
-assert(tocTbc:find("options\\scroll.lua", 1, true), "TBC TOC loads options scroll")
+assert(toc:find("options\\scroll.lua", 1, true), "TOC loads options scroll")
 
 print("options_scroll_spec OK")

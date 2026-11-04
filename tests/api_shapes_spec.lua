@@ -5,7 +5,7 @@ local Addon = {}
 _G.LibStub = function()
   return { GetAddon = function() return Addon end }
 end
-assert(loadfile(root .. "cast/castbar.lua"))()
+assert(loadfile(root .. "skin/chrome.lua"))()
 assert(loadfile(root .. "bars/pet.lua"))()
 
 local function fakeTexture(gradient)

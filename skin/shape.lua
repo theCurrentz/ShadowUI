@@ -1,5 +1,6 @@
 --[[
-  Purpose: Per-Bar and Micro Cluster icon shape. Square keeps current chrome.
+  Purpose: Action Slot icons stay square. Extra Action uses circle. Circle and
+           diamond masks stay for Extra Action. Square keeps current chrome.
            Circle and diamond use CreateMaskTexture plus AddMaskTexture, or
            Classic SetMask when CreateMaskTexture is missing. Matching Outer
            Edge drops sit outside the mask. Press glow uses a mask sized to

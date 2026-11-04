@@ -1,9 +1,7 @@
 --[[
-  Purpose: HUD drag hosts for Player Frame, Target Frame, Cast Bar, Range Display,
-           the Blizzard Stance Bar, and the Cooldown Manager. Cooldown wrap resize
-           snaps columns like a Bar.
+  Purpose: HUD drag hosts for the Blizzard Stance Bar.
   Deps: ShadowUI:SnapFrameToGrid(), ShadowUI:PersistHostPosition(),
-        ShadowUI:SnapFrameSize(), ShadowUI:SelectEditOverlay(), ShadowUI:StartEditDragTick()
+        ShadowUI:SelectEditOverlay(), ShadowUI:StartEditDragTick()
   Public: ShadowUI:RefreshUnitDragOverlays()
 ]]
 
@@ -103,18 +101,8 @@ local function placeStanceOverlay(overlay, frame)
 end
 
 local HOSTS = {
-  { id = "player", global = "PlayerFrame", overlay = "ShadowUIPlayerDrag", label = "Player" },
-  { id = "target", global = "TargetFrame", overlay = "ShadowUITargetDrag", label = "Target" },
   { id = "stance", overlay = "ShadowUIStanceDrag", label = "Stance",
     resolve = resolveStanceHost },
-  { id = "cast", overlay = "ShadowUICastDrag", label = "Cast", resizable = true,
-    resolve = function() return Addon.castGroup end,
-    visual = function() return Addon.castBar or Addon.castGroup end },
-  { id = "range", overlay = "ShadowUIRangeDrag", label = "Range",
-    resolve = function() return Addon.rangeDisplay end },
-  { id = "cooldown", overlay = "ShadowUICooldownDrag", label = "Cooldowns",
-    gridResize = true,
-    resolve = function() return Addon.cooldownManager or _G.ShadowUICooldownManager end },
 }
 
 local function paint(overlay)
@@ -159,11 +147,8 @@ local function createOverlay(host, spec)
   overlay.fontString = label
   overlay.host = host
   overlay.hostId = spec.id
-  local sizing = false
   local drag
-  local origin
   local endMove
-  local endSize
   local tick
   local function currentHost()
     return overlay.host or host
@@ -242,108 +227,16 @@ local function createOverlay(host, spec)
       Addon:PaintEditReadout(target, spec.label)
     end
   end
-  local function hostScale(target)
-    target = target or currentHost()
-    local scale = (target and target.GetScale and target:GetScale()) or 1
-    if scale == 0 then
-      return 1
-    end
-    return scale
-  end
-  local function sizeGridToCursor()
-    local target = currentHost()
-    if not origin or not target or not Addon.NearestBarLayout then
-      return
-    end
-    local cx, cy = cursor()
-    local live = (Addon.ResolveEffective and Addon:ResolveEffective()) or {}
-    live = live.layout and live.layout.cooldown or {}
-    local shipped = Addon.Defaults and Addon.Defaults.base and Addon.Defaults.base.layout
-    shipped = shipped and shipped.cooldown or {}
-    local max = math.max(1, live.max or shipped.max or 8)
-    local size = live.buttonSize or shipped.buttonSize or 36 * 0.9
-    local gap = live.gap
-    if gap == nil then
-      gap = shipped.gap or 4
-    end
-    local layout = Addon:NearestBarLayout(max, size, cx - origin.left, origin.top - cy, gap)
-    target._previewColumns = layout.columns
-    target:ClearAllPoints()
-    target:SetSize(layout.width, layout.height)
-    target:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", origin.left,
-      origin.top - layout.height * hostScale(target))
-    overlay:SetAllPoints(target)
-    if Addon.RefreshCooldownManager then
-      Addon:RefreshCooldownManager()
-    end
-    if Addon.PaintEditReadout then
-      Addon:PaintEditReadout(target, spec.label)
-    end
-  end
-  local function sizeHostToCursor()
-    local target = currentHost()
-    if not origin or not target then
-      return
-    end
-    local cx, cy = cursor()
-    local scale = hostScale(target)
-    local width = (cx - origin.left) / scale
-    local height = (origin.top - cy) / scale
-    local minW, minH, maxW, maxH = 36 * 0.9 * 4, 12, 36 * 0.9 * 16, 72
-    if not (IsShiftKeyDown and IsShiftKeyDown()) then
-      if Addon.SnapValue then
-        width = Addon:SnapValue(width)
-      end
-      height = math.floor((height or 0) / 4 + 0.5) * 4
-    end
-    if width < minW then
-      width = minW
-    end
-    if width > maxW then
-      width = maxW
-    end
-    if height < minH then
-      height = minH
-    end
-    if height > maxH then
-      height = maxH
-    end
-    if target.ClearAllPoints then
-      target:ClearAllPoints()
-    end
-    if target.SetSize then
-      target:SetSize(width, height)
-    end
-    placeHost(target, origin.left, origin.top - height * scale)
-    if spec.visual then
-      overlay:SetAllPoints(spec.visual() or target)
-    else
-      overlay:SetAllPoints(target)
-    end
-    if Addon.PaintEditReadout then
-      Addon:PaintEditReadout(target, spec.label)
-    end
-  end
   tick = function()
-    if sizing then
-      if spec.gridResize then
-        sizeGridToCursor()
-      else
-        sizeHostToCursor()
-      end
-    elseif drag then
+    if drag then
       dragToCursor()
     end
-    if (sizing or drag) and IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
-      if sizing then
-        endSize()
-      else
-        endMove()
-      end
+    if drag and IsMouseButtonDown and not IsMouseButtonDown("LeftButton") then
+      endMove()
     end
   end
   local function beginMove()
-    if not Addon.editMode or sizing or drag then
+    if not Addon.editMode or drag then
       return
     end
     local target = currentHost()
@@ -394,76 +287,6 @@ local function createOverlay(host, spec)
     end
   end)
   overlay:SetScript("OnMouseUp", endMove)
-  if spec.resizable or spec.gridResize then
-    local grip = CreateFrame("Button", spec.overlay .. "Size", overlay)
-    grip:SetSize(12, 12)
-    grip:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
-    grip:SetFrameLevel((overlay.GetFrameLevel and overlay:GetFrameLevel() or 200) + 1)
-    grip:EnableMouse(true)
-    local gripFill = grip:CreateTexture(nil, "ARTWORK")
-    gripFill:SetAllPoints(grip)
-    gripFill:SetColorTexture(1, 1, 1, 0.85)
-    overlay.resizeGrip = grip
-    local function beginSize()
-      if not Addon.editMode or sizing or drag then
-        return
-      end
-      local target = currentHost()
-      if not target then
-        return
-      end
-      sizing = true
-      target._shadowUIDragging = true
-      if Addon.SelectEditOverlay then
-        Addon:SelectEditOverlay(overlay)
-      end
-      local top = target.GetTop and target:GetTop()
-      if not top then
-        local scale = hostScale(target)
-        top = (target.GetBottom and target:GetBottom() or 0)
-          + ((target.GetHeight and target:GetHeight() or 0) * scale)
-      end
-      origin = {
-        left = target.GetLeft and target:GetLeft() or 0,
-        top = top,
-      }
-      startTick()
-      if spec.gridResize then
-        sizeGridToCursor()
-      else
-        sizeHostToCursor()
-      end
-    end
-    endSize = function()
-      if not sizing then
-        return
-      end
-      local target = currentHost()
-      sizing = false
-      stopTick()
-      if spec.gridResize then
-        sizeGridToCursor()
-      else
-        sizeHostToCursor()
-      end
-      origin = nil
-      if Addon.PersistHostPosition then
-        Addon:PersistHostPosition(target, spec.id, true)
-      end
-      if Addon.HideEditReadout then
-        Addon:HideEditReadout()
-      end
-      if target then
-        target._shadowUIDragging = false
-      end
-    end
-    grip:SetScript("OnMouseDown", function(_, button)
-      if button == "LeftButton" then
-        beginSize()
-      end
-    end)
-    grip:SetScript("OnMouseUp", endSize)
-  end
   overlay:Hide()
   paint(overlay)
   return overlay
@@ -506,26 +329,9 @@ function Addon:RefreshUnitDragOverlays()
         end
         overlay:EnableMouse(show)
         overlay:SetShown(show)
-        if overlay.resizeGrip then
-          overlay.resizeGrip:EnableMouse(editable)
-          overlay.resizeGrip:SetShown(editable)
-        end
       end
       if frame.SetMovable then
         frame:SetMovable(editable)
-      end
-      if spec.resizable and frame.SetResizable then
-        frame:SetResizable(editable)
-        if editable then
-          if frame.SetResizeBounds then
-            frame:SetResizeBounds(36 * 0.9 * 4, 12, 36 * 0.9 * 16, 72)
-          elseif frame.SetMinResize then
-            frame:SetMinResize(36 * 0.9 * 4, 12)
-            if frame.SetMaxResize then
-              frame:SetMaxResize(36 * 0.9 * 16, 72)
-            end
-          end
-        end
       end
     end
   end

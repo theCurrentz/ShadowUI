@@ -1,5 +1,7 @@
 # Named Profiles replace the Layer stack
 
+Status: superseded by [ADR 0014](0014-one-account-profile.md).
+
 Base → Class → Variant → Character made every edit pick a Layer, and alts inherited Class and Variant whether they wanted that or not. Players asked for a named save they can copy and mark Default.
 
 ShadowUI stores Layout, Keybinds, and the Action Deck on Account **Profiles**. A Character selects one Profile, or follows the Default Profile. Shipped Class defaults still merge first so stance paging and class facts stay in code. Edit Mode writes only to the active Profile.

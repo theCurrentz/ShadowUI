@@ -1,7 +1,7 @@
 -- FadeDriver eases a host between idle and active alpha. Enter is 0.6s,
 -- leave is 0.4s, and an optional delay can linger before leave. The OnUpdate
--- driver is off when every host is at rest. Per-Bar fadeIdle, Micro Cluster
--- microFadeIdle, and Experience bar xpFadeIdle register as hosts. Empty
+-- driver is off when every host is at rest. Per-Bar fadeIdle and the micro
+-- menu and bag bar microFadeIdle register as hosts. Empty
 -- Action Slots stay at alpha 0.
 -- Run: lua tests/fade_spec.lua
 local root = (arg and arg[0] or ""):match("^(.*)tests[/\\]") or ""
@@ -142,33 +142,17 @@ Addon:TickFade(0)
 assert(math.abs(bar1.alpha - 1) < 0.001, "Keybind Edit Mode keeps Bar fade active")
 Addon.keybindMode = false
 
-_G.ShadowUIMicroCluster = fakeFrame("ShadowUIMicroCluster")
+_G.MicroMenuContainer = fakeFrame("MicroMenuContainer")
+_G.BagsBar = fakeFrame("BagsBar")
 function Addon:GetCharDB()
   return { useShadowUIMenu = true, microFadeIdle = 0.5 }
 end
 Addon:ApplyMicroFade()
-assert(math.abs(_G.ShadowUIMicroCluster.alpha - 0.5) < 0.001, "Micro Cluster uses Character fade idle")
-Addon:SetFadeMouseOver(_G.ShadowUIMicroCluster, true)
+assert(math.abs(_G.MicroMenuContainer.alpha - 0.5) < 0.001, "micro bar uses Character fade idle")
+assert(math.abs(_G.BagsBar.alpha - 0.5) < 0.001, "bag bar uses Character fade idle")
+_G.MicroMenuContainer.mouseOver = true
 Addon:TickFade(0.6)
-assert(math.abs(_G.ShadowUIMicroCluster.alpha - 1) < 0.001, "Micro Cluster mouseover raises to 1")
-
-_G.ShadowUIXPHost = fakeFrame("ShadowUIXPHost")
-_G.MainStatusTrackingBarContainer = fakeFrame("MainStatusTrackingBarContainer")
-function Addon:GetCharDB()
-  return { xpFadeIdle = 0.15 }
-end
-Addon:ApplyXPFade()
-assert(math.abs(_G.ShadowUIXPHost.alpha - 0.15) < 0.001, "Experience bar uses Character fade idle")
-Addon:SetFadeMouseOver(_G.ShadowUIXPHost, true)
-Addon:TickFade(0.6)
-assert(math.abs(_G.ShadowUIXPHost.alpha - 1) < 0.001, "Experience bar mouseover raises to 1")
-Addon:SetFadeMouseOver(_G.ShadowUIXPHost, false)
-Addon:TickFade(0.4)
-assert(math.abs(_G.ShadowUIXPHost.alpha - 0.15) < 0.001, "Experience bar leave reaches idle alpha")
-_G.InCombatLockdown = function() return true end
-Addon:WakeFadeDriver()
-Addon:TickFade(0.6)
-assert(math.abs(_G.ShadowUIXPHost.alpha - 1) < 0.001, "combat raises Experience bar fade")
-_G.InCombatLockdown = function() return false end
+assert(math.abs(_G.MicroMenuContainer.alpha - 1) < 0.001, "micro bar mouseover raises to 1")
+assert(math.abs(_G.BagsBar.alpha - 0.5) < 0.001, "bag bar stays at idle when the mouse is on the micro bar")
 
 print("fade_spec OK")
