@@ -1,5 +1,9 @@
 ## Agent skills
 
+### Auto-commit
+
+After a coding task finishes, commit locally (never push). Caveman Conventional Commits. See `.cursor/skills/auto-commit/SKILL.md`.
+
 ### Issue tracker
 
 GitHub Issues for `theCurrentz/ShadowUI` (`gh` CLI). See `docs/agents/issue-tracker.md`.
