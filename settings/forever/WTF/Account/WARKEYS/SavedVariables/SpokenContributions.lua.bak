@@ -1,0 +1,46 @@
+
+SpokenContributionsDB = {
+["Tidied"] = true,
+["Lines"] = {
+{
+["key"] = "q:376:progress:1661",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=376\nevent=progress\nnpc=1661 Novice Elreth\nkind=creature\nmodel=121608\ndisplays=1593\nsex=3\ncreature=Humanoid\ntitle=The Damned\ntext<<\nDo try your best to keep yourself unharmed until I get you some armor.\n>>\nsum=128121028\n",
+},
+{
+["key"] = "q:3098:progress:2124",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=3098\nevent=progress\nnpc=2124 Isabella\nkind=creature\nmodel=121608\ndisplays=1592\nsex=3\ncreature=Humanoid\ntitle=Glyphic Scroll\ntext<<\nI knew you would come to me, $N. Not because you do not have the will to follow your own path, but because we are kindred spirits. We both have felt pain. We have both suffered. And now we want the power to take back what we know is ours: this land, our lives, our destinies. But there is much for you to learn still.\n>>\nsum=642728490\n",
+},
+{
+["key"] = "q:98601:accept:1569",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=98601\nevent=accept\nnpc=1569 Shadow Priest Sarvis\nkind=creature\nmodel=121768\nsex=2\ncreature=Humanoid\ntitle=A Difficult Path\ntext<<\nWhile you were off dealing with the mindless Scourge, this scroll arrived for you. It reeks of the light, so I imagine it's of some importance to a paladin like yourself.\n\nRead it before heading out again. Just please--step away when you do. Paladins make me quite uneasy.\n>>\nsum=21623729\n",
+},
+{
+["key"] = "q:98601:progress:244808",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=98601\nevent=progress\nnpc=244808 Aramis Hammerhand\nkind=creature\nmodel=121768\ndisplays=129405\nsex=2\ncreature=Humanoid\ntitle=A Difficult Path\ntext<<\nThrough pain comes resolve.\n>>\nsum=430526581\n",
+},
+{
+["key"] = "q:98389:accept:244808",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=98389\nevent=accept\nnpc=244808 Aramis Hammerhand\nkind=creature\nmodel=121768\nsex=2\ncreature=Humanoid\ntitle=A Light in the Darkness\ntext<<\nGreetings, $c. Yes, I am a paladin. Not even death can stop the Light.\n\nThis is something my kind have in common with all Forsaken--we have overcome what the living view as their end. However, some even among our own fear us; they suspect we will smite them as some monstrosity.\n\nIn truth, our relationship with undeath is complex, but I am not here to hurt our own. Help me show the others this. Venture to Night's Web Hollow to the northwest and free the freshly raised fools trapped by the spiders there.\n>>\nsum=51491624\n",
+},
+{
+["key"] = "q:3902:progress:1740",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=3902\nevent=progress\nnpc=1740 Deathguard Saltain\nkind=creature\nmodel=121768\ndisplays=3523\nsex=2\ncreature=Humanoid\ntitle=Scavenging Deathknell\ntext<<\nHave you managed to scavenge up some useful items for us?  There is no shame in reusing that which has been tossed aside.  No one is going to give us any handouts - we Forsaken will fend for ourselves!\n>>\nsum=682214301\n",
+},
+{
+["key"] = "q:380:progress:1570",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=380\nevent=progress\nnpc=1570 Executor Arren\nkind=creature\nmodel=121768\ndisplays=1583\nsex=2\ncreature=Humanoid\ntitle=Night Web's Hollow\ntext<<\nBe wary of the spiders' venom, $N. If you feel a sharp burning, you may want to have it looked at.\n>>\nsum=977318758\n",
+},
+{
+["key"] = "q:6395:complete:1661",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=6395\nevent=complete\nnpc=1661 Novice Elreth\nkind=creature\nmodel=121608\nsex=3\ncreature=Humanoid\ntitle=Marla's Last Wish\ntext<<\nYou have done a good deed today, $N.  Although our struggle against the Scourge continues, let us hope that Marla and Samuel will find peace together in their final resting place. As a token of my gratitude, please take one of these manuals I found.\n>>\nsum=1694271300\n",
+},
+{
+["key"] = "q:381:progress:1570",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=381\nevent=progress\nnpc=1570 Executor Arren\nkind=creature\nmodel=121768\ndisplays=1583\nsex=2\ncreature=Humanoid\ntitle=The Scarlet Crusade\ntext<<\nThose fools... They happily send themselves to their own graves.\n>>\nsum=495962043\n",
+},
+{
+["key"] = "q:382:progress:1570",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=382\nevent=progress\nnpc=1570 Executor Arren\nkind=creature\nmodel=121768\ndisplays=1583\nsex=2\ncreature=Humanoid\ntitle=The Red Messenger\ntext<<\nHow goes your mission, $N?\n>>\nsum=791921418\n",
+},
+},
+}

@@ -1,0 +1,10 @@
+
+ShadowUICharDB = {
+["profileKeys"] = {
+["Taz Westfall"] = "Default",
+},
+["profiles"] = {
+["Default"] = {
+},
+},
+}

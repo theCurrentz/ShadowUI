@@ -1,0 +1,116 @@
+
+ForeverDungeonJournalDB = {
+["questFaction"] = "Horde",
+["portraitCacheVersion"] = 2,
+["lastMode"] = "bosses",
+["minimap"] = {
+["minimapPos"] = 225,
+["hide"] = false,
+},
+["displayIDs"] = {
+},
+["learnedItemIDs"] = {
+},
+["portraitTexturesByNpcID"] = {
+},
+["questText"] = {
+["enUS"] = {
+[363] = {
+["o"] = "Speak with Shadow Priest Sarvis.",
+["d"] = "About time you woke up. We were ready to toss you into the fire with the others, but it looks like you made it.\n\nI am Mordo, the caretaker of the crypt of Deathknell. And you are the Lich King's slave no more.\n\nSpeak with Shadow Priest Sarvis in the chapel at the base of the hill, he will tell you more of what you must know.",
+},
+[91209] = {
+["o"] = "Follow the road east out of Deathknell to find the town of Brill. Report to Shari Stilwell to continue your training.",
+["d"] = "Lordaeron may not be what it used to be, but our home still needs protection from all manner of threats and it's time for you to go out and face the world. Your next stop should be the town of Brill in central Tirisfal Glades. Go and meet with Shari Stilwell there. She can see to your continued training. \r\n\r\nOne last bit of advice before you go--take extra care as a paladin traveling through Forsaken lands. There are many in the Dark Lady's service who distrust us and our proximity to the light.",
+},
+[364] = {
+["o"] = "Shadow Priest Sarvis wants you to kill 8 Mindless Zombies and 8 Wretched Zombies.",
+["d"] = "We Forsaken are at war with the Lich King's army of the Scourge: necromantically raised armies of the undead, foul beasts of the north, and tormented spectres.\n\nThe northern part of the village has become overrun with the Mindless Ones, and they must be destroyed. Destroy them, show them no mercy, our former brothers and sisters as they might be. The Fallen are nothing but The Lich King's slaves.",
+},
+[380] = {
+["o"] = "Executor Arren wants you to kill 10 Young Night Web Spiders and 8 Night Web Spiders.",
+["d"] = "One of our greatest struggles is obtaining the natural resources we need to survive. Gold was scarce even in the height of the Alliance's power.\n\nThere is a gold mine to the northwest that has been overrun with spiders. We need gold from the mine, but we can't very well get it while the spiders are crawling around in there. I've not much manpower to commit to the task, so we'll just have to do it little by little.\n\nGet up there and see what you can do for us, N.",
+},
+[3098] = {
+["o"] = "Read the Glyphic Scroll and speak to Isabella in the church in Deathknell.",
+["d"] = "Ah, while you were off dealing with the mindless Scourge, this scroll arrived for you. I would think it's some matter of importance as it seems it bears the seal of the mage trainer Isabella. I would take some time to read it before heading out again.",
+},
+[98601] = {
+["o"] = "Read the Consecrated Scroll and speak to Aramis Hammerhand in the church in Deathknell.",
+["d"] = "While you were off dealing with the mindless Scourge, this scroll arrived for you. It reeks of the light, so I imagine it's of some importance to a paladin like yourself.\r\n\r\nRead it before heading out again. Just please--step away when you do. Paladins make me quite uneasy.",
+},
+[381] = {
+["o"] = "Bring Executor Arren 12 Scarlet Armbands from Scarlet Converts and Scarlet Initiates.",
+["d"] = "You'll be happy to know we appear to be making progress in the mine, thanks in no small part to your efforts.  We can now turn our eyes to other concerns.\n\nMy scouts have reported that a detachment of the Scarlet Crusade is setting up a camp southeast of here. The Scarlet Crusade is a despicable organization that hunts us, and they will not rest until every undead--Lich King's Scourge or no--is destroyed. We must strike first!\n\nBe careful, their unholy zeal makes them dangerous adversaries.",
+},
+[96656] = {
+["o"] = "Speak to Eleanor Shackleton near Brill.",
+["d"] = "N, you have proven yourself trustworthy in your endeavors against the Scarlet Crusade so far. That is why I am now entrusting you with an unusual task.\r\n\r\nI've heard of a new adventurer down the road by Brill. Go and see what she's doing.",
+},
+[382] = {
+["o"] = "Kill Meven Korgal, the messenger, at the Crusader camp, then return any information you find to Executor Arren.",
+["d"] = "Reports from my superiors in Brill indicate that an agent of the Scarlet Crusade was dispatched from the Scarlet Monastery and sent here to Deathknell. According to the reports, the messenger possesses important information on his person. I do not have further details, but whatever it is, we must have it!\n\nYou're the most qualified person I have to send, N. Find that messenger and bring me whatever information you can find.",
+},
+[91208] = {
+["o"] = "Find the Frightened Paladin in Deathknell.",
+["d"] = "Not all of our fellow Paladins who rise again are quick to acclimate to our new reality. Some struggle to reconcile that they are now, in a way, the very thing they spent their lives fighting against.\r\n\r\nThese individuals often simply need a kind gesture and a sympathetic ear. Unfortunately, many others are quick to turn violent. Find the frightened paladin who fled into the hills directly west of this chapel. Extend a hand in friendship. Lead them back into the light if you can.",
+},
+[90902] = {
+["o"] = "Heal 5 Injured Deathguard with your Holy Light ability.",
+["d"] = "I am proud to welcome another newly risen paladin to our ranks. As you begin to reconnect with the light you may notice that certain abilities that were once second nature to you may cause you considerable pain to use now, particularly those involving channeling the light to heal yourself or others. \r\n\r\nThe only way around this problem is--unfortunately--to go through it. Like any other muscle that has atrophied, you must push through the pain and exercise the flesh for it to return to full function.",
+},
+[6395] = {
+["o"] = "Bring Samuel Fipps' Remains to Marla's Grave, then return to Novice Elreth.",
+["d"] = "My friend Marla Fipps lived with her husband Samuel before the plague, but when the plague came Samuel succumbed and joined the Scourge's ranks.\n\nMarla was spared an undeath only to die at the hands of her now mindless husband.  So strong was her love, however, that her last dying wish was to be buried with her beloved Samuel.\n\nSamuel Fipps roams at a ruined camp along the road northeast of Deathknell.  Defeat him and grant Marla's wish: bury him at her grave, in the first row of our graveyard.",
+},
+[376] = {
+["o"] = "Novice Elreth requires 6 Scavenger Paws and 6 Duskbat Wings.",
+["d"] = "My duties include tending to our wounded warriors, tailoring armor and clothes, and assisting Shadow Priest Sarvis with whatever else he might need.\n\nFrom the look of it, you'll be enlisted in his service also... hunting the Mindless Ones, if I know his mind. Well, if you'd like to stay in one piece--and I've no doubt you do--perhaps I can help. I'm running out of paws and wings, and if you bring me some, I'll find some armor for you. You'll find a good number of wolves and bats to the south.",
+},
+[99144] = {
+["o"] = "Help Bareth Dawnstone escape Crusader's Outpost, and report his safety to Shari Stilwell in Brill.",
+["d"] = "Light bless you for finding me. I was on my way from Bandarion Keep to deliver a message to Shari Stilwell in Brill when these monsters captured me. They wield the Light with a hatred in their hearts that makes what's left of my blood seethe. It goes against all we stand for!\r\n\r\n<Bareth Dawnstone steadies himself.>\r\n\r\nOur ranks are thin. If you would aid me in escaping this place, I would be forever grateful.",
+},
+[365] = {
+["o"] = "Steal 10 pumpkins from the farm to the west, just north of Deathknell and take them to Apothecary Johaan in Brill.",
+["d"] = "What have we here?  You look like a fledgling paladin.  If you hope to prove yourself to The Dark Lady, you need to learn the ways of The Forsaken.\n\nTo the west you'll find a farm.  Humans infest the land like mold on a rotting corpse.  And worse yet, the Scarlet Crusade patrols nearby from their tower.  Teach those scum a lesson and steal 10 of their precious pumpkins.\n\nOnce you have 10, take them to Apothecary Johaan in Brill.",
+},
+[8] = {
+["o"] = "Deliver the Nondescript Letter to Innkeeper Renee in Tirisfal Glades.",
+["d"] = "Hey, mate! Do a favor for a young man who's been fighting more than his fair share of mindless zombies and spiders?\n\nI got this here letter that needs to go to Brill... to an innkeeper named Renee something-or-other. Don't really matter none what her last name is.\n\nAnyway, it's a nice cozy little place full of victims of the plague trying to make their way in the world. And it be a great spot for you to rest too if the need arises. You should check it out... you do and I'll pay you well.",
+},
+[98389] = {
+["o"] = "Free 6 Webbed Victims in Night's Web Hollow for Aramis Hammerhand in Deathknell.",
+["d"] = "Greetings, mage. Yes, I am a paladin. Not even death can stop the Light.\r\n\r\nThis is something my kind have in common with all Forsaken--we have overcome what the living view as their end. However, some even among our own fear us; they suspect we will smite them as some monstrosity.\r\n\r\nIn truth, our relationship with undeath is complex, but I am not here to hurt our own. Help me show the others this. Venture to Night's Web Hollow to the northwest and free the freshly raised fools trapped by the spiders there.",
+},
+[3901] = {
+["o"] = "Kill 12 Rattlecage Skeletons, and then return to Shadow Priest Sarvis in Deathknell when you are done.",
+["d"] = "You've shown your potential to the Forsaken under normal circumstances N - now let's see you under pressure.\n\nThe Rattlecage skeletons, more mindless minions of the Lich King, are a tougher foe than the zombies you have faced thus far.  Again, thin their numbers and prove yourself to the Forsaken.  Do not tarry - when you are done, speak to me again.",
+},
+[3902] = {
+["o"] = "Search Deathknell and the vicinity for 6 pieces of Scavenged Goods, and return them to Deathguard Saltain.",
+["d"] = "You there!  If you're looking for something to make yourself useful, then listen up!\n\nWe need fresh out-of-the-ground recruits to head into Deathknell and search for any sort of useful equipment.  Most likely, they'll be in stacks of boxes.  We expect more recruits to be rising soon, and unless we want them to stumble about naked we had better get to scavenging!\n\nWell get to work, you miserable bag of bones!  I'm not going to reward those without some hustle.",
+},
+[383] = {
+["o"] = "Deliver the Scarlet Crusade Documents to Executor Zygand in Brill.",
+["d"] = "These will need to be taken to my superior, Executor Zygand, in Brill. With this information, we'll be able to deal a decisive blow to the Scarlet Crusade. Your services have been useful here in Deathknell, but I need someone to deliver this to Zygand, and I believe he'll be able to find you more appropriate work.\n\nTake the road north out of Deathknell. Soon after entering Tirisfal proper, you'll hit a crossroads. Take the eastern fork, and keep going east. You'll pass Cold Hearth Manor along the way.",
+},
+},
+},
+["lootFilter"] = {
+["enabled"] = false,
+["classOnly"] = false,
+["recipes"] = false,
+["schools"] = {
+},
+["matchAll"] = true,
+["resists"] = {
+},
+["armorTypes"] = {
+},
+["stats"] = {
+},
+["weaponTypes"] = {
+},
+},
+}

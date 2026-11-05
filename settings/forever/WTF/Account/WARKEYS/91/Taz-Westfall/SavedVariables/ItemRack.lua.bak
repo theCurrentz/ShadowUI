@@ -1,0 +1,47 @@
+
+ItemRackUser = {
+["OptSizeBigger"] = "OFF",
+["OptScale"] = 1,
+["OptSizeDefault"] = "ON",
+["EnableEvents"] = "ON",
+["QuickAccessMenuDir"] = "Saved",
+["MenuScale"] = 0.85,
+["QueuesEnabled"] = {
+},
+["SetMenuWrap"] = "OFF",
+["BreakoutSpacing"] = 4,
+["Locked"] = "OFF",
+["CustomCharacterIcons"] = "OFF",
+["CharMenuWrapValue"] = 3,
+["OptSizeBiggest"] = "OFF",
+["EnableQueueContextCheck"] = "ON",
+["EquipTimers"] = {
+},
+["SetMenuWrapValue"] = 3,
+["BurntQueueItems"] = {
+},
+["Hidden"] = {
+},
+["CustomMenuIcons"] = "OFF",
+["EnableQueues"] = "ON",
+["Queues"] = {
+},
+["CharMenuWrap"] = "OFF",
+["ItemsUsed"] = {
+},
+["MainScale"] = 1,
+["EnablePerSetQueues"] = "OFF",
+["Sets"] = {
+["~CombatQueue"] = {
+["equip"] = {
+},
+},
+["~Unequip"] = {
+["equip"] = {
+},
+},
+},
+["Alpha"] = 1,
+["Equip20Scale"] = 1,
+["ButtonSpacing"] = 4,
+}
