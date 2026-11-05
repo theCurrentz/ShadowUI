@@ -2985,7 +2985,7 @@ QuestieTraceDumps = {
 1417,
 1424,
 },
-["capturedAt"] = "2026-11-04_17-03-19",
+["capturedAt"] = "2026-11-04_17-46-32",
 ["schemaVersion"] = 1,
 ["topUiMapIDs"] = {
 947,

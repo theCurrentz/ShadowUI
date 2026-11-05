@@ -1,18 +1,18 @@
 
 SpokenReadablesSettings = {
-["autoplay"] = true,
+["bookAsOneLine"] = true,
 ["stopOnClose"] = false,
 ["foundOnlyDefaultOn"] = true,
 ["compendiumVoicedOnly"] = false,
-["compendiumByZone"] = true,
+["autoplay"] = true,
 ["voiceLanguage"] = "auto",
-["unlockUnfound"] = false,
+["compendiumByZone"] = true,
 ["compendiumFoundOnly"] = true,
 ["readWholeBook"] = true,
-["fallbackLanguage"] = "enUS",
-["debug"] = false,
-["closeWhenRead"] = false,
 ["readOnce"] = false,
-["bookAsOneLine"] = true,
+["closeWhenRead"] = false,
+["debug"] = false,
+["fallbackLanguage"] = "enUS",
+["unlockUnfound"] = false,
 }
 SpokenBooksSettings = nil

@@ -9,21 +9,7 @@ ForeverDungeonJournalDB = {
 },
 ["displayIDs"] = {
 },
-["lootFilter"] = {
-["enabled"] = false,
-["classOnly"] = false,
-["recipes"] = false,
-["schools"] = {
-},
-["matchAll"] = true,
-["resists"] = {
-},
-["weaponTypes"] = {
-},
-["stats"] = {
-},
-["armorTypes"] = {
-},
+["learnedItemIDs"] = {
 },
 ["portraitTexturesByNpcID"] = {
 },
@@ -31,7 +17,7 @@ ForeverDungeonJournalDB = {
 ["enUS"] = {
 [96607] = {
 ["o"] = "Sit near Eleanor's Basic Campfire and wait until you receive the Boosted Rest buff.",
-["d"] = "Greetings, paladin. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
+["d"] = "Greetings, mage. I can see you've got the look of an adventurer about you. This is good. The world needs more of us restless souls, seeking fortune and glory.\r\n\r\nYou'll need to learn to thrive in the wilds to be successful in this line of work. Not sure how your outdoor skills are but I can probably teach you a thing or two, if you'd be apt to learn.\r\n\r\nHave a seat near the fire and get comfortable. I'll walk you through it.",
 },
 [3902] = {
 ["o"] = "Search Deathknell and the vicinity for 6 pieces of Scavenged Goods, and return them to Deathguard Saltain.",
@@ -59,7 +45,7 @@ ForeverDungeonJournalDB = {
 },
 [365] = {
 ["o"] = "Steal 10 pumpkins from the farm to the west, just north of Deathknell and take them to Apothecary Johaan in Brill.",
-["d"] = "What have we here?  You look like a fledgling paladin.  If you hope to prove yourself to The Dark Lady, you need to learn the ways of The Forsaken.\n\nTo the west you'll find a farm.  Humans infest the land like mold on a rotting corpse.  And worse yet, the Scarlet Crusade patrols nearby from their tower.  Teach those scum a lesson and steal 10 of their precious pumpkins.\n\nOnce you have 10, take them to Apothecary Johaan in Brill.",
+["d"] = "What have we here?  You look like a fledgling mage.  If you hope to prove yourself to The Dark Lady, you need to learn the ways of The Forsaken.\n\nTo the west you'll find a farm.  Humans infest the land like mold on a rotting corpse.  And worse yet, the Scarlet Crusade patrols nearby from their tower.  Teach those scum a lesson and steal 10 of their precious pumpkins.\n\nOnce you have 10, take them to Apothecary Johaan in Brill.",
 },
 [367] = {
 ["o"] = "Apothecary Johaan in the town of Brill wants you to collect 5 Vials of Darkhound Blood.",
@@ -71,7 +57,7 @@ ForeverDungeonJournalDB = {
 },
 [99144] = {
 ["o"] = "Help Bareth Dawnstone escape Crusader's Outpost, and report his safety to Shari Stilwell in Brill.",
-["d"] = "Light bless you for finding me. I was on my way from Bandarion Keep to deliver a message to Shari Stilwell in Brill when these monsters captured me. They wield the Light with a hatred in their hearts that makes what's left of my blood seethe. It goes against all we stand for!\r\n\r\n<Bareth Dawnstone steadies himself.>\r\n\r\nOur ranks are thin. If you would aid me in escaping this place, I would be forever grateful.",
+["d"] = "Light bless you for finding me. I was on my way from Bandarion Keep to deliver a message to Shari Stilwell in Brill when these monsters captured me. They wield the Light with a hatred in their hearts that makes what's left of my blood seethe. It goes against all I meditate for... all I strive to protect!\r\n\r\n<Bareth Dawnstone steadies himself.>\r\n\r\nI know some still take issue with my kind, but I assure you our intentions are pure. If you would aid me in escaping this place, I would be forever grateful.",
 },
 [375] = {
 ["o"] = "Bring five Duskbat Pelts and some Coarse Thread to Gretchen Dedmar in Brill.",
@@ -121,9 +107,9 @@ ForeverDungeonJournalDB = {
 ["o"] = "Collect 10 Doom Weed and deliver them back to Junior Apothecary Holland.\r\n",
 ["d"] = "So you can see the predicament that I'm in, N. That thing is out there collecting the wrong weeds! I'll make it worth your while to gather what I need. Bring back to me enough doom weed and I'll give you a suitable reward.\n\nIt is my understanding that they like to plague the flora near the mass gravesite, to the north of the Brill graveyard. Hurry and be mindful of the gnolls in the area.",
 },
-[97955] = {
-["o"] = "Speak with Nurse Neela in Brill to learn to craft a camping item for your profession once you have shown proficiency in your skill.",
-["d"] = "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a paladin.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
+[96656] = {
+["o"] = "Speak to Eleanor Shackleton near Brill.",
+["d"] = "N, you have proven yourself trustworthy in your endeavors against the Scarlet Crusade so far. That is why I am now entrusting you with an unusual task.\r\n\r\nI've heard of a new adventurer down the road by Brill. Go and see what she's doing.",
 },
 [362] = {
 ["o"] = "Slay Devlin Agamand, and bring Devlin's Remains to Coleman Farthing in Brill.",
@@ -157,17 +143,17 @@ ForeverDungeonJournalDB = {
 ["o"] = "Kill Rot Hide Graverobbers and Rot Hide Mongrels.  \n\nBring 8 Embalming Ichors to Magistrate Sevren in Brill.",
 ["d"] = "The Mass Graves, southwest of Garren's Haunt to the north, were made to accommodate the...impressive...number of deaths Tirisfal suffered when the Plague first came.  \n\nThe bodies in these graves have so far been spared an undeath, but the Scourge now send Rot Hide Gnolls to gather the corpses and use them to bolster their armies.  This cannot be allowed!\n\nYour task is twofold: slay the Rot Hides at the Mass Grave and Garren's Haunt, and gather from them the Embalming Ichor that gives them life.",
 },
-[398] = {
-["o"] = "Kill Maggot Eye and return to Executor Zygand in Brill with his paw for a reward.",
-["d"] = "Wanted: Maggot Eye!\n\nA foul beast, even by Gnoll standards, Maggot Eye has been sentenced to death for his crimes against The Forsaken.  This despicable villain has been stealing corpses for use by the Lich King's army.  Maggot Eye was last seen pillaging the lands near Garren's Haunt to the north of Brill.\n\nThe town of Brill hereby offers a reward to the capable soul who can carry out the execution.  Show Executor Zygand the villain's paw once the deed is done.\n\nMercy is for the weak.",
+[380] = {
+["o"] = "Executor Arren wants you to kill 10 Young Night Web Spiders and 8 Night Web Spiders.",
+["d"] = "One of our greatest struggles is obtaining the natural resources we need to survive. Gold was scarce even in the height of the Alliance's power.\n\nThere is a gold mine to the northwest that has been overrun with spiders. We need gold from the mine, but we can't very well get it while the spiders are crawling around in there. I've not much manpower to commit to the task, so we'll just have to do it little by little.\n\nGet up there and see what you can do for us, N.",
 },
 [364] = {
 ["o"] = "Shadow Priest Sarvis wants you to kill 8 Mindless Zombies and 8 Wretched Zombies.",
 ["d"] = "We Forsaken are at war with the Lich King's army of the Scourge: necromantically raised armies of the undead, foul beasts of the north, and tormented spectres.\n\nThe northern part of the village has become overrun with the Mindless Ones, and they must be destroyed. Destroy them, show them no mercy, our former brothers and sisters as they might be. The Fallen are nothing but The Lich King's slaves.",
 },
-[380] = {
-["o"] = "Executor Arren wants you to kill 10 Young Night Web Spiders and 8 Night Web Spiders.",
-["d"] = "One of our greatest struggles is obtaining the natural resources we need to survive. Gold was scarce even in the height of the Alliance's power.\n\nThere is a gold mine to the northwest that has been overrun with spiders. We need gold from the mine, but we can't very well get it while the spiders are crawling around in there. I've not much manpower to commit to the task, so we'll just have to do it little by little.\n\nGet up there and see what you can do for us, N.",
+[398] = {
+["o"] = "Kill Maggot Eye and return to Executor Zygand in Brill with his paw for a reward.",
+["d"] = "Wanted: Maggot Eye!\n\nA foul beast, even by Gnoll standards, Maggot Eye has been sentenced to death for his crimes against The Forsaken.  This despicable villain has been stealing corpses for use by the Lich King's army.  Maggot Eye was last seen pillaging the lands near Garren's Haunt to the north of Brill.\n\nThe town of Brill hereby offers a reward to the capable soul who can carry out the execution.  Show Executor Zygand the villain's paw once the deed is done.\n\nMercy is for the weak.",
 },
 [3901] = {
 ["o"] = "Kill 12 Rattlecage Skeletons, and then return to Shadow Priest Sarvis in Deathknell when you are done.",
@@ -181,12 +167,26 @@ ForeverDungeonJournalDB = {
 ["o"] = "Read the Glyphic Scroll and speak to Isabella in the church in Deathknell.",
 ["d"] = "Ah, while you were off dealing with the mindless Scourge, this scroll arrived for you. I would think it's some matter of importance as it seems it bears the seal of the mage trainer Isabella. I would take some time to read it before heading out again.",
 },
-[96656] = {
-["o"] = "Speak to Eleanor Shackleton near Brill.",
-["d"] = "N, you have proven yourself trustworthy in your endeavors against the Scarlet Crusade so far. That is why I am now entrusting you with an unusual task.\r\n\r\nI've heard of a new adventurer down the road by Brill. Go and see what she's doing.",
+[97955] = {
+["o"] = "Speak with Nurse Neela in Brill to learn to craft a camping item for your profession once you have shown proficiency in your skill.",
+["d"] = "So you've taken up First Aid? That's an honorable... and pragmatic pursuit as a paladin.\r\n\r\nI reckon I know someone that can teach you how to craft a First Aid Kit for your camp. Injuries are a reality in the world of adventuring and offering some much-needed healing at your camp could even save lives.",
 },
 },
 },
-["learnedItemIDs"] = {
+["lootFilter"] = {
+["enabled"] = false,
+["classOnly"] = false,
+["recipes"] = false,
+["schools"] = {
+},
+["matchAll"] = true,
+["resists"] = {
+},
+["armorTypes"] = {
+},
+["stats"] = {
+},
+["weaponTypes"] = {
+},
 },
 }

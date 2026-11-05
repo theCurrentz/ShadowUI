@@ -4,15 +4,23 @@ ItemRackUser = {
 ["OptScale"] = 1,
 ["OptSizeDefault"] = "ON",
 ["EnableEvents"] = "ON",
-["ButtonSpacing"] = 4,
-["Equip20Scale"] = 1,
+["CharMenuWrapValue"] = 3,
+["MenuScale"] = 0.85,
 ["QueuesEnabled"] = {
 },
-["Alpha"] = 1,
+["OptSizeBiggest"] = "OFF",
 ["BreakoutSpacing"] = 4,
 ["Locked"] = "OFF",
 ["CustomCharacterIcons"] = "OFF",
 ["QuickAccessMenuDir"] = "Saved",
+["BurntQueueItems"] = {
+},
+["EnableQueueContextCheck"] = "ON",
+["EquipTimers"] = {
+},
+["SetMenuWrapValue"] = 3,
+["SetMenuWrap"] = "OFF",
+["EnableQueues"] = "ON",
 ["Sets"] = {
 ["~CombatQueue"] = {
 ["equip"] = {
@@ -23,25 +31,17 @@ ItemRackUser = {
 },
 },
 },
-["EnableQueueContextCheck"] = "ON",
-["EquipTimers"] = {
+["Alpha"] = 1,
+["Queues"] = {
 },
-["SetMenuWrapValue"] = 3,
-["SetMenuWrap"] = "OFF",
-["EnablePerSetQueues"] = "OFF",
-["CustomMenuIcons"] = "OFF",
-["Hidden"] = {
-},
-["MainScale"] = 1,
 ["CharMenuWrap"] = "OFF",
 ["ItemsUsed"] = {
 },
-["Queues"] = {
+["MainScale"] = 1,
+["Hidden"] = {
 },
-["EnableQueues"] = "ON",
-["BurntQueueItems"] = {
-},
-["OptSizeBiggest"] = "OFF",
-["MenuScale"] = 0.85,
-["CharMenuWrapValue"] = 3,
+["CustomMenuIcons"] = "OFF",
+["EnablePerSetQueues"] = "OFF",
+["Equip20Scale"] = 1,
+["ButtonSpacing"] = 4,
 }

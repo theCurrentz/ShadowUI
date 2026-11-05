@@ -9,102 +9,14 @@ MATAB = {
 },
 ["PROFILES"] = {
 ["DEFAULT"] = {
-["FRAMES"] = {
-["POINTS"] = {
-["QuickKeybindFrame"] = {
-},
-["MerchantFrame"] = {
-},
-["ProfessionsFrame"] = {
-["AN"] = "BOTTOMLEFT",
-["PX"] = 54,
-["PY"] = 475,
-["RE"] = "BOTTOMLEFT",
-},
-["ClassTrainerFrame"] = {
-},
-["StaticPopup1"] = {
-},
-["CommunitiesFrame"] = {
-},
-["GameMenuFrame"] = {
-["AN"] = "BOTTOMLEFT",
-["RE"] = "BOTTOMLEFT",
-["PY"] = 359,
-["PX"] = 924,
-},
-["SettingsPanel"] = {
-["AN"] = "BOTTOMLEFT",
-["PX"] = 291,
-["PY"] = 96,
-["RE"] = "BOTTOMLEFT",
-},
-["CharacterFrame"] = {
-},
-["MailFrame"] = {
-},
-["PlayerSpellsFrame"] = {
-["AN"] = "BOTTOMLEFT",
-["PX"] = 16,
-["PY"] = 346,
-["RE"] = "BOTTOMLEFT",
-},
-["WorldMapFrame"] = {
-},
-["QuestFrame"] = {
-},
-["CollectionsJournal"] = {
-},
-["GossipFrame"] = {
-},
-["AddonList"] = {
-},
-},
-["SIZES"] = {
-["QuickKeybindFrame"] = {
-},
-["MerchantFrame"] = {
-},
-["ProfessionsFrame"] = {
-},
-["ClassTrainerFrame"] = {
-},
-["StaticPopup1"] = {
-},
-["CommunitiesFrame"] = {
-},
-["GameMenuFrame"] = {
-},
-["SettingsPanel"] = {
-["SCALE"] = 1.008,
-},
-["CharacterFrame"] = {
-},
-["MailFrame"] = {
-},
-["PlayerSpellsFrame"] = {
-},
-["WorldMapFrame"] = {
-},
-["QuestFrame"] = {
-},
-["CollectionsJournal"] = {
-["SCALE"] = 0.991,
-},
-["GossipFrame"] = {
-},
-["AddonList"] = {
-},
-},
-},
 ["ELES"] = {
-["SIZES"] = {
-},
 ["POINTS"] = {
-["MALock"] = {
-},
 ["ExpansionLandingPageMinimapButton"] = {
 },
+["MALock"] = {
+},
+},
+["SIZES"] = {
 },
 ["OPTIONS"] = {
 ["SHOWMINIMAPBUTTON"] = {
@@ -337,13 +249,13 @@ MATAB = {
 ["MIRRORTIMER1"] = {
 ["ENABLED"] = false,
 },
-["EssentialCooldownViewer"] = {
+["POWERBAR"] = {
 ["ENABLED"] = false,
 },
 ["TARGETFRAMEBUFFMOVER"] = {
 ["ENABLED"] = false,
 },
-["TARGETFRAMETOTDEBUFFMOVER"] = {
+["SCALELOOTFRAME"] = {
 ["ENABLED"] = false,
 },
 ["GAMETOOLTIP_ONCURSOR_NOTINCOMBAT"] = {
@@ -352,7 +264,7 @@ MATAB = {
 ["PARTYMEMBERFRAMES"] = {
 ["ENABLED"] = false,
 },
-["MAPETFRAME"] = {
+["CHAT5"] = {
 ["ENABLED"] = false,
 },
 ["CHATQUICKJOIN"] = {
@@ -361,7 +273,7 @@ MATAB = {
 ["EventToastManagerFrame"] = {
 ["ENABLED"] = false,
 },
-["ZONETEXTFRAME"] = {
+["CHAT10"] = {
 ["ENABLED"] = false,
 },
 ["BNToastFrame"] = {
@@ -394,8 +306,8 @@ MATAB = {
 ["BLIZZARDACTIONBUTTONSART"] = {
 ["ENABLED"] = false,
 },
-["CHATBUTTONFRAME9"] = {
-["ENABLED"] = false,
+["CLAMPWINDOWTOSCREEN"] = {
+["ENABLED"] = true,
 },
 ["MOVEFRAMES"] = {
 ["ENABLED"] = true,
@@ -409,23 +321,23 @@ MATAB = {
 ["COMPACTRAIDFRAMECONTAINER"] = {
 ["ENABLED"] = false,
 },
-["MAPROFILES"] = {
+["SNAPTOELEMENTS"] = {
+["ENABLED"] = true,
+},
+["CHAT3"] = {
 ["ENABLED"] = false,
 },
-["BuffIconCooldownViewer"] = {
+["ACTIONBAR2"] = {
+["ENABLED"] = false,
+},
+["FOCUSFRAME"] = {
 ["ENABLED"] = false,
 },
 ["QUEUESTATUSFRAME"] = {
 ["ENABLED"] = false,
 },
-["CHAT4"] = {
-["ENABLED"] = false,
-},
-["FOCUSFRAMEDEBUFFMOVER"] = {
-["ENABLED"] = false,
-},
-["ENCOUNTERBAR"] = {
-["ENABLED"] = false,
+["SAVEFRAMESCALE"] = {
+["ENABLED"] = true,
 },
 ["BUFFS"] = {
 ["ENABLED"] = false,
@@ -433,13 +345,13 @@ MATAB = {
 ["CHATEDITBOX"] = {
 ["ENABLED"] = false,
 },
-["OVERRIDEACTIONBAR"] = {
+["ARENAENEMYFRAMESCONTAINER"] = {
 ["ENABLED"] = false,
 },
-["CHAT9"] = {
+["CHAT4"] = {
 ["ENABLED"] = false,
 },
-["TARGETFRAMEDEBUFFMOVER"] = {
+["GAMETOOLTIP_ONCURSOR"] = {
 ["ENABLED"] = false,
 },
 ["SecondaryStatusTrackingBarContainer"] = {
@@ -460,7 +372,7 @@ MATAB = {
 ["FRAMESKEYDRAG"] = {
 ["ENABLED"] = false,
 },
-["READYCHECKLISTENERFRAME"] = {
+["MINIMAPFLAG"] = {
 ["ENABLED"] = false,
 },
 ["TICKETSTATUSFRAME"] = {
@@ -469,7 +381,7 @@ MATAB = {
 ["DEBUFFS"] = {
 ["ENABLED"] = false,
 },
-["MINIMAPFLAG"] = {
+["READYCHECKLISTENERFRAME"] = {
 ["ENABLED"] = false,
 },
 ["UIWIDGETPOWERBAR"] = {
@@ -478,26 +390,26 @@ MATAB = {
 ["QUEUESTATUSBUTTON"] = {
 ["ENABLED"] = false,
 },
-["GAMETOOLTIP_ONCURSOR"] = {
+["TARGETFRAMEDEBUFFMOVER"] = {
 ["ENABLED"] = false,
 },
-["ARENAENEMYFRAMESCONTAINER"] = {
+["OVERRIDEACTIONBAR"] = {
 ["ENABLED"] = false,
 },
-["SAVEFRAMESCALE"] = {
-["ENABLED"] = true,
-},
-["FOCUSFRAME"] = {
+["ENCOUNTERBAR"] = {
 ["ENABLED"] = false,
 },
-["ACTIONBAR2"] = {
+["CHAT9"] = {
 ["ENABLED"] = false,
 },
-["CHAT3"] = {
+["FOCUSFRAMEDEBUFFMOVER"] = {
 ["ENABLED"] = false,
 },
-["SNAPTOELEMENTS"] = {
-["ENABLED"] = true,
+["BuffIconCooldownViewer"] = {
+["ENABLED"] = false,
+},
+["MAPROFILES"] = {
+["ENABLED"] = false,
 },
 ["MOVELOOTFRAME"] = {
 ["ENABLED"] = false,
@@ -508,29 +420,121 @@ MATAB = {
 ["PETFRAMEHAPPINESS"] = {
 ["ENABLED"] = false,
 },
-["CLAMPWINDOWTOSCREEN"] = {
-["ENABLED"] = true,
+["CHATBUTTONFRAME9"] = {
+["ENABLED"] = false,
 },
 ["ACTIONBAR1"] = {
 ["ENABLED"] = false,
 },
-["CHAT10"] = {
+["ZONETEXTFRAME"] = {
 ["ENABLED"] = false,
 },
 ["POSSESSBAR"] = {
 ["ENABLED"] = false,
 },
-["CHAT5"] = {
+["MAPETFRAME"] = {
 ["ENABLED"] = false,
 },
 ["CHAT7"] = {
 ["ENABLED"] = false,
 },
-["SCALELOOTFRAME"] = {
+["TARGETFRAMETOTDEBUFFMOVER"] = {
 ["ENABLED"] = false,
 },
-["POWERBAR"] = {
+["EssentialCooldownViewer"] = {
 ["ENABLED"] = false,
+},
+},
+},
+["FRAMES"] = {
+["POINTS"] = {
+["ProfessionsFrame"] = {
+["AN"] = "BOTTOMLEFT",
+["PX"] = 54,
+["PY"] = 475,
+["RE"] = "BOTTOMLEFT",
+},
+["ClassTrainerFrame"] = {
+},
+["AddonList"] = {
+},
+["CommunitiesFrame"] = {
+},
+["GameMenuFrame"] = {
+["AN"] = "BOTTOMLEFT",
+["PY"] = 359,
+["PX"] = 924,
+["RE"] = "BOTTOMLEFT",
+},
+["SettingsPanel"] = {
+["AN"] = "BOTTOMLEFT",
+["PY"] = 96,
+["RE"] = "BOTTOMLEFT",
+["PX"] = 291,
+},
+["CharacterFrame"] = {
+},
+["MailFrame"] = {
+},
+["QuickKeybindFrame"] = {
+},
+["GossipFrame"] = {
+},
+["MerchantFrame"] = {
+},
+["WorldMapFrame"] = {
+},
+["PlayerSpellsFrame"] = {
+["AN"] = "BOTTOMLEFT",
+["PY"] = 346,
+["RE"] = "BOTTOMLEFT",
+["PX"] = 16,
+},
+["QuestFrame"] = {
+},
+["ItemRefTooltip"] = {
+},
+["StaticPopup1"] = {
+},
+["CollectionsJournal"] = {
+},
+},
+["SIZES"] = {
+["ProfessionsFrame"] = {
+},
+["ClassTrainerFrame"] = {
+},
+["AddonList"] = {
+},
+["CommunitiesFrame"] = {
+},
+["GameMenuFrame"] = {
+},
+["SettingsPanel"] = {
+["SCALE"] = 1.008,
+},
+["CharacterFrame"] = {
+},
+["MailFrame"] = {
+},
+["QuickKeybindFrame"] = {
+},
+["GossipFrame"] = {
+},
+["MerchantFrame"] = {
+},
+["WorldMapFrame"] = {
+},
+["PlayerSpellsFrame"] = {
+},
+["QuestFrame"] = {
+},
+["ItemRefTooltip"] = {
+},
+["StaticPopup1"] = {
+},
+["CollectionsJournal"] = {
+["SCALE"] = 0.991,
 },
 },
 },

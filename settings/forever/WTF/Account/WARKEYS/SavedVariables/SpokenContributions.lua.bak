@@ -42,5 +42,41 @@ SpokenContributionsDB = {
 ["key"] = "q:382:progress:1570",
 ["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=382\nevent=progress\nnpc=1570 Executor Arren\nkind=creature\nmodel=121768\ndisplays=1583\nsex=2\ncreature=Humanoid\ntitle=The Red Messenger\ntext<<\nHow goes your mission, $N?\n>>\nsum=791921418\n",
 },
+{
+["key"] = "q:5481:progress:10665",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=5481\nevent=progress\nnpc=10665 Junior Apothecary Holland\nkind=creature\nmodel=121768\ndisplays=9999\nsex=2\ncreature=Humanoid\ntitle=Gordo's Task\ntext<<\nWhere's that useless abomination? Either you have what I need or you'd best get out there and find it.\n>>\nsum=2107458133\n",
+},
+{
+["key"] = "q:5482:progress:10665",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=5482\nevent=progress\nnpc=10665 Junior Apothecary Holland\nkind=creature\nmodel=121768\ndisplays=9999\nsex=2\ncreature=Humanoid\ntitle=Doom Weed\ntext<<\nThis had better be good. I trust you have all of the doom weed that I require?\n>>\nsum=919414471\n",
+},
+{
+["key"] = "q:383:progress:1515",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=383\nevent=progress\nnpc=1515 Executor Zygand\nkind=creature\nmodel=121768\ndisplays=1649\nsex=2\ncreature=Humanoid\ntitle=Vital Intelligence\ntext<<\nYes, what do you want?\n>>\nsum=978637250\n",
+},
+{
+["key"] = "q:99134:accept:1515",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=99134\nevent=accept\nnpc=1515 Executor Zygand\nkind=creature\nmodel=121768\nsex=2\ncreature=Humanoid\ntitle=Discipline\ntext<<\nYou are not a member of the Deathguard, and therefore have yet to disappoint me.\n\nAs a reward for your relative lack of incompetence, you shall punish those that have demonstrated such talents in excess.\n\nSwiftly now--$N, is it?--or I shall add your name to my ledger for someone else's reward.\n>>\nsum=1122514729\n",
+},
+{
+["key"] = "q:365:progress:1518",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=365\nevent=progress\nnpc=1518 Apothecary Johaan\nkind=creature\nmodel=121768\ndisplays=1565\nsex=2\ncreature=Humanoid\ntitle=Fields of Grief\ntext<<\nDeathguard Simmer sent word that you were going to provide me with some much needed reagents.  Were you able to gather 10 pumpkins yet, $N?\n>>\nsum=772601003\n",
+},
+{
+["key"] = "q:367:progress:1518",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=367\nevent=progress\nnpc=1518 Apothecary Johaan\nkind=creature\nmodel=121768\ndisplays=1565\nsex=2\ncreature=Humanoid\ntitle=A New Plague\ntext<<\nHave you collected 5 vials of darkhound blood yet, $N? Time is fleeting!\n>>\nsum=1537637533\n",
+},
+{
+["key"] = "q:8:progress:5688",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=8\nevent=progress\nnpc=5688 Innkeeper Renee\nkind=creature\nmodel=121608\ndisplays=8190\nsex=3\ncreature=Humanoid\ntitle=A Rogue's Deal\ntext<<\nYes? Yes? What is it?\n\nThe forsaken; they certainly do have huge appetites. Make yourself at home... yes, rest those weary bones. My name's Renee if you need anything at all.\n>>\nsum=1527141158\n",
+},
+{
+["key"] = "q:375:progress:1521",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=375\nevent=progress\nnpc=1521 Gretchen Dedmar\nkind=creature\nmodel=121608\ndisplays=3515\nsex=3\ncreature=Humanoid\ntitle=The Chill of Death\ntext<<\nDo you have five Duskbat Pelts and some Coarse Thread yet, $N?\n>>\nsum=2010567906\n",
+},
+{
+["key"] = "q:407:progress:1931",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=407\nevent=progress\nnpc=1931 Captured Scarlet Zealot\nkind=creature\nmodel=119940\ndisplays=11428\nsex=2\ncreature=Humanoid\ntitle=Fields of Grief\ntext<<\nStay away, foul and unholy creature!  May the Light protect me!  The Scarlet Crusade shall rid Azeroth of your. . .\n\n. . .oh wait.  Is that food for me?  I am so hungry. . .\n>>\nsum=1991763471\n",
+},
 },
 }

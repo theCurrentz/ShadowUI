@@ -78,5 +78,13 @@ SpokenContributionsDB = {
 ["key"] = "q:407:progress:1931",
 ["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=407\nevent=progress\nnpc=1931 Captured Scarlet Zealot\nkind=creature\nmodel=119940\ndisplays=11428\nsex=2\ncreature=Humanoid\ntitle=Fields of Grief\ntext<<\nStay away, foul and unholy creature!  May the Light protect me!  The Scarlet Crusade shall rid Azeroth of your. . .\n\n. . .oh wait.  Is that food for me?  I am so hungry. . .\n>>\nsum=1991763471\n",
 },
+{
+["key"] = "q:99144:accept:275954",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nquest=99144\nevent=accept\nnpc=275954 Bareth Dawnstone\nkind=creature\nsex=2\ncreature=Humanoid\ntitle=Seeking Refuge\ntext<<\nLight bless you for finding me. I was on my way from Bandarion Keep to deliver a message to Shari Stilwell in Brill when these monsters captured me. They wield the Light with a hatred in their hearts that makes what's left of my blood seethe. It goes against all I meditate for... all I strive to protect!\n\n<Bareth Dawnstone steadies himself.>\n\nI know some still take issue with my kind, but I assure you our intentions are pure. If you would aid me in escaping this place, I would be forever grateful.\n>>\nsum=1792163994\n",
+},
+{
+["key"] = "g:3523:830972833",
+["envelope"] = "!SPOKEN1 quests\naddon=SpokenQuests/3.8.0\nbuild=1.60.1/70790\nlocale=enUS\npack=enUS\npackVersion=2.5.0\nnpc=3523 Bowen Brisboise\nkind=creature\nmodel=121768\nsex=2\ncreature=Humanoid\ntext<<\nPleased to make your acquaintance. May I help you?\n>>\nsum=187259550\n",
+},
 },
 }
